@@ -6,9 +6,15 @@
 package com.pharbers.mongodbConnect
 
 import com.mongodb.casbah.Imports._
+import com.pharbers.baseModules.PharbersInjectModule
 
-object _data_connection {
-	def conn_name : String = "baby_time_test"
+object _data_connection extends PharbersInjectModule {
+
+    override val id: String = "mongodb-connect"
+    override val configPath: String = "pharbers_config/mongodb_connect.xml"
+    override val md = "server_host" :: "server_port" :: "connect_name" :: "connect_pwd" :: "conn_name" :: Nil
+
+	def conn_name : String = config.mc.find(p => p._1 == "conn_name").get._2.toString
 
 	val addr = new com.mongodb.casbah.Imports.ServerAddress("localhost", 2017)
 //	val credentialsList = MongoCredential.createPlainCredential("dongdamaster", conn_name, "dongda@master".toCharArray)

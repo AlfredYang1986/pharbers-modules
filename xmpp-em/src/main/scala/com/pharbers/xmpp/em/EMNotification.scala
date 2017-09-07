@@ -8,19 +8,29 @@ import com.mongodb.casbah.Imports._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
-object EMNotification {
-  	val app_key = "blackmirror#dongda"
-  	val org_name = "blackmirror"
-  	val app_name = "dongda"
-  	
-  	val client_id = "YXA6A-uzcDn4Eeag6S9CRYv19Q"
-  	val client_secret = "YXA6cXkx9z9LnMdNWHRrcNugX4-M354"
-  	
-	  val notification_account = "dongda_master"
-	  val notification_password = "PassW0rd"
-	
-	  val em_host = "https://a1.easemob.com/"
-	  
+//object EMNotification {
+//    val app_key = "blackmirror#dongda"
+//    val org_name = "blackmirror"
+//    val app_name = "dongda"
+//
+//    val client_id = "YXA6A-uzcDn4Eeag6S9CRYv19Q"
+//    val client_secret = "YXA6cXkx9z9LnMdNWHRrcNugX4-M354"
+//
+//    val notification_account = "dongda_master"
+//    val notification_password = "PassW0rd"
+//
+//    val em_host = "https://a1.easemob.com/"
+//}
+
+case class EMNotification(val app_key : String,
+                          val org_name : String,
+                          val app_name : String,
+                          val client_id : String,
+                          val client_secret : String,
+                          val notification_account : String,
+                          val notification_password : String,
+                          val em_host : String) {
+
 	  def getAuthTokenForEM : String = {
   	 
   	    def getAuthTokenFromServer : JsValue = 

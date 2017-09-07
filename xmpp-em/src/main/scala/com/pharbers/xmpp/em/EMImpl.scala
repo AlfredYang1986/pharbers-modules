@@ -15,9 +15,19 @@ import scala.concurrent.Await
 trait EMImpl extends DDNTrait {
 
     implicit val time_out = Timeout(3 second)
+    val emn : EMNotification = EMNotification(
+        app_key = config.mc.find(p => p._1 == "app_key").get._2.toString,
+        org_name = config.mc.find(p => p._1 == "org_name").get._2.toString,
+        app_name = config.mc.find(p => p._1 == "app_name").get._2.toString,
+        client_id = config.mc.find(p => p._1 == "client_id").get._2.toString,
+        client_secret = config.mc.find(p => p._1 == "client_secret").get._2.toString,
+        notification_account = config.mc.find(p => p._1 == "notification_account").get._2.toString,
+        notification_password = config.mc.find(p => p._1 == "notification_password").get._2.toString,
+        em_host = config.mc.find(p => p._1 == "em_host").get._2.toString
+    )
 
     initDDN
-    def initDDN = EMNotification.getAuthTokenForEM
+    def initDDN = emn.getAuthTokenForEM
 
     def notifyAsync(parameters : (String, JsValue)*)(implicit as : ActorSystem) = {
         val a = as.actorOf(Props[EMActor])
@@ -28,7 +38,7 @@ trait EMImpl extends DDNTrait {
     def registerForDDN(user_id : String)(implicit as : ActorSystem) : JsValue = {
         val a = as.actorOf(Props[EMActor])
         val f = a ? DDNRegisterUser("username" -> toJson(user_id),
-                                    "password" -> toJson(EMNotification.notification_password),
+                                    "password" -> toJson(emn.notification_password),
                                     "nickname" -> toJson(user_id))
 
         Await.result(f.mapTo[JsValue], time_out.duration)
