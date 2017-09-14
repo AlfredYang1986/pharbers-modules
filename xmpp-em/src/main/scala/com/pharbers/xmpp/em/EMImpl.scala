@@ -30,13 +30,15 @@ trait EMImpl extends DDNTrait {
     def initDDN = emn.getAuthTokenForEM
 
     def notifyAsync(parameters : (String, JsValue)*)(implicit as : ActorSystem) = {
-        val a = as.actorOf(Props[EMActor])
+//        val a = as.actorOf(Props[EMActor])
+        val a = as.actorOf(EMActor.props(emn))
         a ! DDNNotifyUsers(parameters.toList)
 //        as.stop(a)
     }
 
     def registerForDDN(user_id : String)(implicit as : ActorSystem) : JsValue = {
-        val a = as.actorOf(Props[EMActor])
+//        val a = as.actorOf(Props[EMActor])
+        val a = as.actorOf(EMActor.props(emn))
         val f = a ? DDNRegisterUser("username" -> toJson(user_id),
                                     "password" -> toJson(emn.notification_password),
                                     "nickname" -> toJson(user_id))
