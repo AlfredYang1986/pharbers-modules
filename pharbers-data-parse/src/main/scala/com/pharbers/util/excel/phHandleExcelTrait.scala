@@ -17,7 +17,7 @@ trait phHandleExcelTrait extends phDataHandle{
                  fieldArg: Map[String, String] = Map(),
                  defaultValueArg: Map[String, String] = Map())
                 (implicit filterFun: (Map[String,String]) => Boolean,
-                 postFun: mutable.Builder[(String, Any),Imports.DBObject] => Unit): Boolean
+                 postFun: mutable.Map[String,String] => Unit): List[Map[String, String]]
     def readToList(file_local: String, sheetId: Int = 1, sheetName: String = ""): List[Map[String, String]]
     def writeByList(output_file: String, content: List[Map[String, String]]): Boolean
 }

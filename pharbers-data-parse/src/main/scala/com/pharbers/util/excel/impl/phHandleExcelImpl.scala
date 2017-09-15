@@ -1,6 +1,6 @@
 package com.pharbers.util.excel.impl
 
-import com.mongodb.casbah.commons.{Imports, MongoDBObject}
+import com.mongodb.casbah.commons.MongoDBObject
 import com.pharbers.mongodbConnect._data_connection
 import com.pharbers.util.excel.phHandleExcelTrait
 
@@ -11,7 +11,7 @@ import scala.collection.mutable
   */
 object phHandleExcelImpl{
     implicit val filterFun: (Map[String,String]) => Boolean = { tr => true }
-    implicit val postFun: mutable.Builder[(String, Any),Imports.DBObject] => Unit = { builder => Unit }
+    implicit val postFun: (mutable.Map[String,String]) => Unit = { tr => Unit }
 }
 
 class phHandleExcelImpl extends phHandleExcelTrait {
@@ -26,7 +26,7 @@ class phHandleExcelImpl extends phHandleExcelTrait {
                           fieldArg: Map[String, String] = Map(),
                           defaultValueArg: Map[String, String] = Map())
                          (implicit filterFun: (Map[String,String]) => Boolean,
-                          postFun: mutable.Builder[(String, Any),Imports.DBObject] => Unit): Boolean = {
+                          postFun: mutable.Map[String,String] => Unit) = {
 
         new phReadExcelHandle(file_local){
             override val fieldMap = fieldArg
@@ -35,26 +35,29 @@ class phHandleExcelImpl extends phHandleExcelTrait {
             override def processFun(): Option[Map[String, String]] = {
                 val tr = titleList.zip(rowList).toMap
                 if (filterFun(tr)) {
-                    val builder = MongoDBObject.newBuilder
+                    val mutableTr =  mutable.Map.empty ++ tr
                     val flag = rowList.length
                     for (i <- titleList.indices if i < flag) {
-                        builder += titleList(i) -> {
-                            rowList(i) match {
-                                case s: String if s == "" => setDefaultValue(titleList(i), tr)
-                                case s: String => s
-                                case _ => throw new Exception("parse xlsx error")
-                            }
+                        rowList(i) match {
+                            case s: String if s == "" => mutableTr += titleList(i) -> setDefaultValue(titleList(i), tr)
+                            case s: String => s
+                            case _ => throw new Exception("parse xlsx error")
                         }
                     }
 
-                    postFun(builder)
+                    postFun(mutableTr)
 
+                    val builder = MongoDBObject.newBuilder
+                    mutableTr.keys.foreach{x =>
+                        builder += x -> mutableTr(x)
+                    }
                     _data_connection.getCollection(collection_name) += builder.result()
+                    Some(mutableTr.toMap)
+                } else {
+                    None
                 }
-                None
             }
         }.process(sheetId, sheetName)
-        true
     }
 
     override def readToList(file_local: String,sheetId: Int = 1, sheetName: String = ""): List[Map[String, String]] = {

@@ -1,8 +1,12 @@
 package util
 
+import com.pharbers.mongodbConnect._data_connection
 import com.pharbers.util.excel.phHandleExcelTrait
 import com.pharbers.util.excel.impl.phHandleExcelImpl
 import org.scalatest.FunSuite
+
+import scala.collection.immutable.Map
+import scala.collection.mutable
 
 /**
   * Created by clock on 17-9-7.
@@ -18,8 +22,7 @@ class UtilSuite extends FunSuite {
     test("read excel to List") {
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
-        val result = parser.readToList(file_local)
-        result.foreach(println)
+        parser.readToList(file_local).foreach(println)
     }
 
     test("read excel to db => simple") {
@@ -27,7 +30,7 @@ class UtilSuite extends FunSuite {
         import phHandleExcelImpl._
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
-        println(parser.readToDB(file_local,"test"))
+        parser.readToDB(file_local,"test").foreach(println)
     }
     test("read excel to db2 => specified sheet and filter") {
         import phHandleExcelImpl._
@@ -35,13 +38,13 @@ class UtilSuite extends FunSuite {
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         implicit val filterFun: Map[String,String] => Boolean = { tr =>
-            tr.get("GYCX反馈通用名1") match {
+            tr.get("GYCX反馈通用名") match {
                 case None => false
                 case Some(s) if s.startsWith("头") => true
                 case _ => false
             }
         }
-        println(parser.readToDB(file_local,"test",2))
+        parser.readToDB(file_local,"test",2).foreach(println)
     }
     test("read excel to db3 => setField and setDefault") {
         import phHandleExcelImpl._
@@ -56,7 +59,29 @@ class UtilSuite extends FunSuite {
         )
 
         val parser: phHandleExcelTrait = new phHandleExcelImpl
-        println(parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap))
+        parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
+    }
+    test("read excel to db4 => post function") {
+        import phHandleExcelImpl._
+        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
+
+        val setFieldMap = Map(
+            "GYCX反馈通用名" -> "TEST"
+        )
+
+        val setDefaultMap = Map(
+            "TEST" -> "$TA"
+        )
+
+        //新建列
+        implicit val postFun: mutable.Map[String,String] => Unit = { tr =>
+            tr += "DOIE" -> tr("TA")
+        }
+
+        val parser: phHandleExcelTrait = new phHandleExcelImpl
+        parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
+
+        _data_connection.getCollection("test").drop
     }
 
     test("write excel by List") {

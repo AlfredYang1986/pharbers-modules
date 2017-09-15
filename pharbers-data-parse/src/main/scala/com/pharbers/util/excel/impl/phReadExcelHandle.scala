@@ -152,7 +152,10 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
                 ref = null
             }
             case "row" if rowList != Nil => {// 如果标签名称为 row ，这说明已到行尾
-                resultList = resultList :+ processFun().map(x=>x).getOrElse(Map().empty)
+                processFun() match {
+                    case Some(map) => resultList = resultList :+ map
+                    case None => Unit
+                }
                 rowList = Nil
                 preRef = null
                 ref = null
