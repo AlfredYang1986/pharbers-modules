@@ -37,6 +37,11 @@ trait MongoDBImpl extends DBTrait {
         (from db() in db_name where condition).selectSkipTop(skip)(take)(sort)(x => t(x)).toList
     }
 
+    override def queryCount(condition : DBObject, db_name : String)
+                           (implicit t : DBObject => Map[String, JsValue]) : Option[Int] = {
+        Some((from db() in db_name where condition).count)
+    }
+
     override def deleteObject(obj: DBObject, db_name: String, primary_key: String): Unit = {
         val primary = obj.get(primary_key) //.map (x => x).getOrElse(throw new Exception("get primary key error"))
         (from db() in db_name where (primary_key -> primary) select(x =>x)).toList match {
