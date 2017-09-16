@@ -21,7 +21,6 @@ import com.mongodb.casbah.Imports.MongoDBObject
 import scala.collection.mutable
 import scala.concurrent.duration._
 
-
 /**
   * Created by clock on 17-9-7.
   */
@@ -122,8 +121,8 @@ class GeneratePanel extends Actor with ActorLogging{
 
         println("1. 导入数据到db(包括2.修改列名 3.月份筛选 4.填补缺失值 5.生成最小产品单位)")
         println()
-        readCPAInDB(cpas,ym)
-        readGYCXInDB(gycxs,ym)
+//        readCPAInDB(cpas,ym)
+//        readGYCXInDB(gycxs,ym)
 
         println("6.1 导入PVI others文件")
         val product_vs_ims_file_local = "/home/clock/Downloads/产品标准化+vs+IMS_Pfizer_6市场others.xlsx"

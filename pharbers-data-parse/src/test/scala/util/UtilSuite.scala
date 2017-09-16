@@ -20,7 +20,7 @@ class UtilSuite extends FunSuite {
     }
 
     test("read excel to List") {
-        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
+        val file_local = "/home/clock/Downloads/201611+CPA.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         parser.readToList(file_local).foreach(println)
     }
@@ -44,7 +44,7 @@ class UtilSuite extends FunSuite {
                 case _ => false
             }
         }
-        parser.readToDB(file_local,"test",2).foreach(println)
+        parser.readToDB(file_local,"test", 2).foreach(println)
     }
     test("read excel to db3 => setField and setDefault") {
         import phHandleExcelImpl._
@@ -90,4 +90,5 @@ class UtilSuite extends FunSuite {
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         println(parser.writeByList(output_file, parser.readToList(file_local)))
     }
+
 }

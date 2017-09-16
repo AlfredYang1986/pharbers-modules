@@ -73,6 +73,8 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         parser
     }
 
+    private var phIsOpen = false
+    private var phNextNull = false
     private var preRef: String = _
     private var ref: String = _
     private var nextIsString = false
@@ -81,10 +83,19 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     private var lastContents = ""
 
     override def startElement(uri: String, localName: String, name: String, attr: Attributes) = {
-        // c => 单元格
-        if (name.equals("c")) {
+        if ("inlineStr".equals(name) || "v".equals(name)) {
+            phIsOpen = true
+        }else if (name.equals("c")) {// c => 单元格
             // 如果下一个元素是 SST 的索引，则将nextIsString标记为true
             val cellType = attr.getValue("t")
+
+            //单元格是否为空
+            if (cellType == null) {
+                phNextNull = true
+            } else {
+                phNextNull = false
+            }
+
             if (cellType != null && cellType.equals("s")) {
                 nextIsString = true
             } else {
@@ -114,7 +125,7 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
                 preRef = ref
             }
 
-            // 当前单元格的位置
+            //改变当前指向单元格
             ref = attr.getValue("r")
         }
         // 置空
@@ -139,13 +150,10 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         }
 
         name match {
-            case "v" if nextIsTitle => {
-                titleList = replaceFiledFun(titleList :+ lastContents.trim)
-            }
-            case "v" => {
-                rowList = rowList :+ lastContents.trim
-            }
-            case "c"  => Unit
+            case "v" if nextIsTitle => titleList = replaceFiledFun(titleList :+ lastContents.trim)
+            case "v" => rowList = rowList :+ lastContents.trim
+            case "c" if phNextNull  => rowList = rowList :+ " "
+            case "c"  =>  Unit
             case "row" if nextIsTitle => {// 如果标签名称为 row ，这说明已到行尾
                 nextIsTitle = false
                 preRef = null
@@ -165,7 +173,8 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     }
 
     override def characters(ch: Array[Char], start: Int, length: Int) = {
-        lastContents += new String(ch, start, length)
+        if(phIsOpen)
+            lastContents += new String(ch, start, length)
     }
 
     protected def processFun(): Option[Map[String,String]] = {
