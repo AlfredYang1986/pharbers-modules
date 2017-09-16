@@ -20,7 +20,7 @@ class UtilSuite extends FunSuite {
     }
 
     test("read excel to List") {
-        val file_local = "/home/clock/Downloads/201611+CPA.xlsx"
+        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         parser.readToList(file_local).foreach(println)
     }
@@ -55,13 +55,14 @@ class UtilSuite extends FunSuite {
         )
 
         val setDefaultMap = Map(
+            "TA" -> "0",
             "TEST" -> "$TA"
         )
 
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
     }
-    test("read excel to db4 => post function") {
+    test("read excel tTAo db4 => post function") {
         import phHandleExcelImpl._
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
 
@@ -74,8 +75,8 @@ class UtilSuite extends FunSuite {
         )
 
         //新建列
-        implicit val postFun: mutable.Map[String,String] => Unit = { tr =>
-            tr += "DOIE" -> tr("TA")
+        implicit val postFun: Map[String,String] => Option[Map[String, String]] = { tr =>
+            Some(tr ++ Map("DOIE" -> tr("TA")))
         }
 
         val parser: phHandleExcelTrait = new phHandleExcelImpl

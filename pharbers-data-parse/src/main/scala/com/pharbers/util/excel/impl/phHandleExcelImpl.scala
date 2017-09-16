@@ -11,7 +11,7 @@ import scala.collection.mutable
   */
 object phHandleExcelImpl{
     implicit val filterFun: (Map[String,String]) => Boolean = { tr => true }
-    implicit val postFun: (mutable.Map[String,String]) => Unit = { tr => Unit }
+    implicit val postFun: (Map[String,String]) => Option[Map[String,String]] = { tr => Some(tr) }
 }
 
 class phHandleExcelImpl extends phHandleExcelTrait {
@@ -26,33 +26,32 @@ class phHandleExcelImpl extends phHandleExcelTrait {
                           fieldArg: Map[String, String] = Map(),
                           defaultValueArg: Map[String, String] = Map())
                          (implicit filterFun: (Map[String,String]) => Boolean,
-                          postFun: mutable.Map[String,String] => Unit) = {
+                          postFun: (Map[String,String]) => Option[Map[String,String]]) = {
 
         new phReadExcelHandle(file_local){
             override val fieldMap = fieldArg
             override val defaultValueMap = defaultValueArg
 
             override def processFun(): Option[Map[String, String]] = {
-                val tr = titleList.zip(rowList).toMap
+                var tr = titleMap.keys.map{t => (titleMap(t),rowMap(t)) }.toMap
+
                 if (filterFun(tr)) {
-                    val mutableTr =  mutable.Map.empty ++ tr
-                    val flag = rowList.length
-                    for (i <- titleList.indices if i < flag) {
-                        rowList(i) match {
-                            case s: String if s == "" => mutableTr += titleList(i) -> setDefaultValue(titleList(i), tr)
-                            case s: String => s
-                            case _ => throw new Exception("parse xlsx error")
+                    tr.map { x =>
+                        x._2 match {
+                            case s: String if s == "" => tr += x._1 -> getDefaultValue(x._1, tr)
+                            case s: String => Unit
+                            case _ => Unit
                         }
                     }
 
-                    postFun(mutableTr)
+                    tr = postFun(tr).getOrElse(Map())
 
                     val builder = MongoDBObject.newBuilder
-                    mutableTr.keys.foreach{x =>
-                        builder += x -> mutableTr(x)
+                    tr.keys.foreach{x =>
+                        builder += x -> tr(x)
                     }
                     _data_connection.getCollection(collection_name) += builder.result()
-                    Some(mutableTr.toMap)
+                    Some(tr)
                 } else {
                     None
                 }

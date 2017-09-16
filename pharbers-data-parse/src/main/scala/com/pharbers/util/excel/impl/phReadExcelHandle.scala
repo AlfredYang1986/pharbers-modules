@@ -74,12 +74,12 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     }
 
     private var phIsOpen = false
-    private var phNextNull = false
-    private var preRef: String = _
-    private var ref: String = _
-    private var nextIsString = false
-    private var dateFlag = false
-    private var numberFlag = false
+
+    private var ref: String = ""
+    private var phNextIsNull = false
+    private var phNextIsString = false
+    private var phNextIsNumber = false
+
     private var lastContents = ""
 
     override def startElement(uri: String, localName: String, name: String, attr: Attributes) = {
@@ -91,39 +91,13 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
 
             //单元格是否为空
             if (cellType == null) {
-                phNextNull = true
+                phNextIsNull = true
             } else {
-                phNextNull = false
+                phNextIsNull = false
             }
 
-            if (cellType != null && cellType.equals("s")) {
-                nextIsString = true
-            } else {
-                nextIsString = false
-            }
-
-            // 日期格式
-            val cellDateType = attr.getValue("s")
-            if (cellDateType != null && cellDateType.equals("1")) {
-                dateFlag = true
-            } else {
-                dateFlag = false
-            }
-
-            //数字格式
-            val cellNumberType = attr.getValue("s")
-            if (cellNumberType != null && cellNumberType.equals("2")) {
-                numberFlag = true
-            } else {
-                numberFlag = false
-            }
-
-            // 前一个单元格的位置
-            if (preRef == null) {
-                preRef = attr.getValue("r")
-            } else {
-                preRef = ref
-            }
+            if(cellType != null && "s".equals(cellType)) phNextIsString = true
+            else phNextIsString = false
 
             //改变当前指向单元格
             ref = attr.getValue("r")
@@ -132,15 +106,16 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         lastContents = ""
     }
 
-    protected var rowList: List[String] = Nil
-    private var nextIsTitle = true
-    protected var titleList: List[String] = Nil
     private var resultList:List[Map[String,String]] = Nil
+    protected var titleMap: Map[String,String] = Map()
+    protected var rowMap: Map[String,String] = Map()
+
+    private var nextIsTitle = true
 
     override def endElement(uri: String, localName: String, name: String) = {
         // 根据SST的索引值的到单元格的真正要存储的字符串
         // 这时characters()方法可能会被调用多次
-        if (nextIsString) {
+        if (phNextIsString && name == "v") {
             try {
                 val idx = Integer.parseInt(lastContents)
                 lastContents = new XSSFRichTextString(sst.getEntryAt(idx)).toString
@@ -149,23 +124,27 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
             }
         }
 
+        if(phNextIsNull && lastContents != "") phNextIsNumber = true
+
         name match {
-            case "v" if nextIsTitle => titleList = replaceFiledFun(titleList :+ lastContents.trim)
-            case "v" => rowList = rowList :+ lastContents.trim
-            case "c" if phNextNull  => rowList = rowList :+ " "
-            case "c"  =>  Unit
+            case "v" if nextIsTitle => titleMap += getPrefix -> lastContents.trim
+            case "v" => rowMap += getPrefix -> lastContents.trim
+            case "c" if phNextIsNumber => rowMap += getPrefix -> lastContents.trim
+            case "c" if phNextIsNull => rowMap += getPrefix -> ""
+            case "c" => Unit
             case "row" if nextIsTitle => {// 如果标签名称为 row ，这说明已到行尾
                 nextIsTitle = false
-                preRef = null
+                titleMap = replaceFiledFun(titleMap)
                 ref = null
             }
-            case "row" if rowList != Nil => {// 如果标签名称为 row ，这说明已到行尾
+            case "row" if rowMap != Nil => {// 如果标签名称为 row ，这说明已到行尾
+                if(titleMap.size - rowMap.size > 0)
+                    completionRowMap
                 processFun() match {
                     case Some(map) => resultList = resultList :+ map
                     case None => Unit
                 }
-                rowList = Nil
-                preRef = null
+                rowMap = Map()
                 ref = null
             }
             case _ => Unit
@@ -178,18 +157,22 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     }
 
     protected def processFun(): Option[Map[String,String]] = {
-        Some(titleList.zipAll(rowList, "", "").toMap)
+        Some(
+            titleMap.keys.map{t =>
+                (titleMap(t),rowMap(t))
+            }.toMap
+        )
     }
 
     protected val fieldMap: Map[String, String] = Map()
-    private def replaceFiledFun(old: List[String]): List[String] = {
-        old.map{x=>
-            fieldMap.getOrElse(x,x)
+    private def replaceFiledFun(old: Map[String,String]): Map[String, String] = {
+        old.map{x =>
+            (x._1, fieldMap.getOrElse(x._2,x._2))
         }
     }
 
     protected val defaultValueMap: Map[String, String] = Map()
-    protected def setDefaultValue(cell: String, tr: Map[String,String]): String = {
+    protected def getDefaultValue(cell: String, tr: Map[String,String]): String = {
         def getValue(targetCell: String): String = {
             tr.get(targetCell) match {
                 case None => ""
@@ -203,17 +186,14 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         }
     }
 
-    /**
-    private def getValue(col: Cell): String = {
-        col.getCellTypeEnum match {
-            case CellType.STRING => col.getRichStringCellValue.getString
-            case CellType.NUMERIC if DateUtil.isCellDateFormatted(col) => col.getDateCellValue.toString
-            case CellType.NUMERIC => col.getNumericCellValue.toString
-            case CellType.BOOLEAN => col.getBooleanCellValue.toString
-            case CellType.FORMULA => col.getCellFormula
-            case CellType.BLANK => ""
-            case _ => throw new Exception("parse xlsx error => cell value error")
+    private def completionRowMap = {
+        titleMap.keys.foreach{t =>
+            rowMap.get(t) match {
+                case Some(s) => Unit
+                case None => rowMap += t -> ""
+            }
         }
     }
-    **/
+
+    private def getPrefix = ref.split("\\d").head
 }
