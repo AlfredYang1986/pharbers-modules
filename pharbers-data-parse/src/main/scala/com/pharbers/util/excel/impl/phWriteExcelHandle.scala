@@ -10,7 +10,7 @@ import org.xml.sax.helpers.DefaultHandler
   */
 class phWriteExcelHandle(output_file: String) extends DefaultHandler {
 
-    def write(content: List[Map[String, String]], sheetName: String = "Sheet1") = {
+    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1"): List[Map[String, Any]] = {
         val wb = new XSSFWorkbook()
         val sheet = wb.createSheet(sheetName)
 
@@ -19,18 +19,27 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
         val os = new FileOutputStream(output_file)
         wb.write(os)
         os.close()
+        content
     }
 
-    def writeSheet(content: List[Map[String, String]], sheet: XSSFSheet) = {
+    def writeSheet(content: List[Map[String, Any]], sheet: XSSFSheet) = {
         writeTitle(content.head.keys.toArray, sheet)
 
         var rowNum = 1
         var cellNum = 0
-        content.foreach { r =>
-            val row = sheet.createRow(rowNum)
-            r.foreach { c =>
-                val cell = row.createCell(cellNum)
-                cell.setCellValue(c._2)
+        content.foreach { row =>
+            val rowRef = sheet.createRow(rowNum)
+            row.foreach { c =>
+                val cell = rowRef.createCell(cellNum)
+                val a = new String
+                c._2 match {
+                    case i:Int => cell.setCellValue(i)
+                    case l:Long => cell.setCellValue(l)
+                    case f:Float => cell.setCellValue(f)
+                    case d:Double => cell.setCellValue(d)
+                    case s: String => cell.setCellValue(s)
+                    case _ => cell.setCellValue(c._2.asInstanceOf[String])
+                }
                 cellNum += 1
             }
             rowNum += 1

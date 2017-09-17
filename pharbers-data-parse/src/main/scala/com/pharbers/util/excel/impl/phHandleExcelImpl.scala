@@ -63,8 +63,7 @@ class phHandleExcelImpl extends phHandleExcelTrait {
         new phReadExcelHandle(file_local).process(sheetId, sheetName)
     }
 
-    override def writeByList(output_file: String, content: List[Map[String, String]]) = {
+    override def writeByList(output_file: String, content: List[Map[String, Any]]): List[Map[String, Any]] = {
         new phWriteExcelHandle(output_file).write(content)
-        true
     }
 }

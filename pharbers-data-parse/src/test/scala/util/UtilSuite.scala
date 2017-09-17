@@ -89,7 +89,20 @@ class UtilSuite extends FunSuite {
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val output_file = "/home/clock/Downloads/CPA_GYCX_Others_panel.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
-        println(parser.writeByList(output_file, parser.readToList(file_local)))
+        parser.writeByList(output_file, parser.readToList(file_local)).foreach(println)
     }
 
+    test("test group by map") {
+        val testList = List(
+            Map("a" -> "1" , "b" -> "2", "c" -> 11),
+            Map("a" -> "1" , "b" -> "2", "c" -> 22),
+            Map("a" -> "1" , "b" -> "3", "c" -> 33),
+            Map("a" -> "1" , "b" -> "3", "c" -> 33)
+        )
+        val temp = testList.groupBy(x => x("a").toString + x("b").toString)
+        val temp2 = temp.map{x =>
+            x._2.head ++ Map("c" -> x._2.map(_("c").asInstanceOf[Int]).sum)
+        }
+        println(temp)
+    }
 }
