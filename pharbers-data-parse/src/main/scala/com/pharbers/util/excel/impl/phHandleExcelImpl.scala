@@ -4,7 +4,7 @@ import com.mongodb.casbah.commons.MongoDBObject
 import com.pharbers.mongodbConnect._data_connection
 import com.pharbers.util.excel.phHandleExcelTrait
 
-import scala.collection.mutable
+import scala.collection.immutable.Map
 
 /**
   * Created by clock on 17-9-7.
@@ -46,11 +46,11 @@ class phHandleExcelImpl extends phHandleExcelTrait {
 
                     tr = postFun(tr).getOrElse(Map())
 
-                    val builder = MongoDBObject.newBuilder
-                    tr.keys.foreach{x =>
-                        builder += x -> tr(x)
-                    }
-                    _data_connection.getCollection(collection_name) += builder.result()
+//                    val builder = MongoDBObject.newBuilder
+//                    tr.keys.foreach{x =>
+//                        builder += x -> tr(x)
+//                    }
+//                    _data_connection.getCollection(collection_name) += builder.result()
                     Some(tr)
                 } else {
                     None
@@ -63,7 +63,20 @@ class phHandleExcelImpl extends phHandleExcelTrait {
         new phReadExcelHandle(file_local).process(sheetId, sheetName)
     }
 
-    override def writeByList(output_file: String, content: List[Map[String, Any]]): List[Map[String, Any]] = {
+    override def writeByList(output_file: String, content: List[Map[String, Any]], cellNumArg: Map[String, Int] = Map()) = {
+        implicit val writeSeq = cellNumArg.size match{
+            case 0 => getWriteSeq(content.head)
+            case _ => cellNumArg
+        }
+
         new phWriteExcelHandle(output_file).write(content)
+    }
+
+    private def getWriteSeq(map: Map[String, Any]): Map[String, Int] ={
+        var i = -1
+        map.map{x =>
+            i += 1
+            x._1 -> i
+        }
     }
 }

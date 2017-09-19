@@ -1,7 +1,6 @@
 package com.pharbers.pfizer.impl
 
 import GeneratePanel._
-import com.pharbers.mongodbConnect._data_connection
 import com.pharbers.pfizer.phPfizerHandleTrait
 import com.pharbers.util.excel.impl.phHandleExcelImpl
 import com.pharbers.util.excel.phHandleExcelTrait
@@ -16,7 +15,7 @@ import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import scala.concurrent.Await
 import akka.pattern.ask
 import akka.util.Timeout
-import com.mongodb.casbah.Imports.MongoDBObject
+import com.pharbers.baseModules.PharbersInjectModule
 
 import scala.concurrent.duration._
 
@@ -25,7 +24,6 @@ import scala.concurrent.duration._
   */
 class phPfizerHandleImpl(implicit as:ActorSystem) extends phPfizerHandleTrait {
     override def generatePanelFile(args: Map[String, List[String]]): JsValue = {
-        //1.读入CPA/GYCX 数据到DB  => c0 g0
         implicit val timeout = Timeout(15 minutes)
 
         val actor = as.actorOf(GeneratePanel.props)
@@ -45,7 +43,18 @@ object GeneratePanel {
     case class ReadGYCXComplete()
 }
 
-class GeneratePanel extends Actor with ActorLogging{
+class GeneratePanel extends Actor with ActorLogging with PharbersInjectModule {
+    override val id: String = "data-parse"
+    override val configPath: String = "pharbers_config/data_parse_file.xml"
+    override val md = "contrast_file_path" :: "product_vs_ims_file" :: "universe_inf_file" :: "markets_file" :: "phaid_file" :: "output_file" :: Nil
+
+    val path : String = config.mc.find(p => p._1 == "contrast_file_path").get._2.toString
+    val product_vs_ims_file : String = config.mc.find(p => p._1 == "product_vs_ims_file").get._2.toString
+    val universe_inf_file : String = config.mc.find(p => p._1 == "universe_inf_file").get._2.toString
+    val markets_file : String = config.mc.find(p => p._1 == "markets_file").get._2.toString
+    val PHAID_file : String = config.mc.find(p => p._1 == "phaid_file").get._2.toString
+    val output_file : String = config.mc.find(p => p._1 == "output_file").get._2.toString
+
     override def receive: Receive = {
         case StartGeneratePanel(args) => startGeneratePanel(args)
         case ReadCPAInDB(cpas, collectionName) => readCPAInDB(cpas, "1", collectionName)
@@ -60,49 +69,51 @@ class GeneratePanel extends Actor with ActorLogging{
     var m1: List[Map[String,String]] = Nil
     var hos00: List[Map[String,String]] = Nil
     var b0: List[Map[String,String]] = Nil
+    var ID_2_PHAID: Map[String,(String,String)] = Map()
+
     var panel: List[Map[String, Any]] = Nil
 
     private def startGeneratePanel(args: Map[String, List[String]]) = {
-        val company_name = args.getOrElse("company", throw new Exception("no find company arg")).headOption.get
+        val company_name = args.getOrElse("company", throw new Exception("no find company arg")).head
         val cpas = args.getOrElse("cpas", throw new Exception("no find cpas arg"))
         val gycxs = args.getOrElse("gycxs", throw new Exception("no find gycxs arg"))
-        val ym = args.getOrElse("ym", throw new Exception("no find ym arg")).headOption.get
-        val out_put = args.getOrElse("out_put", "/home/clock/Downloads/CPA_GYCX_Others_panel.xlsx" :: Nil).headOption.get
+        val ym = args.getOrElse("ym", throw new Exception("no find ym arg")).head
+        val out_put_local = args.getOrElse("out_put", path + output_file :: Nil).head
 
-        println(s"---------开始生成panel文件：$getDate---------------")
-        println()
-        println(s"---------处理的公司名：$company_name---------------")
-        println(s"---------要处理的CPA文件有：$cpas-------------------")
-        println(s"---------要处理的GYCX文件有：$gycxs-----------------")
-        println()
+        //println(s"---------开始生成panel文件：$getDate---------------")
+        //println()
+        //println(s"---------处理的公司名：$company_name---------------")
+        //println(s"---------要处理的CPA文件有：$cpas-------------------")
+        //println(s"---------要处理的GYCX文件有：$gycxs-----------------")
+        //println()
 
-        println("1. 导入数据到db(包括2.修改列名 3.月份筛选 4.填补缺失值 5.生成最小产品单位)")
-        println()
+        //println("1. 导入数据到db(包括2.修改列名 3.月份筛选 4.填补缺失值 5.生成最小产品单位)")
+        //println()
         readCPAInDB(cpas,ym)
         readGYCXInDB(gycxs,ym)
 
-        println("6.1 导入PVI others文件")
-        val product_vs_ims_file_local = "/home/clock/Downloads/产品标准化+vs+IMS_Pfizer_6市场others.xlsx"
+        //println("6.1 导入PVI others文件")
+        val product_vs_ims_file_local = path + product_vs_ims_file
         readProductVSImsInDB(product_vs_ims_file_local)
 
-        println("6.2 导入universe_inf文件")
-        val universe_inf_file_local = "/home/clock/Downloads/universe_inf.xlsx"
+        //println("6.2 导入universe_inf文件")
+        val universe_inf_file_local = path + universe_inf_file
         readUniverseInDB(universe_inf_file_local)
 
-        println("7 生成panel")
-        val markets_file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
+        //println("7 生成panel")
+        val markets_file_local = path + markets_file
         val market = List("INF")
         generatePanel(markets_file_local, market)
 
-        writePanel(out_put)
+        writePanel(out_put_local)
 
         sender() ! toJson("panel file generate complete")
     }
 
 
     private def readCPAInDB(files: List[String], ym: String, collectionName: String = "c0") = {
-        println()
-        println(s"读入 CPA 数据 到数据库 $getDate")
+        //println()
+        //println(s"读入 CPA 数据 到数据库 $getDate")
         val startTime = new Date()
 
         //3.月份筛选
@@ -114,18 +125,18 @@ class GeneratePanel extends Actor with ActorLogging{
         //5. 生成最小产品单位
         implicit val postFun = getGenerateMin1Fun
 
-        _data_connection.getCollection(collectionName).drop
+//        _data_connection.getCollection(collectionName).drop
         files.foreach{file =>
             c0 = c0 ++ parser.readToDB(file, collectionName, defaultValueArg = setDefaultMap)
         }
 
-        println(s"读入 CPA 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
-        println()
+        //println(s"读入 CPA 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
+        //println()
     }
 
     private def readGYCXInDB(files: List[String], ym: String, collectionName: String = "g0") = {
-        println()
-        println(s"读入 GYCX 数据 到数据库 $getDate")
+        //println()
+        //println(s"读入 GYCX 数据 到数据库 $getDate")
         val startTime = new Date()
         //2.列名修改
         val setFieldMap = Map(
@@ -153,21 +164,21 @@ class GeneratePanel extends Actor with ActorLogging{
         //5. 生成最小产品单位
         implicit val postFun = getGenerateMin1Fun
 
-        _data_connection.getCollection(collectionName).drop
+//        _data_connection.getCollection(collectionName).drop
         files.foreach{file =>
             g0 = g0 ++ parser.readToDB(file, collectionName, fieldArg = setFieldMap, defaultValueArg = setDefaultMap)
         }
 
-        println(s"读入 GYCX 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
-        println()
+        //println(s"读入 GYCX 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
+        //println()
     }
 
     private def readProductVSImsInDB(file: String, collectionName: String = "m1") = {
-        println()
-        println(s"读入 产品标准化 vs IMS_Pfizer_6市场others 数据 到数据库 $getDate")
+        //println()
+        //println(s"读入 产品标准化 vs IMS_Pfizer_6市场others 数据 到数据库 $getDate")
         val startTime = new Date()
-        val coll = _data_connection.getCollection(collectionName)
-        coll.drop
+//        val coll = _data_connection.getCollection(collectionName)
+//        coll.drop
 
         val result = parser.readToList(file).map{x =>
             Map("min1" -> x("min1"), "min1_标准" -> x("min1_标准"), "通用名" -> x("通用名"))
@@ -175,21 +186,21 @@ class GeneratePanel extends Actor with ActorLogging{
 
         m1 = result.distinct
 
-        result.foreach{x =>
-            val builder = MongoDBObject.newBuilder
-            x.keys.foreach{k =>
-                builder += k -> x(k)
-            }
-            coll += builder.result()
-        }
+//        result.foreach{x =>
+//            val builder = MongoDBObject.newBuilder
+//            x.keys.foreach{k =>
+//                builder += k -> x(k)
+//            }
+//            coll += builder.result()
+//        }
 
-        println(s"读入 产品标准化 vs IMS_Pfizer_6市场others 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
-        println()
+        //println(s"读入 产品标准化 vs IMS_Pfizer_6市场others 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
+        //println()
     }
 
     private def readUniverseInDB(file: String, collectionName: String = "hos00") = {
-        println()
-        println(s"读入 universe_inf 数据 到数据库 $getDate")
+        //println()
+        //println(s"读入 universe_inf 数据 到数据库 $getDate")
         val startTime = new Date()
         //列名修改
         val setFieldMap = Map(
@@ -213,31 +224,31 @@ class GeneratePanel extends Actor with ActorLogging{
            Some(tr ++ Map("DOIE" -> tr("DOI")))
         }
 
-        _data_connection.getCollection(collectionName).drop
+//        _data_connection.getCollection(collectionName).drop
         hos00 = parser.readToDB(file, collectionName, fieldArg = setFieldMap)
 
-        println(s"读入 universe_inf 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
-        println()
+        //println(s"读入 universe_inf 数据 到数据库 complete,耗时=" + getConsumingTime(startTime))
+        //println()
     }
 
     private def generatePanel(file: String, marketLst: List[String], collectionName: String = "b0") = {
         import com.pharbers.util.excel.impl.phHandleExcelImpl._
 
-        println()
-        println(s"读入 辉瑞采购清单中的通用名划分的6个市场 数据 到数据库 $getDate")
+        //println()
+        //println(s"读入 辉瑞采购清单中的通用名划分的6个市场 数据 到数据库 $getDate")
 
-        _data_connection.getCollection(collectionName).drop
-        println("7.1 读入others中INF市场到数据库 =>  b0")
+//        _data_connection.getCollection(collectionName).drop
+        //println("7.1 读入others中INF市场到数据库 =>  b0")
         marketLst.foreach{market =>
             b0 = b0 ++ parser.readToDB(file, collectionName, sheetName = market)
             panel = panel ++ innerJoin(market)
         }
 
-        println()
+        //println()
     }
 
     private def innerJoin(market: String) = {
-        println(s"7.2 对b0 和 m1 进行 inner join $getDate")
+        //println(s"7.2 对b0 和 m1 进行 inner join $getDate")
         val hos0_hosp_name = hos00.filter(_("DOI") == market+" Market").map(_("ID"))
 
         var m1_c: List[Map[String, String]] = Nil
@@ -251,13 +262,16 @@ class GeneratePanel extends Actor with ActorLogging{
             )
         }
         def mergeMap2(ag: Map[String,String], m: Map[String,String]): Map[String,Any] ={
+            val M: String = if(ag("MONTH").toInt < 9) "0" + ag("MONTH") else ag("MONTH")
+            val YM: String = ag("YEAR") + M
+
             Map(
                 "ID" -> ag("HOSPITAL_CODE").toLong,
-                "Hosp_name" -> ag("CORP_NAME"),
-                "Date" -> (ag("YEAR") + ag("MONTH")),
+                "Hosp_name" -> ID_2_PHAID(ag("HOSPITAL_CODE"))._2,
+                "Date" ->  YM,
                 "Prod_Name" -> m("min1_标准"),
                 "Prod_CNAME" -> m("min1_标准"),
-                "HOSP_ID" -> ag("HOSPITAL_CODE"),
+                "HOSP_ID" -> ID_2_PHAID(ag("HOSPITAL_CODE"))._1,
                 "Strength" -> m("min1_标准"),
                 "DOI" -> market,
                 "DOIE" -> market,
@@ -265,64 +279,63 @@ class GeneratePanel extends Actor with ActorLogging{
                 "Sales" -> ag("VALUE").toDouble
             )
         }
-        def saveToDB(row: Map[String, Any]) = {
-            val builder = MongoDBObject.newBuilder
-            row.keys.foreach{k =>
-                builder += k -> row(k)
-            }
-            builder.result()
-        }
+//        def saveToDB(row: Map[String, Any]) = {
+//            val builder = MongoDBObject.newBuilder
+//            row.keys.foreach{k =>
+//                builder += k -> row(k)
+//            }
+//            builder.result()
+//        }
 
-        val coll_m1_c = _data_connection.getCollection("m1_c")
-        val coll_m1_g = _data_connection.getCollection("m1_g")
-        coll_m1_c.drop
-        coll_m1_g.drop
+//        val coll_m1_c = _data_connection.getCollection("m1_c")
+//        val coll_m1_g = _data_connection.getCollection("m1_g")
+//        coll_m1_c.drop
+//        coll_m1_g.drop
         m1.foreach { m =>
             b0.foreach { b =>
                 if (m("通用名") == b("CPA反馈通用名")) {
                     val row = mergeMap1(m, b)
-                    coll_m1_c += saveToDB(row)
+//                    coll_m1_c += saveToDB(row)
                     m1_c = m1_c :+ row
                 }
             }
             b0.foreach { b =>
                 if (m("通用名") == b("GYCX反馈通用名")) {
                     val row = mergeMap1(m, b)
-                    coll_m1_g += saveToDB(row)
+//                    coll_m1_g += saveToDB(row)
                     m1_g = m1_g :+ row
                 }
             }
         }
 
-        println(s"7.3 7.4 7.5 生成t1表  $getDate")
-        val coll_panel = _data_connection.getCollection("panel")
+        ID_2_PHAID = get_ID_to_PHAID_map
+
+        //println(s"7.3 7.4 7.5 生成t1表  $getDate")
+//        val coll_panel = _data_connection.getCollection("panel")
         var t1: List[Map[String, Any]] = Nil
-        coll_panel.drop
-        c0.foreach { c =>
-            if (hos0_hosp_name.contains(c("HOSPITAL_CODE"))) {
-                m1_c.foreach { mc =>
-                    if (c("min1") == mc("min1")) {
-                        val row = mergeMap2(c, mc)
-                        coll_panel += saveToDB(row)
-                        t1 = t1 :+ row
-                    }
+//        coll_panel.drop
+
+        c0.filter(x => hos0_hosp_name.contains(x("HOSPITAL_CODE"))).foreach { c =>
+            m1_c.foreach { mc =>
+                if (c("min1").trim == mc("min1").trim) {
+                    val row = mergeMap2(c, mc)
+//                    coll_panel += saveToDB(row)
+                    t1 = t1 :+ row
                 }
             }
         }
-        g0.foreach { g =>
-            if (hos0_hosp_name.contains(g("HOSPITAL_CODE"))) {
-                m1_g.foreach { mg =>
-                    if (g("min1") == mg("min1")) {
-                        val row = mergeMap2(g, mg)
-                        coll_panel += saveToDB(row)
-                        t1 = t1 :+ row
-                    }
+        g0.filter(x => hos0_hosp_name.contains(x("HOSPITAL_CODE"))).foreach { g =>
+            m1_g.foreach { mg =>
+                if (g("min1").trim == mg("min1").trim) {
+                    val row = mergeMap2(g, mg)
+//                    coll_panel += saveToDB(row)
+                    t1 = t1 :+ row
                 }
             }
         }
 
-        val t1_f = t1.filter(_("Sales") != "")
-        val t1_g = t1_f.groupBy( x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
+        val t1_f = t1.filter(_ ("Sales") != "")
+        val t1_g = t1_f.groupBy(x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
         val t1_s = t1_g.map{x =>
             x._2.head ++ Map(
                 "Units" -> x._2.map(_("Units").asInstanceOf[Double]).sum,
@@ -332,8 +345,30 @@ class GeneratePanel extends Actor with ActorLogging{
         t1_s
     }
 
-    def writePanel(out_put: String) = {
-        parser.writeByList(out_put, panel)
+    private def get_ID_to_PHAID_map: Map[String, (String,String)] = {
+        val PHAID_file_local = path + PHAID_file
+        val result = parser.readToList(PHAID_file_local).map{x =>
+            x("Panel ID") -> (x("PHA ID"), x("PHA Hosp name"))
+        }.toMap
+        result
+    }
+
+    def writePanel(out_put_local: String) = {
+        val writeSeq = Map(
+                "ID" -> 0,
+                "Hosp_name" -> 1,
+                "Date" -> 2,
+                "Prod_Name" -> 3,
+                "Prod_CNAME" -> 4,
+                "HOSP_ID" -> 5,
+                "Strength" -> 6,
+                "DOI" -> 7,
+                "DOIE" -> 8,
+                "Units" -> 9,
+                "Sales" -> 10
+        )
+
+        parser.writeByList(out_put_local, panel, writeSeq)
     }
 
     private def getDate = {
@@ -362,6 +397,7 @@ class GeneratePanel extends Actor with ActorLogging{
             tr.get("MONTH") match {
                 case None => false
                 case Some(s) if s == month => true
+                case Some(s) if "0" + s == month => true
                 case _ => false
             }
         }

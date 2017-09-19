@@ -10,7 +10,7 @@ import org.xml.sax.helpers.DefaultHandler
   */
 class phWriteExcelHandle(output_file: String) extends DefaultHandler {
 
-    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1"): List[Map[String, Any]] = {
+    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]): List[Map[String, Any]] = {
         val wb = new XSSFWorkbook()
         val sheet = wb.createSheet(sheetName)
 
@@ -19,18 +19,17 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
         val os = new FileOutputStream(output_file)
         wb.write(os)
         os.close()
-        content
+        Nil
     }
 
-    def writeSheet(content: List[Map[String, Any]], sheet: XSSFSheet) = {
-        writeTitle(content.head.keys.toArray, sheet)
+    def writeSheet(content: List[Map[String, Any]], sheet: XSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
+        writeTitle(content.head.keys.toList, sheet)
 
         var rowNum = 1
-        var cellNum = 0
         content.foreach { row =>
             val rowRef = sheet.createRow(rowNum)
             row.foreach { c =>
-                val cell = rowRef.createCell(cellNum)
+                val cell = rowRef.createCell(cellNumMap(c._1))
                 val a = new String
                 c._2 match {
                     case i:Int => cell.setCellValue(i)
@@ -40,18 +39,18 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
                     case s: String => cell.setCellValue(s)
                     case _ => cell.setCellValue(c._2.asInstanceOf[String])
                 }
-                cellNum += 1
             }
             rowNum += 1
-            cellNum = 0
         }
     }
 
-    def writeTitle(title: Array[String], sheet: XSSFSheet) = {
+    def writeTitle(title: List[String], sheet: XSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
         val row = sheet.createRow(0)
-        for(i <- title.indices) yield {
-            val cell = row.createCell(i)
-            cell.setCellValue(title(i))
+        if(title.diff(cellNumMap.keys.toList) != Nil)
+            throw new Exception("写入Excel时，列关系对应异常")
+        cellNumMap.foreach{x =>
+            val cell = row.createCell(x._2)
+            cell.setCellValue(x._1)
         }
     }
 }

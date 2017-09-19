@@ -119,6 +119,10 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
             try {
                 val idx = Integer.parseInt(lastContents)
                 lastContents = new XSSFRichTextString(sst.getEntryAt(idx)).toString
+                if(lastContents.startsWith("0"))
+                    lastContents = lastContents.tail
+                if(lastContents.startsWith("."))
+                    lastContents = "0" + lastContents
             } catch {
                 case _: Exception => Unit
             }

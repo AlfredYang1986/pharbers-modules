@@ -1,12 +1,12 @@
 package util
 
 import com.pharbers.mongodbConnect._data_connection
+import com.pharbers.pfizer.impl.GeneratePanel
 import com.pharbers.util.excel.phHandleExcelTrait
 import com.pharbers.util.excel.impl.phHandleExcelImpl
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.Map
-import scala.collection.mutable
 
 /**
   * Created by clock on 17-9-7.
@@ -62,34 +62,42 @@ class UtilSuite extends FunSuite {
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
     }
-    test("read excel tTAo db4 => post function") {
-        import phHandleExcelImpl._
-        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
-
-        val setFieldMap = Map(
-            "GYCX反馈通用名" -> "TEST"
-        )
-
-        val setDefaultMap = Map(
-            "TEST" -> "$TA"
-        )
-
-        //新建列
-        implicit val postFun: Map[String,String] => Option[Map[String, String]] = { tr =>
-            Some(tr ++ Map("DOIE" -> tr("TA")))
-        }
-
-        val parser: phHandleExcelTrait = new phHandleExcelImpl
-        parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
-
-        _data_connection.getCollection("test").drop
-    }
+//    test("read excel to db4 => post function") {
+//        import phHandleExcelImpl._
+//        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
+//
+//        val setFieldMap = Map(
+//            "GYCX反馈通用名" -> "TEST"
+//        )
+//
+//        val setDefaultMap = Map(
+//            "TEST" -> "$TA"
+//        )
+//
+//        //新建列
+//        implicit val postFun: Map[String,String] => Option[Map[String, String]] = { tr =>
+//            Some(tr ++ Map("DOIE" -> tr("TA")))
+//        }
+//
+//        val parser: phHandleExcelTrait = new phHandleExcelImpl
+//        parser.readToDB(file_local, "test", 2, fieldArg = setFieldMap, defaultValueArg = setDefaultMap).foreach(println)
+//
+//        _data_connection.getCollection("test").drop
+//    }
 
     test("write excel by List") {
         val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
         val output_file = "/home/clock/Downloads/CPA_GYCX_Others_panel.xlsx"
         val parser: phHandleExcelTrait = new phHandleExcelImpl
         parser.writeByList(output_file, parser.readToList(file_local)).foreach(println)
+    }
+
+    test("write excel by List => specified seq") {
+        val file_local = "/home/clock/Downloads/按辉瑞采购清单中的通用名划分6市场others.xlsx"
+        val output_file = "/home/clock/Downloads/CPA_GYCX_Others_panel.xlsx"
+        val writeSeq = Map("CPA反馈通用名" -> 2, "GYCX反馈通用名" -> 0, "TA" -> 1)
+        val parser: phHandleExcelTrait = new phHandleExcelImpl
+        parser.writeByList(output_file, parser.readToList(file_local), writeSeq).foreach(println)
     }
 
     test("test group by map") {
