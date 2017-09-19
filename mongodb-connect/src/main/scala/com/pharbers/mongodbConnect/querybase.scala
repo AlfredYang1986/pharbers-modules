@@ -8,39 +8,40 @@ package com.pharbers.mongodbConnect
 import com.mongodb.casbah.Imports._
 import com.pharbers.baseModules.PharbersInjectModule
 
-object _data_connection extends PharbersInjectModule {
+trait connection_instance extends PharbersInjectModule {
 
     override val id: String = "mongodb-connect"
     override val configPath: String = "pharbers_config/mongodb_connect.xml"
     override val md = "server_host" :: "server_port" :: "connect_name" :: "connect_pwd" :: "conn_name" :: Nil
 
-	def conn_name : String = config.mc.find(p => p._1 == "conn_name").get._2.toString
+    def conn_name : String = config.mc.find(p => p._1 == "conn_name").get._2.toString
 
-	val addr = new com.mongodb.casbah.Imports.ServerAddress("localhost", 2017)
-//	val credentialsList = MongoCredential.createPlainCredential("dongdamaster", conn_name, "dongda@master".toCharArray)
-//    val _conn = MongoClient(addr) //, List(credentialsList))
-	val _conn = MongoClient()
+    val addr = new com.mongodb.casbah.Imports.ServerAddress("localhost", 2017)
+    //	val credentialsList = MongoCredential.createPlainCredential("dongdamaster", conn_name, "dongda@master".toCharArray)
+    //    val _conn = MongoClient(addr) //, List(credentialsList))
+    val _conn = MongoClient()
 
-	var _conntion : Map[String, MongoCollection] = Map.empty
-	
-	def getCollection(coll_name : String) : MongoCollection = {
-		if (!_conntion.contains(coll_name)) _conntion += (coll_name -> _conn(conn_name)(coll_name))
-		
-		_conntion.get(coll_name).get
-	}
-	
-	def resetCollection(coll_name : String) : Unit = getCollection(coll_name).drop
-	
-	def isExisted(coll_name : String) : Boolean = !(getCollection(coll_name).isEmpty)
-	
-	def releaseConntions = _conntion = Map.empty
+    var _conntion : Map[String, MongoCollection] = Map.empty
+
+    def getCollection(coll_name : String) : MongoCollection = {
+        if (!_conntion.contains(coll_name)) _conntion += (coll_name -> _conn(conn_name)(coll_name))
+
+        _conntion.get(coll_name).get
+    }
+
+    def resetCollection(coll_name : String) : Unit = getCollection(coll_name).drop
+
+    def isExisted(coll_name : String) : Boolean = !(getCollection(coll_name).isEmpty)
+
+    def releaseConntions = _conntion = Map.empty
 }
 
 trait IDatabaseContext {
 	var coll_name : String = null
 
-	protected def openConnection : MongoCollection = 
-	  	_data_connection._conn(_data_connection.conn_name)(coll_name)
+	protected def openConnection(implicit dc : connection_instance) : MongoCollection =
+//	  	_data_connection._conn(_data_connection.conn_name)(coll_name)
+        dc._conn(dc.conn_name)(coll_name)
 	protected def closeConnection = null
 }
 
@@ -78,12 +79,12 @@ class ALINQ[T] {
 
 object from {
 	def apply[T]() : ALINQ[T] = new ALINQ[T]
-	def db() : AMongoDBLINQ = new AMongoDBLINQ
+	def db()(implicit dc : connection_instance) : AMongoDBLINQ = new AMongoDBLINQ(dc)
 
     /**
       * Map reduce
       */
-    def mapReduce(coll : String, m : String, r : String, q : Option[DBObject], out : String) : Boolean = {
+    def mapReduce(coll : String, m : String, r : String, q : Option[DBObject], out : String)(implicit dc : connection_instance) : Boolean = {
 
         val cmd =
         MapReduceCommand(
@@ -96,12 +97,13 @@ object from {
             verbose = true
         )
 
-        val a = _data_connection.getCollection(coll).mapReduce(cmd)
+//        val a = _data_connection.getCollection(coll).mapReduce(cmd)
+        val a = dc.getCollection(coll).mapReduce(cmd)
         true
     }
 }
 
-class AMongoDBLINQ extends IDatabaseContext {
+class AMongoDBLINQ(val dc : connection_instance) extends IDatabaseContext {
 	var w : DBObject = null
   
 	def in(l: String) : AMongoDBLINQ = {
@@ -121,7 +123,7 @@ class AMongoDBLINQ extends IDatabaseContext {
 		this
 	}
 	
-	def select[U](cr: (MongoDBObject) => U) : IQueryable[U] = {
+	def select[U](cr: (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
 	 
 		val mongoColl = openConnection
 		val ct = mongoColl.find(w)
@@ -132,11 +134,11 @@ class AMongoDBLINQ extends IDatabaseContext {
 		nc
 	}
 
-	def contains : Boolean = {
+	def contains(implicit dc : connection_instance) : Boolean = {
 		!(select (x => x).empty)
 	}
 	
-	def selectTop[U](n : Int)(o : String)(cr : (MongoDBObject) => U) : IQueryable[U] = {
+	def selectTop[U](n : Int)(o : String)(cr : (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
 		val mongoColl = openConnection
 		val ct = mongoColl.find(w).sort(MongoDBObject(o -> -1)).limit(n)
 		var nc = new Linq_List[U]
@@ -146,7 +148,7 @@ class AMongoDBLINQ extends IDatabaseContext {
 		nc
 	}
 	
-	def selectSkipTop[U](skip : Int)(take : Int)(o : String)(cr : (MongoDBObject) => U) : IQueryable[U] = {
+	def selectSkipTop[U](skip : Int)(take : Int)(o : String)(cr : (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
 		val mongoColl = openConnection
 		val ct = mongoColl.find(w).sort(MongoDBObject(o -> -1)).skip(skip).limit(take)
 		var nc = new Linq_List[U]
@@ -156,7 +158,7 @@ class AMongoDBLINQ extends IDatabaseContext {
 		nc
 	}
 	
-	def selectSkipTopLoc[U](skip : Int)(take : Int)(cr : (MongoDBObject) => U) : IQueryable[U] = {
+	def selectSkipTopLoc[U](skip : Int)(take : Int)(cr : (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
 		val mongoColl = openConnection
 		val ct = mongoColl.find(w).skip(skip).limit(take)
 		var nc = new Linq_List[U]
@@ -166,7 +168,7 @@ class AMongoDBLINQ extends IDatabaseContext {
 		nc
 	}
 
-	def selectCursor : MongoCursor = openConnection.find(w)
+	def selectCursor(implicit dc : connection_instance) : MongoCursor = openConnection.find(w)
 
     /**
       * TODO: 后期需要优化
@@ -175,9 +177,10 @@ class AMongoDBLINQ extends IDatabaseContext {
         val pipeline = MongoDBList(MongoDBObject("$match" -> w)) ++
                         MongoDBList(MongoDBObject("$group" -> group))
 
-        val a = _data_connection._conn(_data_connection.conn_name)
+//        val a = _data_connection._conn(_data_connection.conn_name)
+        val a = dc._conn(dc.conn_name)
         a.command(MongoDBObject("aggregate" -> coll_name, "pipeline" -> pipeline))
     }
 
-	def count : Int = openConnection.count(w)
+	def count(implicit dc : connection_instance) : Int = openConnection.count(w)
 }
