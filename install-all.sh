@@ -12,8 +12,8 @@ cd errorcode
 mvn clean install
 cd ..
 
-echo "11.installing pharbers-cli-tri"
-cd pharbers-pattern
+echo "11.installing pharbers-cli-triats"
+cd pharbers-cli-traits
 mvn clean install
 cd ..
 

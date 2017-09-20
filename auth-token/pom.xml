@@ -36,7 +36,12 @@
             <groupId>com.pharbers</groupId>
             <artifactId>pharbers-modules</artifactId>
             <version>0.1</version>
-          </dependency>
+	      </dependency>
+	  		<dependency>
+         	<groupId>com.pharbers</groupId>
+         	<artifactId>mongodb-driver</artifactId>
+         	<version>0.1</version>
+        </dependency>
           <dependency>
             <groupId>com.pharbers</groupId>
             <artifactId>encrypt</artifactId>
