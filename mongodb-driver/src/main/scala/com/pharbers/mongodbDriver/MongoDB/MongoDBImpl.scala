@@ -1,12 +1,13 @@
 package com.pharbers.mongodbDriver.MongoDB
 
 import com.pharbers.cliTraits.DBTrait
-import com.pharbers.mongodbConnect.from
+import com.pharbers.mongodbConnect.{connection_instance, from}
 import play.api.libs.json.JsValue
 import com.mongodb.casbah.Imports._
 
 trait MongoDBImpl extends DBTrait {
-    implicit val dc = _data_connection
+    implicit val dc : connection_instance
+    // = _data_connection
 
     override def insertObject(obj : DBObject, db_name : String, primary_key : String) : Unit = {
         val primary = obj.get(primary_key) //.map (x => x).getOrElse(throw new Exception("get primary key error"))
