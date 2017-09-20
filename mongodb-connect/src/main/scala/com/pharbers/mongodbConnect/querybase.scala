@@ -203,4 +203,14 @@ class AMongoDBLINQ(val dc : connection_instance) extends IDatabaseContext {
 		}
 		nc
 	}
+	
+	def selectSort[U](o : String)(cr: (MongoDBObject) => U)(implicit dc: connection_instance) : IQueryable[U] = {
+		val mongoColl = openConnection
+		val ct = mongoColl.find(w).sort(MongoDBObject(o -> 1))
+		var nc = new Linq_List[U]
+		for (i <- ct) {
+			nc = (nc :+ cr(i)).asInstanceOf[Linq_List[U]]
+		}
+		nc
+	}
 }
