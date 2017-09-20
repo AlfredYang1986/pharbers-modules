@@ -1,6 +1,6 @@
 package com.pharbers.mongodbDriver.MongoDB
 
-import com.pharbers.mongodbDriver.DBTrait
+import com.pharbers.cliTraits.DBTrait
 import com.pharbers.mongodbConnect.from
 import play.api.libs.json.JsValue
 import com.mongodb.casbah.Imports._

@@ -40,6 +40,11 @@
           </dependency>
           <dependency>
               <groupId>com.pharbers</groupId>
+              <artifactId>pharbers-cli-traits</artifactId>
+              <version>0.1</version>
+          </dependency>
+          <dependency>
+              <groupId>com.pharbers</groupId>
               <artifactId>mongodb-connect</artifactId>
               <version>0.1</version>
           </dependency>
