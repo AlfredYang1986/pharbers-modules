@@ -12,6 +12,11 @@ cd errorcode
 mvn clean install
 cd ..
 
+echo "11.installing pharbers-cli-tri"
+cd pharbers-pattern
+mvn clean install
+cd ..
+
 echo "3.installing http"
 cd http
 mvn clean install
@@ -29,25 +34,31 @@ cd mongodb-driver
 mvn clean install
 cd ..
 
-echo "6.installing ecrypt"
+echo "6.installing mongodb manager"
+echo "before intall please start mongod instance"
+cd mongodb-manager
+mvn clean install
+cd ..
+
+echo "7.installing ecrypt"
 echo "before intall please start mongod instance"
 cd encrypt
 mvn clean install
 cd ..
 
-echo "7.installing em-xmpp"
+echo "8.installing em-xmpp"
 echo "before intall please start mongod instance"
 cd xmpp-em
 mvn clean install
 cd ..
 
-echo "8.installing auth-token"
+echo "9.installing auth-token"
 echo "before intall please start mongod instance"
 cd auth-token
 mvn clean install
 cd ..
 
-echo "9.installing pharbers-pattern"
+echo "10.installing pharbers-pattern"
 cd pharbers-pattern
 mvn clean install
 cd ..

@@ -1,13 +1,15 @@
 package com.pharbers.encrypt.RSA
 
 import com.pharbers.encrypt.EncryptTrait
-import com.pharbers.mongodbConnect.{_data_connection, from}
+import com.pharbers.mongodbDriver.MongoDB._data_connection
+import com.pharbers.mongodbConnect.from
 import com.mongodb.casbah.Imports._
 
 /**
   * Created by alfredyang on 01/06/2017.
   */
 trait RSAEncryptTrait extends javaEncryptTrait with EncryptTrait {
+      implicit val dc = _data_connection
       lazy val queryKeys : (String, String) = {
 //        (from db() in "encrypt_config" where ("project" -> "Dongda") select (x => x)).toList match {
         (from db() in db_key where ("project" -> project) select (x => x)).toList match {
@@ -25,7 +27,7 @@ trait RSAEncryptTrait extends javaEncryptTrait with EncryptTrait {
                 builder += "private_key" -> pri_key
 
 //                _data_connection.getCollection("encrypt_config") += builder.result
-                _data_connection.getCollection(db_key) += builder.result
+                dc.getCollection(db_key) += builder.result
 
                 (pub_key, pri_key)
             }

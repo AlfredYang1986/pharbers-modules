@@ -3,7 +3,8 @@ package com.pharbers.xmpp.em
 import java.util.Date
 
 import com.pharbers.http._
-import com.pharbers.mongodbConnect.{_data_connection, from}
+import com.pharbers.mongodbConnect.from
+import com.pharbers.mongodbDriver.MongoDB._data_connection
 import com.mongodb.casbah.Imports._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
@@ -30,6 +31,8 @@ case class EMNotification(val app_key : String,
                           val notification_account : String,
                           val notification_password : String,
                           val em_host : String) {
+
+		implicit val dc = _data_connection
 
 	  def getAuthTokenForEM : String = {
   	 
