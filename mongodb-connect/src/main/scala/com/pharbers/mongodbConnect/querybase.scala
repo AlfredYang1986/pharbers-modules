@@ -5,6 +5,7 @@
 
 package com.pharbers.mongodbConnect
 
+import com.mongodb.DBObject
 import com.mongodb.casbah.Imports._
 import com.pharbers.baseModules.PharbersInjectModule
 
@@ -105,6 +106,7 @@ object from {
 
 class AMongoDBLINQ(val dc : connection_instance) extends IDatabaseContext {
 	var w : DBObject = null
+	var w2 : List[DBObject] = List.empty
   
 	def in(l: String) : AMongoDBLINQ = {
 		coll_name = l
@@ -183,4 +185,22 @@ class AMongoDBLINQ(val dc : connection_instance) extends IDatabaseContext {
     }
 
 	def count(implicit dc : connection_instance) : Int = openConnection.count(w)
+	
+	
+	// TODO: 老版本的Client项目与Calc项目中用到以下方法，带新版本成熟后，删除改fun
+	def selectOneByOne[U](o: String)(cr: (MongoDBObject) => U)(implicit dc: connection_instance): MongoCursor = {
+		val mongoColl = openConnection
+		mongoColl.find(w).sort(MongoDBObject(o -> -1))
+	}
+	
+	def selectAggregate[U](cr: (MongoDBObject) => U)(implicit dc: connection_instance) : IQueryable[U] = {
+		val mongoColl = openConnection
+		val aggregationOptions = AggregationOptions(AggregationOptions.CURSOR)
+		val ct = mongoColl.aggregate(w2, aggregationOptions)
+		var nc = new Linq_List[U]
+		for (i <- ct) {
+			nc = (nc :+ cr(i)).asInstanceOf[Linq_List[U]]
+		}
+		nc
+	}
 }
