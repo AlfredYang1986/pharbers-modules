@@ -34,4 +34,8 @@ trait dbInstanceManager extends PharbersInjectModule {
 
     def queryDBInstance(name : String) : Option[DBTrait] =
         connections.find(p => p._1 == name).map (x => Some(x._2)).getOrElse(None)
+
+    def queryDBConnection(name : String) : Option[connection_instance] =
+        connections.find(p => p._1 == name).
+            map (x => Some(x._2.asInstanceOf[MongoDBInstance].dc)).getOrElse(None)
 }
