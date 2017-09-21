@@ -1,7 +1,6 @@
 package com.pharbers.util.excel.impl
 
 import com.mongodb.casbah.commons.MongoDBObject
-import com.pharbers.mongodbConnect._data_connection
 import com.pharbers.util.excel.phHandleExcelTrait
 
 import scala.collection.immutable.Map

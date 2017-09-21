@@ -22,11 +22,11 @@ import scala.concurrent.duration._
 /**
   * Created by clock on 17-9-7.
   */
-class phPfizerHandleImpl(implicit as:ActorSystem) extends phPfizerHandleTrait {
+class phPfizerHandleImpl extends phPfizerHandleTrait {
     override def generatePanelFile(args: Map[String, List[String]]): JsValue = {
         implicit val timeout = Timeout(15 minutes)
 
-        val actor = as.actorOf(GeneratePanel.props)
+        val actor = ActorSystem("phDataParse").actorOf(GeneratePanel.props)
         val future = actor ? StartGeneratePanel(args)
 
         Await.result(future, timeout.duration).asInstanceOf[JsValue]
