@@ -1,12 +1,18 @@
 package com.pharbers.dbManagerTrait
 
 import com.pharbers.baseModules.PharbersInjectModule
+import com.pharbers.cliTraits.DBTrait
 import com.pharbers.moduleConfig.{ConfigDefines, ConfigImpl}
 import com.pharbers.mongodbConnect.connection_instance
+import com.pharbers.mongodbDriver.MongoDB.{MongoDBImpl, _data_connection}
 
 import scala.xml.Node
 
 trait dbInstanceManager extends PharbersInjectModule {
+
+    class MongoDBInstance(tmp : connection_instance) extends MongoDBImpl {
+        override implicit val dc: connection_instance = tmp
+    }
 
     override val id: String = "mongodb-connect-nodes"
     override val configPath: String = "pharbers_config/db_manager.xml"
@@ -21,9 +27,15 @@ trait dbInstanceManager extends PharbersInjectModule {
         )}
     override lazy val config: ConfigImpl = loadConfig(configDir + "/" + configPath)
 
-    lazy val connections : List[(String, connection_instance)] =
-        config.mc.find(p => p._1 == md.head).get._2.asInstanceOf[List[(String, connection_instance)]]
+    lazy val connections : List[(String, DBTrait)] =
+        config.mc.find(p => p._1 == md.head).get._2.
+            asInstanceOf[List[(String, connection_instance)]].
+                map (iter => iter._1 -> new MongoDBInstance(iter._2))
 
-    def queryDBInstance(name : String) : Option[connection_instance] =
+    def queryDBInstance(name : String) : Option[DBTrait] =
         connections.find(p => p._1 == name).map (x => Some(x._2)).getOrElse(None)
+
+    def queryDBConnection(name : String) : Option[connection_instance] =
+        connections.find(p => p._1 == name).
+            map (x => Some(x._2.asInstanceOf[MongoDBInstance].dc)).getOrElse(None)
 }
