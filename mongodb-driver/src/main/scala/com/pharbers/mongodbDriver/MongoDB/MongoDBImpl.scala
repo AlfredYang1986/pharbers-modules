@@ -12,7 +12,7 @@ trait MongoDBImpl extends DBTrait {
     override def insertObject(obj : DBObject, db_name : String, primary_key : String) : Unit = {
         val primary = obj.get(primary_key) //.map (x => x).getOrElse(throw new Exception("get primary key error"))
         (from db() in db_name where (primary_key -> primary) select(x => x)).toList match {
-            case Nil => _data_connection.getCollection(db_name) += obj
+            case Nil => dc.getCollection(db_name) += obj
             case _ => throw new Exception("primary key error")
         }
     }
@@ -20,7 +20,7 @@ trait MongoDBImpl extends DBTrait {
     override def updateObject(obj : DBObject, db_name : String, primary_key : String) : Unit = {
         val primary = obj.get(primary_key) //.map (x => x).getOrElse(throw new Exception("get primary key error"))
         (from db() in db_name where (primary_key -> primary) select(x =>x)).toList match {
-            case head :: Nil => _data_connection.getCollection(db_name).update(head, obj)
+            case head :: Nil => dc.getCollection(db_name).update(head, obj)
             case _ => throw new Exception("primary key error")
         }
     }
@@ -48,14 +48,14 @@ trait MongoDBImpl extends DBTrait {
     override def deleteObject(obj: DBObject, db_name: String, primary_key: String): Unit = {
         val primary = obj.get(primary_key) //.map (x => x).getOrElse(throw new Exception("get primary key error"))
         (from db() in db_name where (primary_key -> primary) select(x =>x)).toList match {
-            case head :: Nil => _data_connection.getCollection(db_name) -= head
+            case head :: Nil => dc.getCollection(db_name) -= head
             case _ => throw new Exception("primary key error")
         }
     }
 
     override def deleteMultiObject(obj: DBObject, db_name: String): Unit = {
         (from db() in db_name where obj select(x =>x)).toList map { iter =>
-            _data_connection.getCollection(db_name) -= iter
+            dc.getCollection(db_name) -= iter
         }
     }
 
