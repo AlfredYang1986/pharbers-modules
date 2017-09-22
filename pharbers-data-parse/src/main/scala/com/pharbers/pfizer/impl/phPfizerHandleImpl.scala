@@ -140,6 +140,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
 
         val panel_local = writePanel(panel)
+        parseMap = parseMap.filter(_._1 == company + user)
 
         toJson(panel_local)
     }
