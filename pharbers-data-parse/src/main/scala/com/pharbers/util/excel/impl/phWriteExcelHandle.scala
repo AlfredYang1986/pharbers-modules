@@ -21,6 +21,8 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
     }
 
     def writeSheet(content: List[Map[String, Any]], sheet: XSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
+        if(content == Nil)
+            throw new Exception("写入的数据为空")
         writeTitle(content.head.keys.toList, sheet)
         for(i <- 1 to content.length){
             val rowRef = sheet.createRow(i)

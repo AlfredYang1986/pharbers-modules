@@ -38,7 +38,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     }
     parseMap += company+user -> (c0,g0)
 
-    def loadCPA(cs: List[String]): List[Map[String,String]] = {
+    private def loadCPA(cs: List[String]): List[Map[String,String]] = {
         val setDefaultMap = getDefault
         val completed = cs.flatMap(c => excelParser.readExcel(ExcelData(c, defaultValueArg = setDefaultMap)))
         val processed = completed.map { x =>
@@ -47,7 +47,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         processed
     }
 
-    def loadGYCX(gs: List[String]): List[Map[String, String]] = {
+    private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
         val setFieldMap = Map(
             "城市" -> "CITY",
             "年" -> "YEAR",
@@ -153,7 +153,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    def load_m1: List[Map[String, String]] ={
+    private def load_m1: List[Map[String, String]] ={
         val m1_file_local = file_config.path + company + file_config.product_vs_ims_file
         val completed = excelParser.readExcel(ExcelData(m1_file_local))
         completed.map{x =>
@@ -161,7 +161,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }.distinct
     }
 
-    def load_hos00: List[Map[String, String]] ={
+    private def load_hos00: List[Map[String, String]] ={
         val hos0_file_local = file_config.path + company + file_config.universe_inf_file
         val setFieldMap = Map(
             "样本医院编码" -> "ID",
@@ -183,12 +183,12 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    def load_b0(market: String) = {
+    private def load_b0(market: String) = {
         val b0_file_local = file_config.path + company + file_config.markets_file
         excelParser.readExcel(ExcelData(b0_file_local,sheetName = market))
     }
 
-    def innerJoin(lst1: List[Map[String, String]],lst2: List[Map[String, String]],
+    private def innerJoin(lst1: List[Map[String, String]],lst2: List[Map[String, String]],
                   nameBylst1: String, nameBylst2: String): List[Map[String, String]] = {
         for(
             r1 <- lst1; r2 <- lst2
@@ -198,14 +198,14 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    def getHospTab(hos00: List[Map[String,String]], market: String) = {
+    private def getHospTab(hos00: List[Map[String,String]], market: String) = {
         val grouped = hos00.filter(_("DOI") == market + " Market").groupBy(_("ID"))
         grouped.flatMap{x =>
             Map(x._1 -> (x._2.head("HOSP_NAME"),x._2.head("HOSP_ID")))
         }
     }
 
-    val mergeMB:Map[String,String] => Map[String,String] = { old =>
+    private val mergeMB:Map[String,String] => Map[String,String] = { old =>
         Map(
             "min1" -> old("min1"),
             "min1_标准" -> old("min1_标准"),
@@ -213,7 +213,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         )
     }
 
-    val mergeMC:(Map[String,String],String,Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
+    private val mergeMC:(Map[String,String],String,Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
         Map(
             "ID" -> old("HOSPITAL_CODE").toLong,
             "Hosp_name" -> hosId(old("HOSPITAL_CODE"))._1,
@@ -229,7 +229,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         )
     }
 
-    def writePanel(content: List[Map[String,Any]]): String = {
+    private def writePanel(content: List[Map[String,Any]]): String = {
         val output_file_local = file_config.path + company + file_config.output + UUID.randomUUID.toString
         val writeSeq = Map(
             "ID" -> 0,
