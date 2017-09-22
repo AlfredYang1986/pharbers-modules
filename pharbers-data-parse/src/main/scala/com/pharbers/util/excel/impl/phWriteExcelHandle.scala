@@ -10,27 +10,22 @@ import org.xml.sax.helpers.DefaultHandler
   */
 class phWriteExcelHandle(output_file: String) extends DefaultHandler {
 
-    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]): List[Map[String, Any]] = {
+    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]): Boolean = {
         val wb = new XSSFWorkbook()
         val sheet = wb.createSheet(sheetName)
-
         writeSheet(content,sheet)
-
         val os = new FileOutputStream(output_file)
         wb.write(os)
         os.close()
-        Nil
+        true
     }
 
     def writeSheet(content: List[Map[String, Any]], sheet: XSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
         writeTitle(content.head.keys.toList, sheet)
-
-        var rowNum = 1
-        content.foreach { row =>
-            val rowRef = sheet.createRow(rowNum)
-            row.foreach { c =>
+        for(i <- 1 to content.length){
+            val rowRef = sheet.createRow(i)
+            content(i-1).foreach { c =>
                 val cell = rowRef.createCell(cellNumMap(c._1))
-                val a = new String
                 c._2 match {
                     case i:Int => cell.setCellValue(i)
                     case l:Long => cell.setCellValue(l)
@@ -40,8 +35,8 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
                     case _ => cell.setCellValue(c._2.asInstanceOf[String])
                 }
             }
-            rowNum += 1
         }
+
     }
 
     def writeTitle(title: List[String], sheet: XSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
@@ -49,8 +44,7 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
         if(title.diff(cellNumMap.keys.toList) != Nil)
             throw new Exception("写入Excel时，列关系对应异常")
         cellNumMap.foreach{x =>
-            val cell = row.createCell(x._2)
-            cell.setCellValue(x._1)
+            row.createCell(x._2).setCellValue(x._1)
         }
     }
 }

@@ -32,8 +32,7 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         count
     }
 
-    def process(sheetId: Int = 1,
-                sheetName: String = "") = {
+    def process(sheetId: Int, sheetName: String = "") = {
         val parser: XMLReader = fetchSheetParser(sst)
 
         val index = if (sheetName != "") {
@@ -73,14 +72,17 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         parser
     }
 
+
     private var phIsOpen = false
 
     private var ref: String = ""
+    private var lastContents = ""
+
     private var phNextIsNull = false
+    private var nextIsTitle = true
     private var phNextIsString = false
     private var phNextIsNumber = false
 
-    private var lastContents = ""
 
     override def startElement(uri: String, localName: String, name: String, attr: Attributes) = {
         if ("inlineStr".equals(name) || "v".equals(name)) {
@@ -110,7 +112,6 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     protected var titleMap: Map[String,String] = Map()
     protected var rowMap: Map[String,String] = Map()
 
-    private var nextIsTitle = true
 
     override def endElement(uri: String, localName: String, name: String) = {
         // 根据SST的索引值的到单元格的真正要存储的字符串
@@ -119,10 +120,8 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
             try {
                 val idx = Integer.parseInt(lastContents)
                 lastContents = new XSSFRichTextString(sst.getEntryAt(idx)).toString
-                if(lastContents.startsWith("0"))
+                if(lastContents.startsWith("0") && !lastContents.startsWith("0."))
                     lastContents = lastContents.tail
-                if(lastContents.startsWith("."))
-                    lastContents = "0" + lastContents
             } catch {
                 case _: Exception => Unit
             }
@@ -141,7 +140,7 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
                 titleMap = replaceFiledFun(titleMap)
                 ref = null
             }
-            case "row" if rowMap != Nil => {// 如果标签名称为 row ，这说明已到行尾
+            case "row" if rowMap != Nil => {
                 if(titleMap.size - rowMap.size > 0)
                     completionRowMap
                 processFun() match {
@@ -156,31 +155,25 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
     }
 
     override def characters(ch: Array[Char], start: Int, length: Int) = {
-        if(phIsOpen)
-            lastContents += new String(ch, start, length)
+        if(phIsOpen) lastContents += new String(ch, start, length)
     }
 
     protected def processFun(): Option[Map[String,String]] = {
-        Some(
-            titleMap.keys.map{t =>
-                (titleMap(t),rowMap(t))
-            }.toMap
-        )
+        Some(titleMap.keys.map{x => (titleMap(x),rowMap(x))}.toMap)
     }
 
     protected val fieldMap: Map[String, String] = Map()
     private def replaceFiledFun(old: Map[String,String]): Map[String, String] = {
-        old.map{x =>
-            (x._1, fieldMap.getOrElse(x._2,x._2))
-        }
+        old.map{ x => (x._1, fieldMap.getOrElse(x._2,x._2)) }
     }
 
     protected val defaultValueMap: Map[String, String] = Map()
     protected def getDefaultValue(cell: String, tr: Map[String,String]): String = {
         def getValue(targetCell: String): String = {
             tr.get(targetCell) match {
-                case None => ""
+                case Some(s) if s == "" => getDefaultValue(targetCell, tr)
                 case Some(s) => s
+                case None => ""
             }
         }
         defaultValueMap.get(cell) match {

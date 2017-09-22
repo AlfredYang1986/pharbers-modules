@@ -9,5 +9,6 @@ import scala.collection.immutable.Map
   * Created by clock on 17-9-7.
   */
 trait phPfizerHandleTrait extends phDataHandle{
-    def generatePanelFile(args: Map[String, List[String]]): JsValue
+    def calcYM: JsValue
+    def generatePanelFile(ym: String): JsValue
 }
