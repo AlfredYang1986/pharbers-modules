@@ -11,7 +11,6 @@ sealed trait EmChatTrait extends InstantMessageTrait {
 	protected val msgContentObj: MsgContent
 	protected val imConf: InstantMessageInfo = queryMessageInstance("im").asInstanceOf[InstantMessageInfo]
 	
-	//	var access: Map[String, Any] = Map.empty
 	override def sendMsg(msg: String): String = {
 		val reVal = msgObj.msg(msgContentObj.msg(msg))
 		invokeEasemobAPI(reVal)
@@ -73,8 +72,4 @@ case class EmChatMsg() extends EmChatTrait {
 		msgObj.setExt(ext)
 		this
 	}
-}
-
-object fuck extends App {
-	EmChatMsg().sendFromUser("project").sendTargetUser("test" :: Nil).sendTargetType("users").sendMsgContentType().sendMsgExt(Map("进度条" -> "10")).sendMsg("fuck")
 }

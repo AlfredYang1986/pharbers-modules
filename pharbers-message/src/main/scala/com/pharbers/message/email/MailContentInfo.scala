@@ -14,8 +14,8 @@ trait MailContentInfo extends MessageTrait {
 	lazy val pwd: String = config.mc.find(_._1 == "pwd").map(_._2.toString).getOrElse("")
 	lazy val port: Int = config.mc.find(_._1 == "port").map(_._2.toString.toInt).getOrElse(0)
 	lazy val host: String = config.mc.find(_._1 == "host").map(_._2.toString).getOrElse("")
-	lazy val tls: Boolean = config.mc.find(_._1 == "tls").map(_._2.toString.toBoolean).getOrElse(throw new Exception("email tls not data"))
-	lazy val ssl: Boolean = config.mc.find(_._1 == "ssl").map(_._2.toString.toBoolean).getOrElse(throw new Exception("email ssl not data"))
+	lazy val tls: Boolean = config.mc.find(_._1 == "tls").map(_._2.toString.toBoolean).getOrElse(false)
+	lazy val ssl: Boolean = config.mc.find(_._1 == "ssl").map(_._2.toString.toBoolean).getOrElse(false)
 	lazy val theme: String = config.mc.find(_._1 == "theme").map(_._2.toString).getOrElse("")
 	lazy val context: String = config.mc.find(_._1 == "context").map(_._2.toString).getOrElse("")
 	override def toString: String =
