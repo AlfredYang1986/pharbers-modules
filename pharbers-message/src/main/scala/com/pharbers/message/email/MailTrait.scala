@@ -22,9 +22,10 @@ trait BaseTrait extends MessageTrait {
 	}
 }
 
-trait MailTrait extends BaseTrait{
+sealed class MailTrait(addr: String) extends BaseTrait{
+	var email: Option[Email] = None
 	val mailConf: MailContentInfo = queryMessageInstance("email").asInstanceOf[MailContentInfo]
-	val email: Option[Email] = None
+	val address: String = addr
 	def setSubTheme(sub: String): MailTrait = {
 		email.get.setSubject(sub)
 		this
@@ -33,7 +34,7 @@ trait MailTrait extends BaseTrait{
 		email.get.setMsg(cont)
 		this
 	}
-	def sendToEmail(address: String): String = {
+	def sendToEmail: String = {
 		email.get.setHostName(mailConf.host)
 		email.get.setSSLOnConnect(mailConf.ssl)
 		email.get.setAuthentication(mailConf.from, mailConf.pwd)
@@ -44,15 +45,4 @@ trait MailTrait extends BaseTrait{
 		email.get.send()
 	}
 	
-	def sendTextMail = TextMail()
-	
-	def sendHtmlMail = HtmlMail()
-}
-
-protected case class TextMail() extends MailTrait {
-	override val email: Option[Email] = Some(new SimpleEmail)
-}
-
-protected case class HtmlMail() extends MailTrait {
-	override val email: Option[HtmlEmail] = Some(new HtmlEmail)
 }
