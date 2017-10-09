@@ -22,52 +22,37 @@ trait BaseTrait extends MessageTrait {
 	}
 }
 
-sealed trait MailTrait[T] extends BaseTrait{
+trait MailTrait extends BaseTrait{
 	val mailConf: MailContentInfo = queryMessageInstance("email").asInstanceOf[MailContentInfo]
-	val email: Email
-	def setSubTheme(sub: String): T
-	def setContext(cont: String): T
+	val email: Option[Email] = None
+	def setSubTheme(sub: String): MailTrait = {
+		email.get.setSubject(sub)
+		this
+	}
+	def setContext(cont: String): MailTrait = {
+		email.get.setMsg(cont)
+		this
+	}
 	def sendToEmail(address: String): String = {
-		email.setHostName(mailConf.host)
-		email.setSSLOnConnect(mailConf.ssl)
-		email.setAuthentication(mailConf.from, mailConf.pwd)
-		email.setSmtpPort(mailConf.port)
-		email.setFrom(mailConf.from)
-		email.addTo(address)
-		email.setCharset("UTF-8")
-		email.send()
-	}
-}
-
-case class Mail() {
-	def textMail = TextMail()
-	def htmlMail = HtmlMail()
-}
-
-protected case class TextMail() extends MailTrait[TextMail] {
-	override val email: Email = new SimpleEmail
-	
-	override def setContext(cont: String = mailConf.context): TextMail = {
-		email.setMsg(cont)
-		this
-	}
-
-	override def setSubTheme(sub: String = mailConf.theme): TextMail = {
-		email.setSubject(sub)
-		this
-	}
-}
-
-protected case class HtmlMail() extends MailTrait[HtmlMail] {
-	override val email: HtmlEmail = new HtmlEmail
-	
-	override def setContext(cont: String): HtmlMail = {
-		email.setHtmlMsg(cont)
-		this
+		email.get.setHostName(mailConf.host)
+		email.get.setSSLOnConnect(mailConf.ssl)
+		email.get.setAuthentication(mailConf.from, mailConf.pwd)
+		email.get.setSmtpPort(mailConf.port)
+		email.get.setFrom(mailConf.from)
+		email.get.addTo(address)
+		email.get.setCharset("UTF-8")
+		email.get.send()
 	}
 	
-	override def setSubTheme(sub: String = mailConf.theme): HtmlMail = {
-		email.setSubject(sub)
-		this
-	}
+	def sendTextMail = TextMail()
+	
+	def sendHtmlMail = HtmlMail()
+}
+
+protected case class TextMail() extends MailTrait {
+	override val email: Option[Email] = Some(new SimpleEmail)
+}
+
+protected case class HtmlMail() extends MailTrait {
+	override val email: Option[HtmlEmail] = Some(new HtmlEmail)
 }
