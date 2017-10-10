@@ -63,4 +63,9 @@ cd pharbers-pattern
 mvn clean install
 cd ..
 
+echo "11.installing pharbers-data-parse"
+cd pharbers-data-parse
+mvn clean install
+cd ..
+
 echo "finish, have fun"
