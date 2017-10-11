@@ -17,4 +17,12 @@ object Sercurity {
 		}.toList
 	}
 	
+	def getTimeSpanWithPastMinutes(minutes: Int): List[String] = {
+		 minutes - 1 match {
+			case n if n < 0 => throw new Exception("time bound error")
+			case n =>
+				val m = new Date().getTime / (1000 * 60)
+				(0 to n).map { tmp =>String.valueOf(Math.floor(m - tmp))}.toList
+		}
+	}
 }

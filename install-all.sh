@@ -68,4 +68,8 @@ cd pharbers-message
 mvn clean install
 cd ..
 
+echo "12.installing pharbers-sercurity"
+cd pharbers-sercurity
+mvn clean install
+cd ..
 echo "finish, have fun"
