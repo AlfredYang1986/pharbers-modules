@@ -63,13 +63,19 @@ cd pharbers-pattern
 mvn clean install
 cd ..
 
-echo "11.installing pharbers-message"
+echo "11.installing pharbers-data-parse"
+cd pharbers-data-parse
+mvn clean install
+cd ..
+
+echo "12.installing pharbers-message"
 cd pharbers-message
 mvn clean install
 cd ..
 
-echo "12.installing pharbers-sercurity"
+echo "13.installing pharbers-sercurity"
 cd pharbers-sercurity
 mvn clean install
 cd ..
+
 echo "finish, have fun"
