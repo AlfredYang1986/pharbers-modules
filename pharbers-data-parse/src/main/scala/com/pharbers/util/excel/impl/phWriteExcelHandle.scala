@@ -2,8 +2,8 @@ package com.pharbers.util.excel.impl
 
 import java.io.FileOutputStream
 
-import org.apache.poi.xssf.streaming.{SXSSFSheet, SXSSFWorkbook}
-import org.apache.poi.xssf.usermodel.{XSSFSheet, XSSFWorkbook}
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.xml.sax.helpers.DefaultHandler
 
 /**
@@ -20,11 +20,10 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
         wb.write(os)
         os.flush()
         os.close()
-        wb.close()
         true
     }
 
-    def writeSheet(content: List[Map[String, Any]], sheet: SXSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
+    def writeSheet(content: List[Map[String, Any]], sheet: Sheet)(implicit cellNumMap: Map[String, Int]) = {
         if(content == Nil)
             throw new Exception("写入的数据为空")
         writeTitle(content.head.keys.toList, sheet)
@@ -45,7 +44,7 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
 
     }
 
-    def writeTitle(title: List[String], sheet: SXSSFSheet)(implicit cellNumMap: Map[String, Int]) = {
+    def writeTitle(title: List[String], sheet: Sheet)(implicit cellNumMap: Map[String, Int]) = {
         val row = sheet.createRow(0)
         if(title.diff(cellNumMap.keys.toList) != Nil)
             throw new Exception("写入Excel时，列关系对应异常")

@@ -2,7 +2,6 @@ package com.pharbers.pfizer.impl
 
 import java.util.UUID
 
-import com.pharbers.pfizer.impl.parseData.parseMap
 import com.pharbers.pfizer.{panel_file_path, phPfizerHandleTrait}
 import com.pharbers.util.excel.impl.phHandleExcelImpl
 import com.pharbers.util.excel.impl.phHandleExcelImpl._
@@ -14,9 +13,11 @@ import play.api.libs.json.Json.toJson
 /**
   * Created by clock on 17-9-7.
   */
-object parseData{
-    var parseMap: Map[String, (List[Map[String,String]], List[Map[String,String]])] = Map()
-}
+//object parseData{
+//    //花里胡哨先去掉，本想留作缓存，保留计算年月时处理读入的CPA和GYCX的数据的，但是可能用户计算完年月，不生成panel
+//    //这就会使内存无限变大，划不来，而且测试的时候，可能出现同一账号请求生成多次panel，不符合逻辑，所以先注释掉
+//    var parseMap: Map[String, (List[Map[String,String]], List[Map[String,String]])] = Map()
+//}
 
 class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandleTrait {
     private val file_config = panel_file_path()
@@ -26,17 +27,22 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     private val company = args.getOrElse("company", throw new Exception("no find company arg")).head
     private val user = args.getOrElse("user", throw new Exception("no find user arg")).head
 
-    private val c0 = parseMap.get(company+user) match {
-        case Some((c: List[Map[String,String]], _)) if c == Nil => loadCPA(cpas)
-        case Some((c: List[Map[String,String]], _)) => c
-        case None => loadCPA(cpas)
-    }
-    private val g0 = parseMap.get(company+user) match {
-        case Some((_, g: List[Map[String,String]])) if g == Nil => loadGYCX(gycxs)
-        case Some((_, g: List[Map[String,String]])) => g
-        case None => loadGYCX(gycxs)
-    }
-    parseMap += company+user -> (c0,g0)
+    private val c0 = loadCPA(cpas)
+//        parseMap.get(company+user) match {
+//        case Some((c: List[Map[String,String]], _)) if c == Nil => loadCPA(cpas)
+//        case Some((c: List[Map[String,String]], _)) => c
+//        case None => loadCPA(cpas)
+//    }
+    private val g0 = loadGYCX(gycxs)
+//        parseMap.get(company+user) match {
+//        case Some((_, g: List[Map[String,String]])) if g == Nil => loadGYCX(gycxs)
+//        case Some((_, g: List[Map[String,String]])) => g
+//        case None => loadGYCX(gycxs)
+//    }
+
+//    this.synchronized {
+//        parseMap += company+user -> (c0,g0)
+//    }
 
     private def loadCPA(cs: List[String]): List[Map[String,String]] = {
         val setDefaultMap = getDefault
@@ -140,7 +146,9 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
 
         val panel_local = writePanel(panel)
-        parseMap = parseMap.filter(_._1 == company + user)
+//        this.synchronized {
+//            parseMap = parseMap.filterNot(_._1 == company + user)
+//        }
 
         toJson(panel_local)
     }
