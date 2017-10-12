@@ -31,7 +31,8 @@ sealed class MailTrait(addr: String) extends BaseTrait{
 		this
 	}
 	def setContext(cont: String): MailTrait = {
-		email.get.setMsg(cont)
+		if(email.get.isInstanceOf[HtmlEmail]) email.get.asInstanceOf[HtmlEmail].setHtmlMsg(cont)
+		else email.get.setMsg(cont)
 		this
 	}
 	def sendToEmail: String = {
