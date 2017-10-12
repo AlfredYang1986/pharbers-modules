@@ -3,6 +3,7 @@ package com.pharbers.pfizer.impl
 import java.util.UUID
 
 import com.pharbers.pfizer.{panel_file_path, phPfizerHandleTrait}
+import com.pharbers.util.csv.impl.phHandleCsvImpl
 import com.pharbers.util.excel.impl.phHandleExcelImpl
 import com.pharbers.util.excel.impl.phHandleExcelImpl._
 
@@ -240,21 +241,9 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
 
     private def writePanel(content: List[Map[String,Any]]): String = {
         val output_file_local = file_config.path + company + file_config.output + UUID.randomUUID.toString
-        val writeSeq = Map(
-            "ID" -> 0,
-            "Hosp_name" -> 1,
-            "Date" -> 2,
-            "Prod_Name" -> 3,
-            "Prod_CNAME" -> 4,
-            "HOSP_ID" -> 5,
-            "Strength" -> 6,
-            "DOI" -> 7,
-            "DOIE" -> 8,
-            "Units" -> 9,
-            "Sales" -> 10
-        )
-
-        excelParser.writeByList(content, output_file_local, "Sheet1", writeSeq)
+        val writeSeq = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
+                "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
+        phHandleCsvImpl().writeByList(content, output_file_local, writeSeq)
         output_file_local
     }
 }

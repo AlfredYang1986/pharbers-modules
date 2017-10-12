@@ -3,7 +3,7 @@ package com.pharbers.util.excel.impl
 import java.io.FileOutputStream
 
 import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.xssf.streaming.SXSSFWorkbook
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.xml.sax.helpers.DefaultHandler
 
 /**
@@ -12,13 +12,12 @@ import org.xml.sax.helpers.DefaultHandler
 class phWriteExcelHandle(output_file: String) extends DefaultHandler {
 
     def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]): Boolean = {
-        val wb = new SXSSFWorkbook(1000)//缓存
-        wb.setCompressTempFiles(true)
-        val sheet = wb.createSheet(sheetName)
+        val wb = new XSSFWorkbook()
+        val sheet = wb.createSheet()
+        wb.setSheetName(0,sheetName)
         writeSheet(content,sheet)
         val os = new FileOutputStream(output_file)
         wb.write(os)
-        os.flush()
         os.close()
         true
     }
