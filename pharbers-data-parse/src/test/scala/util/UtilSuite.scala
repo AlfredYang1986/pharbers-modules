@@ -3,6 +3,7 @@
 //import java.util.UUID
 //
 //import com.pharbers.pfizer.panel_file_path
+//import com.pharbers.util.csv.impl.phHandleCsvImpl
 //import com.pharbers.util.excel.impl.phHandleExcelImpl
 //import com.pharbers.util.excel.impl.phHandleExcelImpl._
 //import org.scalatest.FunSuite
@@ -19,7 +20,8 @@
 //    }
 //
 //    test("read excel => simple") {
-//        val file_local = test_local.path + "generatePanel" + test_local.markets_file
+////        val file_local = test_local.path + "generatePanel" + test_local.markets_file
+//        val file_local = "/home/clock/workSpace/blackMirror/pharbers_max/calc/config/FileBase/fea9f203d4f593a96f0d6faa91ba24ba/Output/a.xlsx"
 //        phHandleExcelImpl().readExcel(ExcelData(file_local)).foreach(println)
 //    }
 //    test("read excel => specified sheet and filter") {
@@ -56,9 +58,8 @@
 //    test("write excel by List") {
 //        val file_local = test_local.path + "generatePanel" + test_local.markets_file
 //        val output_file = test_local.path + "generatePanel" + test_local.output + UUID.randomUUID.toString
-//        val writeSeq = Map("CPA反馈通用名" -> 2, "GYCX反馈通用名" -> 0, "TA" -> 1)
 //        val parse = phHandleExcelImpl()
-//        Console println parse.writeByList(parse.readExcel(ExcelData(file_local)),output_file,"Test",writeSeq)
+//        Console println phHandleCsvImpl().writeByList(parse.readExcel(ExcelData(file_local)),output_file)
 //    }
 //
 //    test("test group by map") {
@@ -72,7 +73,7 @@
 //        val temp2 = temp.map{x =>
 //            x._2.head ++ Map("c" -> x._2.map(_("c").asInstanceOf[Int]).sum)
 //        }
-//        println(temp)
+//        println(temp2)
 //    }
 //
 //    test("test strange data") {

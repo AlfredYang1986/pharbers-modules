@@ -28,8 +28,11 @@
 //    }
 //
 //    test("generate panel file") {
+//        val dateformat1 = new SimpleDateFormat("MM-dd HH:mm:ss")
+//        println(s"生成panel测试开始时间" + dateformat1.format(new Date()))
 //        val result = new phPfizerHandleImpl(args).generatePanelFile("201705")
 //        println(result)
+//        println(s"生成panel测试结束时间" + dateformat1.format(new Date()))
 //    }
 //
 //    test("Pressure test => 50") {
