@@ -13,8 +13,8 @@
 //  * Created by clock on 17-9-7.
 //  */
 //class PfizerSuite extends FunSuite {
-//    val gycx_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx"
-//    val cpa_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx"
+//    val cpa_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/test.xlsx"
+//    val gycx_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/test2.xlsx"
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("generatePanel"),
 //        "user" -> List("user"),
@@ -23,14 +23,18 @@
 //    )
 //
 //    test("calc ym") {
-//        val result = new phPfizerHandleImpl(args).calcYM
+//        val data_parse = new phPfizerHandleImpl(args)
+//        val yms = data_parse.calcYM.asInstanceOf[JsString].value
+//        println(yms)
+//        val lst = yms.split("#").toList
+//        val result = data_parse.getPanelFile(lst)
 //        println(result)
 //    }
 //
 //    test("generate panel file") {
 //        val dateformat1 = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"生成panel测试开始时间" + dateformat1.format(new Date()))
-//        val result = new phPfizerHandleImpl(args).generatePanelFile("201705")
+//        val result = new phPfizerHandleImpl(args).getPanelFile("201705" :: Nil)
 //        println(result)
 //        println(s"生成panel测试结束时间" + dateformat1.format(new Date()))
 //    }
@@ -51,7 +55,7 @@
 //            )
 //            val parse = new phPfizerHandleImpl(args)
 //            val ym = parse.calcYM.asInstanceOf[JsString].value
-//            val result = parse.generatePanelFile(ym)
+//            val result = parse.getPanelFile(ym :: Nil)
 //            println(s"第$i 个完成结果$result")
 //        }
 //

@@ -10,5 +10,5 @@ import scala.collection.immutable.Map
   */
 trait phPfizerHandleTrait extends phDataHandle{
     def calcYM: JsValue
-    def generatePanelFile(ym: String): JsValue
+    def getPanelFile(ym: List[String]): JsValue
 }

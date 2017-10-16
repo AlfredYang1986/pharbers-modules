@@ -14,11 +14,13 @@ import play.api.libs.json.Json.toJson
 /**
   * Created by clock on 17-9-7.
   */
-//object parseData{
-//    //花里胡哨先去掉，本想留作缓存，保留计算年月时处理读入的CPA和GYCX的数据的，但是可能用户计算完年月，不生成panel
-//    //这就会使内存无限变大，划不来，而且测试的时候，可能出现同一账号请求生成多次panel，不符合逻辑，所以先注释掉
+object parseData{
+    //花里胡哨先去掉，本想留作缓存，保留计算年月时处理读入的CPA和GYCX的数据的，但是可能用户计算完年月，不生成panel
+    //这就会使内存无限变大，划不来，而且测试的时候，可能出现同一账号请求生成多次panel，不符合逻辑，所以先注释掉
 //    var parseMap: Map[String, (List[Map[String,String]], List[Map[String,String]])] = Map()
-//}
+    //新东西，这个吊，而且内存占得少
+    var panelMap: Map[String,Map[String, Map[String,String]]] = Map()
+}
 
 class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandleTrait {
     private val file_config = panel_file_path()
@@ -27,31 +29,38 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     private val gycxs = args.getOrElse("gycxs", throw new Exception("no find GYCXs arg"))
     private val company = args.getOrElse("company", throw new Exception("no find company arg")).head
     private val user = args.getOrElse("user", throw new Exception("no find user arg")).head
+    private val markets = file_config.makets.split(",").toList
 
-    private val c0 = loadCPA(cpas)
-//        parseMap.get(company+user) match {
-//        case Some((c: List[Map[String,String]], _)) if c == Nil => loadCPA(cpas)
-//        case Some((c: List[Map[String,String]], _)) => c
-//        case None => loadCPA(cpas)
-//    }
-    private val g0 = loadGYCX(gycxs)
-//        parseMap.get(company+user) match {
-//        case Some((_, g: List[Map[String,String]])) if g == Nil => loadGYCX(gycxs)
-//        case Some((_, g: List[Map[String,String]])) => g
-//        case None => loadGYCX(gycxs)
-//    }
+    override def calcYM: JsValue = {
+        val c0 = loadCPA(cpas)
+        val g0 = loadGYCX(gycxs)
+        implicit val arg = Map("c0" -> c0, "g0" -> g0, "m1" -> load_m1, "hos00" -> load_hos00)
 
-//    this.synchronized {
-//        parseMap += company+user -> (c0,g0)
-//    }
+        val filtered_c0 = distinctYM(c0)
+        val filtered_g0 = distinctYM(g0)
+
+        val resultYM = for( c <- filtered_c0; g <- filtered_g0
+                            if c._1 == g._1 ) yield {
+            (c._1, c._2 + g._2)
+        }
+
+        resultYM.foreach{x =>
+            generatePanelFile(x._1)
+        }
+
+        resultYM.size match {
+            case 0 => toJson("0")
+            case 1 => toJson(resultYM.head._1)
+            case _ => toJson(resultYM.keys.toList.mkString("#"))
+        }
+    }
 
     private def loadCPA(cs: List[String]): List[Map[String,String]] = {
         val setDefaultMap = getDefault
-        val completed = cs.flatMap(c => excelParser.readExcel(ExcelData(c, defaultValueArg = setDefaultMap)))
-        val processed = completed.map { x =>
-            x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
-        }
-        processed
+        cs.flatMap(c => excelParser.readExcel(ExcelData(c, defaultValueArg = setDefaultMap)))
+                .map { x =>
+                    x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
+                }
     }
 
     private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
@@ -71,11 +80,10 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
             "生产企业" -> "CORP_NAME"
         )
         val setDefaultMap = getDefault
-        val completed = gs.flatMap(g => excelParser.readExcel(ExcelData(g, defaultValueArg = setDefaultMap, fieldArg = setFieldMap)))
-        val processed = completed.map { x =>
-            x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
-        }
-        processed
+        gs.flatMap(g => excelParser.readExcel(ExcelData(g, defaultValueArg = setDefaultMap, fieldArg = setFieldMap)))
+                .map { x =>
+                    x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
+                }
     }
 
     private def getMonth(m: String): String = {
@@ -91,41 +99,23 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         "STANDARD_UNIT" -> "0"
     )
 
-    override def calcYM: JsValue = {
-        val filtered_c0 = distinctYM(c0)
-        val filtered_g0 = distinctYM(g0)
-
-        val result = for(
-                    c <- filtered_g0;
-                    g <- filtered_c0
-                    if c._1 == g._1 ) yield {
-                (c._1,c._2 + g._2)
-        }
-
-        result.size match {
-            case 0 => toJson("0")
-            case 1 => toJson(result.head._1)
-            case _ => toJson(result.keys.toList.mkString("#"))
-        }
-    }
-
     private def distinctYM(lst: List[Map[String, String]]): Map[String, Int] ={
         val grouped = lst.groupBy(_("YM")).map{c =>
             c._1 -> c._2.map(r => "HOSPITAL_CODE" -> r("HOSPITAL_CODE")).distinct.length
         }
 
         val maxYM = grouped.maxBy(x => x._2)
-        val filtered = grouped.filter(_._2 > maxYM._2/2)
-        filtered
+        grouped.filter(_._2 > maxYM._2/2)
     }
 
-    override def generatePanelFile(ym: String): JsValue = {
+    private def generatePanelFile(ym: String)(implicit arg: Map[String,List[Map[String,String]]]) = {
+        val c0 = arg.getOrElse("c0", throw new Exception("参数错误"))
+        val g0 = arg.getOrElse("g0", throw new Exception("参数错误"))
+        val m1 = arg.getOrElse("m1", throw new Exception("参数错误"))
+        val hos00 = arg.getOrElse("hos00", throw new Exception("参数错误"))
         val filter_ym_c0 = filterSource(c0,ym)
         val filter_ym_g0 = filterSource(g0,ym)
-        val m1 = load_m1
-        val hos00 = load_hos00
-        val markets = List("INF")
-        val panel = markets.flatMap{ market =>
+        markets.foreach{ market =>
             val b0 = load_b0(market)
             val m1_c = innerJoin(b0,m1,"CPA反馈通用名","通用名").map(mergeMB(_))
             val m1_g = innerJoin(b0,m1,"GYCX反馈通用名","通用名").map(mergeMB(_))
@@ -137,21 +127,22 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
             val g = innerJoin(m1_g,filter_hosp_g0,"min1","min1").map(mergeMC(_,market,hosp_tab))
             val t1_filter_group = (c ++ g).filter(_("Sales") != "")
                             .groupBy(x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
-            val t1 = t1_filter_group.map { x =>
+            val panel = t1_filter_group.map { x =>
                 x._2.head ++ Map(
                     "Units" -> x._2.map(_ ("Units").asInstanceOf[Double]).sum,
                     "Sales" -> x._2.map(_ ("Sales").asInstanceOf[Double]).sum
                 )
+            }.toList
+
+            val panel_local = writePanel(panel)
+
+            this.synchronized {
+                val ucData = parseData.panelMap.get(company + user).getOrElse(Map())
+                val mktData = ucData.get(ym).getOrElse(Map()) ++ Map(market -> panel_local)
+
+                parseData.panelMap += company + user -> (ucData ++ Map(ym -> mktData))
             }
-            t1
         }
-
-        val panel_local = writePanel(panel)
-//        this.synchronized {
-//            parseMap = parseMap.filterNot(_._1 == company + user)
-//        }
-
-        toJson(panel_local)
     }
 
     private def filterSource(lst: List[Map[String, String]],ym: String): List[Map[String, String]] ={
@@ -186,11 +177,11 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                 case _ => false
             }
         }
-        val completed = excelParser.readExcel(ExcelData(hos0_file_local,fieldArg = setFieldMap))
-        val filtered = completed.filter(filter)
-        filtered.map{x =>
-            x ++ Map("DOIE" -> x("DOI"))
-        }
+        excelParser.readExcel(ExcelData(hos0_file_local, fieldArg = setFieldMap))
+                .filter(filter)
+                .map { x =>
+                    x ++ Map("DOIE" -> x("DOI"))
+                }
     }
 
     private def load_b0(market: String) = {
@@ -245,5 +236,13 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                 "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
         phHandleCsvImpl().writeByList(content, output_file_local, writeSeq)
         output_file_local
+    }
+
+    override def getPanelFile(ym: List[String]): JsValue = {
+        val ucData = this.synchronized {
+            parseData.panelMap.get(company + user).getOrElse(Map())
+        }
+
+        toJson(ym.map(x => Map(x -> ucData(x))))
     }
 }
