@@ -1,5 +1,5 @@
-# pharbers_data_parse_modules
-pharbers data parse project
+# pharbers_memory
+pharbers memory manage project
 
 ## 版本要求
 - Java 版本大于 1.7
@@ -7,4 +7,4 @@ pharbers data parse project
 - Akka 版本为 2.4.16
 
 ## 主要功能
-对辉瑞数据进行解析并生成Panel文件
+内存管理

@@ -242,7 +242,6 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         val ucData = this.synchronized {
             parseData.panelMap.get(company + user).getOrElse(Map())
         }
-
-        toJson(ym.map(x => Map(x -> ucData(x))))
+        toJson(ym.map(x => (x, ucData(x))).toMap)
     }
 }

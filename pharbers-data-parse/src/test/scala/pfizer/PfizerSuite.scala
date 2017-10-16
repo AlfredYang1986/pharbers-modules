@@ -5,7 +5,7 @@
 //
 //import com.pharbers.pfizer.impl.phPfizerHandleImpl
 //import org.scalatest.FunSuite
-//import play.api.libs.json.JsString
+//import play.api.libs.json.{JsObject, JsString, JsValue}
 //
 //import scala.collection.immutable.Map
 //
@@ -13,8 +13,8 @@
 //  * Created by clock on 17-9-7.
 //  */
 //class PfizerSuite extends FunSuite {
-//    val cpa_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/test.xlsx"
-//    val gycx_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/test2.xlsx"
+//    val cpa_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx"//test.xlsx"//
+//    val gycx_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx"//test2.xlsx"//
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("generatePanel"),
 //        "user" -> List("user"),
@@ -26,9 +26,14 @@
 //        val data_parse = new phPfizerHandleImpl(args)
 //        val yms = data_parse.calcYM.asInstanceOf[JsString].value
 //        println(yms)
+//
 //        val lst = yms.split("#").toList
 //        val result = data_parse.getPanelFile(lst)
-//        println(result)
+//
+//        val panelLst = result.as[Map[String, Map[String, JsValue]]]
+//            .values.flatMap(_.values).map(_.as[String])
+//
+//        panelLst.foreach(println)
 //    }
 //
 //    test("generate panel file") {
