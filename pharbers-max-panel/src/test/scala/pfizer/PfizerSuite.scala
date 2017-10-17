@@ -8,38 +8,49 @@ import org.scalatest.FunSuite
 import play.api.libs.json.JsString
 
 import scala.collection.immutable.Map
-
 import java.lang.Runtime
+
+import com.pharbers.memory.pages.pageMemory
 
 /**
   * Created by clock on 17-9-7.
   */
 class PfizerSuite extends FunSuite {
-    val gycx_file_local = "files/1705 GYC.xlsx"
-    val cpa_file_local = "files/1705 CPA.xlsx"
-    val args: Map[String, List[String]] = Map(
-        "company" -> List(""),
-        "user" -> List("user"),
-        "cpas" -> List(cpa_file_local),
-        "gycxs" -> List(gycx_file_local)
-    )
 
-    test("load CPA") {
-        System.gc()
+    test("page memory") {
+        val t = pageMemory("files/test")
+        println(t.allData.length)
 
-        {
-            val t = new phPfizerHandleImpl(args)
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-
-            print(t.c0.length)
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-
-            System.gc()
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
+        t.allData.zipWithIndex.foreach { x =>
+            println(s"${x._2} : ${x._1}")
         }
+    }
+
+//    val gycx_file_local = "files/1705 GYC.xlsx"
+//    val cpa_file_local = "files/1705 CPA.xlsx"
+//    val args: Map[String, List[String]] = Map(
+//        "company" -> List(""),
+//        "user" -> List("user"),
+//        "cpas" -> List(cpa_file_local),
+//        "gycxs" -> List(gycx_file_local)
+//    )
+//
+//    test("load CPA") {
+//        System.gc()
+//
+//        {
+//            val t = new phPfizerHandleImpl(args)
+//            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
+//            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
+//
+//            print(t.c0.length)
+//            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
+//            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
+//
+//            System.gc()
+//            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
+//            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
+//        }
 //        System.gc()
 //
 //        {
@@ -47,7 +58,7 @@ class PfizerSuite extends FunSuite {
 //            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
 //            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
 //        }
-    }
+//    }
 
 //    test("calc ym") {
 //        val result = new phPfizerHandleImpl(args).calcYM
