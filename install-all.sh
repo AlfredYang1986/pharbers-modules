@@ -63,7 +63,12 @@ cd pharbers-pattern
 mvn clean install
 cd ..
 
-echo "11.installing pharbers-data-parse"
+echo "11.installing pharber-page-memory"
+cd pharbers-page-memory
+mvn clean install
+cd ..
+
+echo "12.installing pharbers-data-parse"
 cd pharbers-data-parse
 mvn clean install
 cd ..

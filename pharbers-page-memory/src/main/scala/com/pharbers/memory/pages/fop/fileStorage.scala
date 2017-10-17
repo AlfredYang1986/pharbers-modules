@@ -16,15 +16,6 @@ trait fileStorage {
 
     def closeStorage = fc.close()
 
-    def adjustPositionAcc(cur : Int) : Int = {
-        if (cur < 0) 0
-        else {
-            mem.position(cur)
-            if (mem.get() == chl) cur + 1
-            else adjustPositionAcc(cur - 1)
-        }
-    }
-
     def seekToPage(page : Int) : Int = {
         mem.position(0)
         var result = 0
@@ -38,6 +29,15 @@ trait fileStorage {
     }
 
     def nextPage : Int = {
+        def adjustPositionAcc(cur : Int) : Int = {
+            if (cur < 0) 0
+            else {
+                mem.position(cur)
+                if (mem.get() == chl) cur + 1
+                else adjustPositionAcc(cur - 1)
+            }
+        }
+
         val pos = mem.position() // page * pageSize
         val result = adjustPositionAcc(pos - 1)
         mem.position(result)
