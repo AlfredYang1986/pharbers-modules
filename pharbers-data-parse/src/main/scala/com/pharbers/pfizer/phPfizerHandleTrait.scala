@@ -1,6 +1,6 @@
 package com.pharbers.pfizer
 
-import com.pharbers.phDataHandle
+import com.pharbers.util.phDataHandle
 import play.api.libs.json.JsValue
 
 import scala.collection.immutable.Map

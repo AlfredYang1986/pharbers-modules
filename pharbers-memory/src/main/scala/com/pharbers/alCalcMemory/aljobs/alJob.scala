@@ -8,7 +8,7 @@ import com.pharbers.alCalcMemory.alOther.alLog.alLoggerMsgTrait
 /**
   * Created by Alfred on 10/03/2017.
   */
-sealed class job_defines(val t : Int, val d : String)
+class job_defines(val t : Int, val d : String)
 
 trait alJob extends alLoggerMsgTrait {
     val uuid = UUID.randomUUID.toString
