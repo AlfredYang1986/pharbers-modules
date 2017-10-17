@@ -28,13 +28,15 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     private val company = args.getOrElse("company", throw new Exception("no find company arg")).head
     private val user = args.getOrElse("user", throw new Exception("no find user arg")).head
 
-    private val c0 = loadCPA(cpas)
+//    private val c0 = loadCPA(cpas)
+    lazy val c0 = loadCPA(cpas)
 //        parseMap.get(company+user) match {
 //        case Some((c: List[Map[String,String]], _)) if c == Nil => loadCPA(cpas)
 //        case Some((c: List[Map[String,String]], _)) => c
 //        case None => loadCPA(cpas)
 //    }
-    private val g0 = loadGYCX(gycxs)
+//    private val g0 = loadGYCX(gycxs)
+    lazy val g0 = loadGYCX(gycxs)
 //        parseMap.get(company+user) match {
 //        case Some((_, g: List[Map[String,String]])) if g == Nil => loadGYCX(gycxs)
 //        case Some((_, g: List[Map[String,String]])) => g
@@ -45,16 +47,19 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
 //        parseMap += company+user -> (c0,g0)
 //    }
 
-    private def loadCPA(cs: List[String]): List[Map[String,String]] = {
+//    private def loadCPA(cs: List[String]): List[Map[String,String]] = {
+    private def loadCPA(cs: List[String]): Stream[Map[String,String]] = {
         val setDefaultMap = getDefault
-        val completed = cs.flatMap(c => excelParser.readExcel(ExcelData(c, defaultValueArg = setDefaultMap)))
-        val processed = completed.map { x =>
-            x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
-        }
-        processed
+        excelParser.readExcel(ExcelData(cs.head, defaultValueArg = setDefaultMap)).toStream
+//        val completed = cs.flatMap(c => excelParser.readExcel(ExcelData(c, defaultValueArg = setDefaultMap)))
+//        val processed = completed.toStream.map { x =>
+//            x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
+//        }
+//        processed
     }
 
-    private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
+//    private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
+    private def loadGYCX(gs: List[String]): Stream[Map[String, String]] = {
         val setFieldMap = Map(
             "城市" -> "CITY",
             "年" -> "YEAR",
@@ -72,7 +77,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         )
         val setDefaultMap = getDefault
         val completed = gs.flatMap(g => excelParser.readExcel(ExcelData(g, defaultValueArg = setDefaultMap, fieldArg = setFieldMap)))
-        val processed = completed.map { x =>
+        val processed = completed.toStream.map { x =>
             x ++ Map("YM" -> (x("YEAR") + getMonth(x("MONTH"))))
         }
         processed
@@ -109,7 +114,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    private def distinctYM(lst: List[Map[String, String]]): Map[String, Int] ={
+    private def distinctYM(lst: Stream[Map[String, String]]): Map[String, Int] ={
         val grouped = lst.groupBy(_("YM")).map{c =>
             c._1 -> c._2.map(r => "HOSPITAL_CODE" -> r("HOSPITAL_CODE")).distinct.length
         }
@@ -127,14 +132,14 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         val markets = List("INF")
         val panel = markets.flatMap{ market =>
             val b0 = load_b0(market)
-            val m1_c = innerJoin(b0,m1,"CPA反馈通用名","通用名").map(mergeMB(_))
-            val m1_g = innerJoin(b0,m1,"GYCX反馈通用名","通用名").map(mergeMB(_))
+            val m1_c = innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").map(mergeMB(_))
+            val m1_g = innerJoin(b0.toStream, m1.toStream, "GYCX反馈通用名", "通用名").map(mergeMB(_))
             val hosp_tab = getHospTab(hos00, market)
             val hos0_hosp_id = hosp_tab.keys.toList
             val filter_hosp_c0 = filter_ym_c0.filter(x => hos0_hosp_id.contains(x("HOSPITAL_CODE")))
             val filter_hosp_g0 = filter_ym_g0.filter(x => hos0_hosp_id.contains(x("HOSPITAL_CODE")))
-            val c = innerJoin(m1_c,filter_hosp_c0,"min1","min1").map(mergeMC(_,market,hosp_tab))
-            val g = innerJoin(m1_g,filter_hosp_g0,"min1","min1").map(mergeMC(_,market,hosp_tab))
+            val c = innerJoin(m1_c,filter_hosp_c0, "min1", "min1").map(mergeMC(_,market,hosp_tab))
+            val g = innerJoin(m1_g,filter_hosp_g0, "min1", "min1").map(mergeMC(_,market,hosp_tab))
             val t1_filter_group = (c ++ g).filter(_("Sales") != "")
                             .groupBy(x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
             val t1 = t1_filter_group.map { x =>
@@ -154,7 +159,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         toJson(panel_local)
     }
 
-    private def filterSource(lst: List[Map[String, String]],ym: String): List[Map[String, String]] ={
+//    private def filterSource(lst: Stream[Map[String, String]], ym: String): List[Map[String, String]] ={
+    private def filterSource(lst: Stream[Map[String, String]], ym: String): Stream[Map[String, String]] ={
         def getMin1Fun(tr: Map[String, String]): String = {
             tr("PRODUCT_NAME") + tr("APP2_COD") + tr("PACK_DES") + tr("PACK_NUMBER") + tr("CORP_NAME")
         }
@@ -198,8 +204,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         excelParser.readExcel(ExcelData(b0_file_local,sheetName = market))
     }
 
-    private def innerJoin(lst1: List[Map[String, String]],lst2: List[Map[String, String]],
-                  nameBylst1: String, nameBylst2: String): List[Map[String, String]] = {
+    private def innerJoin(lst1: Stream[Map[String, String]], lst2: Stream[Map[String, String]],
+                  nameBylst1: String, nameBylst2: String): Stream[Map[String, String]] = {
         for(
             r1 <- lst1; r2 <- lst2
             if r1(nameBylst1) == r2(nameBylst2)
