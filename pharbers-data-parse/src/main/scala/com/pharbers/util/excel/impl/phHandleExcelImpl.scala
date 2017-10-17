@@ -34,7 +34,7 @@ case class phHandleExcelImpl() extends phHandleExcelTrait {
             override val defaultValueMap = arg.defaultValueArg
 
             override def processFun(): Option[Map[String, String]] = {
-                var tr = titleMap.keys.map{ t => (titleMap(t),rowMap(t)) }.toMap
+                var tr = titleMap.keys.map{ t => (titleMap(t), rowMap(t)) }.toMap
                 if (filterFun(tr)) {
                     tr.foreach { x =>
                         x._2 match {

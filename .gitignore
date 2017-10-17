@@ -12,5 +12,10 @@
 */buildNumber.properties
 */.mvn/timing.properties
 
+/pharbers-data-parse/config/
+/pharbers-data-parse/files/
+/pharbers-max-panel/config/
+/pharbers-max-panel/files/
+
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 */.mvn/wrapper/maven-wrapper.jar

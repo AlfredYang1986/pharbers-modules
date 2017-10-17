@@ -63,7 +63,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                 }
     }
 
-    private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
+//    private def loadGYCX(gs: List[String]): List[Map[String, String]] = {
+    private def loadGYCX(gs: List[String]): Stream[Map[String, String]] = {
         val setFieldMap = Map(
             "城市" -> "CITY",
             "年" -> "YEAR",
@@ -117,14 +118,14 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         val filter_ym_g0 = filterSource(g0,ym)
         markets.foreach{ market =>
             val b0 = load_b0(market)
-            val m1_c = innerJoin(b0,m1,"CPA反馈通用名","通用名").map(mergeMB(_))
-            val m1_g = innerJoin(b0,m1,"GYCX反馈通用名","通用名").map(mergeMB(_))
+            val m1_c = innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").map(mergeMB(_))
+            val m1_g = innerJoin(b0.toStream, m1.toStream, "GYCX反馈通用名", "通用名").map(mergeMB(_))
             val hosp_tab = getHospTab(hos00, market)
             val hos0_hosp_id = hosp_tab.keys.toList
             val filter_hosp_c0 = filter_ym_c0.filter(x => hos0_hosp_id.contains(x("HOSPITAL_CODE")))
             val filter_hosp_g0 = filter_ym_g0.filter(x => hos0_hosp_id.contains(x("HOSPITAL_CODE")))
-            val c = innerJoin(m1_c,filter_hosp_c0,"min1","min1").map(mergeMC(_,market,hosp_tab))
-            val g = innerJoin(m1_g,filter_hosp_g0,"min1","min1").map(mergeMC(_,market,hosp_tab))
+            val c = innerJoin(m1_c,filter_hosp_c0, "min1", "min1").map(mergeMC(_,market,hosp_tab))
+            val g = innerJoin(m1_g,filter_hosp_g0, "min1", "min1").map(mergeMC(_,market,hosp_tab))
             val t1_filter_group = (c ++ g).filter(_("Sales") != "")
                             .groupBy(x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
             val panel = t1_filter_group.map { x =>
@@ -145,7 +146,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    private def filterSource(lst: List[Map[String, String]],ym: String): List[Map[String, String]] ={
+//    private def filterSource(lst: Stream[Map[String, String]], ym: String): List[Map[String, String]] ={
+    private def filterSource(lst: Stream[Map[String, String]], ym: String): Stream[Map[String, String]] ={
         def getMin1Fun(tr: Map[String, String]): String = {
             tr("PRODUCT_NAME") + tr("APP2_COD") + tr("PACK_DES") + tr("PACK_NUMBER") + tr("CORP_NAME")
         }
@@ -189,8 +191,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         excelParser.readExcel(ExcelData(b0_file_local,sheetName = market))
     }
 
-    private def innerJoin(lst1: List[Map[String, String]],lst2: List[Map[String, String]],
-                  nameBylst1: String, nameBylst2: String): List[Map[String, String]] = {
+    private def innerJoin(lst1: Stream[Map[String, String]], lst2: Stream[Map[String, String]],
+                  nameBylst1: String, nameBylst2: String): Stream[Map[String, String]] = {
         for(
             r1 <- lst1; r2 <- lst2
             if r1(nameBylst1) == r2(nameBylst2)
