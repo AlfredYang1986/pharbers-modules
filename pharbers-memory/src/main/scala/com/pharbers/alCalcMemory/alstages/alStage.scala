@@ -1,8 +1,8 @@
-package com.pharbers.aqll.alCalcMemory.alstages
+package com.pharbers.alCalcMemory.alstages
 
 import com.pharbers.alCalcMemory.aldata.alStorage
-import com.pharbers.aqll.alCalcMemory.alexception.alException
 import com.pharbers.ErrorCode._
+import com.pharbers.alCalcMemory.alOther.alException.alException
 
 /**
   * Created by Alfred on 10/03/2017.

@@ -1,6 +1,6 @@
-package com.pharbers.aqll.alCalcMemory.alexception
+package com.pharbers.alCalcMemory.alOther.alException
 
-import com.pharbers.alCalcOther.alLog.alLoggerMsgTrait
+import com.pharbers.alCalcMemory.alOther.alLog.alLoggerMsgTrait
 import play.api.libs.json.JsValue
 
 /**

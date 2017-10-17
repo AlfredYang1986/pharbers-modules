@@ -22,11 +22,6 @@
                     <artifactId>errorcode</artifactId>
                     <version>0.1</version>
                 </dependency>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>common</artifactId>
-                    <version>0.1</version>
-                </dependency>
                 <!-- scala lib -->
                 <dependency>
                     <groupId>org.scala-lang</groupId>

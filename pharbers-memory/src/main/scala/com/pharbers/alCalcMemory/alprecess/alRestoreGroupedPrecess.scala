@@ -1,7 +1,6 @@
-package com.pharbers.aqll.alCalcMemory.alprecess
+package com.pharbers.alCalcMemory.alprecess
 
-import com.pharbers.aqll.common.alFileHandler.alFilesOpt.alFileOpt
-
+import com.pharbers.alCalcMemory.alOther.alFileHandler.alFilesOpt.alFileOpt
 
 class alRestoreGroupedPrecess extends alRestorePrecess {
     override def pathProxy(path : String) : String = {

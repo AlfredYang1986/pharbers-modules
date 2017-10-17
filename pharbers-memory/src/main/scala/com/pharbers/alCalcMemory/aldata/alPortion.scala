@@ -1,8 +1,8 @@
 package com.pharbers.alCalcMemory.aldata
 
-import com.pharbers.aqll.alCalcMemory.alexception.alException
 import com.pharbers.ErrorCode._
-import com.pharbers.alCalaHelp.alFileHandler.altext.alTextParser
+import com.pharbers.alCalcMemory.alOther.alException.alException
+import com.pharbers.alCalcMemory.alOther.alFileHandler.alText.alTextParser
 
 
 /**

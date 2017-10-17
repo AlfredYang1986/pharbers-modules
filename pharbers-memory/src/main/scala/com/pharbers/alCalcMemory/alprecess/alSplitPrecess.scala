@@ -1,10 +1,10 @@
-package com.pharbers.aqll.alCalcMemory.alprecess
+package com.pharbers.alCalcMemory.alprecess
 
-import com.pharbers.alCalcMemory.aldata.alStorage
-import com.pharbers.aqll.alCalcMemory.alexception.alException
-import com.pharbers.aqll.alCalcMemory.alprecess.alsplitstrategy.alSplitStrategy
 import com.pharbers.ErrorCode._
-import com.pharbers.aqll.alCalcMemory.alstages.{alInitStage, alMemoryStage, alPresisStage, alStage}
+import com.pharbers.alCalcMemory.alOther.alException.alException
+import com.pharbers.alCalcMemory.aldata.alStorage
+import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.alSplitStrategy
+import com.pharbers.alCalcMemory.alstages.{alInitStage, alMemoryStage, alPresisStage, alStage}
 
 /**
   * Created by Alfred on 10/03/2017.

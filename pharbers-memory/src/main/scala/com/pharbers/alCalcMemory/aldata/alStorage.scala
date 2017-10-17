@@ -1,9 +1,9 @@
 package com.pharbers.alCalcMemory.aldata
 
-import com.pharbers.aqll.alCalcMemory.alexception.alException
 import com.pharbers.ErrorCode._
-import com.pharbers.alCalaHelp.alFileHandler.alFileHandlers
-import com.pharbers.alCalcOther.alLog.alLoggerMsgTrait
+import com.pharbers.alCalcMemory.alOther.alException.alException
+import com.pharbers.alCalcMemory.alOther.alFileHandler.alFileHandlers
+import com.pharbers.alCalcMemory.alOther.alLog.alLoggerMsgTrait
 
 /**
   * Created by Alfred on 09/03/2017.
@@ -63,13 +63,11 @@ abstract class alStorage(val parents : List[alStorage], val f : Any => Any) exte
         }
     }
 
-    // Map 计算
     def map(f : Any => Any) : alStorage = {
         if (isPortions) new alPortionedStorage(this :: Nil, f)
         else new alNormalStorage(this :: Nil, f)
     }
-    
-    // 去重复
+
     def distinct : alStorage = {
         if (!isCalc) {
             doCalc
@@ -80,7 +78,6 @@ abstract class alStorage(val parents : List[alStorage], val f : Any => Any) exte
         }
     }
 
-    // 过滤
     def filter(f : Any => Boolean) : alStorage = {
         if (!isCalc) {
             doCalc
@@ -91,17 +88,11 @@ abstract class alStorage(val parents : List[alStorage], val f : Any => Any) exte
         }
     }
 
-    // 计算
     def doCalc
 
-    // 升级， Protion 升级成Storage
     def upgrade : List[alStorage] = this :: Nil
 
-    // 属性计算
     def length : Int = data.length
-
-    // 去掉所有的parent, 方便释放内存
-//    def clean = parents = Nil
 }
 
 abstract class alInitStorage(fc : Any => Any) extends alStorage(Nil, fc) {

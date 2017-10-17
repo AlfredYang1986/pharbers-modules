@@ -1,4 +1,4 @@
-package com.pharbers.aqll.alCalcMemory.aljobs.aljobstates
+package com.pharbers.alCalcMemory.aljobs.aljobstates
 
 /**
   * Created by Alfred on 10/03/2017.

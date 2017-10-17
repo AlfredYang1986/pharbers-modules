@@ -1,10 +1,10 @@
-package com.pharbers.alCalaHelp.alFileHandler.altext
+package com.pharbers.alCalcMemory.alOther.alFileHandler.alText
 
 import java.util.UUID
 
-import com.pharbers.alCalaHelp.alFileHandler.alFileHandlers
+import com.pharbers.alCalcMemory.alOther.alFileHandler.alFileHandlers
+import com.pharbers.alCalcMemory.alOther.alFileHandler.alFilesOpt.alFileOpt
 import com.pharbers.alCalcMemory.aldata.alStorage
-import com.pharbers.aqll.common.alFileHandler.alFilesOpt.alFileOpt
 
 
 /**

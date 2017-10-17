@@ -1,4 +1,4 @@
-package com.pharbers.aqll.alCalcMemory.aljobs.aljobstates
+package com.pharbers.alCalcMemory.aljobs.aljobstates
 
 /**
   * Created by Alfred on 10/03/2017.
@@ -15,15 +15,10 @@ trait alMaxJobStates extends alJobStates {
 }
 
 object alExcelSplitJobStates extends alJobStates {
-//    case object excel_split_idleing extends alPointState
     case object spliting_data extends alPointState
 }
 
 object alMaxGroupJobStates extends alJobStates {
-//    case object calc_idleing extends alPointState
-//    case object calc_maxing extends alPointState
-//    case object calc_average extends alPointState
-//    case object calc_lasting extends alPointState
     case object group_coreing extends alPointState
     case object group_doing extends alPointState
 }

@@ -1,4 +1,4 @@
-package com.pharbers.alCalcOther.alLog
+package com.pharbers.alCalcMemory.alOther.alLog
 
 import org.slf4j.LoggerFactory
 
