@@ -26,19 +26,22 @@ trait fileStorage {
             mem.position(result + length)
         }
 
+        result = adjustPositionAcc(result - 1)
+        mem.position(result)
+
         result
     }
 
-    def nextPage : Int = {
-        def adjustPositionAcc(cur : Int) : Int = {
-            if (cur < 0) 0
-            else {
-                mem.position(cur)
-                if (mem.get == chl) cur + 1
-                else adjustPositionAcc(cur - 1)
-            }
+    def adjustPositionAcc(cur : Int) : Int = {
+        if (cur < 0) 0
+        else {
+            mem.position(cur)
+            if (mem.get == chl) cur + 1
+            else adjustPositionAcc(cur - 1)
         }
+    }
 
+    def nextPage : Int = {
         val pos = mem.position // page * pageSize
         val result = adjustPositionAcc(pos - 1)
         mem.position(result)

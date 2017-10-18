@@ -38,8 +38,8 @@ case class phHandleCsvImpl() extends phHandleCsvTrait {
         result
     }
 
-    override def appendByLine(line: Map[String, Any])
-                             (implicit titleSeqArg: List[String], output_file: String): String = {
+    override def appendByLine(line: Map[String, Any], output_file: String)
+                             (implicit titleSeqArg: List[String]): String = {
         if(line.isEmpty) throw new Exception("写入的数据为空")
 
         val titleSeq = if(titleSeqArg.isEmpty){

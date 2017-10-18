@@ -27,7 +27,7 @@ class PfizerUnitSuite extends FunSuite with panel_file_path {
         println(new phPfizerHandleImpl(args).loadGYCX)
     }
 
-    test("load calcYM") {
+    test("test calcYM") {
         println(new phPfizerHandleImpl(args).calcYM)
     }
 
@@ -36,31 +36,30 @@ class PfizerUnitSuite extends FunSuite with panel_file_path {
         println(s"t.size = ${page.allLength}")
         println(s"t.pageCount = ${page.pageCount}")
 
-        //        t.allData.zipWithIndex.foreach { x =>
-        //            println(s"${x._2} : ${x._1}")
-        //        }
-
         page.pageData(1).zipWithIndex.foreach { x =>
             println(s"${x._2} : ${x._1}")
         }
     }
 
-//    test("load m1") {
-//        new phPfizerHandleImpl(args).load_m1.foreach(println)
-//    }
-//
-//    test("load hos0") {
-//        new phPfizerHandleImpl(args).load_hos00.foreach(println)
-//    }
-//
-//    test("load b0") {
-//        new phPfizerHandleImpl(args).load_b0("INF").foreach(println)
-//    }
-//
-//    test("test inner join") {
-//        val b0 = new phPfizerHandleImpl(args).load_b0("INF")
-//        val m1 = new phPfizerHandleImpl(args).load_m1
-//        new phPfizerHandleImpl(args).innerJoin(b0, m1, "CPA反馈通用名", "通用名").foreach(println)
-//    }
+    test("load m1") {
+        new phPfizerHandleImpl(args).load_m1.foreach(println)
+    }
 
+    test("load hos0") {
+        new phPfizerHandleImpl(args).load_hos00.foreach(println)
+    }
+
+    test("load b0") {
+        new phPfizerHandleImpl(args).load_b0("INF").foreach(println)
+    }
+
+    test("test inner join") {
+        val b0 = new phPfizerHandleImpl(args).load_b0("INF")
+        val m1 = new phPfizerHandleImpl(args).load_m1
+        new phPfizerHandleImpl(args).innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").foreach(println)
+    }
+
+    test("test generate panel file") {
+        println(new phPfizerHandleImpl(args).getPanelFile("201705" :: Nil))
+    }
 }
