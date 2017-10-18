@@ -1,33 +1,50 @@
-//package pfizer
-//
-//import com.pharbers.pfizer.impl.phPfizerHandleImpl
-//import org.scalatest.FunSuite
-//
-//import scala.collection.immutable.Map
-//
-//
-///**
-//  * Created by clock on 17-9-7.
-//  */
-//class PfizerUnitSuite extends FunSuite {
-//    val args: Map[String, List[String]] = Map(
-//        "company" -> List("generatePanel"),
-//        "user" -> List("user"),
-//        "cpas" -> List("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx"),
-//        "gycxs" -> List("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx")
-//    )
-//    test("load CPA") {
-//        new phPfizerHandleImpl(args)
-//                .loadCPA("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx" :: Nil)
-//                .foreach(println)
-//    }
-//
-//    test("load GYCX") {
-//        new phPfizerHandleImpl(args)
-//                .loadGYCX("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx" :: Nil)
-//                .foreach(println)
-//    }
-//
+package pfizer
+
+import com.pharbers.memory.pages.pageMemory
+import com.pharbers.panel.pfizer.impl.phPfizerHandleImpl
+import com.pharbers.panel.pfizer.panel_file_path
+import org.scalatest.FunSuite
+
+import scala.collection.immutable.Map
+
+
+/**
+  * Created by clock on 17-9-7.
+  */
+class PfizerUnitSuite extends FunSuite with panel_file_path {
+    val args: Map[String, List[String]] = Map(
+        "company" -> List("company"),
+        "user" -> List("user"),
+        "cpas" -> List("config/company/Client/CPA/1705 CPA.xlsx"),
+        "gycxs" -> List("config/company/Client/GYCX/1705 GYC.xlsx")
+    )
+
+    test("load CPA") {
+        println(new phPfizerHandleImpl(args).loadCPA)
+    }
+
+    test("load GYCX") {
+        println(new phPfizerHandleImpl(args).loadGYCX)
+    }
+
+    test("load calcYM") {
+        println(new phPfizerHandleImpl(args).calcYM)
+    }
+
+    test("page memory") {
+        val page = pageMemory("config/company/Cache/test.cache")
+        println(s"t.size = ${page.allLength}")
+        println(s"t.pageCount = ${page.pageCount}")
+
+        //        t.allData.zipWithIndex.foreach { x =>
+        //            println(s"${x._2} : ${x._1}")
+        //        }
+
+        page.pageData(1).zipWithIndex.foreach { x =>
+            println(s"${x._2} : ${x._1}")
+        }
+    }
+
 //    test("load m1") {
 //        new phPfizerHandleImpl(args).load_m1.foreach(println)
 //    }
@@ -45,4 +62,5 @@
 //        val m1 = new phPfizerHandleImpl(args).load_m1
 //        new phPfizerHandleImpl(args).innerJoin(b0, m1, "CPA反馈通用名", "通用名").foreach(println)
 //    }
-//}
+
+}

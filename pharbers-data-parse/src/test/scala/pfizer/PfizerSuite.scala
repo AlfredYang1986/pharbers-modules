@@ -3,7 +3,7 @@
 //import java.text.SimpleDateFormat
 //import java.util.Date
 //
-//import com.pharbers.pfizer.impl.phPfizerHandleImpl
+//import com.pharbers.panel.pfizer.impl.phPfizerHandleImpl
 //import org.scalatest.FunSuite
 //import play.api.libs.json.{JsObject, JsString, JsValue}
 //

@@ -2,10 +2,10 @@
 //
 //import java.util.UUID
 //
-//import com.pharbers.pfizer.panel_file_path
-//import com.pharbers.util.csv.impl.phHandleCsvImpl
-//import com.pharbers.util.excel.impl.phHandleExcelImpl
-//import com.pharbers.util.excel.impl.phHandleExcelImpl._
+//import com.pharbers.panel.pfizer.panel_file_path
+//import com.pharbers.panel.pfizer.util.csv.impl.phHandleCsvImpl
+//import com.pharbers.panel.util.excel.impl.phHandleExcelImpl
+//import com.pharbers.panel.util.excel.impl.phHandleExcelImpl._
 //import org.scalatest.FunSuite
 ///**
 //  * Created by clock on 17-9-7.
