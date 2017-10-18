@@ -10,8 +10,8 @@ class PfizerSuite extends FunSuite {
 
     test("page memory") {
         val t = page2map("files/test.cache")
-        println(s"t.size = ${t.allLength}")
-        println(s"t.pageCount = ${t.pageCount}")
+//        println(s"t.size = ${t.allLength}")
+//        println(s"t.pageCount = ${t.pageCount}")
 
 //        t.allData.zipWithIndex.foreach { x =>
 //            println(s"${x._2} : ${x._1}")
