@@ -1,6 +1,6 @@
 package com.pharbers.panel.util.excel.impl
 
-import com.pharbers.panel.util.csv.impl.phHandleCsvImpl
+import com.pharbers.panel.util.csv.phHandleCsvImpl
 import com.pharbers.panel.util.excel.impl.phHandleExcelImpl.ExcelData
 import com.pharbers.panel.util.excel.phHandleExcelTrait
 import com.pharbers.panel.util.phData
@@ -63,7 +63,6 @@ case class phHandleExcelImpl() extends phHandleExcelTrait {
         new phReadExcelHandle(arg.file_local) {
             override val fieldMap = arg.fieldArg
             override val defaultValueMap = arg.defaultValueArg
-            implicit val file_path = cache_file_path
             implicit val titleSeq = Nil
 
             override def processFun(): Option[Map[String, String]] = {
@@ -77,7 +76,7 @@ case class phHandleExcelImpl() extends phHandleExcelTrait {
                         }
                     }
                     tr = postFun(tr).getOrElse(throw new Exception("parse xlsx error => postFun error"))
-                    phHandleCsvImpl().appendByLine(tr)
+                    phHandleCsvImpl().appendByLine(tr, cache_file_path)
                     title match {
                         case t: List[String] if t == tr.keys.toList => Unit
                         case Nil => title = tr.keys.toList

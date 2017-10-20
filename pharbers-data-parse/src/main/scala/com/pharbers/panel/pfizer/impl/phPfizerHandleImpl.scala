@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.pharbers.memory.pages.pageMemory
 import com.pharbers.panel.pfizer.{panel_file_path, phPfizerHandleTrait}
-import com.pharbers.panel.util.csv.impl.phHandleCsvImpl
+import com.pharbers.panel.util.csv.phHandleCsvImpl
 import com.pharbers.panel.util.excel.impl.phHandleExcelImpl
 import com.pharbers.panel.util.excel.impl.phHandleExcelImpl._
 
@@ -16,7 +16,6 @@ import play.api.libs.json.Json.toJson
   * Created by clock on 17-9-7.
   */
 class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandleTrait with panel_file_path {
-    val spl = 31.toChar.toString
     private val cpas = args.getOrElse("cpas", throw new Exception("no find CPAs arg"))
     private val gycxs = args.getOrElse("gycxs", throw new Exception("no find GYCXs arg"))
     private val company = args.getOrElse("company", throw new Exception("no find company arg")).head
@@ -117,86 +116,61 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     override def getPanelFile(ym: List[String]): JsValue = {
         implicit val arg1 = Map("c0" -> loadCPA, "g0" -> loadGYCX)
         implicit val arg2 = Map("m1" -> load_m1, "hos00" -> load_hos00)
-        ym.map { x =>
-            generatePanelFile(x)
+
+        val a = ym.map { x =>
+            Map(x -> generatePanelFile(x))
         }
+        a
 
         toJson(ym.map(x => (x, "ucData(x)")).toMap)
     }
 
     private def generatePanelFile(ym: String)
                                  (implicit arg1: Map[String,(String, List[String])],
-                                 arg2: Map[String,List[Map[String,String]]]) = {
+                                  arg2: Map[String,List[Map[String,String]]]) = {
         val c0 = arg1.getOrElse("c0", throw new Exception("参数错误"))
         val g0 = arg1.getOrElse("g0", throw new Exception("参数错误"))
         val m1 = arg2.getOrElse("m1", throw new Exception("参数错误"))
         val hos00 = arg2.getOrElse("hos00", throw new Exception("参数错误"))
 
-        markets.foreach{ market =>
+        markets.map { market =>
             val b0 = load_b0(market)
             val m1_c = innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").map(mergeMB(_))
             val m1_g = innerJoin(b0.toStream, m1.toStream, "GYCX反馈通用名", "通用名").map(mergeMB(_))
             val hosp_tab = getHospTab(hos00, market)
             val hos0_hosp_id = hosp_tab.keys.toList
 
-
-
-            val filter_c = filter_source(c0, m1_c)
-            val filter_g = filter_source(g0, m1_g)
-            println(s"filter_c = ${filter_c._1}")
-            println(s"filter_g = ${filter_g._1}")
-
-//            val t1_filter_group = (c ++ g).filter(_("Sales") != "")
-//                            .groupBy(x => x("ID").toString + x("Hosp_name") + x("Date") + x("Prod_Name") + x("Prod_CNAME") + x("HOSP_ID") + x("Strength") + x("DOI") + x("DOIE"))
-//            val panel = t1_filter_group.map { x =>
-//                x._2.head ++ Map(
-//                    "Units" -> x._2.map(_ ("Units").asInstanceOf[Double]).sum,
-//                    "Sales" -> x._2.map(_ ("Sales").asInstanceOf[Double]).sum
-//                )
-//            }.toList
-//
-//            val panel_local = writePanel(panel)
-//
-//            this.synchronized {
-//                val ucData = parseData.panelMap.get(company + user).getOrElse(Map())
-//                val mktData = ucData.get(ym).getOrElse(Map()) ++ Map(market -> panel_local)
-//
-//                parseData.panelMap += company + user -> (ucData ++ Map(ym -> mktData))
-//            }
-
-
-
-            def filter_source(source: (String, List[String]), m1: Stream[Map[String, String]]): (String, List[String]) = {
+            def filter_source(source: (String, List[String]),
+                              m1Arg: Stream[Map[String, String]],
+                              append_local: String = ""): String = {
+                implicit val panel_file_local: String = if (append_local == "") base_path + company + output_local + UUID.randomUUID.toString
+                                        else append_local
+                implicit val titleSeq: List[String] = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
+                                "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
                 val page = pageMemory(source._1)
-                val cache_file_local = base_path + company + cache_local + UUID.randomUUID.toString + ".cache"
-                var title: List[String] = Nil
-                implicit val titleSeq = Nil
 
-//                (0 until 10) foreach { i =>
-//                {
-                    val filtered = page.pageData(1).map { line =>
+                (0 until page.pageCount.toInt) foreach { i =>
+                    val temp = page.pageData(i).map { line =>
                         val data = source._2.zip(line.split(spl).toList).toMap
                         if (data("YM") == ym && hos0_hosp_id.contains(data("HOSPITAL_CODE")))
                             data ++ Map("min1" -> getMin1Fun(data))
                         else
                             Map[String, String]()
-                    }
+                    }.filter(_ != Map())
 
-                    innerJoin(m1, filtered, "min1", "min1")
-                            .map(mergeMC(_, market, hosp_tab))
+                    innerJoin(m1Arg, temp, "min1", "min1")
+                            .map(mergeMC(_, market, hosp_tab)).toList
+                            .filter(_("Sales") != "")
                             .foreach { x =>
-                                phHandleCsvImpl().appendByLine(x, cache_file_local)
-                                title = title match {
-                                    case t: List[String] if t == x.keys.toList => x.keys.toList
-                                    case Nil => x.keys.toList
-                                    case _ => throw new Exception("生成的Map结构不统一")
-                                }
+                                phHandleCsvImpl().sortInsert(x, distinct_source, mergeSameLine)
                             }
-//                }
-                (cache_file_local, title)
+                }
+                panel_file_local
             }
+
+            val panel_local = filter_source(g0, m1_g, filter_source(c0, m1_c))
+            Map(market -> panel_local)
         }
-        Unit
     }
 
     def load_m1: List[Map[String, String]] ={
@@ -263,7 +237,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         }
     }
 
-    private val mergeMC:(Map[String,String],String,Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
+    private val mergeMC:(Map[String,String], String, Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
         Map(
             "ID" -> old("HOSPITAL_CODE").toLong,
             "Hosp_name" -> hosId(old("HOSPITAL_CODE"))._1,
@@ -279,13 +253,25 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         )
     }
 
+    private val distinct_source: (Map[String, Any], Map[String, Any]) => Int = { (newLine, cur) =>
+        def getString(m: Map[String, Any]): String ={
+            m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
+        }
 
-//    private def writePanel(content: List[Map[String,Any]]): String = {
-//        val output_file_local = file_config.path + company + file_config.output + UUID.randomUUID.toString
-//        implicit val writeSeq = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
-//                "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
-//        phHandleCsvImpl().writeByList(content, output_file_local)
-//        output_file_local
-//    }
-//
+        if(cur == "") -1
+        else if (getString(newLine) == getString(cur)) 0
+        else if (getString(newLine) < getString(cur)) -1
+        else 1
+    }
+
+    private val mergeSameLine: List[Map[String, Any]] => (Map[String, Any], Map[String, Any]) = { lst =>
+        if(lst.length == 2){
+            (lst.head ++ Map(
+                "Units" -> (lst.head("Units").toString.toDouble + lst.last("Units").toString.toDouble),
+                "Sales" -> (lst.head("Sales").toString.toDouble + lst.last("Sales").toString.toDouble)
+            ), Map())
+        }else {
+            (lst.head, lst.last)
+        }
+    }
 }

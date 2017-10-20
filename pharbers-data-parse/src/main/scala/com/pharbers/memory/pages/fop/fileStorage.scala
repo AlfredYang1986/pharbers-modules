@@ -20,7 +20,7 @@ trait fileStorage {
     def seekToPage(page : Int) : Int = {
         mem.position(0)
         var result = 0
-        (0 until page) foreach { _ =>
+        (0 to page) foreach { _ =>
             val length = math.min(pageSize, fileLength.toInt - mem.position)
             result = nextPage
             mem.position(result + length)
@@ -56,5 +56,5 @@ trait fileStorage {
 
     def fileLength = raf.length
 
-    val pageCount = fileLength / pageSize + 1
+    lazy val pageCount = fileLength / pageSize + 1
 }

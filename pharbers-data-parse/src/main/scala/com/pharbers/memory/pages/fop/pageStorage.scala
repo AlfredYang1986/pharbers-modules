@@ -4,57 +4,65 @@ import java.nio.charset.StandardCharsets
 
 trait pageStorage {
 
-    val pageSize : Int
-    val fs : fileStorage
+    protected val chl = '\n'.toByte
+    protected val pageSize : Int
+    protected val fs : fileStorage
 
-    var cur : Int = 0
-
-    val chl = '\n'.toByte
-    var mark = -1
-    var pos = -1
-    var limit = -1
+    protected var limit_p = -1
+    protected var mark_p = -1
+    protected var pos_p = -1
 
     lazy val buf : Array[Byte] = new Array[Byte](pageSize)
+    val pageCount = fs.pageCount
+    var cur_page_head : Int = 0
+
+    private var line_head_p : Int = -1
+    def line_head: Int = line_head_p
+    private var line_last_p : Int = -1
+    def line_last: Int = line_last_p
 
     def curInStorage : Array[Byte] = {
-        fs.seekToPage(cur)
-        limit = fs.capCurrentPage(cur, buf)
-        mark = 0
-        pos = 0
+        fs.seekToPage(cur_page_head)
+        limit_p = fs.capCurrentPage(cur_page_head, buf)
+        mark_p = 0
+        pos_p = 0
+        line_head_p = 0
+        line_last_p = 0
 
         buf
     }
 
     def nextLine : Option[String] = {
-        def nextLineAcc(c : Int) : Array[Byte] = {
+        def nextCharAcc(c : Int) : Array[Byte] = {
             if (buf(c) == chl) {
-                val reVal = buf.slice(mark, c)
-
-                mark = c + 1
-                pos = c + 1
-
+                val reVal = buf.slice(mark_p, c)
+                mark_p = c + 1
+                pos_p = c + 1
                 reVal
-            } else nextLineAcc(c + 1)
+            } else nextCharAcc(c + 1)
         }
 
-        if (!isValidate) None
+        if (!isValidata) None
         else {
             try {
-                Some(new String(nextLineAcc(pos), StandardCharsets.UTF_8))
+                val line = nextCharAcc(pos_p)
+                line_head_p = line_last_p
+                line_last_p = mark_p
+                Some(new String(line, StandardCharsets.UTF_8))
             } catch {
                 case _ : java.lang.ArrayIndexOutOfBoundsException => None
             }
         }
     }
 
-    def isValidate : Boolean =
-        if (pos == -1 || mark == -1 || limit == -1) false
-        else if (mark > pos) false
-        else if (limit > pageSize) false
-        else if (limit <= pos) false
+    def isValidata : Boolean =
+        if (pos_p == -1 || mark_p == -1 || limit_p == -1) false
+        else if (mark_p > pos_p) false
+        else if (limit_p > pageSize) false
+        else if (limit_p <= pos_p) false
         else true
 
-    def pageDate : Stream[String] = {
+    def pageData : Stream[String] = {
         def pageDateAcc() : Stream[String] = nextLine match {
             case None => Stream.empty
             case Some(str) =>
@@ -64,16 +72,14 @@ trait pageStorage {
         pageDateAcc()
     }
 
-    def allDate : Stream[String] = {
+    def allData : Stream[String] = {
         def pageAcc(c : Int) : Stream[String] = {
-            if (c < fs.pageCount) {
-                cur = c
+            if (c < pageCount) {
+                cur_page_head = c
                 curInStorage
-                pageDate #::: pageAcc(c + 1)
+                pageData #::: pageAcc(c + 1)
             } else Stream.empty
         }
         pageAcc(0)
     }
-
-    val pageCount = fs.pageCount
 }
