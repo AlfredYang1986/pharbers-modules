@@ -14,16 +14,16 @@ trait pageStorage {
 
     lazy val buf : Array[Byte] = new Array[Byte](pageSize)
     val pageCount = fs.pageCount
-    var cur_page_head : Int = 0
+    var cur_page : Int = 0
 
     private var line_head_p : Int = -1
-    def line_head: Int = line_head_p
+    def line_head: Int = fs.seekToPage(cur_page) + line_head_p
     private var line_last_p : Int = -1
-    def line_last: Int = line_last_p
+    def line_last: Int = fs.seekToPage(cur_page) + line_last_p
 
     def curInStorage : Array[Byte] = {
-        fs.seekToPage(cur_page_head)
-        limit_p = fs.capCurrentPage(cur_page_head, buf)
+        fs.seekToPage(cur_page)
+        limit_p = fs.capCurrentPage(cur_page, buf)
         mark_p = 0
         pos_p = 0
         line_head_p = 0
@@ -75,7 +75,7 @@ trait pageStorage {
     def allData : Stream[String] = {
         def pageAcc(c : Int) : Stream[String] = {
             if (c < pageCount) {
-                cur_page_head = c
+                cur_page = c
                 curInStorage
                 pageData #::: pageAcc(c + 1)
             } else Stream.empty
