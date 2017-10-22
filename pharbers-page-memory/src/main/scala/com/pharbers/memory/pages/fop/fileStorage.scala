@@ -56,5 +56,5 @@ trait fileStorage {
 
     def fileLength = raf.length
 
-    val pageCount = fileLength / pageSize + 1
+    lazy val pageCount = fileLength / pageSize + 1
 }

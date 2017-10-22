@@ -71,22 +71,24 @@ class PfizerUnitSuite extends FunSuite with panel_file_path {
 
     test("test sort insert") {
         val data = List(
-            "100111,空军总医院,201705,维柳芬片剂250MG60上海医药集团股份有限公司,维柳芬片剂250MG60上海医药集团股份有限公司,PHA0021131,维柳芬片剂250MG60上海医药集团股份有限公司,INF,INF,12000.0,3700.0",
+            "100111,空军总医院,201705,维柳芬片剂250MG60上海医药集团股份有限公司,维柳芬片剂250MG60上海医药集团股份有限公司,PHA0021131,维柳芬片剂250MG60上海医药集团股份有限公司,INF,INF,48000.0,14800.0",
+            "100112,空军总医院,201705,维柳芬片剂250MG60上海医药集团股份有限公司,维柳芬片剂250MG60上海医药集团股份有限公司,PHA0021131,维柳芬片剂250MG60上海医药集团股份有限公司,INF,INF,12000.0,3700.0",
             "830195,新疆维吾尔自治区建工医院,201705,维柳芬片剂250MG60上海医药集团股份有限公司,维柳芬片剂250MG60上海医药集团股份有限公司,PHA0024515,维柳芬片剂250MG60上海医药集团股份有限公司,INF,INF,1200.0,416.0"
         )
-        implicit val test_file = "config/company/Output/test3"
+        implicit val base_file = "config/company/Output/"
         implicit val title = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
                 "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
-        val insert = data.map {x =>
+        val insert_data = data.map {x =>
             title.zip(x.split(",").toList).toMap
         }
+        val test_file = base_file + "test3" :: Nil
 
         val distinct_source: (Map[String, Any], Map[String, Any]) => Int = { (newLine, cur) =>
             def getString(m: Map[String, Any]): String ={
                 m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
             }
 
-            if(cur == "") -1
+            if(cur.toString == "") -1
             else if (getString(newLine) == getString(cur)) 0
             else if (getString(newLine) < getString(cur)) -1
             else 1
@@ -102,6 +104,6 @@ class PfizerUnitSuite extends FunSuite with panel_file_path {
                 (lst.head, lst.last)
             }
         }
-        println("result = " + phHandleCsvImpl().sortInsert(insert(0), distinct_source, sameLineFun))
+        println("result = " + phHandleCsvImpl().sortInsert(insert_data(1), test_file, distinct_source, sameLineFun))
     }
 }

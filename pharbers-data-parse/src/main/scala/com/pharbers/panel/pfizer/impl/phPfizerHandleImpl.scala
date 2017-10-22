@@ -117,12 +117,11 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         implicit val arg1 = Map("c0" -> loadCPA, "g0" -> loadGYCX)
         implicit val arg2 = Map("m1" -> load_m1, "hos00" -> load_hos00)
 
-        val a = ym.map { x =>
+        val result = ym.map { x =>
             Map(x -> generatePanelFile(x))
         }
-        a
 
-        toJson(ym.map(x => (x, "ucData(x)")).toMap)
+        toJson(result)
     }
 
     private def generatePanelFile(ym: String)
@@ -142,15 +141,16 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
 
             def filter_source(source: (String, List[String]),
                               m1Arg: Stream[Map[String, String]],
-                              append_local: String = ""): String = {
-                implicit val panel_file_local: String = if (append_local == "") base_path + company + output_local + UUID.randomUUID.toString
-                                        else append_local
+                              file_lst_arg: List[String] = Nil): List[String] = {
+                implicit val base_panel_local: String = base_path + company + output_local
                 implicit val titleSeq: List[String] = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
                                 "HOSP_ID" :: "Strength" :: "DOI" :: "DOIE" :: "Units" :: "Sales" :: Nil
+
                 val page = pageMemory(source._1)
+                var file_lst = file_lst_arg
 
                 (0 until page.pageCount.toInt) foreach { i =>
-                    val temp = page.pageData(i).map { line =>
+                    lazy val temp = page.pageData(i).map { line =>
                         val data = source._2.zip(line.split(spl).toList).toMap
                         if (data("YM") == ym && hos0_hosp_id.contains(data("HOSPITAL_CODE")))
                             data ++ Map("min1" -> getMin1Fun(data))
@@ -159,13 +159,14 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                     }.filter(_ != Map())
 
                     innerJoin(m1Arg, temp, "min1", "min1")
-                            .map(mergeMC(_, market, hosp_tab)).toList
+                            .map(mergeMC(_, market, hosp_tab))
                             .filter(_("Sales") != "")
                             .foreach { x =>
-                                phHandleCsvImpl().sortInsert(x, distinct_source, mergeSameLine)
+                                file_lst = file_lst :+ phHandleCsvImpl().sortInsert(x, file_lst, distinct_source, mergeSameLine)
+                                file_lst = file_lst.distinct
                             }
                 }
-                panel_file_local
+                file_lst
             }
 
             val panel_local = filter_source(g0, m1_g, filter_source(c0, m1_c))
@@ -258,7 +259,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
             m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
         }
 
-        if(cur == "") -1
+        if(cur.toString == "") -1
         else if (getString(newLine) == getString(cur)) 0
         else if (getString(newLine) < getString(cur)) -1
         else 1
