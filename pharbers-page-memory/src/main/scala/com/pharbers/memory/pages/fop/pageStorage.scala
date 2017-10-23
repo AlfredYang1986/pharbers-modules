@@ -73,4 +73,6 @@ trait pageStorage {
         }
         pageAcc(0)
     }
+
+    val pageCount = fs.pageCount
 }
