@@ -50,6 +50,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         val cpa_title = cpas.map { c =>
             excelParser.readExcelToCache(ExcelData(c, defaultValueArg = setDefaultMap), cache_file_local)
         }.distinct.flatten
+
         (cache_file_local, cpa_title)
     }
 
@@ -176,8 +177,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
 
     def load_m1: List[Map[String, String]] ={
         val m1_file_local = base_path + company + product_vs_ims_file
-        val completed = excelParser.readExcel(ExcelData(m1_file_local))
-        completed.map{x =>
+        excelParser.readExcel(ExcelData(m1_file_local)).map{x =>
             Map("min1" -> x("min1"), "min1_标准" -> x("min1_标准"), "通用名" -> x("通用名"))
         }.distinct
     }
@@ -210,10 +210,10 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
     }
 
     private def getHospTab(hos00: List[Map[String,String]], market: String) = {
-        val grouped = hos00.filter(_("DOI") == market + " Market").groupBy(_("ID"))
-        grouped.flatMap{x =>
-            Map(x._1 -> (x._2.head("HOSP_NAME"),x._2.head("HOSP_ID")))
-        }
+        hos00.filter(_("DOI") == market + " Market").groupBy(_("ID"))
+            .flatMap{x =>
+                Map(x._1 -> (x._2.head("HOSP_NAME"),x._2.head("HOSP_ID")))
+            }
     }
 
     private val mergeMB:Map[String,String] => Map[String,String] = { old =>
