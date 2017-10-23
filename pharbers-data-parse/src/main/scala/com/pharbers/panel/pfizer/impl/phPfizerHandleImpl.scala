@@ -119,8 +119,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
         implicit val arg2 = Map("m1" -> load_m1, "hos00" -> load_hos00)
 
         val result = ym.map { x =>
-            Map(x -> generatePanelFile(x))
-        }
+            x -> generatePanelFile(x)
+        }.toMap
 
         toJson(result)
     }
@@ -171,8 +171,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
             }
 
             val panel_local = filter_source(g0, m1_g, filter_source(c0, m1_c))
-            Map(market -> panel_local)
-        }
+            market -> panel_local
+        }.toMap
     }
 
     def load_m1: List[Map[String, String]] ={

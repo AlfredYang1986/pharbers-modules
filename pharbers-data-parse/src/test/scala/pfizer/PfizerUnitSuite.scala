@@ -9,6 +9,7 @@
 //import com.pharbers.panel.pfizer.panel_file_path
 //import com.pharbers.panel.util.csv.{phFileWriteStorageImpl, phHandleCsvImpl}
 //import org.scalatest.FunSuite
+//import play.api.libs.json.JsValue
 //
 //import scala.collection.immutable.Map
 //import scalaz.syntax.std.all
@@ -27,10 +28,6 @@
 //
 //    test("load CPA") {
 //        println(new phPfizerHandleImpl(args).loadCPA)
-//    }
-//
-//    test("load loadCPAAdded") {
-//        println(new phPfizerHandleImpl(args).loadCPAAdded)
 //    }
 //
 //    test("load GYCX") {
@@ -70,7 +67,18 @@
 //    }
 //
 //    test("test generate panel file") {
-//        println(new phPfizerHandleImpl(args).getPanelFile("201705" :: Nil))
+//        def getResult(data: JsValue) ={
+//            data.as[Map[String, JsValue]].map{ x =>
+//                x._1 -> x._2.as[Map[String, JsValue]].map{y =>
+//                    y._1 -> y._2.as[List[String]]
+//                }
+//            }
+//        }
+//
+//        val data = new phPfizerHandleImpl(args).getPanelFile("201705" :: Nil)
+//        val result = getResult(data)
+//        println(result)
+//
 //    }
 //
 //    test("test sort insert") {
