@@ -96,7 +96,6 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
 
     def distinctYM(arg: (String,List[String])): Map[String, Int] = {
         val page = pageMemory(arg._1)
-        println(s"t.pageCount = ${page.pageCount}")
 
         val lst = (for(i <- 0 until page.pageCount.toInt) yield {
             page.pageData(i).map{ line =>
