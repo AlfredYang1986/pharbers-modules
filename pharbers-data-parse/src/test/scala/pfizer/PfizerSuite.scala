@@ -41,16 +41,25 @@
 //        println(s"压力测试开始时间" + dateformat1.format(new Date()))
 //
 //        for(i <- 1 to 50) {
-//            val args: Map[String, List[String]] = Map(
-//                "company" -> List("generatePanel"),
-//                "user" -> List("user"+i),
-//                "cpas" -> List(cpa_file_local),
-//                "gycxs" -> List(gycx_file_local)
-//            )
-//            val parse = new phPfizerHandleImpl(args)
-//            val ym = parse.calcYM.asInstanceOf[JsString].value
-//            val result = parse.getPanelFile(ym :: Nil)
-//            println(s"第$i 个完成结果$result")
+//            def getResult(data: JsValue) = {
+//                data.as[Map[String, JsValue]].map { x =>
+//                    x._1 -> x._2.as[Map[String, JsValue]].map { y =>
+//                        y._1 -> y._2.as[List[String]]
+//                    }
+//                }
+//            }
+//
+//            val data_parse = new phPfizerHandleImpl(args)
+//            val yms = data_parse.calcYM.asInstanceOf[JsString].value
+//            val lst = yms.split("#").toList
+//            println("lst = " + lst.toString)
+//
+//            val data = data_parse.getPanelFile(lst)
+//            val result = getResult(data)
+//            val panelLst = result.values.flatMap(_.values).toList.flatten
+//            println(s"panel $i = " + panelLst.toString)
+//
+//
 //        }
 //
 //        println(s"压力测试结束时间" + dateformat1.format(new Date()))

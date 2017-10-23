@@ -105,6 +105,8 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                 l._1 -> l._2.distinct.length
             }.toList
         }).flatten
+
+        page.ps.fs.closeStorage
         val grouped = lst.groupBy(_._1).map { z =>
             z._1 -> z._2.map(_._2).sum
         }
@@ -166,6 +168,7 @@ class phPfizerHandleImpl(args: Map[String, List[String]]) extends phPfizerHandle
                                 file_lst = file_lst.distinct
                             }
                 }
+                page.ps.fs.closeStorage
                 file_lst
             }
 

@@ -15,7 +15,10 @@ trait fileStorage {
     lazy val fc: FileChannel = raf.getChannel
     lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, raf.length)
 
-    def closeStorage = fc.close()
+    def closeStorage = {
+        fc.close()
+        raf.close()
+    }
 
     def seekToPage(page : Int) : Int = {
         mem.position(0)

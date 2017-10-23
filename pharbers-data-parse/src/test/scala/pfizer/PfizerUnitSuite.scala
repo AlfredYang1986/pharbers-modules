@@ -9,7 +9,7 @@
 //import com.pharbers.panel.pfizer.panel_file_path
 //import com.pharbers.panel.util.csv.{phFileWriteStorageImpl, phHandleCsvImpl}
 //import org.scalatest.FunSuite
-//import play.api.libs.json.JsValue
+//import play.api.libs.json.{JsString, JsValue}
 //
 //import scala.collection.immutable.Map
 //import scalaz.syntax.std.all
@@ -74,10 +74,18 @@
 //                }
 //            }
 //        }
+//        val data_parse = new phPfizerHandleImpl(args)
+//        val yms = data_parse.calcYM.asInstanceOf[JsString].value
+//        val lst = yms.split("#").toList
+//        println("lst = " + lst.toString)
 //
-//        val data = new phPfizerHandleImpl(args).getPanelFile("201705" :: Nil)
+//        val data = data_parse.getPanelFile(lst)
+//        println("data = " + data)
 //        val result = getResult(data)
-//        println(result)
+//        println("result = " + result)
+//        val panelLst = result.values.flatMap(_.values).toList.flatten
+//        println("panel = " + panelLst.toString)
+//        println("panel生成完成")
 //
 //    }
 //

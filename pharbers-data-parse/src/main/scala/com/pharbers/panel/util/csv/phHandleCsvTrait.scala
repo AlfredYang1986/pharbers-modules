@@ -163,6 +163,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
                         case ex: Exception if ex.getMessage == "break" => ""
                         case ex: Exception if ex.getMessage == "size is over 300k" =>
                             val new_file = base_local + UUID.randomUUID.toString
+                            ifs.closeStorage
                             ifs = phFileWriteStorageImpl(new_file)
                             insertLine(0)
                             new_file
@@ -170,7 +171,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
             }
         }
 
-        output_lst.map { f =>
+        val temp = output_lst.map { f =>
             val wfs = phFileWriteStorageImpl(f)
             val ps = pageStorageImpl(wfs.pageSize)(wfs)
             if (f == output_lst.last) {
@@ -182,6 +183,9 @@ trait phSortInsertCsvTrait extends phDataHandle {
                 wfs.closeStorage
                 f
             }
-        }.last
+        }
+
+        ifs.closeStorage
+        temp.last
     }
 }
