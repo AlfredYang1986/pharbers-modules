@@ -15,12 +15,15 @@ trait connection_instance extends PharbersInjectModule {
     override val configPath: String = "pharbers_config/mongodb_connect.xml"
     override val md = "server_host" :: "server_port" :: "connect_name" :: "connect_pwd" :: "conn_name" :: Nil
 
-    def conn_name : String = config.mc.find(p => p._1 == "conn_name").get._2.toString
+    lazy val conn_name : String = config.mc.find(p => p._1 == "conn_name").get._2.toString
+    lazy val server_host : String = config.mc.find(p => p._1 == "server_host").get._2.toString
+    lazy val server_port : Int = config.mc.find(p => p._1 == "server_port").get._2.toString
 
-    val addr = new com.mongodb.casbah.Imports.ServerAddress("localhost", 2017)
+    // val addr = new com.mongodb.casbah.Imports.ServerAddress("localhost", 2017)
+    val addr = new com.mongodb.casbah.Imports.ServerAddress(server_host, server_port)
     //	val credentialsList = MongoCredential.createPlainCredential("dongdamaster", conn_name, "dongda@master".toCharArray)
     //    val _conn = MongoClient(addr) //, List(credentialsList))
-    val _conn = MongoClient()
+    val _conn = MongoClient(addr)
 
     var _conntion : Map[String, MongoCollection] = Map.empty
 
