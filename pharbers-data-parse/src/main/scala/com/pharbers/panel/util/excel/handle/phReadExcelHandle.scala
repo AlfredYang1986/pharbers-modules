@@ -1,4 +1,4 @@
-package com.pharbers.panel.util.excel.impl
+package com.pharbers.panel.util.excel.handle
 
 import java.io.InputStream
 
@@ -13,11 +13,11 @@ import org.xml.sax.helpers.{DefaultHandler, XMLReaderFactory}
 /**
   * Created by clock on 17-9-7.
   */
-class phReadExcelHandle(file_local: String) extends DefaultHandler {
+case class phReadExcelHandle(file_local: String) extends DefaultHandler {
     private val pkg = OPCPackage.open(file_local)
     private val fr = file_local match {
         case s:String if s.endsWith(".xlsx") => new XSSFReader(pkg)
-        case _ => throw new Exception("file type error")
+        case _ => throw new Exception("data parse error => file type error")
     }
     private val sst: SharedStringsTable = fr.getSharedStringsTable
 
@@ -59,7 +59,7 @@ class phReadExcelHandle(file_local: String) extends DefaultHandler {
         }
 
         if(index == 0)
-            throw new Exception("parse xlsx error => not found sheet name")
+            throw new Exception("data parse error => not found sheet name")
         else
             index += 1
 

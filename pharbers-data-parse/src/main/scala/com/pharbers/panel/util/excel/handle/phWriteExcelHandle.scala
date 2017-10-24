@@ -1,17 +1,17 @@
-package com.pharbers.panel.util.excel.impl
+package com.pharbers.panel.util.excel.handle
 
 import java.io.FileOutputStream
-
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.xml.sax.helpers.DefaultHandler
 
+import scala.collection.immutable.Map
+
 /**
   * Created by clock on 17-9-7.
   */
-class phWriteExcelHandle(output_file: String) extends DefaultHandler {
-
-    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]): Boolean = {
+case class phWriteExcelHandle(output_file: String) extends DefaultHandler {
+    def write(content: List[Map[String, Any]], sheetName: String = "Sheet1")(implicit cellNumMap: Map[String, Int]) = {
         val wb = new XSSFWorkbook()
         val sheet = wb.createSheet()
         wb.setSheetName(0,sheetName)
@@ -19,12 +19,11 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
         val os = new FileOutputStream(output_file)
         wb.write(os)
         os.close()
-        true
     }
 
     def writeSheet(content: List[Map[String, Any]], sheet: Sheet)(implicit cellNumMap: Map[String, Int]) = {
         if(content == Nil)
-            throw new Exception("写入的数据为空")
+            throw new Exception("data parse error => Write data is null")
         writeTitle(content.head.keys.toList, sheet)
         for(i <- 1 to content.length){
             val rowRef = sheet.createRow(i)
@@ -46,7 +45,7 @@ class phWriteExcelHandle(output_file: String) extends DefaultHandler {
     def writeTitle(title: List[String], sheet: Sheet)(implicit cellNumMap: Map[String, Int]) = {
         val row = sheet.createRow(0)
         if(title.diff(cellNumMap.keys.toList) != Nil)
-            throw new Exception("写入Excel时，列关系对应异常")
+            throw new Exception("data parse error => Column mapping error")
         cellNumMap.foreach{x =>
             row.createCell(x._2).setCellValue(x._1)
         }

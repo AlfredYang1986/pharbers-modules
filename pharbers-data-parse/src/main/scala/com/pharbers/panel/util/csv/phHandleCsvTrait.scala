@@ -11,18 +11,16 @@ import scala.collection.immutable.Map
 /**
   * Created by clock on 17-9-7.
   */
-case class phHandleCsvImpl() extends phHandleCsvTrait with phSortInsertCsvTrait
-case class pageStorageImpl(override val pageSize: Int)(implicit override val fs: fileStorage) extends pageStorage
+case class phHandleCsv() extends phHandleCsvTrait with phSortInsertCsvTrait
 
 trait phHandleCsvTrait extends phDataHandle {
-
     def writeByList(content: List[Map[String, Any]], output_file: String)
-                   (implicit titleSeqArg: List[String] = List()) : List[String] = {
-        if(content.isEmpty) throw new Exception("写入的数据为空")
+                   (implicit titleSeqArg: List[String] = List()): List[String] = {
+        if (content.isEmpty) throw new Exception("写入的数据为空")
 
-        val titleSeq = if(titleSeqArg.isEmpty){
+        val titleSeq = if (titleSeqArg.isEmpty) {
             content.head.keys.toList
-        }else{
+        } else {
             titleSeqArg
         }
 
@@ -31,8 +29,8 @@ trait phHandleCsvTrait extends phDataHandle {
 
         val out = new FileWriter(file)
 
-        val result = content.map{map =>
-            val temp = titleSeq.map{ t =>
+        val result = content.map { map =>
+            val temp = titleSeq.map { t =>
                 map(t).toString
             }
             val line = temp.mkString(spl) + chl
@@ -44,12 +42,12 @@ trait phHandleCsvTrait extends phDataHandle {
     }
 
     def appendByLine(line: Map[String, Any], output_file: String)
-                    (implicit titleSeqArg: List[String]) : String = {
-        if(line.isEmpty) throw new Exception("写入的数据为空")
+                    (implicit titleSeqArg: List[String]): String = {
+        if (line.isEmpty) throw new Exception("写入的数据为空")
 
-        val titleSeq = if(titleSeqArg.isEmpty){
+        val titleSeq = if (titleSeqArg.isEmpty) {
             line.keys.toList
-        }else{
+        } else {
             titleSeqArg
         }
 
@@ -57,7 +55,6 @@ trait phHandleCsvTrait extends phDataHandle {
 
         val file = new File(output_file)
         createFile(file)
-//        file.deleteOnExit // JVM退出自动删除
 
         val out = new RandomAccessFile(output_file, "rw")
         out.seek(out.length)
@@ -66,24 +63,63 @@ trait phHandleCsvTrait extends phDataHandle {
 
         lineStr
     }
-
 }
 
 trait phSortInsertCsvTrait extends phDataHandle {
-
     def sortInsert(line: Map[String, Any], output_file_arg: List[String],
                    sortFun: (Map[String, Any], Map[String, Any]) => Int,
                    sameLineFun: List[Map[String, Any]] => (Map[String, Any], Map[String, Any]))
                   (implicit titleSeqArg: List[String], base_local: String): String = {
         if (line.isEmpty) throw new Exception("write data is null")
 
-        val output_lst = output_file_arg match {
-            case Nil => base_local + UUID.randomUUID.toString :: Nil
-            case _ => output_file_arg
+        def readPanelAcc(lst: List[String]): String = lst match {
+            case Nil => sort_insert(base_local + UUID.randomUUID.toString)
+            case one :: Nil =>  sort_insert(one)
+            case head :: tail =>
+                same_merge(head)
+                readPanelAcc(tail)
         }
 
-        var ifs = phFileWriteStorageImpl(output_lst.last)
-        def insertLine(pos: Int) = {
+        def sort_insert(file: String): String = {
+            val rfs = phFileWriteStorageImpl(file)
+            val ps = pageStorageImpl(rfs.pageSize)(rfs)
+
+            var name = file
+            ps.allData match {
+                case Stream() => insertLine(0, name)
+                case data: Stream[String] =>
+                    try {
+                        var pos = -1
+                        data.foreach { x =>
+                            val cur = titleSeqArg.zip(x.split(comma).toList).toMap
+                            val compare_result = sortFun(line, cur)
+
+                            compare_result match {
+                                case 0 =>
+                                    sameLine(cur, ps.line_head, ps.line_last,name, sameLineFun)
+                                    throw new Exception("break")
+                                case 1 =>
+                                    pos = ps.line_last
+                                case -1 => {
+                                    insertLine(ps.line_head, name)
+                                    throw new Exception("break")
+                                }
+                            }
+                        }
+                        insertLine(pos, name)
+                    } catch {
+                        case ex: Exception if ex.getMessage == "break" => Unit
+                        case ex: Exception if ex.getMessage == "size is over 300k" =>
+                            name = base_local + UUID.randomUUID.toString
+                            insertLine(0, name)
+                    }
+            }
+            rfs.closeStorage
+            name
+        }
+
+        def insertLine(pos: Int, file: String) = {
+            val ifs = phFileWriteStorageImpl(file)
             val newLineArr = (titleSeqArg.map(line(_).toString).mkString(comma) + chl).getBytes
 
             if (ifs.raf.length + newLineArr.length > ifs.bufferSize)
@@ -96,9 +132,12 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
             ifs.raf.seek(pos)
             ifs.raf.write(newLineArr ++ buf)
+            ifs.closeStorage
         }
-        def sameLine(curLine: Map[String, Any], h_pos: Int, l_pos: Int,
+
+        def sameLine(curLine: Map[String, Any], h_pos: Int, l_pos: Int, file: String,
                      sameLineFun: List[Map[String, Any]] => (Map[String, Any], Map[String, Any])) = {
+            val ifs = phFileWriteStorageImpl(file)
             val newLineArr = sameLineFun(curLine :: line :: Nil) match {
                 case (a, b) if b.isEmpty =>
                     (titleSeqArg.map(a(_).toString).mkString(comma) + chl).getBytes
@@ -114,9 +153,13 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
             ifs.raf.seek(h_pos)
             ifs.raf.write(newLineArr ++ buf)
+            ifs.closeStorage
         }
 
-        def bodyFileFun(ps: pageStorageImpl) = {
+        def same_merge(file: String) = {
+            val rfs = phFileWriteStorageImpl(file)
+            val ps = pageStorageImpl(rfs.pageSize)(rfs)
+
             try {
                 ps.allData.foreach { x =>
                     val cur = titleSeqArg.zip(x.split(comma).toList).toMap
@@ -124,7 +167,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
                     compare_result match {
                         case 0 =>
-                            sameLine(cur, ps.line_head, ps.line_last, sameLineFun)
+                            sameLine(cur, ps.line_head, ps.line_last, file, sameLineFun)
                             throw new Exception("break")
                         case _ => Unit
                     }
@@ -132,60 +175,10 @@ trait phSortInsertCsvTrait extends phDataHandle {
             } catch {
                 case ex: Exception if ex.getMessage == "break" => Unit
             }
-        }
-        def lastFileFun(ps: pageStorageImpl): String = {
-            ps.allData match {
-                case Stream() =>
-                    insertLine(0)
-                    ""
-                case data: Stream[String] =>
-                    try {
-                        var pos = -1
-                        data.foreach { x =>
-                            val cur = titleSeqArg.zip(x.split(comma).toList).toMap
-                            val compare_result = sortFun(line, cur)
 
-                            compare_result match {
-                                case 0 =>
-                                    sameLine(cur, ps.line_head, ps.line_last, sameLineFun)
-                                    throw new Exception("break")
-                                case 1 =>
-                                    pos = ps.line_last
-                                case -1 => {
-                                    insertLine(ps.line_head)
-                                    throw new Exception("break")
-                                }
-                            }
-                        }
-                        insertLine(pos)
-                        ""
-                    } catch {
-                        case ex: Exception if ex.getMessage == "break" => ""
-                        case ex: Exception if ex.getMessage == "size is over 300k" =>
-                            val new_file = base_local + UUID.randomUUID.toString
-                            ifs.closeStorage
-                            ifs = phFileWriteStorageImpl(new_file)
-                            insertLine(0)
-                            new_file
-                    }
-            }
+            rfs.closeStorage
         }
 
-        val temp = output_lst.map { f =>
-            val wfs = phFileWriteStorageImpl(f)
-            val ps = pageStorageImpl(wfs.pageSize)(wfs)
-            if (f == output_lst.last) {
-                val new_file = lastFileFun(ps)
-                wfs.closeStorage
-                if(new_file == "") f else new_file
-            } else {
-                bodyFileFun(ps)
-                wfs.closeStorage
-                f
-            }
-        }
-
-        ifs.closeStorage
-        temp.last
+        readPanelAcc(output_file_arg)
     }
 }
