@@ -61,18 +61,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
 
     def getPanelFile(ym: List[String]): JsValue = {
         val c0 = loadCPA
-        c0._1.values.foreach(println)
-        println("cccccccccccccccccccccccccc")
         val g0 = loadGYCX
-        g0._1.values.foreach(println)
-        println("ggggggggggggggggggggggggggg")
         val m1 = load_m1
         val hos00 = load_hos00
         val result = ym.map { ym =>
-            val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2)
-            println(s"c1 = ${c1}")
+            val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2) //(c0._1(ym), c0._2)
             val g1 = (g0._1(ym), g0._2)
-            println(s"g1 = ${g1}")
             val r1 = markets.map { mkt =>
                 val lst = generatePanel(ym, mkt, c1, g1, m1, hos00)
                 mkt -> toJson(lst)
@@ -208,22 +202,29 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         }
         cpa_page.ps.fs.closeStorage
 
-//        val fill_data_local = base_path + company + fill_hos_data_file
-//        val fill_data_page = pageMemory(fill_data_local)
-//        val fd_title = fill_data_page.pageData(0).head.dropRight(2).split(comma).map(x => x.substring(1,x.length - 1))
-//        ( 0 until fill_data_page.pageCount.toInt ) foreach { i =>
-//            fill_data_page.pageData(i).foreach { line =>
-//                val data = fd_title.zip(line.dropRight(2).split(comma).map { x =>
-//                                                if(x == "NA") ""
-//                                                else x.substring(1, x.length - 1)
-//                                        }).toMap
-//                if(lst.contains(data("HOSPITAL_CODE")) && data("MONTH") == m.toString)
-//                    phHandleCsv().appendByLine(data, cache_file)
-//            }
-//        }
-//        fill_data_page.ps.fs.closeStorage
+        append_fill_data(m, lst, cache_file)
 
         (cache_file, title)
+    }
+
+    def append_fill_data(m: Int, hos_lst: List[String], cache_file: String)
+                        (implicit title: List[String]) = {
+        val fill_data_local = base_path + company + fill_hos_data_file
+        val fill_data_page = pageMemory(fill_data_local)
+
+        val fd_title = fill_data_page.pageData(0).head
+                .dropRight(1).toUpperCase
+                .split(spl).toList
+
+        (0 until fill_data_page.pageCount.toInt) foreach { i =>
+            fill_data_page.pageData(i).foreach { line =>
+                val data = fd_title.zip(line.dropRight(1).filter(_ != '"').split(spl).toList).toMap
+                if (hos_lst.contains(data("HOSPITAL_CODE")) && data("MONTH") == m.toString)
+                    phHandleCsv().appendByLine(postFun(data).get, cache_file)
+            }
+        }
+
+        fill_data_page.ps.fs.closeStorage
     }
 
     def fill_hos_lst(m: Int) = {
