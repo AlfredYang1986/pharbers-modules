@@ -63,12 +63,11 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         val c0 = loadCPA
         val g0 = loadGYCX
         val m1 = load_m1
-        val hos00 = load_hos00
         val result = ym.map { ym =>
             val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2) //(c0._1(ym), c0._2)
             val g1 = (g0._1(ym), g0._2)
             val r1 = markets.map { mkt =>
-                val lst = generatePanel(ym, mkt, c1, g1, m1, hos00)
+                val lst = generatePanel(ym, mkt, c1, g1, m1)
                 mkt -> toJson(lst)
             }.toMap
             ym -> toJson(r1)
@@ -141,8 +140,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         phHandleExcel().readExcel(phExcelData(m1_file_local))
     }
 
-    def load_hos00: List[Map[String, String]] = {
-        val hos0_file_local = base_path + company + universe_inf_file
+    def load_hos00(market: String): List[Map[String, String]] = {
+        val hos0_file_local = base_path + company + universe_inf_file.replace("???", market)
         val setFieldMap = Map(
             "样本医院编码" -> "ID",
             "PHA医院名称" -> "HOSP_NAME",
@@ -174,7 +173,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
         implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
         val b0_file_local = base_path + company + markets_file
-        phHandleExcel().readExcel(phExcelData(b0_file_local, sheetName = market))
+        phHandleExcel().readExcel(phExcelData(b0_file_local, sheetName = "Sheet1"))
+                        .filter(_("Market") == market)
     }
 
     def innerJoin(lst1: Stream[Map[String, String]], lst2: Stream[Map[String, String]],
@@ -258,14 +258,14 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
 
     def generatePanel(ym: String, market: String,
                       c1: (String, List[String]), g1: (String, List[String]),
-                      m1: List[Map[String, String]], hos00: List[Map[String, String]]) = {
+                      m1: List[Map[String, String]]) = {
+        val hos00 = load_hos00(market)
         val b0 = load_b0(market)
-        val m1_c = innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").map(mergeMB(_))
-        val m1_g = innerJoin(b0.toStream, m1.toStream, "GYCX反馈通用名", "通用名").map(mergeMB(_))
+        val m2 = innerJoin(b0.toStream, m1.toStream, "通用名_原始", "通用名").map(mergeMB(_))
         val hosp_tab = getHospTab(hos00, market)
 
-        val cpa_panel = generate(c1, m1_c, ym, market, hosp_tab)
-        generate(g1, m1_g, ym, market, hosp_tab, cpa_panel)
+        val cpa_panel = generate(c1, m2, ym, market, hosp_tab)
+        generate(g1, m2, ym, market, hosp_tab, cpa_panel)
     }
 
     private def getHospTab(hos00: List[Map[String, String]], market: String) = {
@@ -279,7 +279,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         Map(
             "min1" -> old("min1"),
             "min1_标准" -> old("min1_标准"),
-            "marketname" -> old("TA")
+            "marketname" -> old("Market")
         )
     }
 

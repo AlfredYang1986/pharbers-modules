@@ -23,7 +23,7 @@ trait connection_instance extends PharbersInjectModule {
     lazy val addr = new com.mongodb.casbah.Imports.ServerAddress(server_host, server_port)
     //	val credentialsList = MongoCredential.createPlainCredential("dongdamaster", conn_name, "dongda@master".toCharArray)
     //    val _conn = MongoClient(addr) //, List(credentialsList))
-    val _conn = MongoClient(addr)
+    lazy val _conn = MongoClient(addr)
 
     var _conntion : Map[String, MongoCollection] = Map.empty
 

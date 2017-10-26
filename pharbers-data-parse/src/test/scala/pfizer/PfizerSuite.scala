@@ -44,6 +44,7 @@
 //        println("ym lst = " + lst.toString)
 //
 //        val result = getResult(data_parse.getPanelFile(lst))
+//        println("result = " + result)
 //        val panelLst = result.values.flatMap(_.values).toList.flatten
 //        panelLst.foreach(x => println(s"panel = $x"))
 //        println()
