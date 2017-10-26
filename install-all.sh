@@ -83,4 +83,9 @@ cd pharbers-message
 mvn clean install
 cd ..
 
+echo "14.installing pharbers-bson-writer"
+cd pharbers-bson-writer
+mvn clean install
+cd ..
+
 echo "finish, have fun"
