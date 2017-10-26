@@ -1,87 +1,80 @@
-package pfizer
-
-import java.text.SimpleDateFormat
-import java.util.Date
-
-import com.pharbers.pfizer.impl.phPfizerHandleImpl
-import org.scalatest.FunSuite
-import play.api.libs.json.JsString
-
-import scala.collection.immutable.Map
-
-import java.lang.Runtime
-
-/**
-  * Created by clock on 17-9-7.
-  */
-class PfizerSuite extends FunSuite {
-    val gycx_file_local = "files/1705 GYC.xlsx"
-    val cpa_file_local = "files/1705 CPA.xlsx"
-    val args: Map[String, List[String]] = Map(
-        "company" -> List(""),
-        "user" -> List("user"),
-        "cpas" -> List(cpa_file_local),
-        "gycxs" -> List(gycx_file_local)
-    )
-
-    test("load CPA") {
-        System.gc()
-
-        {
-            val t = new phPfizerHandleImpl(args)
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-
-            print(t.c0.length)
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-
-            System.gc()
-            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-        }
-//        System.gc()
+//package pfizer
 //
-//        {
-//            new phPfizerHandleImpl(args)
-//            println("free memory is:" + Runtime.getRuntime.freeMemory() / (1024 * 1024) + "M")
-//            println("total memory is:" + Runtime.getRuntime.totalMemory() / (1024 * 1024) + "M")
-//        }
-    }
-
+//import java.text.SimpleDateFormat
+//import java.util.Date
+//import com.pharbers.panel.pfizer.phPfizerHandle
+//import org.scalatest.FunSuite
+//import play.api.libs.json.{JsString, JsValue}
+//import scala.collection.immutable.Map
+//
+///**
+//  * Created by clock on 17-9-7.
+//  */
+//class PfizerSuite extends FunSuite {
+//    val cpa_file_local = "config/company/Client/CPA/1705 CPA.xlsx"
+//    val gycx_file_local = "config/company/Client/GYCX/1705 GYC.xlsx"
+//    val args: Map[String, List[String]] = Map(
+//        "company" -> List("company"),
+//        "user" -> List("user"),
+//        "cpas" -> List(cpa_file_local),
+//        "gycxs" -> List(gycx_file_local)
+//    )
+//
 //    test("calc ym") {
-//        val result = new phPfizerHandleImpl(args).calcYM
-//        println(result)
+//        val yms = phPfizerHandle(args).calcYM.asInstanceOf[JsString].value
+//        val lst = yms.split(",").toList
+//        println(lst)
 //    }
 //
-//    test("generate panel file") {
-//        val dateformat1 = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"生成panel测试开始时间" + dateformat1.format(new Date()))
-//        val result = new phPfizerHandleImpl(args).generatePanelFile("201705")
-//        println(result)
-//        println(s"生成panel测试结束时间" + dateformat1.format(new Date()))
+//    test("test generate panel file") {
+//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
+//        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
+//        println()
+//        def getResult(data: JsValue) = {
+//            data.as[Map[String, JsValue]].map { x =>
+//                x._1 -> x._2.as[Map[String, JsValue]].map { y =>
+//                    y._1 -> y._2.as[List[String]]
+//                }
+//            }
+//        }
+//
+//        val data_parse = phPfizerHandle(args)
+//        val yms = data_parse.calcYM.asInstanceOf[JsString].value
+//        val lst = yms.split("#").toList
+//        println("ym lst = " + lst.toString)
+//
+//        val result = getResult(data_parse.getPanelFile(lst))
+//        val panelLst = result.values.flatMap(_.values).toList.flatten
+//        panelLst.foreach(x => println(s"panel = $x"))
+//        println()
+//        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
 //    }
-
+//
 //    test("Pressure test => 50") {
-//        val dateformat1 = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"压力测试开始时间" + dateformat1.format(new Date()))
+//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
+//        println(s"压力测试开始时间" + dateformat.format(new Date()))
+//        println()
+//        def getResult(data: JsValue) = {
+//            data.as[Map[String, JsValue]].map { x =>
+//                x._1 -> x._2.as[Map[String, JsValue]].map { y =>
+//                    y._1 -> y._2.as[List[String]]
+//                }
+//            }
+//        }
 //
-//        val gycx_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx"
-//        val cpa_file_local = "/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx"
+//        val data_parse = phPfizerHandle(args)
+//        val yms = data_parse.calcYM.asInstanceOf[JsString].value
+//        val lst = yms.split("#").toList
+//        println("ym lst = " + lst.toString)
 //
 //        for(i <- 1 to 50) {
-//            val args: Map[String, List[String]] = Map(
-//                "company" -> List("generatePanel"),
-//                "user" -> List("user"+i),
-//                "cpas" -> List(cpa_file_local),
-//                "gycxs" -> List(gycx_file_local)
-//            )
-//            val parse = new phPfizerHandleImpl(args)
-//            val ym = parse.calcYM.asInstanceOf[JsString].value
-//            val result = parse.generatePanelFile(ym)
-//            println(s"第$i 个完成结果$result")
+//            val result = getResult(data_parse.getPanelFile(lst))
+//            val panelLst = result.values.flatMap(_.values).toList.flatten
+//            print(s"panel $i = ")
+//            panelLst.foreach(x => println(s"panel_local = $x"))
 //        }
 //
-//        println(s"压力测试结束时间" + dateformat1.format(new Date()))
+//        println()
+//        println(s"压力测试结束时间" + dateformat.format(new Date()))
 //    }
-}
+//}
