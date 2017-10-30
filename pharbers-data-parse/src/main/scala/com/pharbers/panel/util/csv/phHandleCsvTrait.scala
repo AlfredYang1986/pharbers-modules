@@ -91,7 +91,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
                     try {
                         var pos = -1
                         data.foreach { x =>
-                            val cur = titleSeqArg.zip(x.split(comma).toList).toMap
+                            val cur = titleSeqArg.zip(x.split(spl).toList).toMap
                             val compare_result = sortFun(line, cur)
 
                             compare_result match {
@@ -120,7 +120,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
         def insertLine(pos: Int, file: String) = {
             val ifs = phFileWriteStorageImpl(file)
-            val newLineArr = (titleSeqArg.map(line(_).toString).mkString(comma) + chl).getBytes
+            val newLineArr = (titleSeqArg.map(line(_).toString).mkString(spl) + chl).getBytes
 
             if (ifs.raf.length + newLineArr.length > ifs.bufferSize)
                 throw new Exception("size is over 300k")
@@ -140,10 +140,10 @@ trait phSortInsertCsvTrait extends phDataHandle {
             val ifs = phFileWriteStorageImpl(file)
             val newLineArr = sameLineFun(curLine :: line :: Nil) match {
                 case (a, b) if b.isEmpty =>
-                    (titleSeqArg.map(a(_).toString).mkString(comma) + chl).getBytes
+                    (titleSeqArg.map(a(_).toString).mkString(spl) + chl).getBytes
                 case (a, b) =>
-                    (titleSeqArg.map(a(_).toString).mkString(comma) + chl).getBytes ++
-                            (titleSeqArg.map(b(_).toString).mkString(comma) + chl).getBytes
+                    (titleSeqArg.map(a(_).toString).mkString(spl) + chl).getBytes ++
+                            (titleSeqArg.map(b(_).toString).mkString(spl) + chl).getBytes
             }
 
             val tailSize = ifs.raf.length.toInt - l_pos
@@ -162,7 +162,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
             try {
                 ps.allData.foreach { x =>
-                    val cur = titleSeqArg.zip(x.split(comma).toList).toMap
+                    val cur = titleSeqArg.zip(x.split(spl).toList).toMap
                     val compare_result = sortFun(line, cur)
 
                     compare_result match {
