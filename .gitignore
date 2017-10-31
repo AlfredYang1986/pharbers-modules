@@ -1,6 +1,7 @@
 .idea/
 */.idea/
 *.iml
+*.cache
 
 */target/
 */pom.xml.tag

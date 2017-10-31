@@ -24,18 +24,12 @@ trait PageMemoryTrait extends PharbersInjectModule {
     def pageCount: Long = ps.pageCount
 
     def pageData(page : Int) : Stream[String] = {
-        ps.cur = page
+        ps.cur_page = page
         ps.curInStorage
-        ps.pageDate
+        ps.pageData
     }
 
-    def allData : Stream[String] = ps.allDate
+    def allData : Stream[String] = ps.allData
 }
 
-case class page2map(override val path : String) extends PageMemoryTrait {
-    def pageData(page: Int, key: List[String]): Stream[Map[String, String]] = {
-        super.pageData(page).map{v =>
-            key.map(_ -> v).toMap
-        }
-    }
-}
+case class pageMemory(override val path : String) extends PageMemoryTrait
