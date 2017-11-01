@@ -26,7 +26,17 @@ trait InstantMessageTrait extends BaseTrait {
 	
 	def sendMsg(msg: String): String
 	
-//	def createUser(account: String, nickName: Option[String], pwd: String): String = ???
-//	def updateUser(nickName: Option[String], pwd: Option[String]): String = ???
-//	def banUser(account: String): String = ???
+	def createChatRoom: String
+	
+	def deleteChatRoom(roomId: String): String
+	
+	def setRoomMembers(roomId: String, userList: List[String]): String
+	
+	def getAllRooms: String
+	
+	def getRoomDetail(roomId: String): String
+	
+	def registerUser(name: String, pwd: String): String
+	
+	def deleteRegisterUser(name: String): String
 }
