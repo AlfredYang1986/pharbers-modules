@@ -13,8 +13,8 @@ import play.api.libs.json.Json.toJson
   * Created by clock on 17-10-24.
   */
 case class phPfizerHandle(args: Map[String, List[String]]) extends phGeneratePanelTrait {
-    override val cpa = args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
-    override val gycx = args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
+    override lazy val cpa = base_path + company + client_path + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
+    override lazy val gycx = base_path + company + client_path + args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
     override val company = args.getOrElse("company", throw new Exception("no find company arg")).head
     override val markets = makets.split(",").toList
 }
