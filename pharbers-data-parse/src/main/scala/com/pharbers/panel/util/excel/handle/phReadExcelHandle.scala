@@ -15,10 +15,7 @@ import org.xml.sax.helpers.{DefaultHandler, XMLReaderFactory}
   */
 case class phReadExcelHandle(file_local: String) extends DefaultHandler {
     private val pkg = OPCPackage.open(file_local)
-    private val fr = file_local match {
-        case s:String if s.endsWith(".xlsx") => new XSSFReader(pkg)
-        case _ => throw new Exception("data parse error => file type error")
-    }
+    private val fr = new XSSFReader(pkg)
     private val sst: SharedStringsTable = fr.getSharedStringsTable
 
     lazy val getCount: Int = {
