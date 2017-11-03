@@ -36,6 +36,8 @@ trait InstantMessageTrait extends BaseTrait {
 	
 	def getRoomDetail(roomId: String): String
 	
+	def getUsersBatch(limit: Long, cursor: String): String
+	
 	def registerUser(name: String, pwd: String): String
 	
 	def deleteRegisterUser(name: String): String
