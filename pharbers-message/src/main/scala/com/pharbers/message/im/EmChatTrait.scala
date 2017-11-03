@@ -38,6 +38,10 @@ sealed trait EmChatTrait extends InstantMessageTrait {
 	override def getRoomDetail(roomId: String): String =
 		new ChatRoomsApi().orgNameAppNameChatroomsChatroomIdGet(imConf.AppKey, imConf.AppName, getAccessToken, roomId)
 	
+	override def getUsersBatch(limit: Long = 1000, cursor: String = null): String = {
+		new UsersApi().orgNameAppNameUsersGet(imConf.AppKey, imConf.AppName, getAccessToken, limit.toString, cursor)
+	}
+	
 	override def registerUser(name: String, pwd: String): String = {
 		val users = new RegisterUsers()
 		val user = new User().username(name).password(pwd)
