@@ -8,12 +8,13 @@ import com.pharbers.baseModules.PharbersInjectModule
 trait panel_file_path extends PharbersInjectModule {
     override val id: String = "data-parse"
     override val configPath: String = "pharbers_config/data_parse_file.xml"
-    override val md = "contrast_file_path" :: "product_vs_ims_file" ::
+    override val md = "contrast_file_path" :: "client_file_path" :: "product_vs_ims_file" ::
                     "universe_inf_file" :: "markets_file" :: "cache_file" ::
                     "unpublished_hos_file" :: "fill_hos_data_file" ::
                     "output_file" :: "makets" :: Nil
 
     val base_path: String = config.mc.find(p => p._1 == "contrast_file_path").get._2.toString
+    val client_path: String = config.mc.find(p => p._1 == "client_file_path").get._2.toString
     val product_vs_ims_file: String = config.mc.find(p => p._1 == "product_vs_ims_file").get._2.toString
     val universe_inf_file: String = config.mc.find(p => p._1 == "universe_inf_file").get._2.toString
     val markets_file: String = config.mc.find(p => p._1 == "markets_file").get._2.toString

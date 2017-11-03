@@ -11,8 +11,8 @@
 //  * Created by clock on 17-9-7.
 //  */
 //class PfizerSuite extends FunSuite {
-//    val cpa_file_local = "config/company/Client/CPA/1705 CPA.xlsx"
-//    val gycx_file_local = "config/company/Client/GYCX/1705 GYC.xlsx"
+//    val cpa_file_local = "1705 CPA.xlsx"
+//    val gycx_file_local = "1705 GYC.xlsx"
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("company"),
 //        "user" -> List("user"),

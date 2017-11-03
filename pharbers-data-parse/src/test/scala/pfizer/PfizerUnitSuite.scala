@@ -13,8 +13,8 @@
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("company"),
 //        "user" -> List("user"),
-//        "cpas" -> List("config/company/Client/CPA/1705 CPA.xlsx"),
-//        "gycxs" -> List("config/company/Client/GYCX/1705 GYC.xlsx")
+//        "cpas" -> List("1705 CPA.xlsx"),
+//        "gycxs" -> List("1705 GYC.xlsx")
 //    )
 //
 //    test("load CPA") {
@@ -40,7 +40,7 @@
 //    }
 //
 //    test("load hos0") {
-//        phPfizerHandle(args).load_hos00.foreach(println)
+//        phPfizerHandle(args).load_hos00("INF").foreach(println)
 //    }
 //
 //    test("load b0") {
