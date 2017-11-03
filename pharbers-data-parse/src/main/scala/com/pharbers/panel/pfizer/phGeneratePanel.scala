@@ -55,7 +55,15 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         result.size match {
             case 0 => toJson("0")
             case 1 => toJson(result.head._1)
-            case _ => toJson(result.keys.toList.mkString("#"))
+            case _ => toJson(result.keys.toList.mkString(comma))
+        }
+    }
+
+    def getMarkets: JsValue = {
+        markets.size match {
+            case 0 => toJson("0")
+            case 1 => toJson(markets.head)
+            case _ => toJson(markets.mkString(comma))
         }
     }
 
