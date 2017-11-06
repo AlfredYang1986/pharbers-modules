@@ -73,20 +73,20 @@ trait phSortInsertCsvTrait extends phDataHandle {
         if (line.isEmpty) throw new Exception("write data is null")
 
         def readPanelAcc(lst: List[String]): String = lst match {
-            case Nil => sort_insert(base_local + UUID.randomUUID.toString)
-            case one :: Nil =>  sort_insert(one)
+            case Nil => sort_insert(UUID.randomUUID.toString, base_local)
+            case one :: Nil =>  sort_insert(one, base_local)
             case head :: tail =>
                 same_merge(head)
                 readPanelAcc(tail)
         }
 
-        def sort_insert(file: String): String = {
-            val rfs = phFileWriteStorageImpl(file)
+        def sort_insert(file: String, base_local: String): String = {
+            val rfs = phFileWriteStorageImpl(base_local + file)
             val ps = pageStorageImpl(rfs.pageSize)(rfs)
 
             var name = file
             ps.allData match {
-                case Stream() => insertLine(0, name)
+                case Stream() => insertLine(0, base_local + name)
                 case data: Stream[String] =>
                     try {
                         var pos = -1
@@ -96,22 +96,22 @@ trait phSortInsertCsvTrait extends phDataHandle {
 
                             compare_result match {
                                 case 0 =>
-                                    sameLine(cur, ps.line_head, ps.line_last,name, sameLineFun)
+                                    sameLine(cur, ps.line_head, ps.line_last, base_local + name, sameLineFun)
                                     throw new Exception("break")
                                 case 1 =>
                                     pos = ps.line_last
                                 case -1 => {
-                                    insertLine(ps.line_head, name)
+                                    insertLine(ps.line_head, base_local + name)
                                     throw new Exception("break")
                                 }
                             }
                         }
-                        insertLine(pos, name)
+                        insertLine(pos, base_local + name)
                     } catch {
                         case ex: Exception if ex.getMessage == "break" => Unit
                         case ex: Exception if ex.getMessage == "size is over 300k" =>
-                            name = base_local + UUID.randomUUID.toString
-                            insertLine(0, name)
+                            name = UUID.randomUUID.toString
+                            insertLine(0, base_local + name)
                     }
             }
             rfs.closeStorage

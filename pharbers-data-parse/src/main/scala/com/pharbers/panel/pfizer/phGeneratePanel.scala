@@ -149,7 +149,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def load_hos00(market: String): List[Map[String, String]] = {
-        val hos0_file_local = base_path + company + universe_inf_file.replace("???", market)
+        val hos0_file_local = base_path + company + universe_inf_file.replace("##market##", market)
         val setFieldMap = Map(
             "样本医院编码" -> "ID",
             "PHA医院名称" -> "HOSP_NAME",
