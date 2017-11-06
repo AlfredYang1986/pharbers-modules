@@ -14,8 +14,8 @@
 //    val cpa_file_local = "1705 CPA.xlsx"
 //    val gycx_file_local = "1705 GYC.xlsx"
 //    val args: Map[String, List[String]] = Map(
-//        "company" -> List("company"),
-//        "user" -> List("user"),
+//        "company" -> List("fea9f203d4f593a96f0d6faa91ba24ba"),
+//        "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
 //        "cpas" -> List(cpa_file_local),
 //        "gycxs" -> List(gycx_file_local)
 //    )
