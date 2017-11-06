@@ -55,7 +55,15 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         result.size match {
             case 0 => toJson("0")
             case 1 => toJson(result.head._1)
-            case _ => toJson(result.keys.toList.mkString("#"))
+            case _ => toJson(result.keys.toList.mkString(comma))
+        }
+    }
+
+    def getMarkets: JsValue = {
+        markets.size match {
+            case 0 => toJson("0")
+            case 1 => toJson(markets.head)
+            case _ => toJson(markets.mkString(comma))
         }
     }
 
@@ -141,7 +149,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def load_hos00(market: String): List[Map[String, String]] = {
-        val hos0_file_local = base_path + company + universe_inf_file.replace("???", market)
+        val hos0_file_local = base_path + company + universe_inf_file.replace("##market##", market)
         val setFieldMap = Map(
             "样本医院编码" -> "ID",
             "PHA医院名称" -> "HOSP_NAME",
