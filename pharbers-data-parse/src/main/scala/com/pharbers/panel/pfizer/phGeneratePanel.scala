@@ -3,10 +3,11 @@ package com.pharbers.panel.pfizer
 import java.util.UUID
 
 import com.pharbers.memory.pages.pageMemory
+import com.pharbers.message.im.EmChatMsg
 import com.pharbers.panel.util.csv.phHandleCsv
 import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
 import com.pharbers.panel.util.phDataHandle
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.Json.toJson
 
 /**
@@ -16,6 +17,7 @@ case class phPfizerHandle(args: Map[String, List[String]]) extends phGeneratePan
     override lazy val cpa = base_path + company + client_path + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
     override lazy val gycx = base_path + company + client_path + args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
     override val company = args.getOrElse("company", throw new Exception("no find company arg")).head
+    override val uid = args.getOrElse("uid", throw new Exception("no find uid arg")).head
     override val markets = makets.split(",").toList
 }
 
@@ -23,7 +25,21 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     protected val cpa: String
     protected val gycx: String
     protected val company: String
+    protected val uid: String
     protected val markets: List[String]
+
+    private def imSendMsg(ym: String, mkt: String, ty: String, step: String, msg: String) = {
+        val reVal = (Json.parse(EmChatMsg().getAllRooms) \ "data").as[List[String Map JsValue]]
+                .filterNot(x => x("name").as[String] != company + "_" + uid)
+                .map(x => x("id").as[String])
+
+        EmChatMsg().sendFromUser("project")
+                .sendTargetUser(reVal)
+                .sendTargetType("chatrooms")
+                .sendMsgContentType()
+                .sendMsgExt(Map("ym" -> ym, "mkt" -> mkt, "type" -> ty, "step" -> step))
+                .sendMsg(msg)
+    }
 
     def calcYM: JsValue = {
         def distinctYM(arg: (Map[String, String], List[String])): Map[String, Int] = {
@@ -76,6 +92,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             val g1 = (g0._1(ym), g0._2)
             val r1 = markets.map { mkt =>
                 val lst = generatePanel(ym, mkt, c1, g1, m1)
+                imSendMsg(ym, mkt, "progress_generat_panel", "生成成功", "100")
                 mkt -> toJson(lst)
             }.toMap
             ym -> toJson(r1)
@@ -305,7 +322,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         val page = pageMemory(source._1)
         var file_lst = panel_lst_arg
 
-        (0 until page.pageCount.toInt) foreach { i =>
+        val baseProgress = if(file_lst == Nil) 0 else 50
+        val totalPage = page.pageCount.toInt
+
+        (0 until totalPage) foreach { i =>
+            val progress = baseProgress + i * 50 / totalPage
+
             lazy val temp = page.pageData(i).map { line =>
                 val data = source._2.zip(line.split(spl).toList).toMap
                 if (data("YM") == ym && hos0_hosp_id.contains(data("HOSPITAL_CODE")))
@@ -321,6 +343,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
+            if(i % 10 == 0)
+                imSendMsg(ym, market, "progress_generat_panel", "正在生成", progress.toString)
         }
 
         page.ps.fs.closeStorage
