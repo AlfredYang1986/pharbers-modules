@@ -7,12 +7,12 @@ import org.scalatest.FunSuite
   */
 class dbmanagerSuite extends FunSuite {
 
-    test("db manager test") {
-        object tmp extends dbInstanceManager
+    // test("db manager test") {
+    //     object tmp extends dbInstanceManager
 
-        tmp.config
-        println(tmp.config)
-        println(tmp.connections)
-        assert(tmp.queryDBInstance("cli") != None)
-    }
+    //     tmp.config
+    //     println(tmp.config)
+    //     println(tmp.connections)
+    //     assert(tmp.queryDBInstance("cli") != None)
+    // }
 }
