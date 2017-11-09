@@ -22,6 +22,26 @@ trait PharbersBsonWriterTrait {
         bson
     }
 
+    def writeBsonListFile(bson_list : List[BSONObject], file_path: String) : Unit = {
+
+        try {
+            val encode : BSONEncoder = new BasicBSONEncoder()
+            var lst : List[Byte] = Nil
+            val tmp = bson_list.map( x => lst = encode.encode(x).toList ::: lst )
+            //            val out : OutputStream = new BufferedOutputStream(new FileOutputStream(file), 16)
+            val out = new RandomAccessFile(file_path, "rw")
+            out.write(lst.toArray[Byte], out.length().toInt, lst.toArray[Byte].length)
+//            out.seek(out.length)
+//            out.write(lst.toArray[Byte])
+            out.close()
+        } catch {
+            case ex: FileNotFoundException => ex.printStackTrace()
+            case ex: SecurityException => ex.printStackTrace()
+            case ex: IOException => ex.printStackTrace()
+            case _ => ???
+        }
+    }
+
     def writeBsonFile(bson : BSONObject, file_path: String) : Unit = {
 
         try {
