@@ -11,13 +11,19 @@ trait fileFlushTrait {
     val bufferSize : Int
 
     var seek = 0
-    var mark = 0
+//    var mark = 0
     lazy val buf : Array[Byte] = new Array[Byte](bufferSize)
     lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
     lazy val fc: FileChannel = raf.getChannel
 
-    def pushLine(line : String) : Unit = {
-        if (!line.endsWith("\n")) pushLine(line + "\n")
+    def closeFlush = {
+        flush
+        fc.close()
+        raf.close()
+    }
+
+    def appendLine(line : String) : Unit = {
+        if (!line.endsWith("\n")) appendLine(line + "\n")
         else {
             val in = line.getBytes(StandardCharsets.UTF_8)
             if (seek + in.length > bufferSize)
@@ -29,10 +35,10 @@ trait fileFlushTrait {
     }
 
     def flush = {
-        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, mark, seek)
-        mem.put(buf)
+        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), seek)
+        mem.put(buf, 0, seek)
 
         seek = 0
-        mark += seek
+//        mark += seek
     }
 }
