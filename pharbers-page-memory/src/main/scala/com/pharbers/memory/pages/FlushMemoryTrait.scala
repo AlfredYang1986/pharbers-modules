@@ -10,13 +10,15 @@ trait FlushMemoryTrait extends PharbersInjectModule {
 
     val buffer_size = config.mc.find(p => p._1 == "buffer-size").get._2.toString.toInt
 
-    case class flushImpl(override val path,
-                         override val bufferSize) extends fileFlushTrait
+    case class flushImpl(override val path : String,
+                         override val bufferSize : Int) extends fileFlushTrait
 
     val path : String
     lazy val fl = flushImpl(path, buffer_size)
 
-    def pushLine(l : String) = fl.pushLine(l)
+    def appendLine(l : String) = fl.appendLine(l)
+    def insertLine(l : String, pos : Int) = fl.insertAtPos(l, pos)
+    def flush = fl.flush
 }
 
 case class flushMemory(override val path : String) extends FlushMemoryTrait
