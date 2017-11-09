@@ -26,12 +26,24 @@ trait fileFlushTrait {
         if (!line.endsWith("\n")) appendLine(line + "\n")
         else {
             val in = line.getBytes(StandardCharsets.UTF_8)
-            if (seek + in.length > bufferSize)
+            if (seek + in.length > bufferSize) {
                 flush
+                appendLine(line)
+            }
 
             in.copyToArray(buf, seek, in.length)
             seek += in.length
         }
+    }
+
+    def appendArrByte(arr_byte : Array[Byte]) : Unit = {
+        if (seek + arr_byte.length > bufferSize) {
+            flush
+            appendArrByte(arr_byte)
+        }
+
+        arr_byte.copyToArray(buf, seek, arr_byte.length)
+        seek += arr_byte.length
     }
 
     def flush = {
