@@ -11,7 +11,7 @@ trait fileFlushTrait {
     val bufferSize : Int
 
     var seek = 0
-    var mark = 0
+//    var mark = 0
     lazy val buf : Array[Byte] = new Array[Byte](bufferSize)
     lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
     lazy val fc: FileChannel = raf.getChannel
@@ -35,10 +35,10 @@ trait fileFlushTrait {
     }
 
     def flush = {
-        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, mark, seek)
+        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), seek)
         mem.put(buf, 0, seek)
 
         seek = 0
-        mark += seek
+//        mark += seek
     }
 }
