@@ -56,9 +56,8 @@ trait BsonFlushTrait extends OutputBuffer {
     override def writeByte(value: Int): Unit = {
         this.ensureOpen()
         this.ensure(1)
-        this.buffer({
-            this.position += 1; this.position - 1
-        }) = (255 & value).toByte
+        this.buffer(this.position)= (255 & value).toByte
+        this.position += 1
     }
 
     override protected def write(absolutePosition: Int, value: Int) : Unit = {
