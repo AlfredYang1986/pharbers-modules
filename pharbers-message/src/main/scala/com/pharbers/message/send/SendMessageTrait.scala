@@ -6,6 +6,7 @@ import com.mongodb.casbah.Imports._
 import com.pharbers.cliTraits.DBTrait
 import com.pharbers.message.email.MailTrait
 import com.pharbers.message.im.EmChatMsg
+import com.pharbers.message.websocket.WebSocket
 import com.pharbers.sercuity.Sercurity
 import org.apache.commons.mail.{HtmlEmail, SimpleEmail}
 import play.api.libs.json.Json.toJson
@@ -49,5 +50,8 @@ trait SendMessageTrait {
 	}
 	
 	def sendImMessage = EmChatMsg()
+	
+	def wSocket = WebSocket()
+	
 //	def sendSMSMessage = ???
 }
