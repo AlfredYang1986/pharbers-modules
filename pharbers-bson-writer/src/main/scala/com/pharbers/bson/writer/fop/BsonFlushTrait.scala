@@ -8,19 +8,26 @@ import java.util
 import org.bson.io.OutputBuffer
 import org.bson._
 
+class encoder_pharbers extends BasicBSONEncoder {
+    override def getBsonWriter: BsonBinaryWriter = super.getBsonWriter
+}
+
 trait BsonFlushTrait extends OutputBuffer {
+
+
 
     val path : String
     val bufferSize : Int
 
     var position = 0
+    var obj_count = 0
 
     lazy val buffer : Array[Byte] = new Array[Byte](bufferSize)
     lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
     lazy val fc: FileChannel = raf.getChannel
 
-    lazy val encode : BSONEncoder = {
-        val result = new BasicBSONEncoder()
+    lazy val encode : encoder_pharbers = {
+        val result = new encoder_pharbers()
         result.set(this)
         result
     }
@@ -32,11 +39,36 @@ trait BsonFlushTrait extends OutputBuffer {
         raf.close()
     }
 
-    def appendBsonObject(o : BSONObject) : Unit = encode.putObject(o)
+    def appendBsonObject(o : BSONObject) : Unit = {
+
+        val cur = this.position
+        try {
+            if (encode.getBsonWriter == null)
+                encode.set(this)
+
+            encode.putObject(o)
+            obj_count = obj_count + 1
+
+        } catch {
+            case _ : java.lang.IllegalArgumentException => {
+                this.position = cur
+                encode.done()
+                flushToPharbersFile
+                appendBsonObject(o)
+            }
+        }
+    }
+
 
     def flushToPharbersFile = {
         lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), position)
         mem.put(buffer, 0, position)
+
+        println(s"position is $position")
+        println(s"buffer size : ${buffer.length}")
+        println(s"file size : ${raf.length}")
+
+        println(s"obj count  : ${obj_count}")
 
         position = 0
     }
@@ -49,18 +81,18 @@ trait BsonFlushTrait extends OutputBuffer {
     override def writeBytes(bytes: Array[Byte], offset: Int, length: Int): Unit = {
         this.ensureOpen()
         this.ensure(length)
-        System.arraycopy(bytes, offset, this.buffer, this.position, length)
+        System.arraycopy(bytes, offset, this.buffer, position, length)
         this.position += length
     }
 
     override def writeByte(value: Int): Unit = {
         this.ensureOpen()
         this.ensure(1)
-        this.buffer(this.position)= (255 & value).toByte
+        this.buffer(position)= (255 & value).toByte
         this.position += 1
     }
 
-    override protected def write(absolutePosition: Int, value: Int) : Unit = {
+    override protected def write(absolutePosition : Int, value: Int) : Unit = {
         this.ensureOpen()
         if (absolutePosition < 0) throw new IllegalArgumentException(s"position must be >= 0 but was ${absolutePosition}")
         else if (absolutePosition > this.position - 1) throw new IllegalArgumentException(s"position must be <= ${this.position - 1} but was ${absolutePosition}")
@@ -74,7 +106,7 @@ trait BsonFlushTrait extends OutputBuffer {
 
     override def getSize: Int = {
         this.ensureOpen()
-        this.position
+        bufferSize
     }
 
     override def pipe(out: OutputStream) : Int = {
@@ -84,6 +116,7 @@ trait BsonFlushTrait extends OutputBuffer {
     }
 
     override def truncateToPosition(newPosition: Int) : Unit = {
+        println("trancateTo you mather fucker")
         this.ensureOpen()
         if (newPosition <= this.position && newPosition >= 0) this.position = newPosition
         else throw new IllegalArgumentException
@@ -101,7 +134,9 @@ trait BsonFlushTrait extends OutputBuffer {
     }
 
     private def ensure(more : Int): Unit = {
-        if (this.position + more > this.buffer.length)
-            flushToPharbersFile
+        if (this.position + more > this.buffer.length) {
+//            flushToPharbersFile
+            throw new java.lang.IllegalArgumentException()
+        }
     }
 }
