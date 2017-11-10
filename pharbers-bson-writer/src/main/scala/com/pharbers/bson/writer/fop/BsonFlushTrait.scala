@@ -63,8 +63,8 @@ trait BsonFlushTrait extends OutputBuffer {
 
     override protected def write(absolutePosition: Int, value: Int) : Unit = {
         this.ensureOpen()
-        if (absolutePosition < 0) throw new IllegalArgumentException(String.format("position must be >= 0 but was %d", absolutePosition))
-        else if (absolutePosition > this.position - 1) throw new IllegalArgumentException(String.format("position must be <= %d but was %d", this.position - 1, absolutePosition))
+        if (absolutePosition < 0) throw new IllegalArgumentException(s"position must be >= 0 but was ${absolutePosition}")
+        else if (absolutePosition > this.position - 1) throw new IllegalArgumentException(s"position must be <= ${this.position - 1} but was ${absolutePosition}")
         else this.buffer(absolutePosition) = (255 & value).toByte
     }
 
