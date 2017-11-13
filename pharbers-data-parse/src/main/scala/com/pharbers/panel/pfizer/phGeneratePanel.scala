@@ -2,6 +2,7 @@ package com.pharbers.panel.pfizer
 
 import java.util.UUID
 
+import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.http.HTTP
 import com.pharbers.memory.pages.pageMemory
 import com.pharbers.panel.util.csv.phHandleCsv
@@ -26,8 +27,16 @@ case class phPfizerHandle(args: Map[String, List[String]]) extends phGeneratePan
 /**
   * Created by clock on 17-11-12.
   */
-case class alWebSocket(uid: String) {
-    val ws = HTTP("http://127.0.0.1:9000/akka/callback").header("Accept" -> "application/json", "Content-Type" -> "application/json")
+case class alWebSocket(uid: String) extends PharbersInjectModule {
+    override val id: String = "wsocket-content"
+    override val configPath: String = "pharbers_config/wsocket_content.xml"
+    override val md = "remote_connect" :: "local_connect" :: "url" :: Nil
+
+    val local_connect: String = config.mc.find(p => p._1 == "local_connect").get._2.toString
+    val url: String = config.mc.find(p => p._1 == "url").get._2.toString
+
+    val ws = HTTP(s"http://$local_connect$url")
+            .header("Accept" -> "application/json", "Content-Type" -> "application/json")
 
     def post(msg: Map[String, String]): JsValue = {
         val json = toJson(
