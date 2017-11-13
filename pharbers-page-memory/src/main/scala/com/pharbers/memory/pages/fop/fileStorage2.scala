@@ -30,14 +30,12 @@ trait fileStorage2 extends fileStorageTrait {
                 }
 
                 val result = start + adjustPositionAcc2((cur - start - 1).toInt)
-                println(s"result is : $result")
                 result
 
             } else -1
         }
 
         def pageBreaks(last : Long) : Stream[Long] = {
-            println(s"file size is : ${raf.length}")
             if (last < 0) Stream.empty
             else last #:: pageBreaks(calcNextPagebreak(last + pageSize))
         }
@@ -72,6 +70,9 @@ trait fileStorage2 extends fileStorageTrait {
 
     lazy val fileLength = raf.length
     override def pageCount : Int = {
+        println(s"file is $path")
+        println(s"breaks.length ${breaks.length}")
+        println(s"file Length ${fileLength / pageSize + 1}")
         assert(breaks.length == fileLength / pageSize + 1)
         (fileLength / pageSize + 1).toInt
     }
