@@ -6,9 +6,9 @@ trait pageStorage {
 
     protected val chl = '\n'.toByte
     protected val pageSize : Int
-    protected val fs : fileStorage
+    protected val fs : fileStorage2
 
-    protected var limit_p = -1
+    protected var limit_p : Long = -1
     protected var mark_p = -1
     protected var pos_p = -1
 
@@ -17,9 +17,9 @@ trait pageStorage {
     var cur_page : Int = 0
 
     private var line_head_p : Int = -1
-    def line_head: Int = fs.seekToPage(cur_page) + line_head_p
+    def line_head = fs.seekToPage(cur_page) + line_head_p
     private var line_last_p : Int = -1
-    def line_last: Int = fs.seekToPage(cur_page) + line_last_p
+    def line_last = fs.seekToPage(cur_page) + line_last_p
 
     def curInStorage : Array[Byte] = {
         fs.seekToPage(cur_page)

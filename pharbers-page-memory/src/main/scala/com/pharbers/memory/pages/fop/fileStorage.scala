@@ -15,6 +15,8 @@ trait fileStorage {
     lazy val fc: FileChannel = raf.getChannel
     lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, raf.length)
 
+//    var position = 0
+
     def closeStorage = {
         fc.close()
         raf.close()
@@ -22,15 +24,17 @@ trait fileStorage {
 
     def seekToPage(page : Int) : Int = {
         mem.position(0)
+//        position = 0
         var result = 0
         (0 to page) foreach { _ =>
-            val length = math.min(pageSize, fileLength.toInt - mem.position)
+            val length = math.min(pageSize, fileLength - mem.position.toLong)
             result = nextPage
-            mem.position(result + length)
+            mem.position((result + length).toInt)
         }
 
         result = adjustPositionAcc(result - 1)
         mem.position(result)
+//        position = result
 
         result
     }
@@ -51,13 +55,12 @@ trait fileStorage {
         result
     }
 
-    def capCurrentPage(pg : Int, buf : Array[Byte]) : Int = {
-        val result = math.min(buf.length, fileLength.toInt - mem.position)
-        mem.get(buf, 0, result)
+    def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
+        val result = math.min(buf.length, fileLength - mem.position.toLong)
+        mem.get(buf, 0, result.toInt)
         result
     }
 
-    def fileLength = raf.length
-
+    lazy val fileLength = raf.length
     lazy val pageCount = fileLength / pageSize + 1
 }
