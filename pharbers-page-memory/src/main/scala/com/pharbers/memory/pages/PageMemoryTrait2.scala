@@ -30,6 +30,8 @@ trait PageMemoryTrait2 extends PharbersInjectModule {
     }
 
     def allData : Stream[String] = ps.allData
+
+    def closeStorage = ps.fs.closeStorage
 }
 
 case class pageMemory2(override val path : String) extends PageMemoryTrait2

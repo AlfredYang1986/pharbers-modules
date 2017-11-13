@@ -51,7 +51,7 @@ trait fileStorage2 extends fileStorageTrait {
 
     var position = 0
 
-    def closeStorage = {
+    override def closeStorage = {
         fc.close()
         raf.close()
     }
