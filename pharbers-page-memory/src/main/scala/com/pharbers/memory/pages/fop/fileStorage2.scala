@@ -15,7 +15,7 @@ trait fileStorage2 extends fileStorageTrait {
         def calcNextPagebreak(cur : Long) : Long = {
             val start = math.max(cur - stepSize, 0)
 
-            if (start < raf.length){
+            if (cur < raf.length){
                 val step_mem: MappedByteBuffer =
                     fc.map(FileChannel.MapMode.READ_ONLY, start, math.min(stepSize, raf.length() - start))
 
@@ -28,7 +28,7 @@ trait fileStorage2 extends fileStorageTrait {
                     }
                 }
 
-                val result = start + adjustPositionAcc2((cur - start - 1).toInt)
+                val result = math.min(start + adjustPositionAcc2((cur - start - 1).toInt), raf.length)
                 result
 
             } else -1

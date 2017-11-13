@@ -29,12 +29,13 @@ class PfizerSuite extends FunSuite {
 //    }
 
     test("page memory") {
-        val t = pageMemory2("files/test")
+//        val t = pageMemory2("files/test")
+        val t = pageMemory2("files/data2")
         println(t.allData.length)
 
-//        t.allData.zipWithIndex.foreach { x =>
-//            println(s"${x._2} : ${x._1}")
-//        }
+        t.allData.zipWithIndex.foreach { x =>
+            println(s"${x._2} : ${x._1}")
+        }
 
 //            t.pageData(1).zipWithIndex.foreach { x =>
 //                println(s"${x._2} : ${x._1}")
