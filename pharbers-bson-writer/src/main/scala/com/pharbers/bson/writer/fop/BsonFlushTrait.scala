@@ -8,13 +8,14 @@ import java.util
 import org.bson.io.OutputBuffer
 import org.bson._
 
-class encoder_pharbers extends BasicBSONEncoder {
-    override def getBsonWriter: BsonBinaryWriter = super.getBsonWriter
-}
-
 trait BsonFlushTrait extends OutputBuffer {
 
-
+    class encoder_pharbers extends BasicBSONEncoder {
+        def resetBuffer(ob : OutputBuffer) = {
+            if (this.getBsonWriter == null)
+                this.set(ob)
+        }
+    }
 
     val path : String
     val bufferSize : Int
@@ -43,9 +44,6 @@ trait BsonFlushTrait extends OutputBuffer {
 
         val cur = this.position
         try {
-            if (encode.getBsonWriter == null)
-                encode.set(this)
-
             encode.putObject(o)
             obj_count = obj_count + 1
 
@@ -54,6 +52,7 @@ trait BsonFlushTrait extends OutputBuffer {
                 this.position = cur
                 encode.done()
                 flushToPharbersFile
+                encode.set(this)
                 appendBsonObject(o)
             }
         }
@@ -63,12 +62,6 @@ trait BsonFlushTrait extends OutputBuffer {
     def flushToPharbersFile = {
         lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), position)
         mem.put(buffer, 0, position)
-
-        println(s"position is $position")
-        println(s"buffer size : ${buffer.length}")
-        println(s"file size : ${raf.length}")
-
-        println(s"obj count  : ${obj_count}")
 
         position = 0
     }
@@ -135,7 +128,6 @@ trait BsonFlushTrait extends OutputBuffer {
 
     private def ensure(more : Int): Unit = {
         if (this.position + more > this.buffer.length) {
-//            flushToPharbersFile
             throw new java.lang.IllegalArgumentException()
         }
     }

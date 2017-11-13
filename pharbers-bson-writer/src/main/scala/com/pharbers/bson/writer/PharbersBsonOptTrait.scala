@@ -2,7 +2,7 @@ package com.pharbers.bson.writer
 
 import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.bson.writer.fop.BsonFlushTrait
-import org.bson.BSONObject
+import org.bson.{BSONObject, BasicBSONEncoder}
 
 trait BsonFlushMemoryTrait extends PharbersInjectModule {
     override val id: String = "bson-flush-memory"

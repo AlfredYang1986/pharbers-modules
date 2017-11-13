@@ -14,7 +14,7 @@ trait fileFlushTrait {
 //    var mark = 0
     lazy val buf : Array[Byte] = new Array[Byte](bufferSize)
     lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
-    lazy val fc: FileChannel = raf.getChannel
+    lazy val fc : FileChannel = raf.getChannel
 
     def closeFlush = {
         flush
@@ -53,4 +53,5 @@ trait fileFlushTrait {
         seek = 0
 //        mark += seek
     }
+
 }

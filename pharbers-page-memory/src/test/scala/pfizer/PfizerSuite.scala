@@ -1,7 +1,7 @@
 package pfizer
 
 import org.scalatest.FunSuite
-import com.pharbers.memory.pages.{pageMemory, flushMemory}
+import com.pharbers.memory.pages.{flushMemory, pageMemory}
 
 /**
   * Created by clock on 17-9-7.
