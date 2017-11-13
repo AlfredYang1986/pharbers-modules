@@ -17,9 +17,14 @@ trait FlushMemoryTrait extends PharbersInjectModule {
     lazy val fl = flushImpl(path, buffer_size)
 
     def appendLine(l : String) = fl.appendLine(l)
+    def appendArrByte(arr_byte : Array[Byte]) = fl.appendArrByte(arr_byte)
 //    def insertLine(l : String, pos : Int) = fl.insertAtPos(l, pos)
     def flush = fl.flush
     def close = fl.closeFlush
 }
 
 case class flushMemory(override val path : String) extends FlushMemoryTrait
+
+//case class bsonFlushMemory(override val path : String) extends flushMemory(path) {
+//    override val configPath : String = "pharbers_config/bson_flush_memory.xml"
+//}
