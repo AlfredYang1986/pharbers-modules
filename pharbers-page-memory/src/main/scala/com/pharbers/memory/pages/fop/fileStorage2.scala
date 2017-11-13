@@ -5,7 +5,7 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.charset.StandardCharsets
 
-trait fileStorage2 {
+trait fileStorage2 extends fileStorageTrait {
 
     val path : String
 //    val bufferSize : Int
@@ -56,12 +56,12 @@ trait fileStorage2 {
         raf.close()
     }
 
-    def seekToPage(page : Int) : Long = {
+    override def seekToPage(page : Int) : Long = {
         // return start pos
         breaks(page)
     }
 
-    def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
+    override def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
         // return cap length
         val start_pos = seekToPage(pg)
         val result = math.min(pageSize, fileLength - start_pos)
@@ -71,9 +71,9 @@ trait fileStorage2 {
     }
 
     lazy val fileLength = raf.length
-    lazy val pageCount = {
+    override def pageCount : Int = {
         assert(breaks.length == fileLength / pageSize + 1)
-        fileLength / pageSize + 1
+        (fileLength / pageSize + 1).toInt
     }
 
     def for_test(pos : Int, length : Int) : String = {

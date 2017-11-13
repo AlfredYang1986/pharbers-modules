@@ -4,7 +4,7 @@ import java.io.{File, RandomAccessFile}
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
-trait fileStorage {
+trait fileStorage extends fileStorageTrait {
 
     val path : String
     val bufferSize : Int
@@ -22,7 +22,7 @@ trait fileStorage {
         raf.close()
     }
 
-    def seekToPage(page : Int) : Int = {
+    override def seekToPage(page : Int) : Long = {
         mem.position(0)
 //        position = 0
         var result = 0
@@ -55,12 +55,12 @@ trait fileStorage {
         result
     }
 
-    def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
+    override def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
         val result = math.min(buf.length, fileLength - mem.position.toLong)
         mem.get(buf, 0, result.toInt)
         result
     }
 
     lazy val fileLength = raf.length
-    lazy val pageCount = fileLength / pageSize + 1
+    override def pageCount : Int = (fileLength / pageSize + 1).toInt
 }

@@ -6,7 +6,7 @@ trait pageStorage {
 
     protected val chl = '\n'.toByte
     protected val pageSize : Int
-    protected val fs : fileStorage2
+    protected val fs : fileStorageTrait
 
     protected var limit_p : Long = -1
     protected var mark_p = -1
