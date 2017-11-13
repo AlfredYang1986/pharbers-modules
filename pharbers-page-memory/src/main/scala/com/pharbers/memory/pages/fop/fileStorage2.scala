@@ -14,7 +14,6 @@ trait fileStorage2 extends fileStorageTrait {
     lazy val breaks : Stream[Long] = {
         def calcNextPagebreak(cur : Long) : Long = {
             val start = math.max(cur - stepSize, 0)
-            println(s"start point is : $start")
 
             if (start < raf.length){
                 val step_mem: MappedByteBuffer =
@@ -70,11 +69,12 @@ trait fileStorage2 extends fileStorageTrait {
 
     lazy val fileLength = raf.length
     override def pageCount : Int = {
-        println(s"file is $path")
-        println(s"breaks.length ${breaks.length}")
-        println(s"file Length ${fileLength / pageSize + 1}")
-        assert(breaks.length == fileLength / pageSize + 1)
-        (fileLength / pageSize + 1).toInt
+//        println(s"file is $path")
+//        println(s"breaks.length ${breaks.length}")
+//        println(s"file Length ${fileLength / pageSize + 1}")
+//        assert(breaks.length == fileLength / pageSize + 1)
+//        (fileLength / pageSize + 1).toInt
+        breaks.length
     }
 
     def for_test(pos : Int, length : Int) : String = {
