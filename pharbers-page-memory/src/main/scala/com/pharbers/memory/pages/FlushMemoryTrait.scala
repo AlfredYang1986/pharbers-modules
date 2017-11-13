@@ -24,7 +24,3 @@ trait FlushMemoryTrait extends PharbersInjectModule {
 }
 
 case class flushMemory(override val path : String) extends FlushMemoryTrait
-
-//case class bsonFlushMemory(override val path : String) extends flushMemory(path) {
-//    override val configPath : String = "pharbers_config/bson_flush_memory.xml"
-//}

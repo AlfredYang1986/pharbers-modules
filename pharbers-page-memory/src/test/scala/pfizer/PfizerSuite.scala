@@ -1,7 +1,7 @@
 package pfizer
 
 import org.scalatest.FunSuite
-import com.pharbers.memory.pages.{flushMemory, pageMemory}
+import com.pharbers.memory.pages.{pageMemory2}
 
 /**
   * Created by clock on 17-9-7.
@@ -27,11 +27,11 @@ class PfizerSuite extends FunSuite {
 //        t.flush
 //        t.close
 //    }
-//
-//    test("page memory") {
-//        val t = pageMemory("files/test_flush")
-//        println(t.allData.length)
-//
+
+    test("page memory") {
+        val t = pageMemory2("files/test")
+        println(t.allData.length)
+
 //        t.allData.zipWithIndex.foreach { x =>
 //            println(s"${x._2} : ${x._1}")
 //        }
@@ -39,5 +39,7 @@ class PfizerSuite extends FunSuite {
 //            t.pageData(1).zipWithIndex.foreach { x =>
 //                println(s"${x._2} : ${x._1}")
 //            }
-//    }
+
+        t.pageCount
+    }
 }
