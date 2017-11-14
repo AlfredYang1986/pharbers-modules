@@ -1,7 +1,7 @@
 package com.pharbers.memory.pages
 
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.memory.pages.fop.{fileStorage, fileStorage2, fileStorageTrait, pageStorage}
+import com.pharbers.memory.pages.fop.read.{fileStorage, fileStorageTrait, pageStorage}
 
 trait PageMemoryTrait extends PharbersInjectModule {
     override val id: String = "page-memory"

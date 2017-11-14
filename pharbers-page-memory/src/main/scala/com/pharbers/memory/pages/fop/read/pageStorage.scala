@@ -1,4 +1,4 @@
-package com.pharbers.memory.pages.fop
+package com.pharbers.memory.pages.fop.read
 
 import java.nio.charset.StandardCharsets
 
