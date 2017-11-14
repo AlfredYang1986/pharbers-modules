@@ -15,7 +15,7 @@ trait BsonFlushTrait extends OutputBuffer {
     val bufferSize : Int
 
     var position = 0
-    var obj_count = 0
+//    var obj_count = 0
 
     lazy val buffer : Array[Byte] = new Array[Byte](bufferSize)
 //    lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
@@ -37,7 +37,7 @@ trait BsonFlushTrait extends OutputBuffer {
         val cur = this.position
         try {
             encode.putObject(o)
-            obj_count = obj_count + 1
+//            obj_count = obj_count + 1
 
         } catch {
             case _ : java.lang.IllegalArgumentException => {

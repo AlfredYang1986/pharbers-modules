@@ -1,9 +1,10 @@
 package com.pharbers.bson.writer
 
-import java.io.{FileNotFoundException, IOException, RandomAccessFile}
+import java.io.{File, FileNotFoundException, IOException, RandomAccessFile}
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
+import com.pharbers.baseModules.PharbersInjectModule
 import org.bson._
 
 /**
@@ -11,13 +12,19 @@ import org.bson._
   */
 case class phBsonWriter(override val file_path : String) extends PharbersBsonWriterTrait
 
-trait PharbersBsonWriterTrait {
+trait PharbersBsonWriterTrait extends PharbersInjectModule {
+
+    override val id: String = "bson-flush-memory"
+    override val configPath: String = "pharbers_config/bson_flush_memory.xml"
+    override val md = "buffer-size" :: Nil
+
+    val buffer_size = config.mc.find(p => p._1 == "buffer-size").get._2.toString.toInt
 
     val file_path : String
 
-    val bufferSize = 31457280
-    lazy val buf = new Array[Byte](bufferSize)
+    lazy val buf = new Array[Byte](buffer_size)
     lazy val raf = new RandomAccessFile(file_path, "rw")
+//    lazy val raf : RandomAccessFile = new RandomAccessFile(new File(file_path), "rw")
     lazy val fc : FileChannel = raf.getChannel
     var position = 0
 
@@ -42,7 +49,7 @@ trait PharbersBsonWriterTrait {
 
             var lst : List[Byte] = Nil
             val tmp = bson_list.map( x => lst = encode.encode(x).toList ::: lst )
-            //            val out : OutputStream = new BufferedOutputStream(new FileOutputStream(file), 16)
+            // val out : OutputStream = new BufferedOutputStream(new FileOutputStream(file), 16)
             // raf.write(lst.toArray[Byte], raf.length().toInt, lst.toArray[Byte].length)
             raf.seek(raf.length)
             raf.write(lst.toArray[Byte])
@@ -59,11 +66,11 @@ trait PharbersBsonWriterTrait {
         val encode : BSONEncoder = new BasicBSONEncoder()
         val byte_arr = encode.encode(bson)
         val len = byte_arr.length
-        if (position + len > bufferSize) {
+        if (position + len > buffer_size) {
             flush
             writeBsonFile2(bson)
         }
-        byte_arr.copyToArray(buf, 0, len)
+        byte_arr.copyToArray(buf, position, len)
         position += len
     }
 
