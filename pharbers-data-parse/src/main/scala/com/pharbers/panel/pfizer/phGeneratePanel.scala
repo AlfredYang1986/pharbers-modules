@@ -241,7 +241,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                     phHandleCsv().appendByLine(data, cache_file)
             }
         }
-        cpa_page.ps.fs.closeStorage
+        cpa_page.closeStorage
 
         append_fill_data(m, lst, cache_file)
 
@@ -265,7 +265,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             }
         }
 
-        fill_data_page.ps.fs.closeStorage
+        fill_data_page.closeStorage
     }
 
     def fill_hos_lst(m: Int) = {
@@ -359,11 +359,19 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
+            val msg = Map(
+                "type" -> "progress_generat_panel",
+                "ym" -> ym,
+                "mkt" -> market,
+                "progress" -> progress.toString)
+
             if(i % 10 == 0)
-                imSendMsg(ym, market, "progress_generat_panel", "正在生成", progress.toString)
+                alWebSocket(uid).post(msg)
+            else if(i == totalPage)
+                alWebSocket(uid).post(msg)
         }
 
-        page.ps.fs.closeStorage
+        page.closeStorage
         file_lst
     }
 

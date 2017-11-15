@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 echo "installing pharber modules"
 
 echo "1.installing pharber-module"
@@ -93,5 +94,5 @@ cd pharbers-memory
 mvn clean install
 cd ..
 
-
+set +e
 echo "finish, have fun"
