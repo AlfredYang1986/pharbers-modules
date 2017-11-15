@@ -38,7 +38,9 @@ class bsonTest extends FunSuite{
 //            "Product" -> "关平片剂10MG10河北万岁药业有限公司",
 //            "prov_Index" -> "1b9fd47f4329a3f06883be7e82e6a07d")
 //
-//        1 to 50000 foreach (i => bfm.appendObject(bw.map2bson(m1)))
+////        1 to 50000 foreach (i => bfm.appendObject(bw.map2bson(m1)))
+//        1 to 50000 foreach (i => bw.writeBsonFile2(bw.map2bson(m1)))
+//        bw.closeFlush
 //        bfm.close
 //    }
 }

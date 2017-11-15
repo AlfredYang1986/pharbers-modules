@@ -1,7 +1,8 @@
 package pfizer
 
+import com.pharbers.memory.pages.fop.dir.dirPageStorage
 import org.scalatest.FunSuite
-import com.pharbers.memory.pages.{flushMemory, pageMemory}
+import com.pharbers.memory.pages.{dirFlushMemory, pageMemory, pageMemory2}
 
 /**
   * Created by clock on 17-9-7.
@@ -27,17 +28,41 @@ class PfizerSuite extends FunSuite {
 //        t.flush
 //        t.close
 //    }
-//
+
 //    test("page memory") {
-//        val t = pageMemory("files/test_flush")
+////        val t = pageMemory2("files/test")
+//        val t = pageMemory2("files/data2")
 //        println(t.allData.length)
 //
 //        t.allData.zipWithIndex.foreach { x =>
 //            println(s"${x._2} : ${x._1}")
 //        }
+//
+////            t.pageData(1).zipWithIndex.foreach { x =>
+////                println(s"${x._2} : ${x._1}")
+////            }
+//
+//        t.pageCount
+//    }
 
-//            t.pageData(1).zipWithIndex.foreach { x =>
-//                println(s"${x._2} : ${x._1}")
-//            }
+//    test ("dri opt write") {
+//        val d = dirFlushMemory("files/dir")
+//
+//        val t = pageMemory2("files/data")
+//
+//        var i = 0
+//        t.allData.zipWithIndex.foreach { x =>
+////            println(s"${x._2} : ${x._1}")
+//            d.appendLine(x._1)
+//            i = x._2
+//        }
+//        d.close
+//        println(s"i is $i")
+//
+//        i = 0
+//
+//        val dr = dirPageStorage("files/dir")
+//        dr.readAllData(_ => i = i + 1)
+//        println(s"i2 is $i")
 //    }
 }

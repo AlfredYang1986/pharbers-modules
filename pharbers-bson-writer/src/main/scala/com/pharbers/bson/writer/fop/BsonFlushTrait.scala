@@ -4,31 +4,25 @@ import java.io.{File, OutputStream, RandomAccessFile}
 import java.nio.{ByteBuffer, MappedByteBuffer}
 import java.nio.channels.FileChannel
 import java.util
+import java.util.UUID
 
 import org.bson.io.OutputBuffer
 import org.bson._
 
 trait BsonFlushTrait extends OutputBuffer {
 
-    class encoder_pharbers extends BasicBSONEncoder {
-        def resetBuffer(ob : OutputBuffer) = {
-            if (this.getBsonWriter == null)
-                this.set(ob)
-        }
-    }
-
     val path : String
     val bufferSize : Int
 
     var position = 0
-    var obj_count = 0
+//    var obj_count = 0
 
     lazy val buffer : Array[Byte] = new Array[Byte](bufferSize)
-    lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
-    lazy val fc: FileChannel = raf.getChannel
+//    lazy val raf : RandomAccessFile = new RandomAccessFile(new File(path), "rw")
+//    lazy val fc: FileChannel = raf.getChannel
 
-    lazy val encode : encoder_pharbers = {
-        val result = new encoder_pharbers()
+    lazy val encode : BasicBSONEncoder = {
+        val result = new BasicBSONEncoder()
         result.set(this)
         result
     }
@@ -36,8 +30,6 @@ trait BsonFlushTrait extends OutputBuffer {
     def closeFlush = {
         flushToPharbersFile
         encode.done()
-        fc.close()
-        raf.close()
     }
 
     def appendBsonObject(o : BSONObject) : Unit = {
@@ -45,7 +37,7 @@ trait BsonFlushTrait extends OutputBuffer {
         val cur = this.position
         try {
             encode.putObject(o)
-            obj_count = obj_count + 1
+//            obj_count = obj_count + 1
 
         } catch {
             case _ : java.lang.IllegalArgumentException => {
@@ -60,10 +52,18 @@ trait BsonFlushTrait extends OutputBuffer {
 
 
     def flushToPharbersFile = {
-        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), position)
+        val file = path + "/" + UUID.randomUUID() + ".bson"
+        lazy val raf : RandomAccessFile = new RandomAccessFile(new File(file), "rw")
+        lazy val fc: FileChannel = raf.getChannel
+
+//        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, raf.length(), position)
+        lazy val mem: MappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, 0, position)
         mem.put(buffer, 0, position)
 
         position = 0
+
+        fc.close()
+        raf.close()
     }
 
     override def write(b: Array[Byte]): Unit = {

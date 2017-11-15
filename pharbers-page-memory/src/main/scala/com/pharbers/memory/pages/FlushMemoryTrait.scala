@@ -1,7 +1,7 @@
 package com.pharbers.memory.pages
 
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.memory.pages.fop.{fileFlushTrait, fileStorage, pageStorage}
+import com.pharbers.memory.pages.fop.write.fileFlushTrait
 
 trait FlushMemoryTrait extends PharbersInjectModule {
     override val id: String = "flush-memory"
@@ -11,7 +11,8 @@ trait FlushMemoryTrait extends PharbersInjectModule {
     val buffer_size = config.mc.find(p => p._1 == "buffer-size").get._2.toString.toInt
 
     case class flushImpl(override val path : String,
-                         override val bufferSize : Int) extends fileFlushTrait
+                         override val bufferSize : Int,
+                         override val maxFileSize : Int = 1024*1024*1024) extends fileFlushTrait
 
     val path : String
     lazy val fl = flushImpl(path, buffer_size)
@@ -24,7 +25,3 @@ trait FlushMemoryTrait extends PharbersInjectModule {
 }
 
 case class flushMemory(override val path : String) extends FlushMemoryTrait
-
-//case class bsonFlushMemory(override val path : String) extends flushMemory(path) {
-//    override val configPath : String = "pharbers_config/bson_flush_memory.xml"
-//}

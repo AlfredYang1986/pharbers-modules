@@ -89,7 +89,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
                 case Stream() => insertLine(0, base_local + name)
                 case data: Stream[String] =>
                     try {
-                        var pos = -1
+                        var pos = -1.toLong
                         data.foreach { x =>
                             val cur = titleSeqArg.zip(x.split(spl).toList).toMap
                             val compare_result = sortFun(line, cur)
@@ -118,7 +118,7 @@ trait phSortInsertCsvTrait extends phDataHandle {
             name
         }
 
-        def insertLine(pos: Int, file: String) = {
+        def insertLine(pos: Long, file: String) = {
             val ifs = phFileWriteStorageImpl(file)
             val newLineArr = (titleSeqArg.map(line(_).toString).mkString(spl) + chl).getBytes
 
@@ -126,16 +126,16 @@ trait phSortInsertCsvTrait extends phDataHandle {
                 throw new Exception("size is over 300k")
 
             val tailSize = ifs.raf.length.toInt - pos
-            val buf = new Array[Byte](tailSize)
-            ifs.mem.position(pos)
-            ifs.mem.get(buf, 0, tailSize)
+            val buf = new Array[Byte](tailSize.toInt)
+            ifs.mem.position(pos.toInt)
+            ifs.mem.get(buf, 0, tailSize.toInt)
 
             ifs.raf.seek(pos)
             ifs.raf.write(newLineArr ++ buf)
             ifs.closeStorage
         }
 
-        def sameLine(curLine: Map[String, Any], h_pos: Int, l_pos: Int, file: String,
+        def sameLine(curLine: Map[String, Any], h_pos: Long, l_pos: Long, file: String,
                      sameLineFun: List[Map[String, Any]] => (Map[String, Any], Map[String, Any])) = {
             val ifs = phFileWriteStorageImpl(file)
             val newLineArr = sameLineFun(curLine :: line :: Nil) match {
@@ -147,9 +147,9 @@ trait phSortInsertCsvTrait extends phDataHandle {
             }
 
             val tailSize = ifs.raf.length.toInt - l_pos
-            val buf = new Array[Byte](tailSize)
-            ifs.mem.position(l_pos)
-            ifs.mem.get(buf, 0, tailSize)
+            val buf = new Array[Byte](tailSize.toInt)
+            ifs.mem.position(l_pos.toInt)
+            ifs.mem.get(buf, 0, tailSize.toInt)
 
             ifs.raf.seek(h_pos)
             ifs.raf.write(newLineArr ++ buf)

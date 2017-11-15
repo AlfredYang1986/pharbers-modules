@@ -1,4 +1,4 @@
-package com.pharbers.memory.pages.fop
+package com.pharbers.memory.pages.fop.write
 
 import java.io.{File, RandomAccessFile}
 import java.nio.MappedByteBuffer
@@ -9,6 +9,7 @@ trait fileFlushTrait {
 
     val path : String
     val bufferSize : Int
+    val maxFileSize : Int
 
     var seek = 0
 //    var mark = 0
@@ -26,13 +27,21 @@ trait fileFlushTrait {
         if (!line.endsWith("\n")) appendLine(line + "\n")
         else {
             val in = line.getBytes(StandardCharsets.UTF_8)
-            if (seek + in.length > bufferSize) {
+
+            if (raf.length() + seek + in.length > maxFileSize) {
+                flush
+                throw new Exception("extend max file size")
+            }
+
+            else if (seek + in.length > bufferSize) {
                 flush
                 appendLine(line)
             }
 
-            in.copyToArray(buf, seek, in.length)
-            seek += in.length
+            else {
+                in.copyToArray(buf, seek, in.length)
+                seek += in.length
+            }
         }
     }
 
@@ -53,5 +62,4 @@ trait fileFlushTrait {
         seek = 0
 //        mark += seek
     }
-
 }

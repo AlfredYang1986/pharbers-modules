@@ -69,7 +69,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                     }.distinct
                 }).flatten.distinct.length
 
-                page.ps.fs.closeStorage
+                page.closeStorage
+
                 ym._1 -> number
             }
 
@@ -358,16 +359,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
-
-            val msg = Map(
-                "type" -> "progress_generat_panel",
-                "ym" -> ym,
-                "mkt" -> market,
-                "progress" -> progress.toString)
             if(i % 10 == 0)
-                alWebSocket(uid).post(msg)
-            else if(i == totalPage)
-                alWebSocket(uid).post(msg)
+                imSendMsg(ym, market, "progress_generat_panel", "正在生成", progress.toString)
         }
 
         page.ps.fs.closeStorage
