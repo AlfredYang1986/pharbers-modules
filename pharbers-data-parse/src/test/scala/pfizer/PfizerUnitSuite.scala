@@ -1,6 +1,6 @@
 //package pfizer
 //
-//import com.pharbers.pfizer.impl.phPfizerHandleImpl
+//import com.pharbers.panel.pfizer.{panel_file_path, phPfizerHandle}
 //import org.scalatest.FunSuite
 //
 //import scala.collection.immutable.Map
@@ -9,40 +9,47 @@
 ///**
 //  * Created by clock on 17-9-7.
 //  */
-//class PfizerUnitSuite extends FunSuite {
+//class PfizerUnitSuite extends FunSuite with panel_file_path {
 //    val args: Map[String, List[String]] = Map(
-//        "company" -> List("generatePanel"),
+//        "company" -> List("company"),
 //        "user" -> List("user"),
-//        "cpas" -> List("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx"),
-//        "gycxs" -> List("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx")
+//        "cpas" -> List("1705 CPA.xlsx"),
+//        "gycxs" -> List("1705 GYC.xlsx")
 //    )
+//
 //    test("load CPA") {
-//        new phPfizerHandleImpl(args)
-//                .loadCPA("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/CPA/1705 CPA.xlsx" :: Nil)
-//                .foreach(println)
+//        println(phPfizerHandle(args).loadCPA)
+//    }
+//
+//    test("test fill hos lst") {
+//        val fill_hos_lst = phPfizerHandle(args).fill_hos_lst(5)
+//        println(s"num = ${fill_hos_lst.length}")
+//        fill_hos_lst.foreach(println)
 //    }
 //
 //    test("load GYCX") {
-//        new phPfizerHandleImpl(args)
-//                .loadGYCX("/home/clock/workSpace/blackMirror/dependence/program/generatePanel/file/Client/GYCX/1705 GYC.xlsx" :: Nil)
-//                .foreach(println)
+//        println(phPfizerHandle(args).loadGYCX)
+//    }
+//
+//    test("test calcYM") {
+//        println(phPfizerHandle(args).calcYM)
 //    }
 //
 //    test("load m1") {
-//        new phPfizerHandleImpl(args).load_m1.foreach(println)
+//        phPfizerHandle(args).load_m1.foreach(println)
 //    }
 //
 //    test("load hos0") {
-//        new phPfizerHandleImpl(args).load_hos00.foreach(println)
+//        phPfizerHandle(args).load_hos00("INF").foreach(println)
 //    }
 //
 //    test("load b0") {
-//        new phPfizerHandleImpl(args).load_b0("INF").foreach(println)
+//        phPfizerHandle(args).load_b0("INF").foreach(println)
 //    }
 //
 //    test("test inner join") {
-//        val b0 = new phPfizerHandleImpl(args).load_b0("INF")
-//        val m1 = new phPfizerHandleImpl(args).load_m1
-//        new phPfizerHandleImpl(args).innerJoin(b0, m1, "CPA反馈通用名", "通用名").foreach(println)
+//        val b0 = phPfizerHandle(args).load_b0("INF")
+//        val m1 = phPfizerHandle(args).load_m1
+//        phPfizerHandle(args).innerJoin(b0.toStream, m1.toStream, "CPA反馈通用名", "通用名").foreach(println)
 //    }
 //}
