@@ -60,6 +60,7 @@ trait fileStorage3 extends fileStorageTrait {
     override def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
         val result = math.min(buf.length, fileLength - mem.position.toLong)
         mem.get(buf, 0, result.toInt)
+        nextPage
         result
     }
 
