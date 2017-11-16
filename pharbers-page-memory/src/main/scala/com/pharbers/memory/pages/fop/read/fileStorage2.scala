@@ -84,4 +84,6 @@ trait fileStorage2 extends fileStorageTrait {
 
         new String(buf, StandardCharsets.UTF_8)
     }
+
+    override def hasNextPage: Boolean = ???
 }
