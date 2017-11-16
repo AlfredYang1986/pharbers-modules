@@ -45,24 +45,32 @@ class PfizerSuite extends FunSuite {
 //        t.pageCount
 //    }
 
-    test ("dri opt write") {
-        val d = dirFlushMemory("files/dir")
+//    test ("dri opt write") {
+//        val d = dirFlushMemory("files/dir")
+//
+//        val t = pageMemory3("files/data")
+//
+////        var page = t.pageCount.toInt
+//        var i = 0
+//        t.allData { s => s.foreach { iter =>
+//            d.appendLine(iter.toString)
+//            i = i + 1
+//        }}
+//        d.close
+//        println(s"i is $i")
+//
+//        i = 0
+//
+//        val dr = dirPageStorage("files/dir")
+//        dr.readAllData(_ => i = i + 1)
+//        println(s"i2 is $i")
+//    }
 
-        val t = pageMemory3("files/data")
+    // test ("dirPageStorage") {
+    //     var i = 0
 
-//        var page = t.pageCount.toInt
-        var i = 0
-        t.allData { s => s.foreach { iter =>
-            d.appendLine(iter.toString)
-            i = i + 1
-        }}
-        d.close
-        println(s"i is $i")
-
-        i = 0
-
-        val dr = dirPageStorage("files/dir")
-        dr.readAllData(_ => i = i + 1)
-        println(s"i2 is $i")
-    }
+    //     val dr = dirPageStorage("files/dir")
+    //     dr.readAllData(_ => i = i + 1)
+    //     println(s"page is $i")
+    // }
 }
