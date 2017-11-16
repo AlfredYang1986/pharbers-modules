@@ -53,7 +53,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                     }.distinct
                 }).flatten.distinct.length
 
-                page.ps.fs.closeStorage
+                page.closeStorage
+
                 ym._1 -> number
             }
 
@@ -92,7 +93,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             val g1 = (g0._1(ym), g0._2)
             val r1 = markets.map { mkt =>
                 val lst = generatePanel(ym, mkt, c1, g1, m1)
-                imSendMsg(ym, mkt, "progress_generat_panel", "生成成功", "100")
+                // imSendMsg(ym, mkt, "progress_generat_panel", "生成成功", "100")
                 mkt -> toJson(lst)
             }.toMap
             ym -> toJson(r1)
@@ -343,8 +344,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
-            if(i % 10 == 0)
-                imSendMsg(ym, market, "progress_generat_panel", "正在生成", progress.toString)
+            // if(i % 10 == 0)
+                // imSendMsg(ym, market, "progress_generat_panel", "正在生成", progress.toString)
         }
 
         page.ps.fs.closeStorage

@@ -59,22 +59,10 @@ class PfizerSuite extends FunSuite {
         d.close
         println(s"i is $i")
 
-//        (0 to page) foreach { index =>
-//            t.pageData(index).zipWithIndex.foreach { x =>
-//                d.appendLine(x._1)
-//                i = x._2
-//            }
-//        }
-//        d.close
-//        println(s"i is $i")
-//
         i = 0
 
         val dr = dirPageStorage("files/dir")
         dr.readAllData(_ => i = i + 1)
         println(s"i2 is $i")
-
-//        println(s"page is $page")
-//        println(t.pageData(page + 1).last)
     }
 }
