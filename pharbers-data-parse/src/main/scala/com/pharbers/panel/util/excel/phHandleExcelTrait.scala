@@ -20,6 +20,7 @@ case class phHandleExcel() extends ReadExcelTrait with WriteExcelTrait with Read
 
 trait ReadExcelTrait extends phDataHandle {
     def getCount(file_local: String): Int = phReadExcelHandle(file_local).getCount
+    def getSheetNames(file_local: String): Seq[String] = phReadExcelHandle(file_local).getSheetNames
 
     def readExcel(arg: phExcelData)
                  (implicit filterFun: Map[String, String] => Boolean,
