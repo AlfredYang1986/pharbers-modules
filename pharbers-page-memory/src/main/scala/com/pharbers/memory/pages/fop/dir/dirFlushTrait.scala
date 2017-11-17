@@ -27,7 +27,6 @@ trait dirFlushTrait {
     var cur_file : flushImpl = flushImpl(fileName, bufferSize, maxFileSize)
 
     def closeFlush = {
-        println(cur_file.path)
         cur_file.closeFlush
     }
 
