@@ -67,8 +67,17 @@ class alFileOpt(path: String)(oldPath: String) {
 		writer.close()
 	}
 
-	def requestDataFromFile(f : String => Any) : List[Any] = Source.fromFile(path).getLines().map(f(_)).toList
+	def requestDataFromFile(f : String => Any) : List[Any] = {
+		val s =Source.fromFile(path)
+		val lst = s.getLines().map(f(_)).toList
+		s.close()
+		lst
+	}
 
-	def enumDataWithFunc(f : String => Unit) = Source.fromFile(path).getLines().foreach(f(_))
+	def enumDataWithFunc(f : String => Unit) = {
+		val s = Source.fromFile(path)
+		s.getLines().foreach(f(_))
+		s.close()
+	}
 
 }
