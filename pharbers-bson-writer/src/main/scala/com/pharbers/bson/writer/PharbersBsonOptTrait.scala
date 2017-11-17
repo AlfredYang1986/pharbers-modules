@@ -2,7 +2,7 @@ package com.pharbers.bson.writer
 
 import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.bson.writer.fop.BsonFlushTrait
-import org.bson.BSONObject
+import org.bson.{BSONObject, BasicBSONObject}
 
 trait BsonFlushMemoryTrait extends PharbersInjectModule {
     override val id: String = "bson-flush-memory"
@@ -19,6 +19,12 @@ trait BsonFlushMemoryTrait extends PharbersInjectModule {
 
     def appendObject(o : BSONObject) = fl.appendBsonObject(o)
     def close = fl.closeFlush
+
+    def map2bson(map : Map[String, Any]) : BSONObject = {
+        val bson : BSONObject = new BasicBSONObject()
+        map.foreach(x => bson.put(x._1, x._2))
+        bson
+    }
 }
 
 case class bsonFlushMemory(override val path : String) extends BsonFlushMemoryTrait

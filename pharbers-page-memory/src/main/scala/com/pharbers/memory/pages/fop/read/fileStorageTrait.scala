@@ -5,4 +5,5 @@ trait fileStorageTrait {
     def capCurrentPage(pg: Int, buf: Array[Byte]) : Long
     def pageCount : Int
     def closeStorage
+    def hasNextPage : Boolean
 }
