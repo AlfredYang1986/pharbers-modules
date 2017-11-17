@@ -30,7 +30,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-message</artifactId>
+                    <artifactId>http</artifactId>
                     <version>0.1</version>
                 </dependency>
 

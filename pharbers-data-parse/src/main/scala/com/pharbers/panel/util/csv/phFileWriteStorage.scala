@@ -5,6 +5,8 @@ import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import com.pharbers.memory.pages.fop.read.{fileStorage, pageStorage}
 
+import com.pharbers.memory.pages.fop.read.{fileStorage, pageStorage}
+
 /**
   * Created by clock on 17-10-19.
   */
