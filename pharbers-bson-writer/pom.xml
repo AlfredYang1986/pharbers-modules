@@ -39,6 +39,12 @@
             <version>3.1.1</version>
             <type>pom</type>
           </dependency>
+
+          <dependency>
+            <groupId>com.pharbers</groupId>
+            <artifactId>pharbers-modules</artifactId>
+            <version>0.1</version>
+          </dependency>
           
           <dependency>
             <groupId>org.scalatest</groupId>

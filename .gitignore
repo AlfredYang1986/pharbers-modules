@@ -4,6 +4,7 @@
 *.cache
 
 */target/
+/target/
 */pom.xml.tag
 */pom.xml.releaseBackup
 */pom.xml.versionsBackup
@@ -17,6 +18,7 @@
 /pharbers-data-parse/files/
 /pharbers-max-panel/config/
 /pharbers-max-panel/files/
+/pharbers-page-memory/files/
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 */.mvn/wrapper/maven-wrapper.jar

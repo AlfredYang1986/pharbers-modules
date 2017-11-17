@@ -36,8 +36,8 @@ case class WebSocket() extends Socket {
 	
 	
 	override def sendMsg(msg: JsValue, uid: String): Unit =
-		outActorRefSeq.single.get.filterNot(f => f._1 != uid) foreach( x => x._2 ! msg )
-	
+		outActorRefSeq.single.get.filterNot(f => f._1 != uid) foreach (x => x._2 ! msg)
+
 	override def openHeartbeat(): Unit = ???
 }
 

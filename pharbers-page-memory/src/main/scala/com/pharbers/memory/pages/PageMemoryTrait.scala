@@ -1,7 +1,7 @@
 package com.pharbers.memory.pages
 
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.memory.pages.fop.{fileStorage, pageStorage}
+import com.pharbers.memory.pages.fop.read.{fileStorage, fileStorageTrait, pageStorage}
 
 trait PageMemoryTrait extends PharbersInjectModule {
     override val id: String = "page-memory"
@@ -15,7 +15,7 @@ trait PageMemoryTrait extends PharbersInjectModule {
                                override val bufferSize: Int,
                                override val pageSize: Int) extends fileStorage
 
-    case class pageStorageImpl(override val pageSize: Int)(implicit override val fs: fileStorage) extends pageStorage
+    case class pageStorageImpl(override val pageSize: Int)(implicit override val fs: fileStorageTrait) extends pageStorage
 
     val path : String
     lazy val ps = pageStorageImpl(page_size)(fileStorageImpl(path, buffer_size, page_size))
@@ -29,7 +29,9 @@ trait PageMemoryTrait extends PharbersInjectModule {
         ps.pageData
     }
 
-    def allData : Stream[String] = ps.allData
+    def allData = ps.allData
+
+    def closeStorage = ps.fs.closeStorage
 }
 
 case class pageMemory(override val path : String) extends PageMemoryTrait
