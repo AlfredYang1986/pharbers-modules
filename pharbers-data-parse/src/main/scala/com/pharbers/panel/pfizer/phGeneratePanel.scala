@@ -2,12 +2,16 @@ package com.pharbers.panel.pfizer
 
 import java.util.UUID
 
+import com.pharbers.baseModules.PharbersInjectModule
+import com.pharbers.http.HTTP
 import com.pharbers.memory.pages.pageMemory
 import com.pharbers.panel.util.csv.phHandleCsv
 import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
 import com.pharbers.panel.util.phDataHandle
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.Json.toJson
+
+import scala.collection.immutable.Map
 
 /**
   * Created by clock on 17-10-24.
@@ -16,13 +20,41 @@ case class phPfizerHandle(args: Map[String, List[String]]) extends phGeneratePan
     override lazy val cpa = base_path + company + client_path + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
     override lazy val gycx = base_path + company + client_path + args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
     override val company = args.getOrElse("company", throw new Exception("no find company arg")).head
+    override val uid = args.getOrElse("uid", throw new Exception("no find uid arg")).head
     override val markets = makets.split(",").toList
+}
+
+/**
+  * Created by clock on 17-11-12.
+  */
+case class alWebSocket(uid: String) extends PharbersInjectModule {
+    override val id: String = "wsocket-content"
+    override val configPath: String = "pharbers_config/wsocket_content.xml"
+    override val md = "remote_connect" :: "local_connect" :: "url" :: Nil
+
+    val local_connect: String = config.mc.find(p => p._1 == "local_connect").get._2.toString
+    val url: String = config.mc.find(p => p._1 == "url").get._2.toString
+
+    val ws = HTTP(s"http://$local_connect$url")
+            .header("Accept" -> "application/json", "Content-Type" -> "application/json")
+
+    def post(msg: Map[String, String]): JsValue = {
+        val json = toJson(
+            Map(
+                "condition" -> Map(
+                    "uid" -> toJson(uid),
+                    "msg" -> toJson(msg))
+            )
+        )
+        ws.post(json)
+    }
 }
 
 trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     protected val cpa: String
     protected val gycx: String
     protected val company: String
+    protected val uid: String
     protected val markets: List[String]
 
     def calcYM: JsValue = {
@@ -37,7 +69,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                     }.distinct
                 }).flatten.distinct.length
 
-                page.ps.fs.closeStorage
+                page.closeStorage
+
                 ym._1 -> number
             }
 
@@ -149,7 +182,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def load_hos00(market: String): List[Map[String, String]] = {
-        val hos0_file_local = base_path + company + universe_inf_file.replace("???", market)
+        val hos0_file_local = base_path + company + universe_inf_file.replace("##market##", market)
         val setFieldMap = Map(
             "样本医院编码" -> "ID",
             "PHA医院名称" -> "HOSP_NAME",
@@ -208,7 +241,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                     phHandleCsv().appendByLine(data, cache_file)
             }
         }
-        cpa_page.ps.fs.closeStorage
+        cpa_page.closeStorage
 
         append_fill_data(m, lst, cache_file)
 
@@ -232,7 +265,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             }
         }
 
-        fill_data_page.ps.fs.closeStorage
+        fill_data_page.closeStorage
     }
 
     def fill_hos_lst(m: Int) = {
@@ -305,7 +338,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         val page = pageMemory(source._1)
         var file_lst = panel_lst_arg
 
-        (0 until page.pageCount.toInt) foreach { i =>
+        val baseProgress = if(file_lst == Nil) 0 else 50
+        val totalPage = page.pageCount.toInt - 1
+
+        (0 to totalPage) foreach { i =>
+            val progress = baseProgress + i * 50 / totalPage
+
             lazy val temp = page.pageData(i).map { line =>
                 val data = source._2.zip(line.split(spl).toList).toMap
                 if (data("YM") == ym && hos0_hosp_id.contains(data("HOSPITAL_CODE")))
@@ -321,9 +359,19 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
+            val msg = Map(
+                "type" -> "progress_generat_panel",
+                "ym" -> ym,
+                "mkt" -> market,
+                "progress" -> progress.toString)
+
+            if(i % 10 == 0)
+                alWebSocket(uid).post(msg)
+            else if(i == totalPage)
+                alWebSocket(uid).post(msg)
         }
 
-        page.ps.fs.closeStorage
+        page.closeStorage
         file_lst
     }
 

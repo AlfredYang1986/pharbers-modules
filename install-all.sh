@@ -1,97 +1,114 @@
 #!/bin/bash
 
+set -e
 echo "installing pharber modules"
 
-echo "1.installing pharber-module"
+
+echo -e "\033[47;30m 1.installing pharber modules \033[0m"
 cd base-modules
 mvn clean install
 cd ..
 
-echo "2.installing errorcode module"
+
+echo -e "\033[47;30m 2.installing errorcode modul \033[0m"
 cd errorcode
 mvn clean install
 cd ..
 
-echo "11.installing pharbers-cli-triats"
+
+echo -e "\033[47;30m 3.installing pharbers-cli-triats \033[0m"
 cd pharbers-cli-traits
 mvn clean install
 cd ..
 
-echo "3.installing http"
+
+echo -e "\033[47;30m 4.installing http \033[0m"
 cd http
 mvn clean install
 cd ..
 
-echo "4.installing mongodb connect"
+
+echo -e "\033[47;30m 5.installing mongodb connect \033[0m"
 echo "before intall please start mongod instance"
 cd mongodb-connect
 mvn clean install
 cd ..
 
-echo "5.installing mongodb driver"
+echo -e "\033[47;30m 6.installing mongodb driver \033[0m"
 echo "before intall please start mongod instance"
 cd mongodb-driver
 mvn clean install
 cd ..
 
-echo "6.installing mongodb manager"
+
+echo -e "\033[47;30m 7.installing mongodb manager \033[0m"
 echo "before intall please start mongod instance"
 cd mongodb-manager
 mvn clean install
 cd ..
 
-echo "7.installing ecrypt"
+
+echo -e "\033[47;30m 8.installing ecrypt \033[0m"
 echo "before intall please start mongod instance"
 cd encrypt
 mvn clean install
 cd ..
 
-echo "8.installing em-xmpp"
-echo "before intall please start mongod instance"
-cd xmpp-em
-mvn clean install
-cd ..
 
-echo "9.installing auth-token"
+echo -e "\033[47;30m 9.installing auth-token \033[0m"
 echo "before intall please start mongod instance"
 cd auth-token
 mvn clean install
 cd ..
 
-echo "10.installing pharbers-pattern"
+
+echo -e "\033[47;30m 10.installing pharbers-pattern \033[0m"
 cd pharbers-pattern
 mvn clean install
 cd ..
 
-echo "11.installing pharber-page-memory"
+
+echo -e "\033[47;30m 11.installing pharber-page-memory \033[0m"
 cd pharbers-page-memory
 mvn clean install
 cd ..
 
-echo "12.installing pharbers-data-parse"
+
+echo -e "\033[47;30m 12.installing pharbers-data-parse \033[0m"
 cd pharbers-data-parse
 mvn clean install
 cd ..
 
-echo "13.installing pharbers-sercurity"
+
+echo -e "\033[47;30m 13.installing pharbers-sercurity \033[0m"
 cd pharbers-sercurity
 mvn clean install
 cd ..
 
-echo "14.installing pharbers-message"
+
+echo -e "\033[47;30m 14.installing pharbers-message \033[0m"
 cd pharbers-message
 mvn clean install
 cd ..
 
-echo "15.installing pharbers-bson-writer"
+
+echo -e "\033[47;30m 15.installing pharbers-bson-writer \033[0m"
 cd pharbers-bson-writer
 mvn clean install
 cd ..
 
-echo "16.installing pharbers-memory"
+
+echo -e "\033[47;30m 16.installing pharbers-memory \033[0m"
 cd pharbers-memory
 mvn clean install
 cd ..
 
 
+echo -e "\033[47;30m 17.installing pharbers-max-util \033[0m"
+cd pharbers-max-util
+mvn clean install
+cd ..
+
+
+set +e
 echo "finish, have fun"

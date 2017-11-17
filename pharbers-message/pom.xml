@@ -64,6 +64,11 @@
           </dependency>
           <dependency>
               <groupId>com.typesafe.play</groupId>
+              <artifactId>play_2.11</artifactId>
+              <version>2.5.0-M2</version>
+          </dependency>
+          <dependency>
+              <groupId>com.typesafe.play</groupId>
               <artifactId>play-json_2.11</artifactId>
               <version>2.5.0-M2</version>
           </dependency>

@@ -28,6 +28,11 @@
                     <artifactId>pharbers-page-memory</artifactId>
                     <version>0.1</version>
                 </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>http</artifactId>
+                    <version>0.1</version>
+                </dependency>
 
                 <!-- scala lib -->
                 <dependency>
