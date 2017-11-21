@@ -21,16 +21,16 @@ trait PhRedisDriverTrait extends PharbersInjectModule {
     case class setDriverImpl(override val conn : RedisClient) extends setDriverTrait
     case class hashDriverImpl(override val conn : RedisClient) extends hashDriverTrait
 
-    lazy val common_driver = new RedisClient(host, port)
-    lazy val phListDriver = listDriverImpl(common_driver)
-    lazy val phSetDriver = setDriverImpl(common_driver)
-    lazy val phHashDriver = hashDriverImpl(common_driver)
+    lazy val commonDriver = new RedisClient(host, port)
+    lazy val phListDriver = listDriverImpl(commonDriver)
+    lazy val phSetDriver = setDriverImpl(commonDriver)
+    lazy val phHashDriver = hashDriverImpl(commonDriver)
 
     def del(key : Any, keys : Any*) : Unit = {
-        common_driver.del(key, keys)
+        commonDriver.del(key, keys)
     }
 
-    def flushall = common_driver.flushall
+    def flushall = commonDriver.flushall
 
 }
 
