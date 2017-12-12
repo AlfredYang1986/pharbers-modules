@@ -11,6 +11,7 @@ case class 	DDNCreateChatGroup(val parameters : (String, JsValue)*)
 case class 	DDNDismissChatGroup(val parameters : (String, JsValue)*)
 
 case class 	DDNRegisterUser(val parameters : (String, JsValue)*)
+case class 	DDNForceOfflineUser(val user_id : String)
 
 object EMActor {
     def props(emn : EMNotification) = Props(new EMActor(emn))
@@ -42,6 +43,9 @@ class EMActor(val emn : EMNotification) extends Actor with ActorLogging {
         }
         case rg : DDNRegisterUser => {
             sender ! emn.registerUser(parameters2Map(rg.parameters.toList))
+        }
+        case fu : DDNForceOfflineUser => {
+            sender ! emn.offlineUser(fu.user_id)
         }
         case _ =>
     }
