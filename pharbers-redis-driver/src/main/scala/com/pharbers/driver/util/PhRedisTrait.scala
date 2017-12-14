@@ -11,7 +11,7 @@ trait PhRedisTrait {
     def addMap(key: Any, mapK: Any, mapV: Any)
     def addSet(key: Any, value: Set[Any])
     def addSet(key: Any, value: Any, values: Any*)
-    def delete(key: Any, keys: Any*)
+    def delete(key: Any, keys: Any*) : Long
     def getString(key: Any) : String
     def getListAllValue(key: Any) : List[String]
     def getListLeftValue(key: Any) : String
@@ -23,5 +23,7 @@ trait PhRedisTrait {
     def getSetAllValue(key: Any) : Set[String]
     def getSetLastValue(key: Any) : String
     def getSetSize(key: Any) : Long
+    def expire(key: Any, ttl: Int)
+    def exsits(key: Any) : Boolean
     def flush
 }

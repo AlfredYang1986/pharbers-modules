@@ -36,8 +36,11 @@ trait PhRedisDriverImpl extends PhRedisTrait {
         conn_instance.getConnection.sadd(key, value, values)
     }
 
-    override def delete(key: Any, keys: Any*): Unit = {
-        conn_instance.getConnection.del(key, keys)
+    override def delete(key: Any, keys: Any*): Long = {
+        conn_instance.getConnection.del(key, keys) match {
+            case None => throw new Exception("cannot get this value from redis")
+            case value: Option[Long] => value.get
+        }
     }
 
     override def getString(key: Any): String = {
@@ -115,6 +118,14 @@ trait PhRedisDriverImpl extends PhRedisTrait {
             case None => throw new Exception("cannot get this value from redis")
             case value: Option[Long] => value.get
         }
+    }
+
+    override def exsits(key: Any): Boolean = {
+        conn_instance.getConnection.exists(key)
+    }
+
+    override def expire(key: Any, ttl: Int): Unit = {
+        conn_instance.getConnection.expire(key, ttl)
     }
 
     override def flush: Unit = {
