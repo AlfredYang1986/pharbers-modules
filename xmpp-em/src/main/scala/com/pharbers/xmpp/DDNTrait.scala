@@ -8,6 +8,7 @@ trait DDNTrait extends PharbersInjectModule {
     def initDDN
     def notifyAsync(parameters : (String, JsValue)*)(implicit as : ActorSystem)
     def registerForDDN(user_id : String)(implicit as : ActorSystem) : JsValue
+    def forceOffline(user_id : String)(implicit as : ActorSystem) : JsValue
 
     override val id: String = "ddn-trait"
     override val configPath: String = "pharbers_config/ddn_trait.xml"

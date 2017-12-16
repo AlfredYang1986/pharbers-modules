@@ -45,4 +45,11 @@ trait EMImpl extends DDNTrait {
 
         Await.result(f.mapTo[JsValue], time_out.duration)
     }
+
+    def forceOffline(user_id : String)(implicit as : ActorSystem) : JsValue = {
+        val a = as.actorOf(EMActor.props(emn))
+        val f = a ? DDNForceOfflineUser(user_id)
+
+        Await.result(f.mapTo[JsValue], time_out.duration)
+    }
 }
