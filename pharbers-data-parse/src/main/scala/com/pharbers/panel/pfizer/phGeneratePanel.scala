@@ -38,7 +38,7 @@ case class alWebSocket(uid: String) extends PharbersInjectModule {
     val ws = HTTP(s"http://$local_connect$url")
             .header("Accept" -> "application/json", "Content-Type" -> "application/json")
 
-    def post(msg: Map[String, String]): JsValue = {
+    def post(msg: Map[String, String]) = {
         val json = toJson(
             Map(
                 "condition" -> Map(
@@ -396,9 +396,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
         }
 
-        if(cur.toString == "") -1
-        else if (getString(newLine) == getString(cur)) 0
-        else if (getString(newLine) < getString(cur)) -1
+        if(cur.toString == "")
+            1
+        else if (getString(newLine) == getString(cur))
+            0
+        else if (getString(newLine) < getString(cur))
+            1
         else 1
     }
 
