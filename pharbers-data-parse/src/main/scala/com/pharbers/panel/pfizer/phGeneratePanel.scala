@@ -1,7 +1,6 @@
 package com.pharbers.panel.pfizer
 
 import java.util.UUID
-
 import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.http.HTTP
 import com.pharbers.memory.pages.pageMemory
@@ -10,7 +9,6 @@ import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
 import com.pharbers.panel.util.phDataHandle
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.Json.toJson
-
 import scala.collection.immutable.Map
 
 /**
@@ -61,6 +59,9 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     protected val uid: String
     protected val markets: List[String]
 
+    var totalGenerateNum = 0
+    var curGenerateNum = 0
+
     def calcYM: JsValue = {
         def distinctYM(arg: (Map[String, String], List[String])): Map[String, Int] = {
             val temp = arg._1.map { ym =>
@@ -105,6 +106,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def getPanelFile(ym: List[String]): JsValue = {
+        totalGenerateNum = markets.length * ym.length
         val c0 = loadCPA
         val g0 = loadGYCX
         val m1 = load_m1
@@ -113,6 +115,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             val g1 = (g0._1(ym), g0._2)
             val r1 = markets.map { mkt =>
                 val lst = generatePanel(ym, mkt, c1, g1, m1)
+                curGenerateNum += 1
                 mkt -> toJson(lst)
             }.toMap
             ym -> toJson(r1)
@@ -363,20 +366,34 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
-            val msg = Map(
-                "type" -> "progress_generat_panel",
-                "ym" -> ym,
-                "mkt" -> market,
-                "progress" -> progress.toString)
 
-            if(i % 10 == 0)
+            if(i % 10 == 0){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(progress))
+
                 alWebSocket(uid).post(msg)
-            else if(i == totalPage)
+            }else if(i == totalPage){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(progress))
+
                 alWebSocket(uid).post(msg)
+            }
         }
 
         page.closeStorage
         file_lst
+    }
+
+    private def getProgress(progress: Int): String ={
+        val base = 20
+        val before = 100 * 0.8 * curGenerateNum / totalGenerateNum
+        Math.floor(base + before + progress * 0.8 / totalGenerateNum).toString
     }
 
     private val mergeMC:(Map[String,String], String, Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
