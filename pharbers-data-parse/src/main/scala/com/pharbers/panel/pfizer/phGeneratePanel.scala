@@ -1,7 +1,6 @@
 package com.pharbers.panel.pfizer
 
 import java.util.UUID
-
 import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.http.HTTP
 import com.pharbers.memory.pages.pageMemory
@@ -10,7 +9,6 @@ import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
 import com.pharbers.panel.util.phDataHandle
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.Json.toJson
-
 import scala.collection.immutable.Map
 
 /**
@@ -35,18 +33,22 @@ case class alWebSocket(uid: String) extends PharbersInjectModule {
     val local_connect: String = config.mc.find(p => p._1 == "local_connect").get._2.toString
     val url: String = config.mc.find(p => p._1 == "url").get._2.toString
 
-    val ws = HTTP(s"http://$local_connect$url")
+    lazy val ws = HTTP(s"http://$local_connect$url")
             .header("Accept" -> "application/json", "Content-Type" -> "application/json")
 
-    def post(msg: Map[String, String]): JsValue = {
-        val json = toJson(
-            Map(
-                "condition" -> Map(
-                    "uid" -> toJson(uid),
-                    "msg" -> toJson(msg))
+    def post(msg: Map[String, String]) = {
+        try{
+            val json = toJson(
+                Map(
+                    "condition" -> Map(
+                        "uid" -> toJson(uid),
+                        "msg" -> toJson(msg))
+                )
             )
-        )
-        ws.post(json)
+            ws.post(json)
+        } catch {
+            case _: java.net.ConnectException => println("web socket ConnectException, failed msg = " + msg)
+        }
     }
 }
 
@@ -56,6 +58,9 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     protected val company: String
     protected val uid: String
     protected val markets: List[String]
+
+    var totalGenerateNum = 0
+    var curGenerateNum = 0
 
     def calcYM: JsValue = {
         def distinctYM(arg: (Map[String, String], List[String])): Map[String, Int] = {
@@ -101,6 +106,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def getPanelFile(ym: List[String]): JsValue = {
+        totalGenerateNum = markets.length * ym.length
         val c0 = loadCPA
         val g0 = loadGYCX
         val m1 = load_m1
@@ -109,6 +115,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             val g1 = (g0._1(ym), g0._2)
             val r1 = markets.map { mkt =>
                 val lst = generatePanel(ym, mkt, c1, g1, m1)
+                curGenerateNum += 1
                 mkt -> toJson(lst)
             }.toMap
             ym -> toJson(r1)
@@ -359,20 +366,34 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
-            val msg = Map(
-                "type" -> "progress_generat_panel",
-                "ym" -> ym,
-                "mkt" -> market,
-                "progress" -> progress.toString)
 
-            if(i % 10 == 0)
+            if(i % 10 == 0){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(progress))
+
                 alWebSocket(uid).post(msg)
-            else if(i == totalPage)
+            }else if(i == totalPage){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(progress))
+
                 alWebSocket(uid).post(msg)
+            }
         }
 
         page.closeStorage
         file_lst
+    }
+
+    private def getProgress(progress: Int): String ={
+        val base = 20
+        val before = 100 * 0.8 * curGenerateNum / totalGenerateNum
+        Math.floor(base + before + progress * 0.8 / totalGenerateNum).toString
     }
 
     private val mergeMC:(Map[String,String], String, Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
@@ -396,9 +417,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
         }
 
-        if(cur.toString == "") -1
-        else if (getString(newLine) == getString(cur)) 0
-        else if (getString(newLine) < getString(cur)) -1
+        if(cur.toString == "")
+            1
+        else if (getString(newLine) == getString(cur))
+            0
+        else if (getString(newLine) < getString(cur))
+            1
         else 1
     }
 

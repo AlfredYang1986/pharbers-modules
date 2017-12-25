@@ -36,6 +36,7 @@ object emChatConfig {
 object fileConfig {
 	val file: IConfigFactory = CommonConfigFactory.getConfigFactory("file")
 
+	val user = file.getProperties("SCP.user")
 	val root = file.getProperties("SCP.root")
 	val program = file.getProperties("SCP.program")
 	// TODO : Python输出与Manage上传的HospitalData地址
@@ -56,7 +57,7 @@ object fileConfig {
 	val group = file.getProperties("SCP.group")
 	val calc =  file.getProperties("SCP.calc")
 	val fileTarGz = file.getProperties("SCP.File_Tar_Gz")
-	val scpPath = program + file.getProperties("SCP.scp_path")
+	val scpPath = file.getProperties("SCP.scp_path")
 	val dumpdb = file.getProperties("SCP.dumpdb")
 }
 object mailConfig {
