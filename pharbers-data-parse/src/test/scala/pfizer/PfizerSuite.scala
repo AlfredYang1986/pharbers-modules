@@ -11,8 +11,8 @@
 //  * Created by clock on 17-9-7.
 //  */
 //class PfizerSuite extends FunSuite {
-//     val cpa_file_local = "1705 CPA.xlsx"
-//     val gycx_file_local = "1705 GYC.xlsx"
+//     val cpa_file_local = "1704 CPA.xlsx"
+//     val gycx_file_local = "1704 GYC.xlsx"
 //     val args: Map[String, List[String]] = Map(
 //         "company" -> List("fea9f203d4f593a96f0d6faa91ba24ba"),
 //         "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
@@ -40,7 +40,7 @@
 //
 //         val data_parse = phPfizerHandle(args)
 ////         val yms = data_parse.calcYM.asInstanceOf[JsString].value
-//         val lst = List("201705")
+//         val lst = List("201704")
 ////         println("ym lst = " + lst.toString)
 //
 //         val result = getResult(data_parse.getPanelFile(lst))
