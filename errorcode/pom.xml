@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.pharbers</groupId>
   <artifactId>errorcode</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
   <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
     the right dependencies for modules specified for each version separately -->
   <profiles>
@@ -17,6 +17,11 @@
         <scalaBinaryVersion>2.11</scalaBinaryVersion>
       </properties>
       <dependencies>
+          <dependency>
+              <groupId>com.pharbers</groupId>
+              <artifactId>pharbers-modules</artifactId>
+              <version>0.2</version>
+          </dependency>
           <!-- https://mvnrepository.com/artifact/org.scala-lang/scala-library -->
           <dependency>
               <groupId>org.scala-lang</groupId>
@@ -38,11 +43,6 @@
               <groupId>com.typesafe.play</groupId>
               <artifactId>play-json_2.11</artifactId>
               <version>2.5.0-M2</version>
-          </dependency>
-          <dependency>
-              <groupId>com.pharbers</groupId>
-              <artifactId>pharbers-modules</artifactId>
-              <version>0.1</version>
           </dependency>
           <dependency>
               <groupId>org.scalatest</groupId>
