@@ -17,15 +17,15 @@ case class phGeneratePanel(args: Map[String, List[String]]) extends phHanderXmlT
     val cpa = args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
     val gycx = args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
 
-    val markets: List[String] = getSecondNode(company, "markets").split(",").toList
+    val markets: List[String] = getSecondNode(s"company_$company", "markets").split(",").toList
 
     override def getMarkets: JsValue = {
-        val instance = getMktInstance(getSecondNode(company, markets.head))
+        val instance = getMktInstance(getSecondNode(s"company_$company", markets.head))
         instance.getMarkets
     }
 
     override def calcYM: JsValue = {
-        val instance = getMktInstance(getSecondNode(company, markets.head))
+        val instance = getMktInstance(getSecondNode(s"company_$company", markets.head))
         instance.calcYM
     }
 
@@ -33,7 +33,7 @@ case class phGeneratePanel(args: Map[String, List[String]]) extends phHanderXmlT
         val totalGenerateNum = markets.length * ym.length
         var curGenerateNum = 0
         val result = markets.map{ mkt =>
-            val instance = getMktInstance(getSecondNode(company, mkt))
+            val instance = getMktInstance(getSecondNode(s"company_$company", mkt))
             val r = instance.getPanelFile(ym, mkt, totalGenerateNum, curGenerateNum)
             curGenerateNum += ym.length
             mkt -> r

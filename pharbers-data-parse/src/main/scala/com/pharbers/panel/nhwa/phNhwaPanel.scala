@@ -95,6 +95,25 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     def loadCPA: (Map[String, String], List[String]) = {
+        val setFieldMap = Map(
+            "省" -> "PROVINCES",
+            "城市" -> "CITY",
+            "年" -> "YEAR",
+            "季度" -> "QUARTER",
+            "月" -> "MONTH",
+            "医院编码" -> "HOSPITAL_CODE",
+            "ATC编码" -> "ATC_CODE",
+            "药品名称" -> "MOLE_NAME",
+            "商品名" -> "PRODUCT_NAME",
+            "包装" -> "PRODUCT_NAME",
+            "药品规格" -> "PACK_DES",
+            "包装数量" -> "PACK_NUMBER",
+            "金额（元）" -> "VALUE",
+            "数量（支/片）" -> "STANDARD_UNIT",
+            "剂型" -> "APP2_COD",
+            "给药途径" -> "APP1_COD",
+            "生产企业" -> "CORP_NAME"
+        )
         val setDefaultMap = Map(
             "PRODUCT_NAME" -> "$MOLE_NAME",
             "VALUE" -> "0",
@@ -103,14 +122,14 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
         implicit val postArg = postFun
         implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
         implicit val cacheLocalArg = cache_base
-        phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap), "YM")
+        phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap, fieldArg = setFieldMap), "YM")
     }
 
     def load_m1: List[Map[String, String]] = {
         val m1_file_local = base_path + company + product_vs_ims_file
         implicit val postFun: Map[String, String] => Option[Map[String, String]] = { tr =>
             Some(
-                Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("通用名"))
+                Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("药品名称"))
             )
         }
         implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
@@ -246,7 +265,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     private def getHospTab(hos00: List[Map[String, String]], market: String) = {
-        hos00.filter(_ ("DOI") == market + " Market").groupBy(_ ("ID"))
+        hos00.filter(_ ("DOI") == market).groupBy(_ ("ID"))
                 .flatMap { x =>
                     Map(x._1 -> (x._2.head("HOSP_NAME"), x._2.head("HOSP_ID")))
                 }

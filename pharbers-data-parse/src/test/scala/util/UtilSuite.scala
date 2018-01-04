@@ -3,7 +3,7 @@
 //import java.util.UUID
 //
 //import com.pharbers.memory.pages.pageMemory
-//import com.pharbers.panel.pfizer.panel_file_path
+//import com.pharbers.panel.phPanelFilePath
 //import com.pharbers.panel.util.csv.phHandleCsv
 //import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
 //import org.scalatest.FunSuite
@@ -12,8 +12,8 @@
 ///**
 //  * Created by clock on 17-9-7.
 //  */
-//class UtilSuite extends FunSuite with panel_file_path{
-//    val file_base = base_path + "company"
+//class UtilSuite extends FunSuite with phPanelFilePath{
+//    val file_base = base_path + "8ee0ca24796f9b7f284d931650edbd4b"
 //    test("test get count") {
 //        val file_local = file_base + markets_file
 //        val count = phHandleExcel().getCount(file_local)
@@ -65,8 +65,8 @@
 //    test("write csv by List") {
 //        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
 //        implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
-//        val file_local = file_base + markets_file
-//        val output_file = file_base + output_local + UUID.randomUUID.toString
+//        val file_local = file_base + "/Manage/补充医院.xlsx"
+//        val output_file = file_base + output_local + "补充医院.csv"//UUID.randomUUID.toString
 //
 //        Console println phHandleCsv().writeByList(phHandleExcel().readExcel(phExcelData(file_local)),output_file)
 //    }
