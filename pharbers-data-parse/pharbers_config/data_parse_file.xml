@@ -9,9 +9,22 @@
         <fill_hos_data_file value="/Manage/补充医院.csv" />
         <cache_file value="/Cache/" />
         <output_file value="/Output/" />
-        <makets value="INF" />
+    </data-parse>
+
+    <fea9f203d4f593a96f0d6faa91ba24ba>
+        <markets value="INF,SPE"/>
         <!--<makets value="AI_S,AI_W,CNS_Z,LD,URO" />-->
         <!--INF,SPE,AI_S,AI_W,CNS_Z,ELQ,LD,URO-->
         <!--PAIN_C,HTN2，ELQ-->
-    </data-parse>
+
+        <INF value="com.pharbers.panel.pfizer.phPfizerHandle" />
+        <SPE value="com.pharbers.panel.pfizer.phPfizerHandle" />
+        <URO value="com.pharbers.panel.pfizer.phPfizerHandle" />
+    </fea9f203d4f593a96f0d6faa91ba24ba>
+
+    <nhwa>
+        <markets value="INF"/>
+
+        <INF value="com.pharbers.panel.nhwa.phNhwaHandle" />
+    </nhwa>
 </pharbers-modules>

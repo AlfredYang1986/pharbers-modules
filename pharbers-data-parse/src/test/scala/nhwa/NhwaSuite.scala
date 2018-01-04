@@ -1,4 +1,4 @@
-//package pfizer
+//package nhwa
 //
 //import java.util.Date
 //import org.scalatest.FunSuite
@@ -8,16 +8,15 @@
 //import play.api.libs.json.{JsString, JsValue}
 //
 ///**
-//  * Created by clock on 17-9-7.
+//  * Created by clock on 18-1-3.
 //  */
-//class PfizerSuite extends FunSuite {
+//class NhwaSuite extends FunSuite {
 //    val cpa_file_local = "CPA混合版.xlsx"
-//    val gycx_file_local = "GYC混合版.xlsx"
 //    val args: Map[String, List[String]] = Map(
-//        "company" -> List("fea9f203d4f593a96f0d6faa91ba24ba"),
+//        "company" -> List("8ee0ca24796f9b7f284d931650edbd4b"),
 //        "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
 //        "cpas" -> List(cpa_file_local),
-//        "gycxs" -> List(gycx_file_local)
+//        "gycxs" -> List("")
 //    )
 //
 //    test("get markets") {
@@ -46,9 +45,9 @@
 //        }
 //
 //        val panelHander = phGeneratePanel(args)
-//        val result = getResult(panelHander.getPanelFile(List("201611","201704")))
+//        val result = getResult(panelHander.getPanelFile(List("201704")))
 //        println("result = " + result)
-//        val panelLst = result.values.flatMap(_.values).toList.flatten
+////        val panelLst = result.values.flatMap(_.values).toList.flatten
 ////        panelLst.foreach(x => println(s"panel = $x"))
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
