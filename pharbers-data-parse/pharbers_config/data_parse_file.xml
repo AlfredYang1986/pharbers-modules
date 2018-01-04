@@ -12,10 +12,10 @@
     </data-parse>
 
     <company_fea9f203d4f593a96f0d6faa91ba24ba>
-        <markets value="INF,SPE"/>
-        <!--<makets value="AI_S,AI_W,CNS_Z,LD,URO" />-->
-        <!--INF,SPE,AI_S,AI_W,CNS_Z,ELQ,LD,URO-->
-        <!--PAIN_C,HTN2，ELQ-->
+        <markets value="INF" />
+        <!--INF,SPE,URO,AI_W,CNS_Z,DVP,ELQ,AI_S,        LD,ONC,PAIN,HTN,AI_R-->
+        <!--CNS_R,HTN2,PAIN_C       -panel-->
+        <!--AI_D,ZYVOX       -no match-->
 
         <INF value="com.pharbers.panel.pfizer.phPfizerHandle" />
         <SPE value="com.pharbers.panel.pfizer.phPfizerHandle" />
