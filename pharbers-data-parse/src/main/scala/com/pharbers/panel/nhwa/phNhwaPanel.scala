@@ -105,7 +105,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             "ATC编码" -> "ATC_CODE",
             "药品名称" -> "MOLE_NAME",
             "商品名" -> "PRODUCT_NAME",
-            "包装" -> "PRODUCT_NAME",
+            "包装" -> "PACKAGE",
             "药品规格" -> "PACK_DES",
             "包装数量" -> "PACK_NUMBER",
             "金额（元）" -> "VALUE",
@@ -114,6 +114,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             "给药途径" -> "APP1_COD",
             "生产企业" -> "CORP_NAME"
         )
+
         val setDefaultMap = Map(
             "PRODUCT_NAME" -> "$MOLE_NAME",
             "VALUE" -> "0",
@@ -315,23 +316,13 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                         file_lst = file_lst.distinct
                     }
 
-            if(i % 10 == 0){
-                val msg = Map(
-                    "type" -> "progress_generat_panel",
-                    "ym" -> ym,
-                    "mkt" -> market,
-                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
+            val msg = Map(
+                "type" -> "progress_generat_panel",
+                "ym" -> ym,
+                "mkt" -> market,
+                "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
 
-                ws.post(msg)
-            }else if(i == totalPage){
-                val msg = Map(
-                    "type" -> "progress_generat_panel",
-                    "ym" -> ym,
-                    "mkt" -> market,
-                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
-
-                ws.post(msg)
-            }
+            ws.post(msg)
         }
 
         page.closeStorage
