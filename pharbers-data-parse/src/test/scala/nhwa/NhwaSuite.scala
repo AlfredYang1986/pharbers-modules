@@ -90,11 +90,12 @@
 //  * Created by clock on 18-1-3.
 //  */
 //class NhwaSuite extends FunSuite {
-//    val cpa_file_local = "170915恩华2017年7月检索.xlsx"
+//    val cpa_file_local = "171016恩华2017年8月检索.xlsx"
+//    val cpa_file_local2 = "to医药魔方 恩华CPA原始数据2015.1-2017.6.xlsx"
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("8ee0ca24796f9b7f284d931650edbd4b"),
 //        "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
-//        "cpas" -> List(cpa_file_local),
+//        "cpas" -> List(cpa_file_local2),
 //        "gycxs" -> List("")
 //    )
 //
@@ -124,7 +125,7 @@
 //        }
 //
 //        val panelHander = phGeneratePanel(args)
-//        val result = getResult(panelHander.getPanelFile(List("201707")))
+//        val result = getResult(panelHander.getPanelFile(List("201510", "201605", "201604", "201611", "201606", "201609", "201512", "201702", "201608", "201701", "201502", "201607", "201603")))
 //        println("result = " + result)
 ////        val panelLst = result.values.flatMap(_.values).toList.flatten
 ////        panelLst.foreach(x => println(s"panel = $x"))
@@ -132,7 +133,7 @@
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
 //    }
 //
-//    test("Pressure test => 50") {
+//    test("Pressure test => 150") {
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"压力测试开始时间" + dateformat.format(new Date()))
 //        println()
@@ -147,8 +148,8 @@
 //
 //        val panelHander = phGeneratePanel(args)
 //
-//        for (i <- 1 to 50) {
-//            val result = getResult(panelHander.getPanelFile(List("201704")))
+//        for (i <- 1 to 1) {
+//            val result = getResult(panelHander.getPanelFile(List("201708")))
 //            val panelLst = result.values.flatMap(_.values).toList.flatten
 //            print(s"panel $i = " + panelLst.mkString(","))
 //        }

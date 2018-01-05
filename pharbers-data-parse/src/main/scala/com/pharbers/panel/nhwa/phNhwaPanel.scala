@@ -103,15 +103,18 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             "月" -> "MONTH",
             "医院编码" -> "HOSPITAL_CODE",
             "ATC编码" -> "ATC_CODE",
+            "ATC码" -> "ATC_CODE",
             "药品名称" -> "MOLE_NAME",
             "商品名" -> "PRODUCT_NAME",
             "包装" -> "PACKAGE",
             "药品规格" -> "PACK_DES",
+            "规格" -> "PACK_DES",
             "包装数量" -> "PACK_NUMBER",
             "金额（元）" -> "VALUE",
             "数量（支/片）" -> "STANDARD_UNIT",
             "剂型" -> "APP2_COD",
             "给药途径" -> "APP1_COD",
+            "途径" -> "APP1_COD",
             "生产企业" -> "CORP_NAME"
         )
 
