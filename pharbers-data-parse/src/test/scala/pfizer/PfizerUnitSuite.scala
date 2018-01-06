@@ -1,27 +1,15 @@
 //package pfizer
 //
-//import com.pharbers.panel.pfizer.{panel_file_path, phPfizerHandle}
 //import org.scalatest.FunSuite
-//
 //import scala.collection.immutable.Map
-//import java.nio.CharBuffer
-//import java.nio.charset.Charset
-//
-//import com.pharbers.memory.pages.fop.{fileStorage, pageStorage}
+//import com.pharbers.panel.phPanelFilePath
 //import com.pharbers.memory.pages.pageMemory
-//import com.pharbers.panel.pfizer.impl.phPfizerHandleImpl
-//import com.pharbers.panel.pfizer.panel_file_path
-//import com.pharbers.panel.util.csv.{phFileWriteStorageImpl, phHandleCsvImpl}
-//import org.scalatest.FunSuite
-//
-//import scala.collection.immutable.Map
-//import scalaz.syntax.std.all
-//
+//import com.pharbers.panel.pfizer.phPfizerHandle
 //
 ///**
 //  * Created by clock on 17-9-7.
 //  */
-//class PfizerUnitSuite extends FunSuite with panel_file_path {
+//class PfizerUnitSuite extends FunSuite with phPanelFilePath {
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("company"),
 //        "user" -> List("user"),
