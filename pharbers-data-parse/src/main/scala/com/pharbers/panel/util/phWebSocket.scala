@@ -16,11 +16,11 @@ case class phWebSocket(uid: String) extends PharbersInjectModule {
     val local_connect: String = config.mc.find(p => p._1 == "local_connect").get._2.toString
     val url: String = config.mc.find(p => p._1 == "url").get._2.toString
 
-    lazy val ws = HTTP(s"http://$local_connect$url")
-            .header("Accept" -> "application/json", "Content-Type" -> "application/json")
-
     def post(msg: Map[String, String]) = {
         try{
+            val ws = HTTP(s"http://$local_connect$url")
+                    .header("Accept" -> "application/json", "Content-Type" -> "application/json")
+
             val json = toJson(
                 Map(
                     "condition" -> Map(

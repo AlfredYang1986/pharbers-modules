@@ -94,8 +94,8 @@
 //    val cpa_file_local2 = "to医药魔方 恩华CPA原始数据2015.1-2017.6.xlsx"
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List("8ee0ca24796f9b7f284d931650edbd4b"),
-//        "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
-//        "cpas" -> List(cpa_file_local2),
+//        "uid" -> List("08f1517cd192c5d8f9290c46418e08b1"),
+//        "cpas" -> List(cpa_file_local),
 //        "gycxs" -> List("")
 //    )
 //
@@ -125,7 +125,7 @@
 //        }
 //
 //        val panelHander = phGeneratePanel(args)
-//        val result = getResult(panelHander.getPanelFile(List("201510", "201605", "201604", "201611", "201606", "201609", "201512", "201702", "201608", "201701", "201502", "201607", "201603")))
+//        val result = getResult(panelHander.getPanelFile(List("201708")))
 //        println("result = " + result)
 ////        val panelLst = result.values.flatMap(_.values).toList.flatten
 ////        panelLst.foreach(x => println(s"panel = $x"))
