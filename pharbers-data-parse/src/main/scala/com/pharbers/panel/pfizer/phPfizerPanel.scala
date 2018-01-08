@@ -27,7 +27,6 @@ trait phPfizerHandleTrait extends phPanelFilePath with phPanelHandle {
     protected val company: String
     protected val uid: String
     protected val markets: List[String]
-    protected val ws = phWebSocket(uid)
 
     override def calcYM: JsValue = {
         def distinctYM(arg: (Map[String, String], List[String])): Map[String, Int] = {
@@ -314,6 +313,7 @@ trait phPfizerHandleTrait extends phPanelFilePath with phPanelHandle {
 
         val baseProgress = if(file_lst == Nil) 0 else 50
         val totalPage = page.pageCount.toInt - 1
+        val ws = phWebSocket(uid)
 
         (0 to totalPage) foreach { i =>
             val progress = baseProgress + i * 50 / totalPage
