@@ -137,12 +137,25 @@ trait phSortInsertCsvTrait extends phDataHandle {
         def sameLine(curLine: Map[String, Any], h_pos: Long, l_pos: Long, file: String,
                      sameLineFun: List[Map[String, Any]] => (Map[String, Any], Map[String, Any])) = {
             val ifs = phFileWriteStorageImpl(file)
-            val newLineArr = sameLineFun(curLine :: line :: Nil) match {
+            var newLineArr = sameLineFun(curLine :: line :: Nil) match {
                 case (a, b) if b.isEmpty =>
                     (titleSeqArg.map(a(_).toString).mkString(spl) + chl).getBytes
                 case (a, b) =>
                     (titleSeqArg.map(a(_).toString).mkString(spl) + chl).getBytes ++
                             (titleSeqArg.map(b(_).toString).mkString(spl) + chl).getBytes
+            }
+
+///            println("curLine + " + curLine)
+///            println("line + " + line)
+
+            //WARN : The input causes the pointer chaos
+            val reduced = (l_pos - h_pos - newLineArr.length).toInt
+            if(reduced > 0){
+                newLineArr = newLineArr.dropRight(1)
+                (0 until reduced) foreach { _ =>
+                    newLineArr ++= "0".getBytes
+                }
+                newLineArr ++= "\n".getBytes
             }
 
             val tailSize = ifs.raf.length.toInt - l_pos

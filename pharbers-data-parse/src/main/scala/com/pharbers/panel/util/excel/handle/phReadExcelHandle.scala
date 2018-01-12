@@ -28,6 +28,16 @@ case class phReadExcelHandle(file_local: String) extends DefaultHandler {
         }
         count
     }
+    
+    lazy val getSheetNames: Seq[String] = {
+        val xs = fr.getSheetsData.asInstanceOf[XSSFReader.SheetIterator]
+        var sheetName = Seq[String]()
+        while (xs.hasNext) {
+            xs.next()
+            sheetName = sheetName :+ xs.getSheetName
+        }
+        sheetName
+    }
 
     def process(sheetId: Int, sheetName: String = "") = {
         val parser: XMLReader = fetchSheetParser(sst)

@@ -1,11 +1,13 @@
 package com.pharbers.panel.util
 
 import java.io.File
+import play.api.libs.json.JsValue
 
 /**
   * Created by clock on 17-9-7.
   */
 trait phData
+
 trait phDataHandle {
     val spl = 31.toChar.toString
     val comma = ","
@@ -20,4 +22,10 @@ trait phDataHandle {
         if(!file.exists())
             file.createNewFile
     }
+}
+
+trait phPanelHandle extends phDataHandle {
+    def calcYM: JsValue
+    def getMarkets: JsValue
+    def getPanelFile(ym: List[String] = Nil, mkt: String = "", totalGenerateNum: Int = 0, curGenerateNum: Int = 0): JsValue
 }
