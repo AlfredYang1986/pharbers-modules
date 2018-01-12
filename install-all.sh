@@ -115,6 +115,10 @@ cd pharbers-redis-driver
 mvn clean install
 cd ..
 
+echo -e "\033[47;30m 19.installing xmpp-em \033[0m"
+cd xmpp-em
+mvn clean install
+cd ..
 
 set +e
 echo "finish, have fun"
