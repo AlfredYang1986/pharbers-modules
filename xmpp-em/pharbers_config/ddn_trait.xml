@@ -1,0 +1,12 @@
+<pharbers-modules>
+    <ddn-trait>
+        <app_key value="blackmirror#dongda" />
+        <org_name value="blackmirror" />
+        <app_name value="dongda" />
+        <client_id value="YXA6A-uzcDn4Eeag6S9CRYv19Q" />
+        <client_secret value="YXA6cXkx9z9LnMdNWHRrcNugX4-M354" />
+        <notification_account value="dongda_master" />
+        <notification_password value="PassW0rd" />
+        <em_host value="https://a1.easemob.com/" />
+    </ddn-trait>
+</pharbers-modules>

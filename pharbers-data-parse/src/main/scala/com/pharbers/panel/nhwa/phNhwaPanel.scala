@@ -44,7 +44,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             }
 
             val maxYM = temp.maxBy(x => x._2)
-            temp.filter(_._2 > maxYM._2 / 2)
+            temp.filter(_._2 > maxYM._2 / 5)
         }
 
         val result = distinctYM(loadCPA)
@@ -211,13 +211,11 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
         val fill_data_local = base_path + company + fill_hos_data_file
         val fill_data_page = pageMemory(fill_data_local)
 
-        val fd_title = fill_data_page.pageData(0).head
-                .dropRight(1).toUpperCase
-                .split(spl).toList
+        val fd_title = fill_data_page.pageData(0).head.toUpperCase.split(spl).toList
 
         (0 until fill_data_page.pageCount.toInt) foreach { i =>
             fill_data_page.pageData(i).foreach { line =>
-                val data = fd_title.zip(line.dropRight(1).filter(_ != '"').split(spl).toList).toMap
+                val data = fd_title.zip(line.filter(_ != '"').split(spl).toList).toMap
                 if (hos_lst.contains(data("HOSPITAL_CODE")) && data("MONTH") == m.toString)
                     phHandleCsv().appendByLine(postFun(data).get, cache_file)
             }
