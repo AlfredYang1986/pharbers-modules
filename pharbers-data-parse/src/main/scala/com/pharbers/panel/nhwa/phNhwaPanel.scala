@@ -44,7 +44,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             }
 
             val maxYM = temp.maxBy(x => x._2)
-            temp.filter(_._2 > maxYM._2 / 2)
+            temp.filter(_._2 > maxYM._2 / 5)
         }
 
         val result = distinctYM(loadCPA)
