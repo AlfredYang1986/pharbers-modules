@@ -22,6 +22,7 @@ trait phHandleCsvTrait extends phDataHandle {
         } else {
             titleSeqArg
         }
+        println(content.head.keys.toList)
 
         val file = new File(output_file)
         createFile(file)
