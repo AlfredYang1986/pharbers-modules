@@ -35,7 +35,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                     page.pageData(i).map { line =>
                         val data = arg._2.zip(line.split(spl).toList).toMap
                         data("HOSPITAL_CODE")
-                    }.distinct
+                    }.toList.distinct
                 }).flatten.distinct.length
 
                 page.closeStorage
@@ -44,7 +44,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             }
 
             val maxYM = temp.maxBy(x => x._2)
-            temp.filter(_._2 > maxYM._2 / 5)
+            temp.filter(_._2 > maxYM._2 / 2)
         }
 
         val result = distinctYM(loadCPA)

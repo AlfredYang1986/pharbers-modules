@@ -11,6 +11,7 @@ trait phWriteCsvTrait extends phDataHandle {
 
     def appendByLine(line: Map[String, Any], output_file: String)
                     (implicit titleSeqArg: List[String] = Nil): Unit = {
+
         if (line.isEmpty) throw new Exception("写入的数据为空")
         val titleSeq = if (titleSeqArg.isEmpty) line.keys.toList else titleSeqArg
         val out = new RandomAccessFile(getFile(output_file), "rw")
@@ -24,6 +25,7 @@ trait phWriteCsvTrait extends phDataHandle {
 
     def writeByList(content: List[Map[String, Any]], output_file: String)
                    (implicit titleSeqArg: List[String] = Nil): Unit = {
+
         if (content.isEmpty) throw new Exception("写入的数据为空")
         val titleSeq = if (titleSeqArg.isEmpty) content.head.keys.toList else titleSeqArg
         val out = new FileWriter(getFile(output_file))

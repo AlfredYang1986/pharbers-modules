@@ -9,6 +9,7 @@ import com.pharbers.panel.util.excel.handle.phWriteExcelHandle
 trait phWriteExcelTrait extends phDataHandle {
     def writeByList(content: List[Map[String, Any]], output_file: String,
                     sheet: String = "Sheet1", cellNumArg: Map[String, Int] = Map()) = {
+
         def getWriteSeq(row: Map[String, Any]): Map[String, Int] = {
             var i = -1
             row.map { x =>

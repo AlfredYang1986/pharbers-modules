@@ -15,6 +15,7 @@ trait phReadExcelTrait extends phDataHandle {
     def read2Lst(excel: phExcelFileInfo)
                 (implicit filterFun: Map[String, String] => Boolean = _ => true,
                  postFun: Map[String, String] => Option[Map[String, String]] = tr => Some(tr)): List[Map[String, String]] = {
+
         var title: Map[String, String] = Map()
         var result: List[Map[String, String]] = Nil
 
@@ -41,6 +42,7 @@ trait phReadExcelTrait extends phDataHandle {
     }
 
     def setDefaultValue(key: String, row: Map[String, String], excel: phExcelFileInfo): String = {
+
         def getValue(targetCell: String): String = {
             row.get(targetCell) match {
                 case Some(s) if s == "" => setDefaultValue(targetCell, row, excel)
