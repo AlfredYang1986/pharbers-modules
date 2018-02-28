@@ -1,33 +1,26 @@
-import com.mongodb.spark.MongoSpark
-import com.mongodb.spark.config.ReadConfig
-import com.pharbers.spark.driver.phSparkDriver
-import org.scalatest.FunSuite
-
-/**
-  * Created by clock on 18-2-26.
-  */
-class SparkDriverSuite extends FunSuite with phMongoConfig{
-    val sc = phSparkDriver().sc
-    test("Test read mongo") {
-        def users = {
-            val readConfig = ReadConfig(Map(
-                "spark.mongodb.input.uri" -> s"mongodb://$mongodbHost:$mongodbPort/",
-                "spark.mongodb.input.database" -> "baby_time_test",
-                "spark.mongodb.input.collection" -> "users",
-                "readPreference.name" -> "secondaryPreferred")
-            )
-            MongoSpark.load(sc, readConfig = readConfig)
-        }
-
-        def services = {
-            val readConfig = ReadConfig(Map(
-                "spark.mongodb.input.uri" -> s"mongodb://$mongodbHost:$mongodbPort/",
-                "spark.mongodb.input.database" -> "baby_time_test",
-                "spark.mongodb.input.collection" -> "services",
-                "readPreference.name" -> "secondaryPreferred"))
-            MongoSpark.load(sc, readConfig = readConfig)
-        }
-        println(users)
-        println(services)
-    }
-}
+//import com.pharbers.spark.driver.phSparkDriver
+//import org.scalatest.FunSuite
+//
+///**
+//  * Created by clock on 18-2-26.
+//  */
+//class SparkDriverSuite extends FunSuite with phMongoConfig{
+//    val driver =  phSparkDriver()
+//
+//    test("Test read mongo") {
+//        def users = driver.mongo2RDD(mongodbHost, mongodbPort, "baby_time_test", "users")
+//        def services = driver.mongo2RDD(mongodbHost, mongodbPort, "baby_time_test", "services")
+//        println(users)
+//        println(services)
+//    }
+//
+//    test("Test read csv"){
+//        val file_path = "file:///home/jeorch/jeorch/test/file_test/text.csv"
+//
+//        val rdd = driver.csv2RDD(file_path, delimiter = 31.toChar.toString, true)
+////        rdd.foreach(x => println(x))
+////        rdd.printSchema()
+//        rdd.show(false)
+////        println(rdd.count())
+//    }
+//}
