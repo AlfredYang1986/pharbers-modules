@@ -1,0 +1,7 @@
+<pharbers-modules>
+    <oss-config>
+        <endpoint value="oss-cn-beijing.aliyuncs.com" />
+        <accessKeyId value="LTAIDMRb0mJ9lSCC" />
+        <accessKeySecret value="Sznd7Znly1XRfbNxVBbaBqfanlgfMH" />
+    </oss-config>
+</pharbers-modules>
