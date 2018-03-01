@@ -1,63 +1,34 @@
-package com.pharbers.panel.pfizer
+package com.pharbers.panel2.pfizer
 
 import java.util.UUID
-
-import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.http.HTTP
-import com.pharbers.memory.pages.pageMemory
-import com.pharbers.panel.util.csv.phHandleCsv
-import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
-import com.pharbers.panel.util.phDataHandle
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-
 import scala.collection.immutable.Map
+import com.pharbers.panel2.phPanelFilePath
+import com.pharbers.memory.pages.pageMemory
+import com.pharbers.panel2.util.csv.phHandleCsv
+import com.pharbers.panel2.util.{phPanelHandle, phWebSocket}
+import com.pharbers.panel2.util.excel.{phExcelData, phHandleExcel}
 
 /**
   * Created by clock on 17-10-24.
   */
-case class phPfizerHandle(args: Map[String, List[String]]) extends phGeneratePanelTrait {
-    override lazy val cpa = base_path + company + client_path + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
-    override lazy val gycx = base_path + company + client_path + args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
-    override val company = args.getOrElse("company", throw new Exception("no find company arg")).head
-    override val uid = args.getOrElse("uid", throw new Exception("no find uid arg")).head
-    override val markets = makets.split(",").toList
+case class phPfizerHandle(args: Map[String, List[String]]) extends phPfizerHandleTrait {
+    override lazy val cpa = base_path + company + client_path + args("cpas").head
+    override lazy val gycx = base_path + company + client_path + args("gycxs").head
+    override val company = args("company").head
+    override val uid = args("uid").head
+    override val markets = args("mkts")
 }
 
-/**
-  * Created by clock on 17-11-12.
-  */
-case class alWebSocket(uid: String) extends PharbersInjectModule {
-    override val id: String = "wsocket-content"
-    override val configPath: String = "pharbers_config/wsocket_content.xml"
-    override val md = "remote_connect" :: "local_connect" :: "url" :: Nil
-
-    val local_connect: String = config.mc.find(p => p._1 == "local_connect").get._2.toString
-    val url: String = config.mc.find(p => p._1 == "url").get._2.toString
-
-    val ws = HTTP(s"http://$local_connect$url")
-            .header("Accept" -> "application/json", "Content-Type" -> "application/json")
-
-    def post(msg: Map[String, String]): JsValue = {
-        val json = toJson(
-            Map(
-                "condition" -> Map(
-                    "uid" -> toJson(uid),
-                    "msg" -> toJson(msg))
-            )
-        )
-        ws.post(json)
-    }
-}
-
-trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
+trait phPfizerHandleTrait extends phPanelFilePath with phPanelHandle {
     protected val cpa: String
     protected val gycx: String
     protected val company: String
     protected val uid: String
     protected val markets: List[String]
 
-    def calcYM: JsValue = {
+    override def calcYM: JsValue = {
         def distinctYM(arg: (Map[String, String], List[String])): Map[String, Int] = {
             val temp = arg._1.map { ym =>
                 val page = pageMemory(ym._2)
@@ -92,7 +63,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         }
     }
 
-    def getMarkets: JsValue = {
+    override def getMarkets: JsValue = {
         markets.size match {
             case 0 => toJson("0")
             case 1 => toJson(markets.head)
@@ -100,18 +71,18 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         }
     }
 
-    def getPanelFile(ym: List[String]): JsValue = {
+    override def getPanelFile(ym: List[String] = Nil, mkt: String = "", t: Int = 0, c: Int = 0): JsValue = {
+        val totalGenerateNum = t
+        var curGenerateNum = c
         val c0 = loadCPA
         val g0 = loadGYCX
         val m1 = load_m1
         val result = ym.map { ym =>
-            val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2) //(c0._1(ym), c0._2)
+            val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2)
             val g1 = (g0._1(ym), g0._2)
-            val r1 = markets.map { mkt =>
-                val lst = generatePanel(ym, mkt, c1, g1, m1)
-                mkt -> toJson(lst)
-            }.toMap
-            ym -> toJson(r1)
+            val lst = generatePanel(totalGenerateNum, curGenerateNum, ym, mkt, c1, g1, m1)
+            curGenerateNum += 1
+            ym -> toJson(lst)
         }.toMap
 
         toJson(result)
@@ -138,7 +109,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             "STANDARD_UNIT" -> "0"
         )
         implicit val postArg = postFun
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         implicit val cacheLocalArg = cache_base
         phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap), "YM")
     }
@@ -165,7 +136,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             "STANDARD_UNIT" -> "0"
         )
         implicit val postArg = postFun
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         implicit val cacheLocalArg = cache_base
         phHandleExcel().readExcelToCache(phExcelData(gycx, defaultValueArg = setDefaultMap, fieldArg = setFieldMap), "YM")
     }
@@ -177,7 +148,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                 Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("通用名"))
             )
         }
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         phHandleExcel().readExcel(phExcelData(m1_file_local))
     }
 
@@ -211,8 +182,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
     }
 
     def load_b0(market: String): List[Map[String, String]] = {
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-        implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+        implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
         val b0_file_local = base_path + company + markets_file
         phHandleExcel().readExcel(phExcelData(b0_file_local, sheetName = "Sheet1"))
                         .filter(_("Market") == market)
@@ -270,7 +241,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
 
     def fill_hos_lst(m: Int) = {
         def load_uc_hos: List[Map[String, String]] = {
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             implicit val filter: Map[String, String] => Boolean = { tr =>
                 tr.get("月份") match {
                     case None => false
@@ -281,8 +252,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             phHandleExcel().readExcel(phExcelData(cpa, 2))
         }
         def load_up_hos: List[Map[String, String]] = {
-            implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             val unpublished_hos_file_local = base_path + company + unpublished_hos_file
             phHandleExcel().readExcel(phExcelData(unpublished_hos_file_local,3))
         }
@@ -297,7 +268,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         }.filter(_ != "") ++ up_hos).distinct
     }
 
-    def generatePanel(ym: String, market: String,
+    def generatePanel(totalGenerateNum: Int, curGenerateNum: Int,
+                      ym: String, market: String,
                       c1: (String, List[String]), g1: (String, List[String]),
                       m1: List[Map[String, String]]) = {
         val hos00 = load_hos00(market)
@@ -305,8 +277,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         val m2 = innerJoin(b0.toStream, m1.toStream, "通用名_原始", "通用名").map(mergeMB(_))
         val hosp_tab = getHospTab(hos00, market)
 
-        val cpa_panel = generate(c1, m2, ym, market, hosp_tab)
-        generate(g1, m2, ym, market, hosp_tab, cpa_panel)
+        val cpa_panel = generate(totalGenerateNum, curGenerateNum, c1, m2, ym, market, hosp_tab)
+        generate(totalGenerateNum, curGenerateNum, g1, m2, ym, market, hosp_tab, cpa_panel)
     }
 
     private def getHospTab(hos00: List[Map[String, String]], market: String) = {
@@ -324,7 +296,8 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
         )
     }
 
-    private def generate(source: (String, List[String]),
+    private def generate(totalGenerateNum: Int, curGenerateNum: Int,
+                     source: (String, List[String]),
                      m1Arg: Stream[Map[String, String]],
                      ym: String, market: String,
                      hosp_tab: Map[String, (String, String)],
@@ -340,6 +313,7 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
 
         val baseProgress = if(file_lst == Nil) 0 else 50
         val totalPage = page.pageCount.toInt - 1
+        val ws = phWebSocket(uid)
 
         (0 to totalPage) foreach { i =>
             val progress = baseProgress + i * 50 / totalPage
@@ -359,20 +333,34 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
                         file_lst = file_lst :+ phHandleCsv().sortInsert(x, file_lst, distinct_source, mergeSameLine)
                         file_lst = file_lst.distinct
                     }
-            val msg = Map(
-                "type" -> "progress_generat_panel",
-                "ym" -> ym,
-                "mkt" -> market,
-                "progress" -> progress.toString)
 
-            if(i % 10 == 0)
-                alWebSocket(uid).post(msg)
-            else if(i == totalPage)
-                alWebSocket(uid).post(msg)
+            if(i % 10 == 0){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
+
+                ws.post(msg)
+            }else if(i == totalPage){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
+
+                ws.post(msg)
+            }
         }
 
         page.closeStorage
         file_lst
+    }
+
+    private def getProgress(totalGenerateNum: Int, curGenerateNum: Int, progress: Int): String ={
+        val base = 20
+        val before = 100 * 0.8 * curGenerateNum / totalGenerateNum
+        Math.floor(base + before + progress * 0.8 / totalGenerateNum).toString
     }
 
     private val mergeMC:(Map[String,String], String, Map[String,(String,String)]) => Map[String,Any] = { (old,market,hosId) =>
@@ -396,9 +384,12 @@ trait phGeneratePanelTrait extends phDataHandle with panel_file_path {
             m("ID").toString + m("Hosp_name") + m("Date") + m("Prod_Name") + m("Prod_CNAME") + m("HOSP_ID") + m("Strength") + m("DOI") + m("DOIE")
         }
 
-        if(cur.toString == "") -1
-        else if (getString(newLine) == getString(cur)) 0
-        else if (getString(newLine) < getString(cur)) -1
+        if(cur.toString == "")
+            1
+        else if (getString(newLine) == getString(cur))
+            0
+        else if (getString(newLine) < getString(cur))
+            1
         else 1
     }
 

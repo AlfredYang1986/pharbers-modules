@@ -1,0 +1,14 @@
+logs
+target
+.idea
+.idea_modules
+.classpath
+.project
+.settings
+lib
+
+*.log
+
+\.DS_Store
+
+pharbers-modules\.iml

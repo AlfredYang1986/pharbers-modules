@@ -124,4 +124,16 @@ case class EMNotification(val app_key : String,
   			case ex : Exception => toJson(Map("error" -> "user existing"))
   		}
   	}
+
+	def forceOffline(user_id : String) : JsValue = {
+		try {
+			HTTP(em_host + org_name + "/" + app_name + "/users/" + user_id + "/disconnect")
+				.header("Accept" -> "application/json",
+					"Content-Type" -> "application/json",
+					"Authorization" -> ("Bearer " + getAuthTokenForEM))
+				.get
+		} catch {
+			case ex : Exception => toJson(Map("error" -> "offline error"))
+		}
+	}
 }

@@ -51,6 +51,22 @@ case class httpOpt(val url : String) {
 	/**
 	 * last call
 	 */
+	def get = {
+		loadCookies
+		connection.connect
+		storeCookies
+
+		val in = new BufferedReader(new InputStreamReader(connection.getInputStream))
+		val buffer = new StringBuffer
+		var line = ""
+		do {
+			buffer.append(line)
+			line = in.readLine
+		} while (line != null)
+
+		parse(buffer.toString)
+	}
+
 	def get(parameters : Map[String, String]) = {
 		loadCookies
 		connection.connect

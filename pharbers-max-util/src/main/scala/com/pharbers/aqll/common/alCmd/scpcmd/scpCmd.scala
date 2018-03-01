@@ -14,7 +14,7 @@ import com.pharbers.aqll.common.alCmd.alShellOtherCmdExce
   * @param user_name 用户名称
   */
 case class scpCmd(file : String, des_path : String, host : String, user_name : String) extends alShellOtherCmdExce {
-    override def cmd = s"scp ${file} ${user_name}@${host}:~/${des_path}"
+    override def cmd = s"scp ${file} ${user_name}@${host}:${des_path}"
 }
 
 /**

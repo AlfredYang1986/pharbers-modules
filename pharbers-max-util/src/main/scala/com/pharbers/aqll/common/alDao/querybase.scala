@@ -35,6 +35,8 @@ trait data_connection {
 
 object dataFactory {
 
+    def getDataAdmin(host: String = "127.0.0.1", port: Int = 27017, user: String = "", pwd: String = "", dbname: String = "admin"): data_connection = new DataConnection(host, port, user, pwd, dbname)
+
     def getDataCores(host: String = "127.0.0.1", port: Int = 27017, user: String = "", pwd: String = "", dbname: String = "Max_Cores"): data_connection = new DataConnection(host, port, user, pwd, dbname)
 
     def getDataBasic(host: String = "127.0.0.1", port: Int = 27017, user: String = "", pwd: String = "", dbname: String = "Max_Basic"): data_connection = new DataConnection(host, port, user, pwd, dbname)
