@@ -21,6 +21,8 @@
 /pharbers-max-panel/config/
 /pharbers-max-panel/files/
 /pharbers-page-memory/files/
+/BmOssDriver/upload/
+/BmOssDriver/pharbers_config/
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 */.mvn/wrapper/maven-wrapper.jar
