@@ -1,13 +1,13 @@
 package com.pharbers.panel.util.excel
 
 import scala.collection.immutable.Map
-import com.pharbers.panel.util.common.phDataHandle
+import com.pharbers.panel.util.common.phDataHandleTrait
 import com.pharbers.panel.util.excel.handle.phReadExcelHandle
 
 /**
   * Created by clock on 18-2-27.
   */
-trait phReadExcelTrait extends phDataHandle {
+trait phReadExcelTrait extends phDataHandleTrait {
     def getCount(excel: phExcelFileInfo): Int = phReadExcelHandle(excel.file_local).getCount
 
     def getSheetNames(excel: phExcelFileInfo): Seq[String] = phReadExcelHandle(excel.file_local).getSheetNames

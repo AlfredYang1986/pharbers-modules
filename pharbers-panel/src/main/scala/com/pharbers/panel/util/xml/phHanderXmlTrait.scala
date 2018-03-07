@@ -2,11 +2,12 @@ package com.pharbers.panel.util.xml
 
 import java.io.File
 import scala.xml.{Node, XML}
+import com.pharbers.panel.util.common.phDataHandleTrait
 
 /**
   * Created by clock on 18-1-3.
   */
-trait phHanderXmlTrait {
+trait phHanderXmlTrait extends phDataHandleTrait{
     val configPath: String
     lazy val configDir : String = System.getProperty("user.dir")
     lazy val configFile = XML.loadFile(new File(configDir + "/" + configPath))

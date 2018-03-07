@@ -5,7 +5,7 @@ import java.io.File
 /**
   * Created by clock on 18-2-27.
   */
-trait phDataHandle {
+trait phDataHandleTrait {
     val spl = 31.toChar.toString
     val comma = ","
     val chl = "\n"
