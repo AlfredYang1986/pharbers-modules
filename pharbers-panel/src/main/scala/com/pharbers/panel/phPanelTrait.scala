@@ -8,5 +8,5 @@ import com.pharbers.panel.util.common.phDataHandleTrait
   */
 trait phPanelTrait extends phDataHandleTrait {
     def calcYM: JsValue
-    def getPanelFile(ym: List[String] = Nil, mkt: String = "", t: Int = 0, c: Int = 0): JsValue
+    def getPanelFile(ym: List[String], mkt: String, t: Int = 0, c: Int = 0): JsValue
 }

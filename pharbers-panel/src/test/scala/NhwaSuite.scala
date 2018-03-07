@@ -1,24 +1,22 @@
-package nhwa
-
-import java.util.{Date, UUID}
-
-import org.scalatest.FunSuite
 import java.text.SimpleDateFormat
+import java.util.Date
 
-import com.pharbers.panel.{phPanelFilePath, phPanelHeadle}
 import com.pharbers.panel.util.excel.phExcelFileInfo
 import com.pharbers.panel.util.phUtilManage
-
-import scala.collection.immutable.Map
-import com.pharbers.panel2.phGeneratePanel
+import com.pharbers.panel.{phPanelFilePath, phPanelHeadle}
 import com.pharbers.spark.driver.phSparkDriver
-import org.apache.spark.sql.Row
+import org.scalatest.FunSuite
 import play.api.libs.json.{JsString, JsValue}
+import org.apache.spark.sql._
+import org.apache.spark.sql.types._
+import scala.collection.JavaConverters._
+import scala.collection.immutable.Map
 
 /**
   * Created by clock on 18-1-3.
   */
 class NhwaSuite extends FunSuite with phPanelFilePath {
+    val sparkDriver = phSparkDriver()
     val company_name = "8ee0ca24796f9b7f284d931650edbd4b"
     val file_base = base_path + company_name
     val cpa_name = "171016恩华2017年8月检索.xlsx"
@@ -85,7 +83,6 @@ class NhwaSuite extends FunSuite with phPanelFilePath {
     }
 
     test("test calcYM") {
-        val sparkDriver = phSparkDriver()
         val file_path = "hdfs://192.168.100.174:12138/user/jeorch/180211恩华17年1-12月检索.csv"
         val rdd = sparkDriver.csv2RDD(file_path, delimiter = 31.toChar.toString, true)
         val temp = rdd.groupBy("YM", "HOSPITAL_CODE").count()
@@ -184,17 +181,33 @@ class NhwaSuite extends FunSuite with phPanelFilePath {
         phUtilManage().excel2Csv(excel, output_file)
     }
 
-    test("get markets") {
+    test("test get markets") {
         val mktHander = phPanelHeadle(args)
         println("mkt = " + mktHander.getMarkets)
     }
 
-    test("calc ym") {
+    test("test calc ym") {
         val file_path = "hdfs://192.168.100.174:12138/user/jeorch/180211恩华17年1-12月检索.csv"
         val ymHander = phPanelHeadle(args)
         val yms = ymHander.calcYM.asInstanceOf[JsString].value
         val lst = yms.split(",").toList
         println(lst)
+    }
+
+    test("test load m1") {
+        val cpa_location = "hdfs://192.168.100.174:12138/user/jeorch/180211恩华17年1-12月检索.csv"
+        val m1_location = "hdfs://192.168.100.174:12138/user/jeorch/匹配表.csv"
+        val hos_location = "hdfs://192.168.100.174:12138/user/jeorch/universe_麻醉市场_online.csv"
+        val b0_location = "hdfs://192.168.100.174:12138/user/jeorch/通用名市场定义.csv"
+        val rdd0 = sparkDriver.csv2RDD(cpa_location, delimiter = 31.toChar.toString)
+        val rdd1 = sparkDriver.csv2RDD(m1_location, delimiter = 31.toChar.toString)
+        val rdd2 = sparkDriver.csv2RDD(b0_location, delimiter = 31.toChar.toString)
+        val rdd3 = sparkDriver.csv2RDD(hos_location, delimiter = 31.toChar.toString)
+        val hos0 = rdd3.filter("DOI = '麻醉市场'").select("HOSP_ID").distinct()
+
+        println("cpa count = " + rdd0.count())
+//        val c0 = rdd0.filter(x => hos0.contains(rdd0("HOSPITAL_CODE")))
+//        println("c0 count = " + c0.count())
     }
 
     test("test generate panel file") {
@@ -210,7 +223,7 @@ class NhwaSuite extends FunSuite with phPanelFilePath {
             }
         }
 
-        val panelHander = phGeneratePanel(args)
+        val panelHander = phPanelHeadle(args)
         val result = getResult(panelHander.getPanelFile(List("201710")))
         println("result = " + result)
 //        val panelLst = result.values.flatMap(_.values).toList.flatten
@@ -232,7 +245,7 @@ class NhwaSuite extends FunSuite with phPanelFilePath {
             }
         }
 
-        val panelHander = phGeneratePanel(args)
+        val panelHander = phPanelHeadle(args)
 
         for (i <- 1 to 1) {
             val result = getResult(panelHander.getPanelFile(List("201708")))
