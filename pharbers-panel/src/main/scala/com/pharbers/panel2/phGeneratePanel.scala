@@ -10,7 +10,7 @@ import com.pharbers.panel2.util.xml.phHanderXmlTrait
   * Created by clock on 18-1-3.
   */
 case class phGeneratePanel(args: Map[String, List[String]]) extends phHanderXmlTrait with phPanelHandle{
-    override val configPath: String = "pharbers_config/data_parse_file.xml"
+    override val configPath: String = "pharbers_config/panel_config.xml"
 
     val uid = args.getOrElse("uid", throw new Exception("no find uid arg")).head
     val company = args.getOrElse("company", throw new Exception("no find company arg")).head

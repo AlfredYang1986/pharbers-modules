@@ -1,12 +1,12 @@
 package com.pharbers.panel.util.excel
 
-import com.pharbers.panel.util.common.phDataHandle
+import com.pharbers.panel.util.common.phDataHandleTrait
 import com.pharbers.panel.util.excel.handle.phWriteExcelHandle
 
 /**
   * Created by clock on 18-2-27.
   */
-trait phWriteExcelTrait extends phDataHandle {
+trait phWriteExcelTrait extends phDataHandleTrait {
     def writeByList(content: List[Map[String, Any]], output_file: String,
                     sheet: String = "Sheet1", cellNumArg: Map[String, Int] = Map()) = {
 

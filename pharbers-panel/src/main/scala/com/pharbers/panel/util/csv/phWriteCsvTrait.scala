@@ -2,12 +2,12 @@ package com.pharbers.panel.util.csv
 
 import scala.collection.immutable.Map
 import java.io.{FileWriter, RandomAccessFile}
-import com.pharbers.panel.util.common.phDataHandle
+import com.pharbers.panel.util.common.phDataHandleTrait
 
 /**
   * Created by clock on 18-2-28.
   */
-trait phWriteCsvTrait extends phDataHandle {
+trait phWriteCsvTrait extends phDataHandleTrait {
 
     def appendByLine(line: Map[String, Any], output_file: String)
                     (implicit titleSeqArg: List[String] = Nil): Unit = {

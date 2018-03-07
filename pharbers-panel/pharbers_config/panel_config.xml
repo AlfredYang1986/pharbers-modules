@@ -17,14 +17,14 @@
         <!--CNS_R,HTN2,PAIN_C       -panel-->
         <!--AI_D,ZYVOX       -no match-->
 
-        <INF value="com.pharbers.panel2.pfizer.phPfizerHandle" />
-        <SPE value="com.pharbers.panel2.pfizer.phPfizerHandle" />
-        <URO value="com.pharbers.panel2.pfizer.phPfizerHandle" />
+        <INF value="com.pharbers.panel.pfizer.phPfizerHandle" />
+        <SPE value="com.pharbers.panel.pfizer.phPfizerHandle" />
+        <URO value="com.pharbers.panel.pfizer.phPfizerHandle" />
     </company_fea9f203d4f593a96f0d6faa91ba24ba>
 
     <company_8ee0ca24796f9b7f284d931650edbd4b>
         <markets value="麻醉市场"/>
 
-        <麻醉市场 value="com.pharbers.panel2.nhwa.phNhwaHandle" />
+        <麻醉市场 value="com.pharbers.panel.nhwa.phNhwaHandle" />
     </company_8ee0ca24796f9b7f284d931650edbd4b>
 </pharbers-modules>
