@@ -1,27 +1,29 @@
-package com.pharbers.panel.nhwa
+package com.pharbers.panel2.pfizer
 
 import java.util.UUID
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import scala.collection.immutable.Map
-import com.pharbers.panel.phPanelFilePath
+import com.pharbers.panel2.phPanelFilePath
 import com.pharbers.memory.pages.pageMemory
-import com.pharbers.panel.util.csv.phHandleCsv
-import com.pharbers.panel.util.{phPanelHandle, phWebSocket}
-import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
+import com.pharbers.panel2.util.csv.phHandleCsv
+import com.pharbers.panel2.util.{phPanelHandle, phWebSocket}
+import com.pharbers.panel2.util.excel.{phExcelData, phHandleExcel}
 
 /**
-  * Created by clock on 18-1-3.
+  * Created by clock on 17-10-24.
   */
-case class phNhwaHandle(args: Map[String, List[String]]) extends phNhwaHandleTrait {
+case class phPfizerHandle(args: Map[String, List[String]]) extends phPfizerHandleTrait {
     override lazy val cpa = base_path + company + client_path + args("cpas").head
+    override lazy val gycx = base_path + company + client_path + args("gycxs").head
     override val company = args("company").head
     override val uid = args("uid").head
     override val markets = args("mkts")
 }
 
-trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
+trait phPfizerHandleTrait extends phPanelFilePath with phPanelHandle {
     protected val cpa: String
+    protected val gycx: String
     protected val company: String
     protected val uid: String
     protected val markets: List[String]
@@ -35,7 +37,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                     page.pageData(i).map { line =>
                         val data = arg._2.zip(line.split(spl).toList).toMap
                         data("HOSPITAL_CODE")
-                    }.toList.distinct
+                    }.distinct
                 }).flatten.distinct.length
 
                 page.closeStorage
@@ -47,7 +49,12 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             temp.filter(_._2 > maxYM._2 / 2)
         }
 
-        val result = distinctYM(loadCPA)
+        val filtered_c0 = distinctYM(loadCPA)
+        val filtered_g0 = distinctYM(loadGYCX)
+        val result = for (c <- filtered_c0; g <- filtered_g0
+                          if c._1 == g._1) yield {
+            (c._1, c._2 + g._2)
+        }
 
         result.size match {
             case 0 => toJson("0")
@@ -68,10 +75,12 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
         val totalGenerateNum = t
         var curGenerateNum = c
         val c0 = loadCPA
+        val g0 = loadGYCX
         val m1 = load_m1
         val result = ym.map { ym =>
             val c1 = fill_data(ym.takeRight(2).toInt, c0._1(ym), c0._2)
-            val lst = generatePanel(totalGenerateNum, curGenerateNum, ym, mkt, c1, m1)
+            val g1 = (g0._1(ym), g0._2)
+            val lst = generatePanel(totalGenerateNum, curGenerateNum, ym, mkt, c1, g1, m1)
             curGenerateNum += 1
             ym -> toJson(lst)
         }.toMap
@@ -94,48 +103,52 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     def loadCPA: (Map[String, String], List[String]) = {
-        val setFieldMap = Map(
-            "省" -> "PROVINCES",
-            "城市" -> "CITY",
-            "年" -> "YEAR",
-            "季度" -> "QUARTER",
-            "月" -> "MONTH",
-            "医院编码" -> "HOSPITAL_CODE",
-            "ATC编码" -> "ATC_CODE",
-            "ATC码" -> "ATC_CODE",
-            "药品名称" -> "MOLE_NAME",
-            "商品名" -> "PRODUCT_NAME",
-            "包装" -> "PACKAGE",
-            "药品规格" -> "PACK_DES",
-            "规格" -> "PACK_DES",
-            "包装数量" -> "PACK_NUMBER",
-            "金额（元）" -> "VALUE",
-            "数量（支/片）" -> "STANDARD_UNIT",
-            "剂型" -> "APP2_COD",
-            "给药途径" -> "APP1_COD",
-            "途径" -> "APP1_COD",
-            "生产企业" -> "CORP_NAME"
-        )
-
         val setDefaultMap = Map(
             "PRODUCT_NAME" -> "$MOLE_NAME",
             "VALUE" -> "0",
             "STANDARD_UNIT" -> "0"
         )
         implicit val postArg = postFun
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         implicit val cacheLocalArg = cache_base
-        phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap, fieldArg = setFieldMap), "YM")
+        phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap), "YM")
+    }
+
+    def loadGYCX: (Map[String, String], List[String]) = {
+        val setFieldMap = Map(
+            "城市" -> "CITY",
+            "年" -> "YEAR",
+            "月" -> "MONTH",
+            "医院编码" -> "HOSPITAL_CODE",
+            "通用名" -> "MOLE_NAME",
+            "药品商品名" -> "PRODUCT_NAME",
+            "规格" -> "PACK_DES",
+            "包装规格" -> "PACK_NUMBER",
+            "金额" -> "VALUE",
+            "最小制剂单位数量" -> "STANDARD_UNIT",
+            "剂型" -> "APP2_COD",
+            "给药途径" -> "APP1_COD",
+            "生产企业" -> "CORP_NAME"
+        )
+        val setDefaultMap = Map(
+            "PRODUCT_NAME" -> "$MOLE_NAME",
+            "VALUE" -> "0",
+            "STANDARD_UNIT" -> "0"
+        )
+        implicit val postArg = postFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+        implicit val cacheLocalArg = cache_base
+        phHandleExcel().readExcelToCache(phExcelData(gycx, defaultValueArg = setDefaultMap, fieldArg = setFieldMap), "YM")
     }
 
     def load_m1: List[Map[String, String]] = {
         val m1_file_local = base_path + company + product_vs_ims_file
         implicit val postFun: Map[String, String] => Option[Map[String, String]] = { tr =>
             Some(
-                Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("药品名称"))
+                Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("通用名"))
             )
         }
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         phHandleExcel().readExcel(phExcelData(m1_file_local))
     }
 
@@ -169,11 +182,11 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     def load_b0(market: String): List[Map[String, String]] = {
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-        implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+        implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
         val b0_file_local = base_path + company + markets_file
         phHandleExcel().readExcel(phExcelData(b0_file_local, sheetName = "Sheet1"))
-                .filter(_("Market") == market)
+                        .filter(_("Market") == market)
     }
 
     def innerJoin(lst1: Stream[Map[String, String]], lst2: Stream[Map[String, String]],
@@ -211,11 +224,13 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
         val fill_data_local = base_path + company + fill_hos_data_file
         val fill_data_page = pageMemory(fill_data_local)
 
-        val fd_title = fill_data_page.pageData(0).head.toUpperCase.split(spl).toList
+        val fd_title = fill_data_page.pageData(0).head
+                .dropRight(1).toUpperCase
+                .split(spl).toList
 
         (0 until fill_data_page.pageCount.toInt) foreach { i =>
             fill_data_page.pageData(i).foreach { line =>
-                val data = fd_title.zip(line.filter(_ != '"').split(spl).toList).toMap
+                val data = fd_title.zip(line.dropRight(1).filter(_ != '"').split(spl).toList).toMap
                 if (hos_lst.contains(data("HOSPITAL_CODE")) && data("MONTH") == m.toString)
                     phHandleCsv().appendByLine(postFun(data).get, cache_file)
             }
@@ -226,7 +241,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
 
     def fill_hos_lst(m: Int) = {
         def load_uc_hos: List[Map[String, String]] = {
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             implicit val filter: Map[String, String] => Boolean = { tr =>
                 tr.get("月份") match {
                     case None => false
@@ -237,8 +252,8 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             phHandleExcel().readExcel(phExcelData(cpa, 2))
         }
         def load_up_hos: List[Map[String, String]] = {
-            implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             val unpublished_hos_file_local = base_path + company + unpublished_hos_file
             phHandleExcel().readExcel(phExcelData(unpublished_hos_file_local,3))
         }
@@ -255,18 +270,19 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
 
     def generatePanel(totalGenerateNum: Int, curGenerateNum: Int,
                       ym: String, market: String,
-                      c1: (String, List[String]),
+                      c1: (String, List[String]), g1: (String, List[String]),
                       m1: List[Map[String, String]]) = {
         val hos00 = load_hos00(market)
         val b0 = load_b0(market)
         val m2 = innerJoin(b0.toStream, m1.toStream, "通用名_原始", "通用名").map(mergeMB(_))
         val hosp_tab = getHospTab(hos00, market)
 
-        generate(totalGenerateNum, curGenerateNum, c1, m2, ym, market, hosp_tab)
+        val cpa_panel = generate(totalGenerateNum, curGenerateNum, c1, m2, ym, market, hosp_tab)
+        generate(totalGenerateNum, curGenerateNum, g1, m2, ym, market, hosp_tab, cpa_panel)
     }
 
     private def getHospTab(hos00: List[Map[String, String]], market: String) = {
-        hos00.filter(_ ("DOI") == market).groupBy(_ ("ID"))
+        hos00.filter(_ ("DOI") == market + " Market").groupBy(_ ("ID"))
                 .flatMap { x =>
                     Map(x._1 -> (x._2.head("HOSP_NAME"), x._2.head("HOSP_ID")))
                 }
@@ -281,11 +297,11 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     private def generate(totalGenerateNum: Int, curGenerateNum: Int,
-                         source: (String, List[String]),
-                         m1Arg: Stream[Map[String, String]],
-                         ym: String, market: String,
-                         hosp_tab: Map[String, (String, String)],
-                         panel_lst_arg: List[String] = Nil): List[String] = {
+                     source: (String, List[String]),
+                     m1Arg: Stream[Map[String, String]],
+                     ym: String, market: String,
+                     hosp_tab: Map[String, (String, String)],
+                     panel_lst_arg: List[String] = Nil): List[String] = {
 
         implicit val base_panel_local: String = base_path + company + output_local
         implicit val panelTitleSeq: List[String] = "ID" :: "Hosp_name" :: "Date" :: "Prod_Name" :: "Prod_CNAME" ::
@@ -295,11 +311,12 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
         val page = pageMemory(source._1)
         var file_lst = panel_lst_arg
 
+        val baseProgress = if(file_lst == Nil) 0 else 50
         val totalPage = page.pageCount.toInt - 1
         val ws = phWebSocket(uid)
 
         (0 to totalPage) foreach { i =>
-            val progress =  i * 100 / totalPage
+            val progress = baseProgress + i * 50 / totalPage
 
             lazy val temp = page.pageData(i).map { line =>
                 val data = source._2.zip(line.split(spl).toList).toMap
@@ -317,13 +334,23 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                         file_lst = file_lst.distinct
                     }
 
-            val msg = Map(
-                "type" -> "progress_generat_panel",
-                "ym" -> ym,
-                "mkt" -> market,
-                "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
+            if(i % 10 == 0){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
 
-            ws.post(msg)
+                ws.post(msg)
+            }else if(i == totalPage){
+                val msg = Map(
+                    "type" -> "progress_generat_panel",
+                    "ym" -> ym,
+                    "mkt" -> market,
+                    "progress" -> getProgress(totalGenerateNum, curGenerateNum, progress))
+
+                ws.post(msg)
+            }
         }
 
         page.closeStorage

@@ -14,6 +14,8 @@
 */buildNumber.properties
 */.mvn/timing.properties
 
+/pharbers-panel/config/
+/pharbers-panel/files/
 /pharbers-data-parse/config/
 /pharbers-data-parse/files/
 /pharbers-max-panel/config/

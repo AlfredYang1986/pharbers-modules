@@ -1,3 +1,5 @@
+//package pfizer
+//
 //import java.util.Date
 //import org.scalatest.FunSuite
 //import java.text.SimpleDateFormat
@@ -6,17 +8,16 @@
 //import play.api.libs.json.{JsString, JsValue}
 //
 ///**
-//  * Created by clock on 18-1-3.
+//  * Created by clock on 17-9-7.
 //  */
-//class NhwaSuite extends FunSuite {
-//    val cpa_file_local = "171016恩华2017年8月检索.xlsx"
-//    val cpa_file_local2 = "to医药魔方 恩华CPA原始数据2015.1-2017.6.xlsx"
-//    val cpa_file_local3 = "180211恩华17年1-12月检索.xlsx"
+//class PfizerSuite extends FunSuite {
+//    val cpa_file_local = "CPA混合版.xlsx"
+//    val gycx_file_local = "GYC混合版.xlsx"
 //    val args: Map[String, List[String]] = Map(
-//        "company" -> List("8ee0ca24796f9b7f284d931650edbd4b"),
-//        "uid" -> List("08f1517cd192c5d8f9290c46418e08b1"),
-//        "cpas" -> List(cpa_file_local3),
-//        "gycxs" -> List("")
+//        "company" -> List("fea9f203d4f593a96f0d6faa91ba24ba"),
+//        "uid" -> List("30ed0dc130abf22c5cfcb0efbd0e0cb7"),
+//        "cpas" -> List(cpa_file_local),
+//        "gycxs" -> List(gycx_file_local)
 //    )
 //
 //    test("get markets") {
@@ -45,15 +46,15 @@
 //        }
 //
 //        val panelHander = phGeneratePanel(args)
-//        val result = getResult(panelHander.getPanelFile(List("201712")))
+//        val result = getResult(panelHander.getPanelFile(List("201611","201704")))
 //        println("result = " + result)
-////        val panelLst = result.values.flatMap(_.values).toList.flatten
+//        val panelLst = result.values.flatMap(_.values).toList.flatten
 ////        panelLst.foreach(x => println(s"panel = $x"))
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
 //    }
 //
-//    test("Pressure test => 150") {
+//    test("Pressure test => 50") {
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"压力测试开始时间" + dateformat.format(new Date()))
 //        println()
@@ -68,8 +69,8 @@
 //
 //        val panelHander = phGeneratePanel(args)
 //
-//        for (i <- 1 to 1) {
-//            val result = getResult(panelHander.getPanelFile(List("201708")))
+//        for (i <- 1 to 50) {
+//            val result = getResult(panelHander.getPanelFile(List("201704")))
 //            val panelLst = result.values.flatMap(_.values).toList.flatten
 //            print(s"panel $i = " + panelLst.mkString(","))
 //        }

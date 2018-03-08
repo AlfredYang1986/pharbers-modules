@@ -1,14 +1,14 @@
-package com.pharbers.panel.nhwa
+package com.pharbers.panel2.nhwa
 
 import java.util.UUID
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import scala.collection.immutable.Map
-import com.pharbers.panel.phPanelFilePath
+import com.pharbers.panel2.phPanelFilePath
 import com.pharbers.memory.pages.pageMemory
-import com.pharbers.panel.util.csv.phHandleCsv
-import com.pharbers.panel.util.{phPanelHandle, phWebSocket}
-import com.pharbers.panel.util.excel.{phExcelData, phHandleExcel}
+import com.pharbers.panel2.util.csv.phHandleCsv
+import com.pharbers.panel2.util.{phPanelHandle, phWebSocket}
+import com.pharbers.panel2.util.excel.{phExcelData, phHandleExcel}
 
 /**
   * Created by clock on 18-1-3.
@@ -35,7 +35,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                     page.pageData(i).map { line =>
                         val data = arg._2.zip(line.split(spl).toList).toMap
                         data("HOSPITAL_CODE")
-                    }.toList.distinct
+                    }.distinct
                 }).flatten.distinct.length
 
                 page.closeStorage
@@ -44,7 +44,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             }
 
             val maxYM = temp.maxBy(x => x._2)
-            temp.filter(_._2 > maxYM._2 / 2)
+            temp.filter(_._2 > maxYM._2 / 5)
         }
 
         val result = distinctYM(loadCPA)
@@ -123,7 +123,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             "STANDARD_UNIT" -> "0"
         )
         implicit val postArg = postFun
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         implicit val cacheLocalArg = cache_base
         phHandleExcel().readExcelToCache(phExcelData(cpa, defaultValueArg = setDefaultMap, fieldArg = setFieldMap), "YM")
     }
@@ -135,7 +135,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
                 Map("min1" -> tr("min1"), "min1_标准" -> tr("min1_标准"), "通用名" -> tr("药品名称"))
             )
         }
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
         phHandleExcel().readExcel(phExcelData(m1_file_local))
     }
 
@@ -169,8 +169,8 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
     }
 
     def load_b0(market: String): List[Map[String, String]] = {
-        implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-        implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+        implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+        implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
         val b0_file_local = base_path + company + markets_file
         phHandleExcel().readExcel(phExcelData(b0_file_local, sheetName = "Sheet1"))
                 .filter(_("Market") == market)
@@ -226,7 +226,7 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
 
     def fill_hos_lst(m: Int) = {
         def load_uc_hos: List[Map[String, String]] = {
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             implicit val filter: Map[String, String] => Boolean = { tr =>
                 tr.get("月份") match {
                     case None => false
@@ -237,8 +237,8 @@ trait phNhwaHandleTrait extends phPanelFilePath with phPanelHandle {
             phHandleExcel().readExcel(phExcelData(cpa, 2))
         }
         def load_up_hos: List[Map[String, String]] = {
-            implicit val filterArg = com.pharbers.panel.util.excel.phHandleExcel.filterFun
-            implicit val postArg = com.pharbers.panel.util.excel.phHandleExcel.postFun
+            implicit val filterArg = com.pharbers.panel2.util.excel.phHandleExcel.filterFun
+            implicit val postArg = com.pharbers.panel2.util.excel.phHandleExcel.postFun
             val unpublished_hos_file_local = base_path + company + unpublished_hos_file
             phHandleExcel().readExcel(phExcelData(unpublished_hos_file_local,3))
         }

@@ -37,7 +37,7 @@ trait phPfizerHandleTrait extends phPanelFilePath with phPanelHandle {
                     page.pageData(i).map { line =>
                         val data = arg._2.zip(line.split(spl).toList).toMap
                         data("HOSPITAL_CODE")
-                    }.distinct
+                    }.toList.distinct
                 }).flatten.distinct.length
 
                 page.closeStorage
