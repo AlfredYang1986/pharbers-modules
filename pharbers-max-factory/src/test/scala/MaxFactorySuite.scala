@@ -1,5 +1,5 @@
 import com.pharbers.spark.driver.phSparkDriver
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.sql.types._
 import org.scalatest.FunSuite
 /**
@@ -52,23 +52,47 @@ class MaxFactorySuite extends FunSuite {
         val hospital_match_file = "/home/jeorch/work/max/files/NHWA/max/交付格式医院匹配表.csv"
         val nhwa_match_file = "/home/jeorch/work/max/files/NHWA/max/nhwa匹配表.csv"
 
+        val output_path = "/home/jeorch/work/max/files/NHWA/new.csv"
+
         val df_max = driver.csv2RDD(max_result_file)
+        println(s"******************df_max = ${df_max.count()}")
         val df_match_hospital = driver.csv2RDD(hospital_match_file)
         val df_match_nhwa = driver.csv2RDD(nhwa_match_file)
 
-        val df_new1 = df_max.join(df_match_hospital, df_max("Panel_ID")===df_match_hospital("Panel_ID"), "left")
-        val df_new2 = df_new1.join(df_match_nhwa, df_new1("Product")===df_match_nhwa("min1_标准"), "left")
+        val df_new1 = df_max.join(df_match_hospital, df_max("Panel_ID") === df_match_hospital("Panel_ID"), "left").drop(df_match_hospital("Panel_ID")).drop(df_match_hospital("City"))
+////            //        df_new1.show()
+        println(s"******************df_new1 = ${df_new1.count()}")
+
+//        val df_new2 = df_new1.join(df_match_nhwa, df_new1("Product") === df_match_nhwa("min1_标准"), "left")
+//        df_new2.show()
+//        println(s"******************df_new2 = ${df_new2.count()}")
 
         val model = "时间,城市,min2,商品名+SKU,商品名_标准,生产企业_标准,年,月,省份,City.Tier,市场I,区域,分子名,ACC1/ACC2,power,规格,剂型,销售数量,销售金额,销售毫克数"
         //min2 = Product
         //分子名 = 药品名称
-        //power = 分子名 + 区域
-        //销售毫克数 = f_units * 毫克数
 
+        //解决
+        //销售毫克数 = Units * 毫克数
+
+        //待办
+        //power = 分子名 + 区域
         //缺少 年,月,市场I,区域,ACC1/ACC2,
 
-        //ambiguity ：City & City.Tier
-        df_new2.select("Date","Product","商品名+SKU","商品名_标准","生产企业_标准","省份","药品名称","规格","剂型_标准","f_units","f_sales").show()
+//        val df_result1 = df_new2.select("Panel_ID","Date","City","Product","商品名+SKU","商品名_标准","生产企业_标准","省份","City Tier","药品名称","规格","剂型_标准","Units","Sales")
+//        df_result1.show()
+//            println(s"******************df_result1 = ${df_result1.count()}")
+//
+//        val column_Mg = df_new2("毫克数")
+//        val column_Units = df_new2("Units")
+//        val df_unitsMs = df_new2.select(df_new2("Panel_ID"), df_new2("min1_标准"), column_Mg.*(column_Units))
+//        val df_result2 = df_result1.join(df_unitsMs, df_result1("Panel_ID") === df_unitsMs("Panel_ID") && df_result1("Product") === df_unitsMs("min1_标准"), "left").drop(df_unitsMs("Panel_ID"))
+//        df_result2.show()
+//
+//        println(s"******************df_result2 = ${df_result2.count()}")
+
+//        df_result1.write.format("csv").save(output_path)
+        driver.ss.stop()
+
     }
 
 //    test ("Test SparkContext") {
