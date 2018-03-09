@@ -13,6 +13,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <hadooop.version>2.5.1</hadooop.version>
                 <scalaVersion>2.11.8</scalaVersion>
                 <scalaBinaryVersion>2.11</scalaBinaryVersion>
             </properties>
@@ -78,9 +79,6 @@
                     <version>0.2</version>
                 </dependency>
 
-
-
-
                 <dependency>
                     <groupId>com.pharbers</groupId>
                     <artifactId>mongodb-driver</artifactId>
@@ -96,19 +94,35 @@
                     <artifactId>http</artifactId>
                     <version>0.2</version>
                 </dependency>
+
+                <!-- Hadoop test artifact for running mini clusters -->
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-minicluster</artifactId>
+                    <version>${hadooop.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
             </dependencies>
         </profile>
     </profiles>
     <build>
-        <sourceDirectory>src/main/scala</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -116,8 +130,17 @@
                 <version>3.2.1</version>
                 <executions>
                     <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
                         <goals>
+                            <goal>add-source</goal>
                             <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
