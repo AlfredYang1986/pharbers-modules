@@ -8,18 +8,20 @@ import com.pharbers.baseModules.PharbersInjectModule
 trait phPanelFilePath extends PharbersInjectModule {
     override val id: String = "data-parse"
     override val configPath: String = "pharbers_config/panel_config.xml"
-    override val md = "contrast_file_path" :: "client_file_path" :: "product_vs_ims_file" ::
-                    "universe_inf_file" :: "markets_file" :: "cache_file" ::
-                    "unpublished_hos_file" :: "fill_hos_data_file" ::
-                    "output_file" ::  Nil
+    override val md = "base_path" :: "client_file_path" ::
+                    "product_match_file" :: "markets_match_file" :: "universe_file" ::
+                    "not_arrival_hosp_file" :: "not_published_hosp_file" :: "fill_hos_data_file" ::
+                    "output_path" ::  Nil
 
-    val base_path: String = config.mc.find(p => p._1 == "contrast_file_path").get._2.toString
+    val base_path: String = config.mc.find(p => p._1 == "base_path").get._2.toString
     val client_path: String = config.mc.find(p => p._1 == "client_file_path").get._2.toString
-    val product_vs_ims_file: String = config.mc.find(p => p._1 == "product_vs_ims_file").get._2.toString
-    val universe_inf_file: String = config.mc.find(p => p._1 == "universe_inf_file").get._2.toString
-    val markets_file: String = config.mc.find(p => p._1 == "markets_file").get._2.toString
-    val unpublished_hos_file: String = config.mc.find(p => p._1 == "unpublished_hos_file").get._2.toString
+
+    val product_match_file: String = config.mc.find(p => p._1 == "product_match_file").get._2.toString
+    val markets_match_file: String = config.mc.find(p => p._1 == "markets_match_file").get._2.toString
+    val universe_file: String = config.mc.find(p => p._1 == "universe_file").get._2.toString
+    val not_arrival_hosp_file: String = config.mc.find(p => p._1 == "not_arrival_hosp_file").get._2.toString
+    val not_published_hosp_file: String = config.mc.find(p => p._1 == "not_published_hosp_file").get._2.toString
     val fill_hos_data_file: String = config.mc.find(p => p._1 == "fill_hos_data_file").get._2.toString
-    val cache_local: String = config.mc.find(p => p._1 == "cache_file").get._2.toString
-    val output_local: String = config.mc.find(p => p._1 == "output_file").get._2.toString
+
+    val output_path: String = config.mc.find(p => p._1 == "output_path").get._2.toString
 }

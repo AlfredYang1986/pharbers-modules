@@ -17,7 +17,7 @@
 //    test("Test read csv"){
 //        val file_path = "file:///home/jeorch/jeorch/test/file_test/text.csv"
 //
-//        val rdd = driver.csv2RDD(file_path, delimiter = 31.toChar.toString, true)
+//        val rdd = driver.csv2RDD(file_path, delimiter = 31.toChar.toString)
 ////        rdd.foreach(x => println(x))
 ////        rdd.printSchema()
 //        rdd.show(false)
