@@ -109,6 +109,10 @@ cd pharbers-max-util
 mvn clean install
 cd ..
 
+echo -e "\033[47;30m 18.installing pharbers-redis-driver \033[0m"
+cd pharbers-redis-driver
+mvn clean install
+cd ..
 
 echo -e "\033[47;30m 18.installing pharbers-redis-driver \033[0m"
 cd pharbers-redis-driver
@@ -118,9 +122,15 @@ cd ..
 echo -e "\033[47;30m 19.installing spark-driver \033[0m"
 cd spark-driver
 mvn clean install
+cd ..
 
 echo -e "\033[47;30m 20.installing xmpp-em \033[0m"
 cd xmpp-em
+mvn clean install
+cd ..
+
+echo -e "\033[47;30m 21.installing BmOssDriver \033[0m"
+cd BmOssDriver
 mvn clean install
 cd ..
 
