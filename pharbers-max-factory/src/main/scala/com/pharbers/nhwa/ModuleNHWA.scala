@@ -13,8 +13,9 @@ trait ModuleNHWA extends ConfigNHWA {
     def generateFianlFile(): Unit = {
 
         val df_max = driver.csv2RDD(maxResultFile)
-        val gb_test = df_max.select(df_max("Panel_ID"),df_max("Date"),df_max("City"),df_max("Product"),df_max("Sales").cast("double"),df_max("Units").cast("double")).groupBy("Date","City","Product")
-        val df_gb_sum = gb_test.agg(("Units","sum"),("Sales","sum"),("Panel_ID","first"))
+        val gb_test = df_max.select(df_max("Panel_ID"),df_max("Date"),df_max("City"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double")).groupBy("Date","City","Product")
+        val df_gb_sum = gb_test.agg(("f_units","sum"),("f_sales","sum"),("Panel_ID","first"))
+
         val df_filter = df_gb_sum.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
 
         val df_match_hospital = driver.csv2RDD(hospitalMatchFile)
@@ -27,8 +28,7 @@ trait ModuleNHWA extends ConfigNHWA {
 
         val df_new2 = df_new1.join(df_match_nhwa, df_new1("Product") === df_match_nhwa("min1_标准"), "left")
 
-        val df_result1 = df_new2.select("Panel_ID","Date","City","Product","商品名+SKU","商品名_标准","生产企业_标准","省份","City Tier","药品名称_标准","药品规格_标准","剂型_标准","sum(Units)","sum(Sales)","毫克数")
-
+        val df_result1 = df_new2.select("Panel_ID","Date","City","Product","商品名+SKU","商品名_标准","生产企业_标准","省份","City Tier","药品名称_标准","药品规格_标准","剂型_标准","sum(f_units)","sum(f_sales)","毫克数").withColumnRenamed("sum(f_units)","sum(Units)").withColumnRenamed("sum(f_sales)","sum(Sales)")
         val df_result2 = df_result1.withColumn("销售毫克数",df_result1("毫克数").*(df_result1("sum(Units)"))).drop(df_result1("毫克数"))
 
         val df_result3 = df_result2.join(df_match_acc, df_result2("药品名称_标准") === df_match_acc("分子名"), "left").drop("药品名称")

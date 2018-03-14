@@ -6,8 +6,8 @@ import com.pharbers.baseModules.PharbersInjectModule
   * Created by jeorch on 18-3-14.
   */
 trait ConfigNHWA extends PharbersInjectModule {
-    override val id: String = "nhwa-config"
-    override val configPath: String = "pharbers_config/nhwa-config.xml"
+    override val id: String = "nhwa-delivery-config"
+    override val configPath: String = "pharbers_config/nhwa-delivery-config.xml"
     override val md =
         "max_result_file" :: "hospital_match_file" :: "nhwa_match_file" ::
         "acc_match_file" :: "area_match_file" :: "market_match_file" ::
