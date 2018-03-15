@@ -20,7 +20,7 @@ trait phNhwaCalcYm extends phPanelTrait {
                 .map{row => (row.getString(0), row.getLong(1))}
         val max = temp.map(_._2).max
         val result = temp.filter(_._2 > max/2).map(_._1).sorted
+        sparkDriver.ss.stop()
         toJson(result.mkString(comma))
-        toJson("")
     }
 }
