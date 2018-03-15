@@ -111,9 +111,10 @@ trait phNhwaPanel extends phPanelTrait  {
             parent.delete()
         }
 
-        val panel_name = UUID.randomUUID.toString
-        val temp_panel = output_location + panel_name
-        val panel_location = temp_panel + ".csv"
+        val temp_name = UUID.randomUUID.toString
+        val panel_name = temp_name + ".csv"
+        val temp_panel = output_location + temp_name
+        val panel_location = output_location + panel_name
 
         panel.coalesce(1).write
                 .format("csv")

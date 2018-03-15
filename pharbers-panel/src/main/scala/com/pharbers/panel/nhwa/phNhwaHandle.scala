@@ -23,7 +23,7 @@ case class phNhwaHandle(args: Map[String, List[String]]) extends phNhwaCalcYm wi
     override val full_hosp_location = base_path + fill_hos_data_file
 
     override val cpa_location: String = excel2csv
-    override val output_location: String = output_path + company + "/Output/"
+    override val output_location: String = client_path + company + output_path
 
     private def excel2csv: String = {
         val excel_file = client_path + company + "/Client/" + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
