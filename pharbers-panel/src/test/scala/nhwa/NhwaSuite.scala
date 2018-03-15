@@ -220,7 +220,6 @@
 //    }
 //
 //    test("test calc ym") {
-//        val file_path = "hdfs://192.168.100.174:12138/user/jeorch/180211恩华17年1-12月检索.csv"
 //        val ymHander = phPanelHeadle(args)
 //        val yms = ymHander.calcYM.asInstanceOf[JsString].value
 //        val lst = yms.split(",").toList

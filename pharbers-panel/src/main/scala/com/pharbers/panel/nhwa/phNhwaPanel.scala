@@ -111,7 +111,8 @@ trait phNhwaPanel extends phPanelTrait  {
             parent.delete()
         }
 
-        val temp_panel = output_location + UUID.randomUUID.toString
+        val panel_name = UUID.randomUUID.toString
+        val temp_panel = output_location + panel_name
         val panel_location = temp_panel + ".csv"
 
         panel.coalesce(1).write
@@ -126,6 +127,6 @@ trait phNhwaPanel extends phPanelTrait  {
         new File(tempFile).renameTo(new File(panel_location))
         delFile(temp_panel)
 
-        panel_location
+        panel_name
     }
 }

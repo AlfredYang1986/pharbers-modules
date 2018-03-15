@@ -74,12 +74,6 @@ mvn clean install
 cd ..
 
 
-echo -e "\033[47;30m 12.installing pharbers-data-parse \033[0m"
-cd pharbers-data-parse
-mvn clean install
-cd ..
-
-
 echo -e "\033[47;30m 13.installing pharbers-sercurity \033[0m"
 cd pharbers-sercurity
 mvn clean install
