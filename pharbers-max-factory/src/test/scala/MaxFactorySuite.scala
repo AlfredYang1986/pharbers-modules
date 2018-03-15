@@ -134,9 +134,15 @@ class MaxFactorySuite extends FunSuite {
 //        t.select("Panel_ID", "Date", "City")
 //    }
 
-//        test("Test DriverNHWA") {
-//                val driverNHWA = DriverNHWA()
-//                driverNHWA.generateFianlFile()
-//        }
+//    test("Test DriverNHWA") {
+//        val driverNHWA = DriverNHWA()
+//        driverNHWA.generateFianlFile()
+//    }
+
+//    test("Test getResultFileFullPath"){
+//        val driverNHWA = DriverNHWA()
+//        val test = driverNHWA.getResultFileFullPath("/home/jeorch/work/max/files/NHWA/spark-result")
+//        println(s"***********${test}")
+//    }
 
 }

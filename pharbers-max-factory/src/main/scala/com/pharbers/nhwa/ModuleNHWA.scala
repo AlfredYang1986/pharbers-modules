@@ -1,7 +1,9 @@
 package com.pharbers.nhwa
 
+import java.io.File
+
 import com.pharbers.spark.driver.phSparkDriver
-import org.apache.spark.sql.{DataFrame, SaveMode}
+import org.apache.spark.sql.SaveMode
 
 /**
   * Created by jeorch on 18-3-7.
@@ -10,11 +12,19 @@ trait ModuleNHWA extends ConfigNHWA {
 
     val driver =  phSparkDriver()
 
-    def generateFianlFile(): Unit = {
+    def generateFianlFile(): String = {
 
-        val df_max = driver.csv2RDD(maxResultFile)
-        val gb_test = df_max.select(df_max("Panel_ID"),df_max("Date"),df_max("City"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double")).groupBy("Date","City","Product")
-        val df_gb_sum = gb_test.agg(("f_units","sum"),("f_sales","sum"),("Panel_ID","first"))
+//        val df_max = driver.csv2RDD(maxResultFile)
+        val df_max = driver.mongo2RDD("192.168.100.174","27017","Max_Cores","8ee0ca24796f9b7f284d931650edbd4bcf811a08-8833-4aed-8ec7-6936894a91e3").toDF()
+
+        val gb_test = df_max.filter("f_sales <> 0 AND f_units <> 0")
+                        .select(df_max("Panel_ID"),df_max("Date").divide(1000).cast("timestamp"),df_max("Provice").as("province"),df_max("City"),df_max("Market"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double"))
+                        .withColumnRenamed("CAST((Date / 1000) AS TIMESTAMP)","FullDate")
+        val gb_temp = gb_test.selectExpr("f_units","Panel_ID","f_sales","province","City","Market","Product","year(FullDate) as year","month(FullDate) as month","concat(year(FullDate),month(FullDate)) as Date")
+
+        val gb_ready = gb_temp.groupBy("Date","City","Product","year","month","province","Market")
+
+        val df_gb_sum = gb_ready.agg(("f_units","sum"),("f_sales","sum"),("Panel_ID","first"))
 
         val df_filter = df_gb_sum.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
 
@@ -69,8 +79,20 @@ trait ModuleNHWA extends ConfigNHWA {
 
         val saveOptions = Map("header" -> "true", "path" -> s"${outputPath}")
         df_final.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).options(saveOptions).save()
-        driver.ss.stop()
 
+        driver.ss.stop()
+        getResultFileFullPath(outputPath)
+    }
+
+    def getResultFileFullPath(arg: String) : String = {
+
+        val folder = new File(arg)
+        val listFile = folder.listFiles().filter(x => x.getName.endsWith(".csv"))
+        val fileName = listFile.length match {
+            case 1 => listFile.head.getName
+            case _ => throw new Exception("not single file")
+        }
+        fileName
     }
 
 }
