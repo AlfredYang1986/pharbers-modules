@@ -37,7 +37,7 @@ trait phNhwaPanel extends phPanelTrait  {
 
             x -> toJson(List(writePanel(panel)))
         }.toMap
-
+        sparkDriver.ss.stop()
         toJson(result)
     }
 
