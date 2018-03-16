@@ -1,5 +1,5 @@
 <pharbers-modules>
-    <data-parse>
+    <panel_config>
         <base_path value="/mnt/config/FileBase"/>
         <client_file_path value="config/FileBase/"/>
         <product_match_file value="匹配表.csv" />
@@ -10,7 +10,7 @@
         <fill_hos_data_file value="补充医院.csv" />
         <source_dir value="/Client/" />
         <output_dir value="/Panel/" />
-    </data-parse>
+    </panel_config>
 
     <company_fea9f203d4f593a96f0d6faa91ba24ba>
         <markets value="INF" />

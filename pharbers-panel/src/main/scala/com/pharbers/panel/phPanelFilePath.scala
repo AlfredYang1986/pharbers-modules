@@ -6,7 +6,7 @@ import com.pharbers.baseModules.PharbersInjectModule
   * Created by clock on 17-9-21.
   */
 trait phPanelFilePath extends PharbersInjectModule {
-    override val id: String = "data-parse"
+    override val id: String = "panel_config"
     override val configPath: String = "pharbers_config/panel_config.xml"
     override val md = "base_path" :: "client_file_path" ::
                     "product_match_file" :: "markets_match_file" :: "universe_file" ::
