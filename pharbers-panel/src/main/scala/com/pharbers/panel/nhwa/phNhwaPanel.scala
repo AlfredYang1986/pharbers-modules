@@ -29,7 +29,7 @@ trait phNhwaPanel extends phPanelTrait  {
         val result = ym.map{x =>
             val c0 = fullCPA(cpa_location, x)
             val m1 = load(m1_location).distinct()
-            val hos0 = load(hos_location).filter(s"DOI = '$mkt'")
+            val hos0 = load(hos_location.replace("##market##", mkt)).filter(s"DOI = '$mkt'")
             val b0 = load(b0_location)
             val m1_c = m1.join(b0, b0("通用名_原始") === m1("通用名"))
             val c2 = c0.join(hos0, c0("HOSPITAL_CODE") === hos0("ID"))
