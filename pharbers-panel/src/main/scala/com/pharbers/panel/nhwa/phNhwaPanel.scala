@@ -113,20 +113,20 @@ trait phNhwaPanel extends phPanelTrait  {
 
         val temp_name = UUID.randomUUID.toString
         val panel_name = temp_name + ".csv"
-        val temp_panel = output_location + temp_name
+        val temp_panel_dir = output_location + temp_name
         val panel_location = output_location + panel_name
 
         panel.coalesce(1).write
                 .format("csv")
                 .option("delimiter", 31.toChar.toString)
-                .save(temp_panel)
+                .save(temp_panel_dir)
 
-        val tempFile = getAllFile(temp_panel).find(_.endsWith(".csv")) match {
-            case None => throw new Exception("未找到文件")
+        val tempFile = getAllFile(temp_panel_dir).find(_.endsWith(".csv")) match {
+            case None => throw new Exception("not single file")
             case Some(file) => file
         }
         new File(tempFile).renameTo(new File(panel_location))
-        delFile(temp_panel)
+        delFile(temp_panel_dir)
 
         panel_name
     }
