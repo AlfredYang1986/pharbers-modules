@@ -2,6 +2,8 @@ package com.pharbers.panel.nhwa
 
 import java.io.File
 import java.util.UUID
+
+import com.pharbers.aqll.common.alCmd.scpcmd.scpCmd
 import play.api.libs.json.JsValue
 import org.apache.spark.sql.DataFrame
 import play.api.libs.json.Json.toJson
@@ -23,6 +25,8 @@ trait phNhwaPanel extends phPanelTrait  {
 
     val cpa_location: String
     val output_location: String
+    val company: String
+    val client_location: String
 
     override def getPanelFile(ym: List[String], mkt: String, t: Int = 0, c: Int = 0): JsValue = {
 
@@ -46,7 +50,9 @@ trait phNhwaPanel extends phPanelTrait  {
     private def fullCPA(cpa_path: String, ym: String): DataFrame = {
 
         val month = ym.takeRight(2).toInt.toString
-        val c0 = load(cpa_path).filter(s"YM = '$ym'")
+        val c = load(cpa_path)
+        c.show()
+        val c0 = c.filter(s"YM = '$ym'")
 
         val nah = load(not_arrival_hosp_location)
                 .withColumnRenamed("月份", "month")

@@ -13,7 +13,7 @@ import com.pharbers.panel.util.excel.phExcelFileInfo
 case class phNhwaHandle(args: Map[String, List[String]]) extends phNhwaCalcYm with phNhwaPanel with phPanelFilePath{
     override val sparkDriver: phSparkDriver = phSparkDriver()
 
-    val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
+    override val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
 
     override val m1_location = base_path + company + product_match_file
     override val b0_location = base_path + company + markets_match_file
@@ -24,6 +24,7 @@ case class phNhwaHandle(args: Map[String, List[String]]) extends phNhwaCalcYm wi
 
     override val cpa_location: String = excel2csv
     override val output_location: String = base_path + company + output_dir
+    override val client_location: String = client_path
 
     private def excel2csv: String = {
         val excel_file = base_path + company + source_dir + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
