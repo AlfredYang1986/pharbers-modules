@@ -2,8 +2,6 @@ package com.pharbers.panel.nhwa
 
 import java.io.File
 import java.util.UUID
-
-import com.pharbers.aqll.common.alCmd.scpcmd.scpCmd
 import play.api.libs.json.JsValue
 import org.apache.spark.sql.DataFrame
 import play.api.libs.json.Json.toJson
