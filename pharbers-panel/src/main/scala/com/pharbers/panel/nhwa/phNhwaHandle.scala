@@ -13,21 +13,22 @@ import com.pharbers.panel.util.excel.phExcelFileInfo
 case class phNhwaHandle(args: Map[String, List[String]]) extends phNhwaCalcYm with phNhwaPanel with phPanelFilePath{
     override val sparkDriver: phSparkDriver = phSparkDriver()
 
-    val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
+    override val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
 
-    override val m1_location = base_path + product_match_file
-    override val b0_location = base_path + markets_match_file
-    override val hos_location = base_path + universe_file
-    override val not_arrival_hosp_location = base_path + not_arrival_hosp_file
-    override val not_published_hosp_location = base_path + not_published_hosp_file
-    override val full_hosp_location = base_path + fill_hos_data_file
+    override val m1_location = base_path + company + product_match_file
+    override val b0_location = base_path + company + markets_match_file
+    override val hos_location = base_path + company + universe_file
+    override val not_arrival_hosp_location = base_path + company + not_arrival_hosp_file
+    override val not_published_hosp_location = base_path + company + not_published_hosp_file
+    override val full_hosp_location = base_path + company + fill_hos_data_file
 
     override val cpa_location: String = excel2csv
-    override val output_location: String = client_path + company + output_path
+    override val output_location: String = base_path + company + output_dir
+    override val client_location: String = client_path
 
     private def excel2csv: String = {
-        val excel_file = client_path + company + "/Client/" + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
-        val output_file = client_path + company + "/Client/" + UUID.randomUUID.toString + ".csv"
+        val excel_file = base_path + company + source_dir + args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head
+        val output_file = base_path + company + source_dir + UUID.randomUUID.toString + ".csv"
 
         val setFieldMap = Map(
             "省" -> "PROVINCES",

@@ -29,7 +29,7 @@
 //    test("test excel2Csv => cpa") {
 //        val cpa_name = "180211恩华17年1-12月检索.xlsx"
 //        val input_file = file_base + client_path + cpa_name
-//        val output_file = file_base + output_path + cpa_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + cpa_name.replace(".xlsx", ".csv")
 //
 //        val setFieldMap = Map(
 //            "省" -> "PROVINCES",
@@ -96,7 +96,7 @@
 //    test("test excel2Csv => 未到医院") {
 //        val cpa_name = "180211恩华17年1-12月检索.xlsx"
 //        val input_file = file_base + client_path + cpa_name
-//        val output_file = file_base + output_path + "未到医院名单.csv"
+//        val output_file = file_base + output_dir + "未到医院名单.csv"
 //
 //        val excel = phExcelFileInfo(file_local = input_file, 2)
 //
@@ -106,7 +106,7 @@
 //    test("test excel2Csv => 补充医院") {
 //        val file_name = "补充医院.xlsx"
 //        val input_file = file_base + client_path + file_name
-//        val output_file = file_base + output_path + file_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + file_name.replace(".xlsx", ".csv")
 //
 //        val setFieldMap = Map(
 //            "省" -> "PROVINCES",
@@ -150,7 +150,7 @@
 //    test("test excel2Csv => 匹配表") {
 //        val file_name = "匹配表.xlsx"
 //        val input_file = file_base + "/Manage/" + file_name
-//        val output_file = file_base + output_path + file_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + file_name.replace(".xlsx", ".csv")
 //
 //        implicit val postFun: Map[String, String] => Option[Map[String, String]] = { tr =>
 //            Some(
@@ -165,7 +165,7 @@
 //    test("test excel2Csv => universe") {
 //        val file_name = "universe_麻醉市场_online.xlsx"
 //        val input_file = file_base + "/Manage/matchFile/" + file_name
-//        val output_file = file_base + output_path + file_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + file_name.replace(".xlsx", ".csv")
 //
 //        val setFieldMap = Map(
 //            "样本医院编码" -> "ID",
@@ -199,7 +199,7 @@
 //    test("test excel2Csv => 通用名市场定义") {
 //        val file_name = "通用名市场定义.xlsx"
 //        val input_file = file_base + "/Manage/" + file_name
-//        val output_file = file_base + output_path + file_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + file_name.replace(".xlsx", ".csv")
 //
 //        val excel = phExcelFileInfo(file_local = input_file, sheetName = "Sheet1")
 //        phUtilManage().excel2Csv(excel, output_file)
@@ -208,7 +208,7 @@
 //    test("test excel2Csv => 未出版医院名单") {
 //        val file_name = "2017年未出版医院名单.xlsx"
 //        val input_file = file_base + "/Manage/" + file_name
-//        val output_file = file_base + output_path + file_name.replace(".xlsx", ".csv")
+//        val output_file = file_base + output_dir + file_name.replace(".xlsx", ".csv")
 //
 //        val excel = phExcelFileInfo(file_local = input_file)
 //        phUtilManage().excel2Csv(excel, output_file)
@@ -322,7 +322,7 @@
 //        }
 //
 //        val panelHander = phPanelHeadle(args)
-//        val result = getResult(panelHander.getPanelFile(List("201712")))
+//        val result = getResult(panelHander.getPanelFile(List("201708")))
 //        println("result = " + result)
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))

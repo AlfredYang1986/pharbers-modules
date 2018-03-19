@@ -6,12 +6,12 @@ import com.pharbers.baseModules.PharbersInjectModule
   * Created by clock on 17-9-21.
   */
 trait phPanelFilePath extends PharbersInjectModule {
-    override val id: String = "data-parse"
+    override val id: String = "panel_config"
     override val configPath: String = "pharbers_config/panel_config.xml"
     override val md = "base_path" :: "client_file_path" ::
                     "product_match_file" :: "markets_match_file" :: "universe_file" ::
                     "not_arrival_hosp_file" :: "not_published_hosp_file" :: "fill_hos_data_file" ::
-                    "output_path" ::  Nil
+                    "source_dir" :: "output_dir" ::  Nil
 
     val base_path: String = config.mc.find(p => p._1 == "base_path").get._2.toString
     val client_path: String = config.mc.find(p => p._1 == "client_file_path").get._2.toString
@@ -23,5 +23,6 @@ trait phPanelFilePath extends PharbersInjectModule {
     val not_published_hosp_file: String = config.mc.find(p => p._1 == "not_published_hosp_file").get._2.toString
     val fill_hos_data_file: String = config.mc.find(p => p._1 == "fill_hos_data_file").get._2.toString
 
-    val output_path: String = config.mc.find(p => p._1 == "output_path").get._2.toString
+    val source_dir: String = config.mc.find(p => p._1 == "source_dir").get._2.toString
+    val output_dir: String = config.mc.find(p => p._1 == "output_dir").get._2.toString
 }

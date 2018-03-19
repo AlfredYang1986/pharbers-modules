@@ -23,13 +23,15 @@ trait phNhwaPanel extends phPanelTrait  {
 
     val cpa_location: String
     val output_location: String
+    val company: String
+    val client_location: String
 
     override def getPanelFile(ym: List[String], mkt: String, t: Int = 0, c: Int = 0): JsValue = {
 
         val result = ym.map{x =>
             val c0 = fullCPA(cpa_location, x)
             val m1 = load(m1_location).distinct()
-            val hos0 = load(hos_location).filter(s"DOI = '$mkt'")
+            val hos0 = load(hos_location.replace("##market##", mkt)).filter(s"DOI = '$mkt'")
             val b0 = load(b0_location)
             val m1_c = m1.join(b0, b0("通用名_原始") === m1("通用名"))
             val c2 = c0.join(hos0, c0("HOSPITAL_CODE") === hos0("ID"))
@@ -46,7 +48,9 @@ trait phNhwaPanel extends phPanelTrait  {
     private def fullCPA(cpa_path: String, ym: String): DataFrame = {
 
         val month = ym.takeRight(2).toInt.toString
-        val c0 = load(cpa_path).filter(s"YM = '$ym'")
+        val c = load(cpa_path)
+        c.show()
+        val c0 = c.filter(s"YM = '$ym'")
 
         val nah = load(not_arrival_hosp_location)
                 .withColumnRenamed("月份", "month")
@@ -113,20 +117,20 @@ trait phNhwaPanel extends phPanelTrait  {
 
         val temp_name = UUID.randomUUID.toString
         val panel_name = temp_name + ".csv"
-        val temp_panel = output_location + temp_name
+        val temp_panel_dir = output_location + temp_name
         val panel_location = output_location + panel_name
 
         panel.coalesce(1).write
                 .format("csv")
                 .option("delimiter", 31.toChar.toString)
-                .save(temp_panel)
+                .save(temp_panel_dir)
 
-        val tempFile = getAllFile(temp_panel).find(_.endsWith(".csv")) match {
-            case None => throw new Exception("未找到文件")
+        val tempFile = getAllFile(temp_panel_dir).find(_.endsWith(".csv")) match {
+            case None => throw new Exception("not single file")
             case Some(file) => file
         }
         new File(tempFile).renameTo(new File(panel_location))
-        delFile(temp_panel)
+        delFile(temp_panel_dir)
 
         panel_name
     }
