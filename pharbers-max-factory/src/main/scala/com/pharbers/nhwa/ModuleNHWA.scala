@@ -3,19 +3,21 @@ package com.pharbers.nhwa
 import java.io.File
 
 import com.pharbers.spark.driver.phSparkDriver
-import org.apache.spark.sql.SaveMode
+import com.pharbers.util.CommonTrait
+import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
   * Created by jeorch on 18-3-7.
   */
-trait ModuleNHWA extends ConfigNHWA {
+trait ModuleNHWA extends CommonTrait {
+    object nhwa extends ConfigNHWA
+    object mongo extends ConfigMongo
 
     val driver =  phSparkDriver()
 
-    def generateFianlFile(): String = {
+    def generateDeliveryFileFromMongo(dbName: String, collection: String): String = {
 
-//        val df_max = driver.csv2RDD(maxResultFile)
-        val df_max = driver.mongo2RDD("192.168.100.174","27017","Max_Cores","8ee0ca24796f9b7f284d931650edbd4bcf811a08-8833-4aed-8ec7-6936894a91e3").toDF()
+        val df_max = driver.mongo2RDD(s"${mongo.mongoHost}",s"${mongo.mongoPort}",s"$dbName",s"$collection").toDF()
 
         val gb_test = df_max.filter("f_sales <> 0 AND f_units <> 0")
                         .select(df_max("Panel_ID"),df_max("Date").divide(1000).cast("timestamp"),df_max("Provice").as("province"),df_max("City"),df_max("Market"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double"))
@@ -26,13 +28,26 @@ trait ModuleNHWA extends ConfigNHWA {
 
         val df_gb_sum = gb_ready.agg(("f_units","sum"),("f_sales","sum"),("Panel_ID","first"))
 
-        val df_filter = df_gb_sum.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
+        doMatch(df_gb_sum)
+    }
 
-        val df_match_hospital = driver.csv2RDD(hospitalMatchFile)
-        val df_match_nhwa = driver.csv2RDD(nhwaMatchFile).select("药品名称_标准","商品名_标准","药品规格_标准","剂型_标准","生产企业_标准","min1_标准","Pack_ID","商品名+SKU","毫克数").distinct()
-        val df_match_acc = driver.csv2RDD(accMatchFile)
-        val df_match_area = driver.csv2RDD(areaMatchFile)
-        val df_match_market = driver.csv2RDD(marketMatchFile)
+    def generateDeliveryFileFromCSV(maxResultFileFullPath: String): String = {
+
+        val df_max = driver.csv2RDD(maxResultFileFullPath)
+        val gb_test = df_max.select(df_max("Panel_ID"),df_max("Date"),df_max("City"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double")).groupBy("Date","City","Product")
+        val df_gb_sum = gb_test.agg(("f_units","sum"),("f_sales","sum"),("Panel_ID","first"))
+
+        doMatch(df_gb_sum)
+    }
+
+    def doMatch(df: DataFrame): String = {
+        val df_filter = df.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
+
+        val df_match_hospital = driver.csv2RDD(nhwa.hospitalMatchFile)
+        val df_match_nhwa = driver.csv2RDD(nhwa.nhwaMatchFile).select("药品名称_标准","商品名_标准","药品规格_标准","剂型_标准","生产企业_标准","min1_标准","Pack_ID","商品名+SKU","毫克数").distinct()
+        val df_match_acc = driver.csv2RDD(nhwa.accMatchFile)
+        val df_match_area = driver.csv2RDD(nhwa.areaMatchFile)
+        val df_match_market = driver.csv2RDD(nhwa.marketMatchFile)
 
         val df_new1 = df_filter.join(df_match_hospital, df_filter("first(Panel_ID)") === df_match_hospital("Panel_ID"), "left").drop(df_match_hospital("City")).drop(df_filter("first(Panel_ID)"))
 
@@ -75,24 +90,13 @@ trait ModuleNHWA extends ConfigNHWA {
             df_result8("molecule").as("分子名"), df_result8("ACC").as("ACC1/ACC2"),
             df_result8("power").as("power"), df_result8("medicine_standard").as("规格"),
             df_result8("dosage_form").as("剂型"), df_result8("Units").as("销售数量"),
-                        df_result8("Sales").as("销售金额"),df_result8("SalesMG").as("销售毫克数"))
+            df_result8("Sales").as("销售金额"),df_result8("SalesMG").as("销售毫克数"))
 
-        val saveOptions = Map("header" -> "true", "path" -> s"${outputPath}")
+        val saveOptions = Map("header" -> "true", "path" -> s"${nhwa.outputPath}")
         df_final.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).options(saveOptions).save()
 
         driver.ss.stop()
-        getResultFileFullPath(outputPath)
-    }
-
-    def getResultFileFullPath(arg: String) : String = {
-
-        val folder = new File(arg)
-        val listFile = folder.listFiles().filter(x => x.getName.endsWith(".csv"))
-        val fileName = listFile.length match {
-            case 1 => listFile.head.getName
-            case _ => throw new Exception("not single file")
-        }
-        fileName
+        getResultFileFullPath(nhwa.outputPath)
     }
 
 }

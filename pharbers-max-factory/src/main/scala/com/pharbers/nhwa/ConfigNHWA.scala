@@ -13,11 +13,11 @@ trait ConfigNHWA extends PharbersInjectModule {
         "acc_match_file" :: "area_match_file" :: "market_match_file" ::
         "output_path" :: Nil
 
-    protected val maxResultFile: String = config.mc.find(p => p._1 == "max_result_file").get._2.toString
-    protected val hospitalMatchFile: String = config.mc.find(p => p._1 == "hospital_match_file").get._2.toString
-    protected val nhwaMatchFile: String = config.mc.find(p => p._1 == "nhwa_match_file").get._2.toString
-    protected val accMatchFile: String = config.mc.find(p => p._1 == "acc_match_file").get._2.toString
-    protected val areaMatchFile: String = config.mc.find(p => p._1 == "area_match_file").get._2.toString
-    protected val marketMatchFile: String = config.mc.find(p => p._1 == "market_match_file").get._2.toString
-    protected val outputPath: String = config.mc.find(p => p._1 == "output_path").get._2.toString
+    val maxResultFile: String = config.mc.find(p => p._1 == "max_result_file").get._2.toString
+    val hospitalMatchFile: String = config.mc.find(p => p._1 == "hospital_match_file").get._2.toString
+    val nhwaMatchFile: String = config.mc.find(p => p._1 == "nhwa_match_file").get._2.toString
+    val accMatchFile: String = config.mc.find(p => p._1 == "acc_match_file").get._2.toString
+    val areaMatchFile: String = config.mc.find(p => p._1 == "area_match_file").get._2.toString
+    val marketMatchFile: String = config.mc.find(p => p._1 == "market_match_file").get._2.toString
+    val outputPath: String = config.mc.find(p => p._1 == "output_path").get._2.toString
 }

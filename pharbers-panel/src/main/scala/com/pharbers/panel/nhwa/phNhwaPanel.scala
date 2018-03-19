@@ -48,9 +48,7 @@ trait phNhwaPanel extends phPanelTrait  {
     private def fullCPA(cpa_path: String, ym: String): DataFrame = {
 
         val month = ym.takeRight(2).toInt.toString
-        val c = load(cpa_path)
-        c.show()
-        val c0 = c.filter(s"YM = '$ym'")
+        val c0 = load(cpa_path).filter(s"YM = '$ym'")
 
         val nah = load(not_arrival_hosp_location)
                 .withColumnRenamed("月份", "month")
