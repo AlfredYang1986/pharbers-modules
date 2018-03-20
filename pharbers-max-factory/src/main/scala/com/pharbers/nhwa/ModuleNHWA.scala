@@ -1,8 +1,5 @@
 package com.pharbers.nhwa
 
-import java.io.File
-
-import com.pharbers.spark.driver.phSparkDriver
 import com.pharbers.util.CommonTrait
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
@@ -13,9 +10,7 @@ trait ModuleNHWA extends CommonTrait {
     object nhwa extends ConfigNHWA
     object mongo extends ConfigMongo
 
-    val driver =  phSparkDriver()
-
-    def generateDeliveryFileFromMongo(dbName: String, collection: String): String = {
+    def generateDeliveryFileFromMongo(dbName: String, collection: String): DataFrame = {
 
         val df_max = driver.mongo2RDD(s"${mongo.mongoHost}",s"${mongo.mongoPort}",s"$dbName",s"$collection").toDF()
 
@@ -31,7 +26,7 @@ trait ModuleNHWA extends CommonTrait {
         doMatch(df_gb_sum)
     }
 
-    def generateDeliveryFileFromCSV(maxResultFileFullPath: String): String = {
+    def generateDeliveryFileFromCSV(maxResultFileFullPath: String): DataFrame = {
 
         val df_max = driver.csv2RDD(maxResultFileFullPath)
         val gb_test = df_max.select(df_max("Panel_ID"),df_max("Date"),df_max("City"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double")).groupBy("Date","City","Product")
@@ -40,7 +35,7 @@ trait ModuleNHWA extends CommonTrait {
         doMatch(df_gb_sum)
     }
 
-    def doMatch(df: DataFrame): String = {
+    def doMatch(df: DataFrame): DataFrame = {
         val df_filter = df.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
 
         val df_match_hospital = driver.csv2RDD(nhwa.hospitalMatchFile)
@@ -92,10 +87,13 @@ trait ModuleNHWA extends CommonTrait {
             df_result8("dosage_form").as("剂型"), df_result8("Units").as("销售数量"),
             df_result8("Sales").as("销售金额"),df_result8("SalesMG").as("销售毫克数"))
 
-        val saveOptions = Map("header" -> "true", "path" -> s"${nhwa.outputPath}")
-        df_final.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).options(saveOptions).save()
+        df_final
+    }
 
-        driver.ss.stop()
+    def save2File(df: DataFrame): String = {
+        val saveOptions = Map("header" -> "true", "path" -> s"${nhwa.outputPath}")
+        df.coalesce(1).write.format("csv").mode(SaveMode.Append).options(saveOptions).save()
+
         getResultFileFullPath(nhwa.outputPath)
     }
 
