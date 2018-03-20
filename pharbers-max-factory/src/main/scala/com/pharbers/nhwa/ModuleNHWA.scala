@@ -92,7 +92,7 @@ trait ModuleNHWA extends CommonTrait {
             df_result8("dosage_form").as("剂型"), df_result8("Units").as("销售数量"),
             df_result8("Sales").as("销售金额"),df_result8("SalesMG").as("销售毫克数"))
 
-        val saveOptions = Map("header" -> "true", "encoding" -> "UTF-8", "path" -> s"${nhwa.outputPath}")
+        val saveOptions = Map("header" -> "true", "path" -> s"${nhwa.outputPath}")
         df_final.coalesce(1).write.format("csv").mode(SaveMode.Overwrite).options(saveOptions).save()
 
         driver.ss.stop()
