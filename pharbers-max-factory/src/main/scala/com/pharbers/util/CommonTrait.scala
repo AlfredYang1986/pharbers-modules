@@ -26,7 +26,7 @@ trait CommonTrait {
     def move2ExportFolder(originPath: String, destPath: String) = {
         val originFile = new File(originPath)
         val destFile = new File(destPath)
-        FileUtils.copyFile(originFile, destFile)
+        FileUtils.write(destFile, FileUtils.readFileToString(originFile), "GB2312")
     }
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {

@@ -91,7 +91,7 @@ trait ModuleNHWA extends CommonTrait {
     }
 
     def save2File(df: DataFrame): String = {
-        val saveOptions = Map("header" -> "true", "encoding" -> "GB2312", "path" -> s"${nhwa.outputPath}")
+        val saveOptions = Map("header" -> "true", "path" -> s"${nhwa.outputPath}")
         df.coalesce(1).write.format("csv").mode(SaveMode.Append).options(saveOptions).save()
         getResultFileFullPath(nhwa.outputPath)
     }

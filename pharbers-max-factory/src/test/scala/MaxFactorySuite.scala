@@ -87,12 +87,13 @@ class MaxFactorySuite extends FunSuite {
 //        driverNHWA.closeSparkSession
 //    }
 
-    test ("set encoding") {
-        val driverNHWA = DriverNHWA()
-        val df = driverNHWA.generateDeliveryFileFromMongo("Max_Cores","8ee0ca24796f9b7f284d931650edbd4bbf4575e1-e6da-4d23-b6b1-b3d3e5b66a2d")
-        val fileName = driverNHWA.save2File(df)
-        println(s"***************${fileName}")
-        driverNHWA.closeSparkSession
-    }
+//    test ("set encoding") {
+//        val driverNHWA = DriverNHWA()
+//        val df = driverNHWA.generateDeliveryFileFromMongo("Max_Cores","8ee0ca24796f9b7f284d931650edbd4bbf4575e1-e6da-4d23-b6b1-b3d3e5b66a2d")
+//        val fileName = driverNHWA.save2File(df)
+//        println(s"***************${fileName}")
+//        driverNHWA.move2ExportFolder(fileName,"/home/jeorch/jeorch/test/file_test/1.csv")
+//        driverNHWA.closeSparkSession
+//    }
 
 }
