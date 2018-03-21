@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.pharbers</groupId>
   <artifactId>pharbers-pattern</artifactId>
-  <version>0.2</version>
+  <version>0.1</version>
   <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
     the right dependencies for modules specified for each version separately -->
   <profiles>
@@ -51,8 +51,8 @@
           </dependency>
           <dependency>
               <groupId>com.pharbers</groupId>
-              <artifactId>errorcode</artifactId>
-              <version>0.2</version>
+              <artifactId>pharbers-errorcode</artifactId>
+              <version>0.1</version>
           </dependency>
           <!-- https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor_2.11 -->
           <dependency>
