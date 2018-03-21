@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pharbers</groupId>
-    <artifactId>pharbers-errorcode</artifactId>
-    <version>0.1</version>
+    <artifactId>pharbers-panel</artifactId>
+    <version>0.2</version>
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
     <profiles>
@@ -13,6 +13,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <hadooop.version>2.5.1</hadooop.version>
                 <scalaVersion>2.11.8</scalaVersion>
                 <scalaBinaryVersion>2.11</scalaBinaryVersion>
             </properties>
@@ -39,19 +40,30 @@
                     <version>1.0.6</version>
                 </dependency>
 
-                <!-- pharbers module -->
+                <!-- poi -->
                 <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-module</artifactId>
-                    <version>0.1</version>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi</artifactId>
+                    <version>3.8</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi-ooxml</artifactId>
+                    <version>3.8</version>
+                </dependency>
+                <dependency>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                    <version>2.11.0</version>
                 </dependency>
 
-                <!-- play json -->
-                <dependency>
-                    <groupId>com.typesafe.play</groupId>
-                    <artifactId>play-json_2.11</artifactId>
-                    <version>2.5.0-M2</version>
+                <!-- akka actor -->
+                 <dependency>
+                    <groupId>com.typesafe.akka</groupId>
+                    <artifactId>akka-actor_2.11</artifactId>
+                    <version>2.4.16</version>
                 </dependency>
+
 
                 <!-- specs test -->
                 <dependency>
@@ -65,6 +77,57 @@
                     <groupId>org.scalatest</groupId>
                     <artifactId>scalatest_2.11</artifactId>
                     <version>3.0.1</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <!-- pharbers lib -->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>spark-driver</artifactId>
+                    <version>0.2</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.databricks</groupId>
+                    <artifactId>spark-avro_2.11</artifactId>
+                    <version>3.2.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.databricks</groupId>
+                    <artifactId>spark-avro_2.11</artifactId>
+                    <version>3.2.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-streaming_2.11</artifactId>
+                    <version>2.0.0</version>
+                </dependency>
+
+                <!-- pharbers memory -->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-memory</artifactId>
+                    <version>0.1</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>http</artifactId>
+                    <version>0.2</version>
+                </dependency>
+
+                <!-- mongodb lib -->
+                <dependency>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>casbah_2.11</artifactId>
+                    <version>3.1.1</version>
+                    <type>pom</type>
+                </dependency>
+
+                <!-- Hadoop test artifact for running mini clusters -->
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-minicluster</artifactId>
+                    <version>${hadooop.version}</version>
                     <scope>test</scope>
                 </dependency>
 

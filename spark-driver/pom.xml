@@ -1,9 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.pharbers</groupId>
-    <artifactId>pharbers-errorcode</artifactId>
+    <artifactId>spark-driver</artifactId>
     <version>0.1</version>
+
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
     <profiles>
@@ -33,34 +37,19 @@
                     <artifactId>scala-parser-combinators_${scalaBinaryVersion}</artifactId>
                     <version>1.0.5</version>
                 </dependency>
+                <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-xml_2.11 -->
                 <dependency>
                     <groupId>org.scala-lang.modules</groupId>
                     <artifactId>scala-xml_2.11</artifactId>
                     <version>1.0.6</version>
                 </dependency>
-
-                <!-- pharbers module -->
+                <!-- pharbers-modules -->
                 <dependency>
                     <groupId>com.pharbers</groupId>
                     <artifactId>pharbers-module</artifactId>
                     <version>0.1</version>
                 </dependency>
-
-                <!-- play json -->
-                <dependency>
-                    <groupId>com.typesafe.play</groupId>
-                    <artifactId>play-json_2.11</artifactId>
-                    <version>2.5.0-M2</version>
-                </dependency>
-
-                <!-- specs test -->
-                <dependency>
-                    <groupId>org.specs2</groupId>
-                    <artifactId>specs2_2.11</artifactId>
-                    <version>3.7</version>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
+                <!-- scala test -->
                 <dependency>
                     <groupId>org.scalatest</groupId>
                     <artifactId>scalatest_2.11</artifactId>
@@ -68,26 +57,38 @@
                     <scope>test</scope>
                 </dependency>
 
+
+                <!-- spark -->
+                <!--<dependency>-->
+                    <!--<groupId>org.apache.spark</groupId>-->
+                    <!--<artifactId>spark-core_2.11</artifactId>-->
+                    <!--<version>2.0.0</version>-->
+                <!--</dependency>-->
+                <dependency>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-sql_2.11</artifactId>
+                    <version>2.0.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.mongodb.spark</groupId>
+                    <artifactId>mongo-spark-connector_2.11</artifactId>
+                    <version>2.0.0</version>
+                </dependency>
+
+
             </dependencies>
         </profile>
     </profiles>
     <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -95,17 +96,8 @@
                 <version>3.2.1</version>
                 <executions>
                     <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
                         <goals>
-                            <goal>add-source</goal>
                             <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
