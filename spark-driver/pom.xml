@@ -6,7 +6,7 @@
 
     <groupId>com.pharbers</groupId>
     <artifactId>spark-driver</artifactId>
-    <version>0.2</version>
+    <version>0.1</version>
 
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
@@ -46,8 +46,8 @@
                 <!-- pharbers-modules -->
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-modules</artifactId>
-                    <version>0.2</version>
+                    <artifactId>pharbers-module</artifactId>
+                    <version>0.1</version>
                 </dependency>
                 <!-- scala test -->
                 <dependency>

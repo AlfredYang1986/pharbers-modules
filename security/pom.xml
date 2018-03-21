@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pharbers</groupId>
-    <artifactId>pharbers-errorcode</artifactId>
+    <artifactId>pharbers-security</artifactId>
     <version>0.1</version>
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
@@ -39,10 +39,19 @@
                     <version>1.0.6</version>
                 </dependency>
 
-                <!-- pharbers module -->
+                <!-- local lib with base64 -->
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-module</artifactId>
+                    <artifactId>base64</artifactId>
+                    <version>1.3.1</version>
+                    <scope>system</scope>
+                    <systemPath>${project.basedir}/src/main/resources/javabase64-1.3.1.jar</systemPath>
+                </dependency>
+
+                <!-- pharbers mongodb -->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-mongodb</artifactId>
                     <version>0.1</version>
                 </dependency>
 
