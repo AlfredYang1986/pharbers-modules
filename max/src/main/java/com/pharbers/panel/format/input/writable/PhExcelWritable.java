@@ -7,7 +7,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
+import com.pharbers.panel.format.input.writable.writableStrategy.PhPanelStrategy;
+
+public abstract class PhExcelWritable implements WritableComparable<PhExcelWritable>, PhPanelStrategy {
 
     private String values = null; // new ArrayList<String>();
 
