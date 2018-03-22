@@ -18,6 +18,8 @@
         <module>message</module>
         <module>redis</module>
         <module>security</module>
+        <module>max</module>
+        <module>client-pattern</module>
     </modules>
 
 </project>
