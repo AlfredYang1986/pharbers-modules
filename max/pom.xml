@@ -96,7 +96,7 @@
                 </dependency>
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>spark-driver</artifactId>
+                    <artifactId>pharbers-spark</artifactId>
                     <version>0.1</version>
                 </dependency>
                 <dependency>
