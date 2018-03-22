@@ -1,6 +1,6 @@
-package com.pharbers.nhwa
+package com.pharbers.delivery.nhwa
 
-import com.pharbers.util.CommonTrait
+import com.pharbers.delivery.util.CommonTrait
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**

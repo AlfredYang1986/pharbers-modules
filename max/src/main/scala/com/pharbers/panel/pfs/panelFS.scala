@@ -1,4 +1,4 @@
-package com.pharbers.pfs
+package com.pharbers.panel.pfs
 
 class panelFS extends pFileSystem {
 

@@ -1,13 +1,10 @@
-package com.pharbers.paction
+package com.pharbers.sparkSteam.paction
 
-import com.pharbers.paction.actionbase._
-import com.pharbers.panel.format.input.{PhExcelWholeFileInputFormat, PhExcelWholeFileInputFormatWithoutIndex}
-import com.pharbers.panel.format.input.writable.PhExcelWritable
-import com.pharbers.pfs.pFileSystem
+import org.apache.hadoop.io.NullWritable
+import com.pharbers.sparkSteam.paction.actionbase._
 import com.pharbers.spark.driver.phSparkDriver
-import org.apache.hadoop.io.{LongWritable, NullWritable}
-import org.apache.hadoop.io.compress.GzipCodec
-import org.apache.hadoop.mapred.SequenceFileOutputFormat
+import com.pharbers.panel.format.input.writable.PhExcelWritable
+import com.pharbers.panel.format.input.PhExcelWholeFileInputFormatWithoutIndex
 
 object excelReadingTrait {
     def apply(path : String) : pActionTrait = new excelReadingTrait(StringArgs(path))

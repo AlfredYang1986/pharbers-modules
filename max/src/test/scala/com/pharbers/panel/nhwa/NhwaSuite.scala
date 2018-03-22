@@ -28,8 +28,8 @@
 //
 //    test("test excel2Csv => cpa") {
 //        val cpa_name = "180211恩华17年1-12月检索.xlsx"
-//        val input_file = file_base + client_path + cpa_name
-//        val output_file = file_base + output_dir + cpa_name.replace(".xlsx", ".csv")
+//        val input_file = file_base + source_dir + cpa_name
+//        val output_file = file_base + source_dir + cpa_name.replace(".xlsx", ".csv")
 //
 //        val setFieldMap = Map(
 //            "省" -> "PROVINCES",

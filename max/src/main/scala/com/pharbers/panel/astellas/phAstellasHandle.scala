@@ -11,7 +11,7 @@ import com.pharbers.panel.util.excel.phExcelFileInfo
 /**
   * Created by clock on 18-3-7.
   */
-case class phNhwaHandle(args: Map[String, List[String]]) extends phPanelCalcYm with phNhwaPanel with phPanelFilePath{
+case class phAstellasHandle(args: Map[String, List[String]]) extends phPanelCalcYm with phAstellasPanel with phPanelFilePath{
     override val sparkDriver: phSparkDriver = phSparkDriver()
 
     override val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head

@@ -12,7 +12,7 @@ import org.apache.spark.sql.types.{DoubleType, LongType}
 /**
   * Created by clock on 18-3-6.
   */
-trait phNhwaPanel extends phPanelTrait  {
+trait phAstellasPanel extends phPanelTrait  {
     val sparkDriver: phSparkDriver
     val m1_location: String
     val hos_location: String

@@ -1,4 +1,4 @@
-package com.pharbers.nhwa
+package com.pharbers.delivery.nhwa
 
 import com.pharbers.baseModules.PharbersInjectModule
 

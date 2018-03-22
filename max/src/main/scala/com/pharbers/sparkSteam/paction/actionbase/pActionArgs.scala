@@ -1,4 +1,4 @@
-package com.pharbers.paction.actionbase
+package com.pharbers.sparkSteam.paction.actionbase
 
 import org.apache.spark.rdd.RDD
 
@@ -7,22 +7,22 @@ trait pActionArgs {
     def get : t
 }
 
-case class RDDArgs[T](val rdd : RDD[T]) extends pActionArgs {
+case class RDDArgs[T](rdd : RDD[T]) extends pActionArgs {
     type t = RDD[T]
     override def get : RDD[T] = rdd
 }
 
-case class StringArgs(val str : String) extends pActionArgs {
+case class StringArgs(str : String) extends pActionArgs {
     type t = String
     override def get : String = str
 }
 
-case class ListArgs(val lst : List[pActionArgs]) extends pActionArgs {
+case class ListArgs(lst : List[pActionArgs]) extends pActionArgs {
     type t = List[pActionArgs]
     override def get : List[pActionArgs] = lst
 }
 
-case class MapArgs(val map : Map[String, pActionArgs]) extends pActionArgs {
+case class MapArgs(map : Map[String, pActionArgs]) extends pActionArgs {
     type t = Map[String, pActionArgs]
     override def get : Map[String, pActionArgs] = map
 }
