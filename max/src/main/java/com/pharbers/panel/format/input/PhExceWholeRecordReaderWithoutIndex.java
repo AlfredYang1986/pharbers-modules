@@ -4,17 +4,16 @@ import com.pharbers.panel.format.input.writable.PhExcelWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import scala.collection.JavaConversions;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
-class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritable> {
+class PhExceWholeRecordReaderWithoutIndex extends RecordReader<NullWritable, PhExcelWritable> {
 
     private FileSplit fileSplit;
     private Configuration conf;
@@ -52,8 +51,8 @@ class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritabl
     }
 
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
-        return new LongWritable(parser.currentIndex());
+    public NullWritable getCurrentKey() throws IOException, InterruptedException {
+        return NullWritable.get();
     }
 
     @Override

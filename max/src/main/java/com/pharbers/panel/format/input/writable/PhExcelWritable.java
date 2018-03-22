@@ -6,10 +6,6 @@ import org.apache.hadoop.io.WritableComparator;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.pharbers.panel.format.input.writable.PhExcelWritableConf;
 
 public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
 
@@ -28,7 +24,7 @@ public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
 
     @Override
     public void write(DataOutput out) throws IOException {
-        System.out.println(values);
+//        System.out.println(values);
         out.writeUTF(values);
     }
 
