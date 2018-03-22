@@ -1,16 +1,16 @@
-package com.pharbers.panel.nhwa
+package com.pharbers.panel
 
+import com.pharbers.spark.driver.phSparkDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-import com.pharbers.panel.phPanelTrait
-import com.pharbers.spark.driver.phSparkDriver
 
 /**
   * Created by clock on 18-3-7.
   */
-trait phNhwaCalcYm extends phPanelTrait {
+trait phPanelCalcYm extends phPanelTrait {
     val sparkDriver: phSparkDriver
     val cpa_location: String
+    val gycx_location: String
 
     override def calcYM: JsValue = {
         val rdd = sparkDriver.csv2RDD(cpa_location, delimiter = 31.toChar.toString, header = true)

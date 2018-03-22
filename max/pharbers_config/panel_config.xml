@@ -28,4 +28,10 @@
 
         <麻醉市场 value="com.pharbers.panel.nhwa.phNhwaHandle" />
     </company_8ee0ca24796f9b7f284d931650edbd4b>
+
+    <company_235f39e3da85c2dee2a2b20d004a8b77>
+        <markets value="麻醉市场"/>
+
+        <麻醉市场 value="com.pharbers.panel.nhwa.phNhwaHandle" />
+    </company_235f39e3da85c2dee2a2b20d004a8b77>
 </pharbers-modules>
