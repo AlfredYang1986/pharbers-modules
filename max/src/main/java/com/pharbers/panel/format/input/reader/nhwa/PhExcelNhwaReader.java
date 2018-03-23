@@ -18,7 +18,7 @@ public class PhExcelNhwaReader extends RecordReader<NullWritable, PhExcelWritabl
 
     private FileSplit fileSplit;
     private Configuration conf;
-    private String value = null; //new ArrayList<String>();
+    private String value = null;
     private Boolean processed = false;
 
     private PhExcelHadoop parser = null;
