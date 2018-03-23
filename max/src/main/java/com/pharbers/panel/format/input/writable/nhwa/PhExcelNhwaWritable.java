@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class PhExcelNhwaWritable extends PhExcelWritable {
+    private final String delimiter = String.valueOf((char)31);
 
-    private static Map<String, String> setFieldMap = new HashMap<String, String>() {{
+    private static Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省", "PROVINCES");
         put("城市", "CITY");
         put("年", "YEAR");
@@ -32,11 +33,11 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
         put("生产企业", "CORP_NAME");
     }};
 
-    protected String[] splitValues(String value) {
-        return value.split(String.valueOf((char)31));
+    private String[] splitValues(String value) {
+        return value.split(delimiter);
     }
 
-    protected String getRowKey(String[] lst, String flag) {
+    private String getRowKey(String[] lst, String flag) {
         if (flag.equals("YEAR")) {
             return lst[2];
         } else if (flag.equals("PRODUCT_NAME")) {
@@ -57,7 +58,7 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
         // throw new Exception("not implements");
     }
 
-    protected String getMin1InRow(String value) {
+    private String getMin1InRow(String value) {
         String[] lst = splitValues(value);
         return getRowKey(lst, "PRODUCT_NAME") +
                getRowKey(lst, "APP2_COD") +
@@ -66,37 +67,36 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
                getRowKey(lst, "CORP_NAME");
     }
 
-    protected String getYearMonth(String value) {
+    private String getYearMonth(String value) {
         String[] lst = splitValues(value);
         return getRowKey(lst, "YEAR") +
                getRowKey(lst, "MONTH");
     }
 
 
-    protected String transTitle2Eng(String value) {
+    private String transTitle2Eng(String value) {
         String[] lst = this.splitValues(value);
         List<String> result = new ArrayList<String>(lst.length);
         String reVal = "";
         for (String iter : lst) {
-            result.add(setFieldMap.get(iter));
+            result.add(titleMap.get(iter));
         }
         for (String iter : result) {
-            reVal += iter + String.valueOf((char)31);
+            reVal += iter + delimiter;
         }
         return reVal;
     }
 
-    protected String expendTitle(String value) {
-        return value + String.valueOf((char)31) + "min1" + String.valueOf((char)31) + "YM";
+    private String expendTitle(String value) {
+        return value + delimiter + "min1" + delimiter + "YM";
     }
 
-    protected String expendValues(String value) {
-        return value + String.valueOf((char)31) + getMin1InRow(value) + String.valueOf((char)31) + getYearMonth(value);
+    private String expendValues(String value) {
+        return value + delimiter + getMin1InRow(value) + delimiter + getYearMonth(value);
     }
 
     @Override
     public String richWithInputRow(int index, String value) {
-
         if (index == 1) {
             return expendTitle(transTitle2Eng(value));
         } else return expendValues(value);
