@@ -16,7 +16,7 @@ trait pActionContainer extends pActionTrait {
 }
 
 case class midTmpContainer(override val actions : List[pActionTrait],
-                           val f : (Double, String) => Unit) extends pActionContainer {
+                           f : (Double, String) => Unit) extends pActionContainer {
 
     override implicit def progressFunc(progress: Double, flag: String) : Unit = f
 }

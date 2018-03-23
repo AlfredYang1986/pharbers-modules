@@ -3,8 +3,8 @@ package com.pharbers.sparkSteam.paction
 import org.apache.hadoop.io.NullWritable
 import com.pharbers.sparkSteam.paction.actionbase._
 import com.pharbers.spark.driver.phSparkDriver
-import com.pharbers.panel.format.input.{PhExcelWholeFileInputFormatWithoutIndex}
 import com.pharbers.panel.format.input.writable.PhExcelWritable
+import com.pharbers.panel.format.input.PhExcelWholeFileInputFormatWithoutIndex
 
 object excelReadingTrait {
     def apply(path : String) : pActionTrait = new excelReadingTrait(StringArgs(path))
