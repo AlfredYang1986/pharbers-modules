@@ -1,20 +1,20 @@
-package com.pharbers.panel.format.input;
+package com.pharbers.panel.format.input.reader.nhwa;
 
+import com.pharbers.panel.format.input.PhExcelHadoop;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.panel.format.input.writable.nhwa.PhExcelNhwaWritable;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import scala.collection.JavaConversions;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
-class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritable> {
+public class PhExcelNhwaReader extends RecordReader<NullWritable, PhExcelWritable> {
 
     private FileSplit fileSplit;
     private Configuration conf;
@@ -42,6 +42,10 @@ class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritabl
             for (String iter : tmp) {
                 value += iter + String.valueOf((char)31);
             }
+
+            if (!value.isEmpty())
+                value = value.substring(0, value.length() - 1);
+
             parser.nextRow();
             return true;
 
@@ -52,14 +56,15 @@ class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritabl
     }
 
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
-        return new LongWritable(parser.currentIndex());
+    public NullWritable getCurrentKey() throws IOException, InterruptedException {
+        return NullWritable.get();
     }
 
     @Override
     public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
-        PhExcelWritable reVal = new PhExcelWritable();
-        reVal.setValues(value);
+        PhExcelNhwaWritable reVal = new PhExcelNhwaWritable();
+        String s = reVal.richWithInputRow(parser.currentIndex(), value);
+        reVal.setValues(s);
         return reVal;
     }
 

@@ -1,5 +1,6 @@
 package com.pharbers.sparkSteam.paction
 
+import com.pharbers.panel.format.input.nhwa.PhExcelNhwaFormat
 import org.apache.hadoop.io.NullWritable
 import com.pharbers.sparkSteam.paction.actionbase._
 import com.pharbers.spark.driver.phSparkDriver
@@ -19,8 +20,12 @@ class excelReadingTrait(override val defaultArgs: pActionArgs) extends pActionTr
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
 
+        val tmp =
         RDDArgs(sc.
             newAPIHadoopFile[NullWritable, PhExcelWritable,
-            PhExcelWholeFileInputFormatWithoutIndex](defaultArgs.get.toString).map (x => x._2))
+            PhExcelNhwaFormat](defaultArgs.get.toString).map (x => x._2))
+
+        tmp.get.saveAsTextFile("resource/result")
+        NULLArgs
     }
 }

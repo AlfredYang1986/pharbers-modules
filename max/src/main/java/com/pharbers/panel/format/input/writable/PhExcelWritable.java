@@ -9,8 +9,8 @@ import java.io.IOException;
 
 import com.pharbers.panel.format.input.writable.writableStrategy.PhPanelStrategy;
 
-//public abstract class PhExcelWritable implements WritableComparable<PhExcelWritable>, PhPanelStrategy {
-public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
+public abstract class PhExcelWritable implements WritableComparable<PhExcelWritable>, PhPanelStrategy {
+//public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
 
     private String values = null; // new ArrayList<String>();
 

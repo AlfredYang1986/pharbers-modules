@@ -64,7 +64,6 @@
                     <version>2.4.16</version>
                 </dependency>
 
-
                 <!-- specs test -->
                 <dependency>
                     <groupId>org.specs2</groupId>
@@ -141,6 +140,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>java-compile-first</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>

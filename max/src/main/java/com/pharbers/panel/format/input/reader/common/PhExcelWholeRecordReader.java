@@ -1,19 +1,21 @@
-package com.pharbers.panel.format.input;
+package com.pharbers.panel.format.input.reader.common;
 
+import com.pharbers.panel.format.input.PhExcelHadoop;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.panel.format.input.writable.common.PhExcelCommonWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+
 import scala.collection.JavaConversions;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
-class PhExceWholeRecordReaderWithoutIndex extends RecordReader<NullWritable, PhExcelWritable> {
+public class PhExcelWholeRecordReader extends RecordReader<LongWritable, PhExcelWritable> {
 
     private FileSplit fileSplit;
     private Configuration conf;
@@ -41,6 +43,10 @@ class PhExceWholeRecordReaderWithoutIndex extends RecordReader<NullWritable, PhE
             for (String iter : tmp) {
                 value += iter + String.valueOf((char)31);
             }
+
+            if (!value.isEmpty())
+                value = value.substring(0, value.length() - 1);
+
             parser.nextRow();
             return true;
 
@@ -51,13 +57,13 @@ class PhExceWholeRecordReaderWithoutIndex extends RecordReader<NullWritable, PhE
     }
 
     @Override
-    public NullWritable getCurrentKey() throws IOException, InterruptedException {
-        return NullWritable.get();
+    public LongWritable getCurrentKey() throws IOException, InterruptedException {
+        return new LongWritable(parser.currentIndex());
     }
 
     @Override
     public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
-        PhExcelWritable reVal = new PhExcelWritable();
+        PhExcelWritable reVal = new PhExcelCommonWritable();
         reVal.setValues(value);
         return reVal;
     }
