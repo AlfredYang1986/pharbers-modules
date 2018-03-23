@@ -5,13 +5,14 @@ import org.apache.hadoop.io.NullWritable
 import com.pharbers.sparkSteam.paction.actionbase._
 import com.pharbers.spark.driver.phSparkDriver
 import com.pharbers.panel.format.input.writable.PhExcelWritable
-import com.pharbers.panel.format.input.PhExcelWholeFileInputFormatWithoutIndex
+//import com.pharbers.panel.format.input.PhExcelWholeFileInputFormatWithoutIndex
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 
 object excelReadingTrait {
-    def apply(path : String) : pActionTrait = new excelReadingTrait(StringArgs(path))
+    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable]](path : String) : pActionTrait = new excelReadingTrait[T](StringArgs(path))
 }
 
-class excelReadingTrait(override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
+class excelReadingTrait[T <: FileInputFormat[NullWritable, PhExcelWritable]](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 
@@ -23,7 +24,7 @@ class excelReadingTrait(override val defaultArgs: pActionArgs) extends pActionTr
         val tmp =
         RDDArgs(sc.
             newAPIHadoopFile[NullWritable, PhExcelWritable,
-            PhExcelNhwaFormat](defaultArgs.get.toString).map (x => x._2))
+            T](defaultArgs.get.toString).map (x => x._2))
 
         tmp.get.saveAsTextFile("resource/result")
         NULLArgs
