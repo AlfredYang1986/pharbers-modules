@@ -40,9 +40,8 @@ public abstract class PhExcelXLSCommonReader<KEYIN, VALUEIN> extends RecordReade
         this.fileSplit = (FileSplit)inputSplit;
         this.conf = taskAttemptContext.getConfiguration();
 
-        /**
-         * TODO: 这里以后要分开，XLS的掉用 PhExcelXLS, XLSX的调用 PhExcelXLSX @齐
-         */
+        System.out.println("yangyuan" + this.conf.get("ph_index"))
+
         parser = PhExcelXLS.apply(((FileSplit) inputSplit).getPath().toUri().getPath(), sheetindex);
     }
 

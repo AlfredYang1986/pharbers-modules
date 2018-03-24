@@ -1,14 +1,15 @@
 package com.pharbers.panel.format.input.reader.common;
 
 import java.io.IOException;
-import org.apache.hadoop.io.LongWritable;
-import com.pharbers.panel.format.input.writable.common.PhXlsCommonWritable;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.panel.format.input.writable.common.PhExcelCommonWritable;
+import org.apache.hadoop.io.NullWritable;
 
-public class PhExcelXLSReader extends PhExcelXLSCommonReader<LongWritable, PhExcelWritable> {
+public class PhExcelXLSReader extends PhExcelXLSCommonReader<NullWritable, PhExcelWritable> {
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
-        return new LongWritable(parser.currentIndex());
+    public NullWritable getCurrentKey() throws IOException, InterruptedException {
+//        return new LongWritable(parser.currentIndex());
+        return NullWritable.get();
     }
 
     @Override
