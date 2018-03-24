@@ -1,6 +1,6 @@
-package com.pharbers.sparkSteam.panelgen.actionContainer
+package com.pharbers.paction.actionContainer
 
-import com.pharbers.sparkSteam.paction.actionbase.{NULLArgs, pActionArgs, pActionTrait}
+import com.pharbers.paction.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
 trait pActionContainer extends pActionTrait {
 

@@ -6,7 +6,7 @@ import scala.collection.JavaConversions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
-import com.pharbers.panel.format.input.PhExcelHadoop;
+import com.pharbers.paction.format.input.PhExcelHadoop;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
@@ -20,7 +20,7 @@ public abstract class PhExcelWholeRecordReaderCommon<KEYIN, VALUEIN> extends Rec
     protected Boolean processed = false;
 
     protected PhExcelHadoop parser = null;
-    protected String seq = String.valueOf((char)31);
+    protected String delimiter = String.valueOf((char)31);
 
     @Override
     public void initialize(InputSplit inputSplit,
@@ -39,7 +39,7 @@ public abstract class PhExcelWholeRecordReaderCommon<KEYIN, VALUEIN> extends Rec
             value = "";
             List<String> tmp = JavaConversions.seqAsJavaList(parser.currentRowData());
             for (String iter : tmp) {
-                value += iter + seq;
+                value += iter + delimiter;
             }
 
             if (!value.isEmpty())

@@ -1,13 +1,12 @@
 package com.pharbers.panel.format.input.writable.nhwa;
 
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class PhExcelNhwaWritable extends PhExcelWritable {
+public class PhExcelCpaWritable extends PhExcelWritable {
     private final String delimiter = String.valueOf((char)31);
 
     private static Map<String, String> titleMap = new HashMap<String, String>() {{
@@ -37,7 +36,7 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
         return value.split(delimiter);
     }
 
-    private String getRowKey(String[] lst, String flag) {
+    private String getCellKey(String[] lst, String flag) {
         if (flag.equals("YEAR")) {
             return lst[2];
         } else if (flag.equals("PRODUCT_NAME")) {
@@ -62,17 +61,17 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
 
     private String getMin1InRow(String value) {
         String[] lst = splitValues(value);
-        return getRowKey(lst, "PRODUCT_NAME") +
-               getRowKey(lst, "APP2_COD") +
-               getRowKey(lst, "PACK_DES") +
-               getRowKey(lst, "PACK_NUMBER") +
-               getRowKey(lst, "CORP_NAME");
+        return getCellKey(lst, "PRODUCT_NAME") +
+               getCellKey(lst, "APP2_COD") +
+               getCellKey(lst, "PACK_DES") +
+               getCellKey(lst, "PACK_NUMBER") +
+               getCellKey(lst, "CORP_NAME");
     }
 
     private String getYearMonth(String value) {
         String[] lst = splitValues(value);
-        return getRowKey(lst, "YEAR") +
-               getRowKey(lst, "MONTH");
+        return getCellKey(lst, "YEAR") +
+               getCellKey(lst, "MONTH");
     }
 
 
@@ -106,6 +105,6 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
 
     @Override
     public String getRowKey(String flag) {
-        return getRowKey(splitValues(getValues()), flag);
+        return getCellKey(splitValues(getValues()), flag);
     }
 }

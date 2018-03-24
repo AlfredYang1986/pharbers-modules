@@ -1,8 +1,6 @@
-package com.pharbers.sparkSteam.paction
+package com.pharbers.paction.funcTrait
 
-import com.pharbers.panel.format.input.nhwa.PhExcelNhwaFormat
-import com.pharbers.panel.format.input.writable.PhExcelWritable
-import com.pharbers.sparkSteam.paction.actionbase._
+import com.pharbers.paction.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
 
 import scala.reflect.ClassTag
 
@@ -17,8 +15,7 @@ class saveCurrenResultTrait[T : ClassTag](override val defaultArgs: pActionArgs)
     }
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        val rdd = args.asInstanceOf[RDDArgs[T]].get //.asInstanceOf[RDDArgs[PhExcelWritable]].get
-//        rdd.foreach(x => println(x.toString))
+        val rdd = args.asInstanceOf[RDDArgs[T]].get
         rdd.saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get)
         args
     }

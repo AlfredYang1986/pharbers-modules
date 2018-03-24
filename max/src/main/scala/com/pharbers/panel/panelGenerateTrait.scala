@@ -1,6 +1,6 @@
-package com.pharbers.sparkSteam.paction
+package com.pharbers.panel
 
-import com.pharbers.sparkSteam.paction.actionbase._
+import com.pharbers.paction.actionbase._
 
 object panelGenerateTrait {
     def apply(path : String) : pActionTrait = new panelGenerateTrait(StringArgs(path))
