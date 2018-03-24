@@ -18,7 +18,7 @@ class jarPreloadTrait extends pActionTrait { //this : pFileSystem =>
                     ("poi-ooxml-3.8.jar", "./jar/poi-ooxml-3.13.jar") ::
                     ("poi-ooxml-schemas-3.8.jar", "./jar/poi-ooxml-schemas-3.13.jar") ::
                     ("xlsx-streamer-1.0.2.jar", "./jar/xlsx-streamer-1.0.2.jar") ::
-                    ("pharbers-max-0.1.jar", "/Users/alfredyang/.m2/repository/com/pharbers/pharbers-max/0.1/pharbers-max-0.1.jar") :: Nil
+                    ("pharbers-max-0.1.jar", "./target/pharbers-max-0.1.jar") :: Nil
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 
