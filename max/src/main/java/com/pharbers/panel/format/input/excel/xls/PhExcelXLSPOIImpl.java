@@ -5,7 +5,7 @@ import java.io.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
-public class PhExcelXLSReader {
+public class PhExcelXLSPOIImpl {
 
     private Workbook cwb = null;
     private String filePath = "";

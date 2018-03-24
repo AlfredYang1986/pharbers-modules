@@ -71,7 +71,7 @@ public abstract class PhExcelXLSInterface {
         }
     }
 
-    PhExcelXLSReader reader = new PhExcelXLSReader();
+    PhExcelXLSPOIImpl reader = new PhExcelXLSPOIImpl();
 
     protected workbook openExcelFile(String filePath) {
         return new workbook(reader.queryWorkbook(filePath));

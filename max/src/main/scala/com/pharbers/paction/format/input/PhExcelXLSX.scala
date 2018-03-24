@@ -49,15 +49,18 @@ class PhExcelXLSX extends PhExcelXLSXInterface {
 
     def isValidataRow(row : Int) = true
 
-    def hasNextRow = cur_row.map { cr =>
-        cr.queryWorksheet().hasNexRow
+    def hasNextRow : Boolean = cur_row.map { cr =>
+        cr.queryWorksheet().hasNexRow.asInstanceOf[scala.Boolean]
     }.getOrElse(false)
 
-    def nextRow = cur_row.map { cr =>
-        val tmp = cr.queryWorksheet().queryNextRow()
-        println(tmp.queryCurrentRowIndex())
-        if (tmp == null) cur_row = None
-        else cur_row = Some(tmp)
+    def nextRow = {
+        if (this.hasNextRow) {
+            cur_row.map { cr =>
+                val tmp = cr.queryWorksheet().queryNextRow()
+                if (tmp == null) cur_row = None
+                else cur_row = Some(tmp)
 
-    }.getOrElse(throw new Exception("初始化未完成"))
+            }.getOrElse(throw new Exception("初始化未完成"))
+        } else cur_row = None
+    }
 }

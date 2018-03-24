@@ -5,7 +5,7 @@ import java.io.*;
 import com.monitorjbl.xlsx.StreamingReader;
 import org.apache.poi.ss.usermodel.*;
 
-public class PhExcelXLSXReader {
+public class PhExcelXLSXPOIImpl {
 
     private Workbook cwb = null;
     private String filePath = "";

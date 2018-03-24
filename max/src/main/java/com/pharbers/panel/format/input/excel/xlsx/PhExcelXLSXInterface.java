@@ -80,12 +80,18 @@ public abstract class PhExcelXLSXInterface {
         }
 
         public String queryCellString() throws Exception {
-            if (value.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+
+            if (value == null) {
+                return "";
+            } else if (value.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                 return String.valueOf(value.getNumericCellValue());
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
                 return value.getStringCellValue();
+            } else if (value.getCellType() == Cell.CELL_TYPE_BLANK
+                    || value.getCellType() == Cell.CELL_TYPE_FORMULA) {
+                return "";
             } else {
-                throw new Exception("not implement");
+                throw new Exception("not implement : " + value.getCellType());
             }
         }
 
@@ -94,7 +100,7 @@ public abstract class PhExcelXLSXInterface {
         }
     }
 
-    PhExcelXLSXReader reader = new PhExcelXLSXReader();
+    PhExcelXLSXPOIImpl reader = new PhExcelXLSXPOIImpl();
 
     protected workbook openExcelFile(String filePath) {
         return new workbook(reader.queryWorkbook(filePath));
