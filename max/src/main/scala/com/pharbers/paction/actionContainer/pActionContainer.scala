@@ -6,9 +6,9 @@ trait pActionContainer extends pActionTrait {
 
     val actions : List[pActionTrait]
 
-    override def perform(args : pActionArgs)(implicit f : (Double, String) => Unit) : pActionArgs = {
-        if (actions.isEmpty) return args
-        else midTmpContainer(actions.tail, f).perform(actions.head.perform(args))
+    override def perform(pr : pActionArgs)(implicit f : (Double, String) => Unit) : pActionArgs = {
+        if (actions.isEmpty) return pr
+        else midTmpContainer(actions.tail, f).perform(actions.head.perform(pr))
     }
 
     override val defaultArgs: pActionArgs = NULLArgs

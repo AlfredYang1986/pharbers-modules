@@ -13,16 +13,17 @@ class calcYMAction[T : ClassTag](override val defaultArgs: pActionArgs) extends 
 
     }
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        val rdd = args.asInstanceOf[RDDArgs[T]].get
+    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+        val rdd = pr.asInstanceOf[RDDArgs[T]].get
         RDDArgs(
             rdd.map { iter =>
                 val tmp = defaultArgs.asInstanceOf[MapArgs].get
 
-                (tmp.get("fy").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString +
-                        tmp.get("fm").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString +
-                        tmp.get("fc").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString) -> 1
+                (tmp("fy").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString +
+                        tmp("fm").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString +
+                        tmp("fc").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString) -> 1
 
-            }.reduceByKey(_ + _).map (x => (x._1.substring(0, 6), 1)).reduceByKey(_ + _))
+            }.reduceByKey(_ + _).map (x => (x._1.substring(0, 6), 1)).reduceByKey(_ + _)
+        )
     }
 }

@@ -2,8 +2,12 @@ package com.pharbers.panel.nhwa
 
 import java.io.File
 import java.util.Date
+
 import org.scalatest.FunSuite
 import java.text.SimpleDateFormat
+
+import com.pharbers.paction.actionbase.NULLArgs
+
 import scala.collection.immutable.Map
 import com.pharbers.panel.util.phUtilManage
 import play.api.libs.json.{JsString, JsValue}
@@ -32,10 +36,9 @@ class NhwaSuite extends FunSuite with phPanelFilePath {
     }
 
     test("test calc ym") {
-        val ymHander = phPanelHeadle(args)
-        val yms = ymHander.calcYM.asInstanceOf[JsString].value
-        val lst = yms.split(",").toList
-        println(lst)
+        object test extends NhwaYMActions
+        import test.progressFunc
+        test.perform(NULLArgs)
     }
 
     test("test generate panel file") {

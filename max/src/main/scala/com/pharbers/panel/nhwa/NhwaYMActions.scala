@@ -18,9 +18,10 @@ trait NhwaYMActions extends pActionContainer {
         "fc" -> SingleArgFuncArgs[PhExcelCpaWritable, String](fc)
     ))
 
-    override val actions: List[pActionTrait] =
-        jarPreloadTrait() ::
-                excelReadingTrait[PhExcelCpaFormat]("resource/test-01.xlsx") ::
+    val file_local2 = "/mnt/config/FileBase/8ee0ca24796f9b7f284d931650edbd4b/Client/171215恩华2017年10月检索.xlsx"
+
+    override val actions: List[pActionTrait] = jarPreloadTrait() ::
+                excelReadingTrait[PhExcelCpaFormat](file_local2) ::
                 calcYMAction(m) ::
                 saveCurrenResultTrait("resource/result") ::
                 Nil
