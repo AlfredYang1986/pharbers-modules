@@ -1,10 +1,10 @@
 package com.pharbers.panel.nhwa
 
 import com.pharbers.panel.common.calcYMAction
-import com.pharbers.panel.nhwa.format.PhExcelCpaFormat
 import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.panel.format.input.writable.nhwa.PhExcelCpaWritable
 import com.pharbers.paction.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
+import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
 import com.pharbers.paction.funcTrait.{excelReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
 
 trait NhwaYMActions extends pActionContainer {
@@ -20,8 +20,13 @@ trait NhwaYMActions extends pActionContainer {
         "fc" -> SingleArgFuncArgs[PhExcelCpaWritable, String](fc)
     ))
 
+    val file_local_10 = "resource/test-01.xlsx"
+    val file_local_01 = "resource/test-03.xlsx"
+    val file_local_all = "resource/test-02.xlsx"
+    val file_local2 = "/mnt/config/FileBase/8ee0ca24796f9b7f284d931650edbd4b/Client/171215恩华2017年10月检索.xlsx"
+
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
-                excelReadingTrait[PhExcelCpaFormat](cpa_location2) ::
+                excelReadingTrait[PhExcelXLSXCommonFormat](file_local_all) ::
                 calcYMAction(m) ::
                 saveCurrenResultTrait("resource/result") ::
                 Nil
