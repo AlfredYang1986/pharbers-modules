@@ -6,7 +6,8 @@ import scala.collection.JavaConversions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
-import com.pharbers.paction.format.input.PhExcelHadoop;
+//import com.pharbers.paction.format.input.PhExcelXLS;
+import com.pharbers.paction.format.input.PhExcelXLSX;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
@@ -19,7 +20,8 @@ public abstract class PhExcelWholeRecordReaderCommon<KEYIN, VALUEIN> extends Rec
     protected String value = null;
     protected Boolean processed = false;
 
-    protected PhExcelHadoop parser = null;
+//    protected PhExcelXLS parser = null;
+    protected PhExcelXLSX parser = null;
     protected String delimiter = String.valueOf((char)31);
 
     @Override
@@ -29,7 +31,11 @@ public abstract class PhExcelWholeRecordReaderCommon<KEYIN, VALUEIN> extends Rec
         this.fileSplit = (FileSplit)inputSplit;
         this.conf = taskAttemptContext.getConfiguration();
 
-        parser = PhExcelHadoop.apply(((FileSplit) inputSplit).getPath().toUri().getPath(), 0);
+        /**
+         * TODO: 这里以后要分开，XLS的掉用 PhExcelXLS, XLSX的调用 PhExcelXLSX @齐
+         */
+//        parser = PhExcelXLS.apply(((FileSplit) inputSplit).getPath().toUri().getPath(), 0);
+        parser = PhExcelXLSX.apply(((FileSplit) inputSplit).getPath().toUri().getPath(), 0);
     }
 
     @Override

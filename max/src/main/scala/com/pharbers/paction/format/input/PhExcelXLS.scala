@@ -1,20 +1,20 @@
 package com.pharbers.paction.format.input
 
-import com.pharbers.panel.format.input.excel.PhExcelHadoopInterface
-import com.pharbers.panel.format.input.excel.PhExcelHadoopInterface.datarow
+import com.pharbers.panel.format.input.excel.xls.PhExcelXLSInterface._
+import com.pharbers.panel.format.input.excel.xls.PhExcelXLSInterface
 
-object PhExcelHadoop {
+object PhExcelXLS {
 
-    def apply(filePath : String, sheetIndex : Int) : PhExcelHadoop = {
-        new PhExcelHadoop().startParse(filePath, sheetIndex)
+    def apply(filePath : String, sheetIndex : Int) : PhExcelXLS = {
+        new PhExcelXLS().startParse(filePath, sheetIndex)
     }
 
-    def apply(filePath : String, sheetName : String) : PhExcelHadoop = {
-        new PhExcelHadoop().startParse(filePath, sheetName)
+    def apply(filePath : String, sheetName : String) : PhExcelXLS = {
+        new PhExcelXLS().startParse(filePath, sheetName)
     }
 }
 
-class PhExcelHadoop extends PhExcelHadoopInterface {
+class PhExcelXLS extends PhExcelXLSInterface {
     implicit val tmp = this
     implicit val p2r : javafx.util.Pair[java.lang.Integer, java.lang.Integer] => Range = (p => Range(p.getKey, p.getValue))
     implicit def toTuple(p : javafx.util.Pair[java.lang.Integer, java.lang.Integer]) : (Int, Int) = (p.getKey, p.getValue)
@@ -25,7 +25,7 @@ class PhExcelHadoop extends PhExcelHadoopInterface {
 
     def currentIndex : Int = cur_row.map (cp => cp.queryCurrentRowIndex().asInstanceOf[Int]).getOrElse(0)
 
-    def startParse(filePath : String, sheetIndex : Int) : PhExcelHadoop = {
+    def startParse(filePath : String, sheetIndex : Int) : PhExcelXLS = {
         val workbook = openExcelFile(filePath)
         val sheet = openExcelSheet(sheetIndex, workbook)
         val (start, end) : (Int, Int) = rowsInSheet(sheet)
@@ -35,7 +35,7 @@ class PhExcelHadoop extends PhExcelHadoopInterface {
         this
     }
 
-    def startParse(filePath : String, sheetName : String) : PhExcelHadoop = {
+    def startParse(filePath : String, sheetName : String) : PhExcelXLS = {
         val workbook = openExcelFile(filePath)
         val sheet = openExcelSheet(sheetName, workbook)
         val (start, end) : (Int, Int) = rowsInSheet(sheet)

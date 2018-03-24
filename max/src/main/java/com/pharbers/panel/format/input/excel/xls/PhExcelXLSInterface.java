@@ -1,4 +1,4 @@
-package com.pharbers.panel.format.input.excel;
+package com.pharbers.panel.format.input.excel.xls;
 
 import javafx.util.Pair;
 import org.apache.poi.ss.usermodel.Cell;
@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-public abstract class PhExcelHadoopInterface {
+public abstract class PhExcelXLSInterface {
     public static final class workbook {
         workbook(Workbook b) {
             this.value = b;
@@ -71,7 +71,7 @@ public abstract class PhExcelHadoopInterface {
         }
     }
 
-    PhExcelRowReader reader = new PhExcelRowReader();
+    PhExcelXLSReader reader = new PhExcelXLSReader();
 
     protected workbook openExcelFile(String filePath) {
         return new workbook(reader.queryWorkbook(filePath));
