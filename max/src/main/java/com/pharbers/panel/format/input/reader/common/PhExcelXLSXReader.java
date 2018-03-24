@@ -3,7 +3,7 @@ package com.pharbers.panel.format.input.reader.common;
 import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
-import com.pharbers.panel.format.input.writable.common.PhExcelCommonWritable;
+import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
 public class PhExcelXLSXReader extends PhExcelXLSXCommonReader<LongWritable, PhExcelWritable> {
     @Override
@@ -13,7 +13,7 @@ public class PhExcelXLSXReader extends PhExcelXLSXCommonReader<LongWritable, PhE
 
     @Override
     public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
-        PhExcelWritable reVal = new PhExcelCommonWritable();
+        PhExcelWritable reVal = new PhXlsxCommonWritable();
         reVal.setValues(value);
         return reVal;
     }

@@ -8,17 +8,17 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 
 import scala.reflect.ClassTag
 
-object excelReadingTrait {
-    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String) : pActionTrait = new excelReadingTrait[T](StringArgs(path))
+object xlsReadingTrait {
+    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String) : pActionTrait = new xlsReadingTrait[T](StringArgs(path))
 
     def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String, name : String) : pActionTrait = {
-        val tmp = new excelReadingTrait[T](StringArgs(path))
+        val tmp = new xlsReadingTrait[T](StringArgs(path))
         tmp.name = name
         tmp
     }
 }
 
-class excelReadingTrait[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
+class xlsReadingTrait[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 

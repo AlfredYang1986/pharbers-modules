@@ -1,9 +1,8 @@
 package com.pharbers.panel.format.input.excel.xlsx;
 
 import java.io.*;
-
-import com.monitorjbl.xlsx.StreamingReader;
 import org.apache.poi.ss.usermodel.*;
+import com.monitorjbl.xlsx.StreamingReader;
 
 public class PhExcelXLSXPOIImpl {
 
@@ -43,7 +42,7 @@ public class PhExcelXLSXPOIImpl {
         return cwb;
     }
 
-    public Boolean isWorkBookOpened() {
+    private Boolean isWorkBookOpened() {
         return cwb != null && !filePath.isEmpty();
     }
 

@@ -1,9 +1,10 @@
 package com.pharbers.panel
 
-import com.pharbers.paction.actionContainer.{pActionContainer, pMapActionContainer}
+import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.paction.actionbase.pActionTrait
 import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
-import com.pharbers.paction.funcTrait.{excelReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
+import com.pharbers.paction.funcTrait.{xlsxReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
+import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
 
 trait NhwaPanelActions extends pActionContainer {
     val file_local = "/mnt/config/FileBase/235f39e3da85c2dee2a2b20d004a8b77/Client/170322安斯泰来1月底层检索.xls"
@@ -15,19 +16,19 @@ trait NhwaPanelActions extends pActionContainer {
     /**
       * 1. read 2017年未出版医院名单.xlsx
       */
-    val cmd1 = excelReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/2017年未出版医院名单.xlsx", "2017年未出版医院名单")
+    val cmd1 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/2017年未出版医院名单.xlsx", "2017年未出版医院名单")
     val cmd10 = saveCurrenResultTrait(file_local_result + cmd1.name)
 
     /**
       * 2. read universe_麻醉市场_online.xlsx
       */
-    val cmd2 = excelReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/universe_麻醉市场_online.xlsx", "universe_麻醉市场_online")
+    val cmd2 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/universe_麻醉市场_online.xlsx", "universe_麻醉市场_online")
     val cmd20 = saveCurrenResultTrait(file_local_result + cmd2.name)
 
     /**
       * 3. read 匹配表
       */
-    val cmd3 = excelReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/匹配表.xlsx", "匹配表")
+    val cmd3 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/匹配表.xlsx", "匹配表")
     val cmd30 = saveCurrenResultTrait(file_local_result + cmd3.name)
 
     /**
@@ -39,14 +40,14 @@ trait NhwaPanelActions extends pActionContainer {
     /**
       * 5. read 通用名市场定义
       */
-    val cmd5 = excelReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/通用名市场定义.xlsx", "通用名市场定义")
+    val cmd5 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/通用名市场定义.xlsx", "通用名市场定义")
     val cmd50 = saveCurrenResultTrait(file_local_result + cmd5.name)
 
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
+            xlsxReadingTrait[PhXlsxCpaFormat](file_local2) ::
                                                 cmd1 ::cmd10 ::
                                                 cmd2 :: cmd20 ::
                                                 cmd3 :: cmd30 ::
-//                                                cmd4 :: cmd40 ::
                                                 cmd5 :: cmd50 ::
                                                 Nil
 }

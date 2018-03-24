@@ -15,7 +15,6 @@ class PhExcelXLSXCommonFormat extends FileInputFormat[NullWritable, PhExcelWrita
                                     taskAttemptContext: TaskAttemptContext) : RecordReader[NullWritable, PhExcelWritable] = {
 
         val reader = new PhExcelXLSXReader
-//        reader.setSheetindex(sheetIndex)
         reader.initialize(inputSplit, taskAttemptContext)
         reader.asInstanceOf[RecordReader[NullWritable, PhExcelWritable]]
     }

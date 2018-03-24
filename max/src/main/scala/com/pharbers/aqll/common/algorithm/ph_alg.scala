@@ -1,4 +1,4 @@
-package com.pharbers.common.algorithm
+package com.pharbers.aqll.common.algorithm
 
 object ph_alg {
 

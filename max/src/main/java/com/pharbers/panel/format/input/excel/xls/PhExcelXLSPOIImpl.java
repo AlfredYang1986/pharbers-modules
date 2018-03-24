@@ -1,9 +1,8 @@
 package com.pharbers.panel.format.input.excel.xls;
 
 import java.io.*;
-
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class PhExcelXLSPOIImpl {
 
@@ -45,7 +44,7 @@ public class PhExcelXLSPOIImpl {
         return cwb;
     }
 
-    public Boolean isWorkBookOpened() {
+    private Boolean isWorkBookOpened() {
         return cwb != null && !filePath.isEmpty();
     }
 

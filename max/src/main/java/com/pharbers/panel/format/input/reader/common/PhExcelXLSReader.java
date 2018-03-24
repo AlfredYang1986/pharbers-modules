@@ -2,8 +2,8 @@ package com.pharbers.panel.format.input.reader.common;
 
 import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
+import com.pharbers.panel.format.input.writable.common.PhXlsCommonWritable;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
-import com.pharbers.panel.format.input.writable.common.PhExcelCommonWritable;
 
 public class PhExcelXLSReader extends PhExcelXLSCommonReader<LongWritable, PhExcelWritable> {
     @Override
@@ -13,7 +13,7 @@ public class PhExcelXLSReader extends PhExcelXLSCommonReader<LongWritable, PhExc
 
     @Override
     public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
-        PhExcelWritable reVal = new PhExcelCommonWritable();
+        PhExcelWritable reVal = new PhXlsCommonWritable();
         reVal.setValues(value);
         return reVal;
     }

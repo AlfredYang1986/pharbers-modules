@@ -19,8 +19,7 @@ class calcYMAction[T : ClassTag](override val defaultArgs: pActionArgs) extends 
             rdd.map { iter =>
                 val tmp = defaultArgs.asInstanceOf[MapArgs].get
 
-                (tmp("fy").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString +
-                        tmp("fm").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString +
+                (tmp("fym").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString +
                         tmp("fc").asInstanceOf[SingleArgFuncArgs[T, String]].get(iter).toString) -> 1
 
             }.reduceByKey(_ + _).map (x => (x._1.substring(0, 6), 1)).reduceByKey(_ + _)
