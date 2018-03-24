@@ -50,7 +50,8 @@ public class PhExcelCpaWritable extends PhExcelWritable {
         }else if (flag.equals("CORP_NAME")) {
             return lst[16];
         }else if (flag.equals("MONTH")) {
-            return lst[4];
+            if(lst[4].length() == 1) return "0" + lst[4];
+            else return lst[4];
         }else if (flag.equals("HOSPITAL_CODE")) {
             return lst[5];
         }

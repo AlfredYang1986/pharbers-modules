@@ -8,6 +8,8 @@ import com.pharbers.paction.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait
 import com.pharbers.paction.funcTrait.{excelReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
 
 trait NhwaYMActions extends pActionContainer {
+    val cpa_location = "/mnt/config/FileBase/8ee0ca24796f9b7f284d931650edbd4b/Client/171215恩华2017年10月检索.xlsx"
+    val cpa_location2 = "/mnt/config/FileBase/8ee0ca24796f9b7f284d931650edbd4b/Client/171115恩华2017年9月检索.xlsx"
 
     val fy : PhExcelCpaWritable => String = _.getRowKey("YEAR")
     val fm : PhExcelCpaWritable => String = _.getRowKey("MONTH")
@@ -18,10 +20,8 @@ trait NhwaYMActions extends pActionContainer {
         "fc" -> SingleArgFuncArgs[PhExcelCpaWritable, String](fc)
     ))
 
-    val file_local2 = "/mnt/config/FileBase/8ee0ca24796f9b7f284d931650edbd4b/Client/171215恩华2017年10月检索.xlsx"
-
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
-                excelReadingTrait[PhExcelCpaFormat](file_local2) ::
+                excelReadingTrait[PhExcelCpaFormat](cpa_location2) ::
                 calcYMAction(m) ::
                 saveCurrenResultTrait("resource/result") ::
                 Nil
