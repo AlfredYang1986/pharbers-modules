@@ -10,9 +10,11 @@ trait NhwaYMActions extends pActionContainer {
 
     val fy : PhExcelNhwaWritable => String = _.getRowKey("YEAR")
     val fm : PhExcelNhwaWritable => String = _.getRowKey("MONTH")
+    val fc : PhExcelNhwaWritable => String = _.getRowKey("HOSPITAL_CODE")
     val m : MapArgs = new MapArgs(Map(
             "fy" -> new SingleArgFuncArgs[PhExcelNhwaWritable, String](fy),
-            "fm" -> new SingleArgFuncArgs[PhExcelNhwaWritable, String](fm)
+            "fm" -> new SingleArgFuncArgs[PhExcelNhwaWritable, String](fm),
+            "fc" -> new SingleArgFuncArgs[PhExcelNhwaWritable, String](fc)
         ))
 
     override val actions: List[pActionTrait] =

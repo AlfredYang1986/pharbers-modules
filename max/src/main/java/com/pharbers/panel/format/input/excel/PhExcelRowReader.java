@@ -4,6 +4,7 @@ import java.io.*;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import com.monitorjbl.xlsx.StreamingReader;
 
 public class PhExcelRowReader  {
 
@@ -14,16 +15,28 @@ public class PhExcelRowReader  {
         InputStream ins = null;
         cwb = null;
         try {
-            ins = new FileInputStream(new File(filePath));
-            cwb = WorkbookFactory.create(ins);
+            /**
+             * 常规做法
+             * ins = new FileInputStream(new File(filePath));
+             * cwb = WorkbookFactory.create(ins);
+             * this.filePath = filePath;
+             * ins.close();
+             * return cwb;
+             */
+
+            /**
+             * 流读取做法
+             */
+            ins = new FileInputStream(filePath);
+            cwb = StreamingReader.builder().rowCacheSize(100).bufferSize(4096).open(ins);
             this.filePath = filePath;
-            ins.close();
             return cwb;
+
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-        } catch (InvalidFormatException e) {
+        } /*catch (InvalidFormatException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } */catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (ins != null) {

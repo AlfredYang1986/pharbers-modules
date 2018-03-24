@@ -52,6 +52,8 @@ public class PhExcelNhwaWritable extends PhExcelWritable {
             return lst[16];
         }else if (flag.equals("MONTH")) {
             return lst[4];
+        }else if (flag.equals("HOSPITAL_CODE")) {
+            return lst[5];
         }
 
         return "not implements";

@@ -1,7 +1,6 @@
 package com.pharbers.sparkSteam.paction
 
 import com.pharbers.sparkSteam.paction.actionbase._
-import org.apache.spark.api.java.JavaPairRDD
 
 import scala.reflect.ClassTag
 
@@ -20,8 +19,10 @@ class calcYMTrait2[T : ClassTag](override val defaultArgs: pActionArgs) extends 
         RDDArgs(
         rdd.map { iter =>
             val tmp = defaultArgs.asInstanceOf[MapArgs].get
-            tmp.get("fy").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString +
-                tmp.get("fm").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString -> 1
-        }.reduceByKey(_ + _))
+            (tmp.get("fy").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString +
+                tmp.get("fm").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString) ->
+                    (tmp.get("fc").get.asInstanceOf[SingleArgFuncArgs[T, String]].func(iter).toString :: Nil)
+
+        }.reduceByKey(_.union(_)).map (x => (x._1, x._2.length)))
     }
 }
