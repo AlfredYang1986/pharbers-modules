@@ -47,7 +47,7 @@ class PhExcelXLSX extends PhExcelXLSXInterface {
 
     }.getOrElse(throw new Exception("没有数据了"))
 
-    def isValidataRow(row : Int) = true;
+    def isValidataRow(row : Int) = true
 
     def hasNextRow = cur_row.map { cr =>
         cr.queryWorksheet().hasNexRow
