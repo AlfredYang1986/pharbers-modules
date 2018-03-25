@@ -2,8 +2,8 @@ package com.pharbers.panel
 
 import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
-import com.pharbers.paction.funcTrait.{xlsxReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
+import com.pharbers.paction.format.input.common.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.paction.funcTrait.{jarPreloadTrait, saveCurrenResultTrait, xlsxReadingTrait}
 import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
 
 trait NhwaPanelActions extends pActionContainer {
@@ -38,10 +38,17 @@ trait NhwaPanelActions extends pActionContainer {
 //    val cmd40 = saveCurrenResultTrait(file_local_result + cmd4.name)
 
     /**
-      * 5. read 通用名市场定义
+      * 5. read 通用名市场定义, 读第三页
       */
-    val cmd5 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/通用名市场定义.xlsx", "通用名市场定义")
+    val cmd5 = xlsxReadingTrait[PhXlsxThirdSheetFormat]("resource/nhwa/通用名市场定义.xlsx", "通用名市场定义")
     val cmd50 = saveCurrenResultTrait(file_local_result + cmd5.name)
+
+
+    /**
+      * 6. read 用户上传文件第一页
+      */
+    val cmd6 = xlsxReadingTrait[PhXlsxCpaFormat]("resource/nhwa/test-01.xlsx", "用户cpa sheet1")
+    val cmd60 = saveCurrenResultTrait(file_local_result + cmd6.name)
 
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
             xlsxReadingTrait[PhXlsxCpaFormat](file_local2) ::
@@ -49,5 +56,6 @@ trait NhwaPanelActions extends pActionContainer {
                                                 cmd2 :: cmd20 ::
                                                 cmd3 :: cmd30 ::
                                                 cmd5 :: cmd50 ::
+                                                cmd6 :: cmd60 ::
                                                 Nil
 }
