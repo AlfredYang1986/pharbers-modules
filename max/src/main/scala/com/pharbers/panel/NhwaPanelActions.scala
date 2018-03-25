@@ -1,8 +1,8 @@
 package com.pharbers.panel
 
 import com.pharbers.paction.actionContainer.pActionContainer
-import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.paction.format.input.common.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.paction.actionbase.{NULLArgs, pActionTrait}
+import com.pharbers.paction.format.input.common.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.paction.funcTrait.{jarPreloadTrait, saveCurrenResultTrait, xlsxReadingTrait}
 import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
 
@@ -16,46 +16,47 @@ trait NhwaPanelActions extends pActionContainer {
     /**
       * 1. read 2017年未出版医院名单.xlsx
       */
-    val cmd1 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/2017年未出版医院名单.xlsx", "2017年未出版医院名单")
+    val cmd1 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/2017年未出版医院名单.xlsx", "not_published_hosp_file")
     val cmd10 = saveCurrenResultTrait(file_local_result + cmd1.name)
 
     /**
       * 2. read universe_麻醉市场_online.xlsx
       */
-    val cmd2 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/universe_麻醉市场_online.xlsx", "universe_麻醉市场_online")
+    val cmd2 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/universe_麻醉市场_online.xlsx", "hosp")
     val cmd20 = saveCurrenResultTrait(file_local_result + cmd2.name)
 
     /**
       * 3. read 匹配表
       */
-    val cmd3 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/匹配表.xlsx", "匹配表")
+    val cmd3 = xlsxReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/匹配表.xlsx", "m1")
     val cmd30 = saveCurrenResultTrait(file_local_result + cmd3.name)
-
-    /**
-      * 4. read 补充医院
-      */
-//    val cmd4 = excelReadingTrait[PhExcelXLSXCommonFormat]("resource/nhwa/补充医院.xlsx", "补充医院")
-//    val cmd40 = saveCurrenResultTrait(file_local_result + cmd4.name)
 
     /**
       * 5. read 通用名市场定义, 读第三页
       */
-    val cmd5 = xlsxReadingTrait[PhXlsxThirdSheetFormat]("resource/nhwa/通用名市场定义.xlsx", "通用名市场定义")
+    val cmd5 = xlsxReadingTrait[PhXlsxThirdSheetFormat]("resource/nhwa/通用名市场定义.xlsx", "b1")
     val cmd50 = saveCurrenResultTrait(file_local_result + cmd5.name)
 
 
     /**
       * 6. read 用户上传文件第一页
       */
-    val cmd6 = xlsxReadingTrait[PhXlsxCpaFormat]("resource/nhwa/test-01.xlsx", "用户cpa sheet1")
+    val cmd6 = xlsxReadingTrait[PhXlsxCpaFormat]("resource/nhwa/test-01.xlsx", "cpa")
     val cmd60 = saveCurrenResultTrait(file_local_result + cmd6.name)
 
+    /**
+      * 7. read 用户上传文件第二页
+      */
+    val cmd7 = xlsxReadingTrait[PhXlsxSecondSheetFormat]("resource/nhwa/test-01.xlsx", "not_arrive")
+    val cmd70 = saveCurrenResultTrait(file_local_result + cmd7.name)
+
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
-            xlsxReadingTrait[PhXlsxCpaFormat](file_local2) ::
-                                                cmd1 ::cmd10 ::
-                                                cmd2 :: cmd20 ::
-                                                cmd3 :: cmd30 ::
-                                                cmd5 :: cmd50 ::
-                                                cmd6 :: cmd60 ::
+//                                                cmd1 ::cmd10 ::
+//                                                cmd2 ::cmd20 ::
+//                                                cmd3 :: cmd30 ::
+//                                                cmd5 :: cmd50 ::
+//                                                cmd6 :: cmd60 ::
+//                                                cmd7 :: cmd70 ::
+                                                panelGenerateTrait(NULLArgs) ::
                                                 Nil
 }
