@@ -1,6 +1,6 @@
 package com.pharbers.panel.astellas
 
-import com.pharbers.panel.common.calcYMAction
+import com.pharbers.panel.commonAction.calcYMAction
 import com.pharbers.panel.astellas.format.PhXlsCpaFormat
 import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.panel.format.input.writable.astellas.PhXlsCpaWritable

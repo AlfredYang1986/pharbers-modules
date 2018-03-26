@@ -84,7 +84,9 @@ public abstract class PhExcelXLSXInterface {
             if (value == null) {
                 return "";
             } else if (value.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                return String.valueOf(value.getNumericCellValue());
+                String temp = String.valueOf(value.getNumericCellValue());
+                if(temp.endsWith(".0")) return temp.replace(".0", "");
+                else return temp;
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
                 return value.getStringCellValue();
             } else if (value.getCellType() == Cell.CELL_TYPE_BLANK

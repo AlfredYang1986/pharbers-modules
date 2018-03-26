@@ -1,4 +1,4 @@
-package com.pharbers.panel.common
+package com.pharbers.panel.commonAction
 
 import scala.reflect.ClassTag
 import com.pharbers.paction.actionbase._

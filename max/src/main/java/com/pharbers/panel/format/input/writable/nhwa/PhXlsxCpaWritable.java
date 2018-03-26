@@ -92,7 +92,7 @@ public class PhXlsxCpaWritable extends PhExcelWritable {
     }
 
     private String expendTitle(String value) {
-        return value + delimiter + "min1" + delimiter + "YM";
+        return value + "min1" + delimiter + "YM";
     }
 
     private String expendValues(String value) {

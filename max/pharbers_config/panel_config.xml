@@ -1,15 +1,15 @@
 <pharbers-modules>
     <panel_config>
-        <base_path value="/mnt/config/FileBase/"/>
+        <base_path value="resource/"/>
         <client_file_path value="/mnt/config/FileBase/"/>
-        <product_match_file value="/匹配表.csv" />
-        <markets_match_file value="/通用名市场定义.csv" />
-        <universe_file value="/universe_##market##_online.csv" />
-        <not_arrival_hosp_file value="/未到医院名单.csv" />
-        <not_published_hosp_file value="/2017年未出版医院名单.csv" />
-        <fill_hos_data_file value="/补充医院.csv" />
+        <product_match_file value="/匹配表.xlsx" />
+        <markets_match_file value="/通用名市场定义.xlsx" />
+        <universe_file value="/universe_##market##_online.xlsx" />
+        <not_published_hosp_file value="/2017年未出版医院名单.xlsx" />
+        <fill_hos_data_file value="/补充医院.xlsx" />
         <source_dir value="/Client/" />
         <output_dir value="/Panel/" />
+        <cache_dir value="Cache/" />
     </panel_config>
 
     <company_fea9f203d4f593a96f0d6faa91ba24ba>
@@ -32,6 +32,6 @@
     <company_235f39e3da85c2dee2a2b20d004a8b77>
         <markets value="麻醉市场"/>
 
-        <麻醉市场 value="com.pharbers.panel.nhwa.phNhwaHandle" />
+        <麻醉市场 value="com.pharbers.panel.phNhwaHandle" />
     </company_235f39e3da85c2dee2a2b20d004a8b77>
 </pharbers-modules>

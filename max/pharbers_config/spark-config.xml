@@ -1,7 +1,7 @@
 <pharbers-modules>
     <spark-config>
-        <!--<host value="192.168.100.174" />-->
-        <host value="localhost" />
+        <host value="192.168.100.26" />
+        <!--<host value="localhost" />-->
         <port value="9999" />
         <name value="nhwa-panel" />
     </spark-config>

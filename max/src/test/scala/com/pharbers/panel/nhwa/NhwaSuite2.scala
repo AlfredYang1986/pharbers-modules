@@ -94,7 +94,6 @@
 //    }
 //
 //    test("test excel2Csv => 未到医院") {
-//        val cpa_name = "180211恩华17年1-12月检索.xlsx"
 //        val input_file = file_base + client_path + cpa_name
 //        val output_file = file_base + output_dir + "未到医院名单.csv"
 //
@@ -322,7 +321,7 @@
 //        }
 //
 //        val panelHander = phPanelHeadle(args)
-//        val result = getResult(panelHander.getPanelFile(List("201708")))
+//        val result = getResult(panelHander.getPanelFile(List("201710")))
 //        println("result = " + result)
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))

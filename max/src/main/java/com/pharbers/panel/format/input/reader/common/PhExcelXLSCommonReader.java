@@ -40,8 +40,6 @@ public abstract class PhExcelXLSCommonReader<KEYIN, VALUEIN> extends RecordReade
         this.fileSplit = (FileSplit)inputSplit;
         this.conf = taskAttemptContext.getConfiguration();
 
-        System.out.println("yangyuan" + this.conf.get("ph_index"))
-
         parser = PhExcelXLS.apply(((FileSplit) inputSplit).getPath().toUri().getPath(), sheetindex);
     }
 
