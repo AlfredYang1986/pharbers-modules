@@ -6,7 +6,8 @@ trait pActionContainer extends pActionTrait {
 
     val actions : List[pActionTrait]
 
-    override def perform(pr : pActionArgs = NULLArgs)(implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
+    override def perform(pr : pActionArgs = NULLArgs)
+                        (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
         if (actions.isEmpty) return pr
         else midTmpContainer(actions.tail, f).perform(actions.head.perform(pr))
     }
@@ -19,7 +20,8 @@ trait pMapActionContainer extends pActionTrait {
 
     val actions : List[pActionTrait]
 
-    override def perform(pr : pActionArgs)(implicit f : (Double, String) => Unit) : pActionArgs = {
+    override def perform(pr : pActionArgs = MapArgs(Map().empty))
+                        (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
         if (actions.isEmpty) return pr
         else {
             val tmp = if (pr.isInstanceOf[MapArgs])
