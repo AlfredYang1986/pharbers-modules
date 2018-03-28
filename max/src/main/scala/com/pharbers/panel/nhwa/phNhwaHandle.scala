@@ -1,6 +1,7 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.delivery.nhwa.{phDeliveryTrait, phNhwaDeliveryActions}
+import com.pharbers.delivery.nhwa.phNhwaDeliveryActions
+import com.pharbers.delivery.util.phDeliveryTrait
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
