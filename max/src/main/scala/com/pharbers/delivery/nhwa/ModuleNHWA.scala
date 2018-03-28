@@ -1,18 +1,16 @@
 package com.pharbers.delivery.nhwa
 
-import com.pharbers.delivery.util.CommonTrait
+import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
   * Created by jeorch on 18-3-7.
   */
 trait ModuleNHWA extends CommonTrait {
-    object nhwa extends ConfigNHWA
-    object mongo extends ConfigMongo
 
     def generateDeliveryFileFromMongo(dbName: String, collection: String): DataFrame = {
 
-        val df_max = driver.mongo2RDD(s"${mongo.mongoHost}",s"${mongo.mongoPort}",s"$dbName",s"$collection").toDF()
+        val df_max = driver.mongo2RDD(s"${mongo_config_obj.mongoHost}",s"${mongo_config_obj.mongoPort}",s"$dbName",s"$collection").toDF()
 
         val gb_test = df_max.filter("f_sales <> 0 AND f_units <> 0")
                         .select(df_max("Panel_ID"),df_max("Date").divide(1000).cast("timestamp"),df_max("Provice").as("province"),df_max("City"),df_max("Market"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double"))
@@ -38,11 +36,11 @@ trait ModuleNHWA extends CommonTrait {
     def doMatch(df: DataFrame): DataFrame = {
         val df_filter = df.filter("Product <> '多美康片剂15MG10上海罗氏制药有限公司'")
 
-        val df_match_hospital = driver.csv2RDD(nhwa.hospitalMatchFile)
-        val df_match_nhwa = driver.csv2RDD(nhwa.nhwaMatchFile).select("药品名称_标准","商品名_标准","药品规格_标准","剂型_标准","生产企业_标准","min1_标准","Pack_ID","商品名+SKU","毫克数").distinct()
-        val df_match_acc = driver.csv2RDD(nhwa.accMatchFile)
-        val df_match_area = driver.csv2RDD(nhwa.areaMatchFile)
-        val df_match_market = driver.csv2RDD(nhwa.marketMatchFile)
+        val df_match_hospital = driver.csv2RDD(nhwa_delivery_obj.hospitalMatchFile)
+        val df_match_nhwa = driver.csv2RDD(nhwa_delivery_obj.nhwaMatchFile).select("药品名称_标准","商品名_标准","药品规格_标准","剂型_标准","生产企业_标准","min1_标准","Pack_ID","商品名+SKU","毫克数").distinct()
+        val df_match_acc = driver.csv2RDD(nhwa_delivery_obj.accMatchFile)
+        val df_match_area = driver.csv2RDD(nhwa_delivery_obj.areaMatchFile)
+        val df_match_market = driver.csv2RDD(nhwa_delivery_obj.marketMatchFile)
 
         val df_new1 = df_filter.join(df_match_hospital, df_filter("first(Panel_ID)") === df_match_hospital("Panel_ID"), "left").drop(df_match_hospital("City")).drop(df_filter("first(Panel_ID)"))
 
@@ -91,9 +89,9 @@ trait ModuleNHWA extends CommonTrait {
     }
 
     def save2File(df: DataFrame): String = {
-        val saveOptions = Map("header" -> "true", "encoding" -> "GB2312", "path" -> s"${nhwa.outputPath}")
+        val saveOptions = Map("header" -> "true", "encoding" -> "GB2312", "path" -> s"${nhwa_delivery_obj.outputPath}")
         df.coalesce(1).write.format("csv").mode(SaveMode.Append).options(saveOptions).save()
-        getResultFileFullPath(nhwa.outputPath)
+        getResultFileFullPath(nhwa_delivery_obj.outputPath)
     }
 
 }
