@@ -21,7 +21,7 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         put("包装", "PACKAGE");
         put("包装数量", "PACK_NUMBER");
         put("规格", "PACK_DES");
-        put("金额（元）", "VALUE");
+        put("金额(元)", "VALUE");
         put("数量(支/片)", "STANDARD_UNIT");
         put("剂型", "APP2_COD");
         put("途径", "APP1_COD");
@@ -100,7 +100,12 @@ public class phAstellasGycxWritable extends PhExcelWritable {
     }
 
     private String expendValues(String value) {
-        return value + delimiter + getMin1InRow(value);
+        int l = titleMap.size() - value.split(delimiter).length;
+        String added = "";
+        for(int i = 0; i < l ; i++){
+            added = added + delimiter;
+        }
+        return value + added + delimiter + getMin1InRow(value);
     }
 
     @Override

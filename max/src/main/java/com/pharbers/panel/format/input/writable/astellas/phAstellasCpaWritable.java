@@ -15,14 +15,14 @@ public class phAstellasCpaWritable extends PhExcelWritable {
         put("年月", "YM");
         put("医院编码", "HOSPITAL_CODE");
         put("竞品市场", "MARKET");
-        put("ATC编码", "ATC_CODE");
+        put("ATC码", "ATC_CODE");
         put("药品名称", "MOLE_NAME");
         put("商品名", "PRODUCT_NAME");
         put("包装", "PACKAGE");
-        put("规格", "PACK_DES");
+        put("药品规格", "PACK_DES");
         put("包装数量", "PACK_NUMBER");
         put("金额（元）", "VALUE");
-        put("数量(支/片)", "STANDARD_UNIT");
+        put("数量（支/片）", "STANDARD_UNIT");
         put("剂型", "APP2_COD");
         put("给药途径", "APP1_COD");
         put("集团", "CORP_NAME");
@@ -103,7 +103,12 @@ public class phAstellasCpaWritable extends PhExcelWritable {
     }
 
     private String expendValues(String value) {
-        return value + delimiter + getMin1InRow(value);
+        int l = titleMap.size() - value.split(delimiter).length;
+        String added = "";
+        for(int i = 0; i < l ; i++){
+            added = added + delimiter;
+        }
+        return value + added + delimiter + getMin1InRow(value);
     }
 
     @Override

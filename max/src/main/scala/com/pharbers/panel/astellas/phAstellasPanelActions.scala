@@ -18,6 +18,4 @@ case class phAstellasPanelActions(args: Map[String, List[String]])
     override lazy val product_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_product_match_file
     override lazy val markets_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_markets_match_file
     override lazy val universe_file = panel_path_obj.p_base_path + company + panel_path_obj.p_universe_file.replace("##market##", mkt)
-
-    override lazy val cache_location = panel_path_obj.p_base_path + panel_path_obj.p_cache_dir
 }

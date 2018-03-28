@@ -26,6 +26,7 @@ class jarPreloadTrait extends pActionTrait { //this : pFileSystem =>
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
+        sc.setLogLevel("ERROR")
 
         lst.foreach { iter =>
             if (!sc.listJars().contains(iter._1))

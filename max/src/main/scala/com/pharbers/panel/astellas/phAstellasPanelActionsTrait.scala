@@ -1,7 +1,7 @@
 package com.pharbers.panel.astellas
 
 import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.panel.astellas.format.{phAstellasCpaFormat, phAstellasGycxFormat}
+import com.pharbers.panel.astellas.format.{phAstellasCpaFormat, phAstellasGycxFormat, phAstellasMarketsMatchFormat}
 import com.pharbers.paction.actionContainer.pMapActionContainer
 import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
 import com.pharbers.paction.funcTrait.{jarPreloadTrait, xlsxReadingTrait}
@@ -17,21 +17,19 @@ trait phAstellasPanelActionsTrait extends pMapActionContainer {
     val markets_match_file: String
     val universe_file: String
 
-    val cache_location: String
-
     // 1. read CPA文件第一页
     val cmd1 = xlsxReadingTrait[phAstellasCpaFormat](cpa_file, "cpa")
 
     //2. read GYCX文件第一页
     val cmd2 = xlsxReadingTrait[phAstellasGycxFormat](gycx_file, "gycx")
 
-    //3. read 2017年未出版医院名单.xlsx
+    //3. read 产品匹配表.xlsx
     val cmd3 = xlsxReadingTrait[PhExcelXLSXCommonFormat](product_match_file, "product_match_file")
 
-    //4. read universe_麻醉市场_online.xlsx
-    val cmd4 = xlsxReadingTrait[PhExcelXLSXCommonFormat](markets_match_file, "markets_match_file")
+    //4. read 市场匹配表.xlsx
+    val cmd4 = xlsxReadingTrait[phAstellasMarketsMatchFormat](markets_match_file, "markets_match_file")
 
-    //5. read 匹配表
+    //5. read universe_mkt_online.xlsx
     val cmd5 = xlsxReadingTrait[PhExcelXLSXCommonFormat](universe_file, "universe_file")
 
 
