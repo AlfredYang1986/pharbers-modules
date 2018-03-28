@@ -1,4 +1,4 @@
-package com.pharbers.panel.nhwa
+package com.pharbers.panel.astellas
 
 import java.util.Date
 import org.scalatest.FunSuite

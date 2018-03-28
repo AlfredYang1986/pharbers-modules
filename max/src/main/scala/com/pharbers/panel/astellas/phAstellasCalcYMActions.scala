@@ -10,5 +10,5 @@ case class phAstellasCalcYMActions(args: Map[String, List[String]]) extends phAs
     lazy val gycx: String = args.getOrElse("gycxs", throw new Exception("no find GYCXs arg")).head
 
     override lazy val cpa_file: String = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + cpa
-    override lazy val cache_location: String = panel_path_obj.p_base_path + panel_path_obj.p_cache_dir + "ym/"
+    override lazy val gycx_file: String = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + gycx
 }

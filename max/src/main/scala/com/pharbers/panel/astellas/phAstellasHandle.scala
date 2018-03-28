@@ -1,7 +1,9 @@
 package com.pharbers.panel.astellas
 
+import com.pharbers.paction.actionbase.{MapArgs, RDDArgs}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
+
 import scala.collection.immutable.Map
 import com.pharbers.panel.phPanelTrait
 
@@ -11,8 +13,13 @@ import com.pharbers.panel.phPanelTrait
 case class phAstellasHandle(args: Map[String, List[String]]) extends phPanelTrait {
 
     override def calcYM: JsValue = {
-        phAstellasCalcYMActions(args).perform()
-        toJson("")
+        val mapArgs = phAstellasCalcYMActions(args).perform()
+        val lst = mapArgs.asInstanceOf[MapArgs]
+                .get("ymLst").asInstanceOf[RDDArgs[(String, Int)]]
+                .get.collect()
+        val maxYm = lst.map(_._2).max
+        val result = lst.filter(_._2 > maxYm/2).map(_._1).sorted
+        toJson(result.mkString(comma))
     }
 
     override def getPanelFile(ym: List[String], mkt: String, t: Int, c: Int): JsValue = {

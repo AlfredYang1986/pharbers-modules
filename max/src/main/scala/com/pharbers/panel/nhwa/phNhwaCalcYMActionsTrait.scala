@@ -1,11 +1,11 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.panel.commonAction.calcYMAction
 import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
 import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.panel.format.input.writable.nhwa.PhXlsxCpaWritable
 import com.pharbers.paction.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
-import com.pharbers.paction.funcTrait.{xlsxReadingTrait, jarPreloadTrait, saveCurrenResultTrait}
+import com.pharbers.paction.funcTrait.{jarPreloadTrait, saveCurrenResultTrait, xlsxReadingTrait}
+import com.pharbers.panel.astellas.phAstellasCalcYMImplAction
 
 trait phNhwaCalcYMActionsTrait extends pActionContainer {
     val cpa_file: String
@@ -20,7 +20,7 @@ trait phNhwaCalcYMActionsTrait extends pActionContainer {
 
     override val actions: List[pActionTrait] = jarPreloadTrait() ::
                 xlsxReadingTrait[PhXlsxCpaFormat](cpa_file) ::
-                calcYMAction(m) ::
+                phAstellasCalcYMImplAction("") ::
                 saveCurrenResultTrait(cache_location) ::
                 Nil
 } 

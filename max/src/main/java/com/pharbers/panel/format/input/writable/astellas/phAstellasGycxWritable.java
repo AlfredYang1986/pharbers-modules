@@ -1,13 +1,12 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
-
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
 
-public class PhXlsxCpaWritable extends PhExcelWritable {
+public class phAstellasGycxWritable extends PhExcelWritable {
     private final String delimiter = String.valueOf((char)31);
 
     private static Map<String, String> titleMap = new HashMap<String, String>() {{
