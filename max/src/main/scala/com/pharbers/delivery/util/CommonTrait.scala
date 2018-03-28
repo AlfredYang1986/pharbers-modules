@@ -4,6 +4,7 @@ import java.io.File
 
 import com.pharbers.spark.driver.phSparkDriver
 import org.apache.commons.io.FileUtils
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -11,7 +12,7 @@ import org.apache.spark.sql.DataFrame
   */
 trait CommonTrait {
 
-    val driver =  phSparkDriver()
+    lazy val driver =  phSparkDriver()
 
     def getResultFileFullPath(arg: String) : String = {
 
@@ -31,10 +32,17 @@ trait CommonTrait {
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {
         listDF.length match {
+            case 0 => throw new Exception("Empty List! unionDataFrameList Error!")
             case 1 => listDF.head
-            case 2 => listDF.head.union(listDF.last)
-            case _ : Int => listDF.head.union(unionDataFrameList(listDF.tail))
-            // case _ => throw new Exception("unionDataFrameList Error!")
+            case _ => listDF.head.union(unionDataFrameList(listDF.tail))
+        }
+    }
+
+    def unionRDDList[T](listRDD: List[RDD[T]]): RDD[T] = {
+        listRDD.length match {
+            case 0 => throw new Exception("Empty List! unionRDDList Error!")
+            case 1 => listRDD.head
+            case _ => listRDD.head.union(unionRDDList(listRDD.tail))
         }
     }
 
