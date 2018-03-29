@@ -27,9 +27,7 @@
 //    }
 //
 //    test("test calc ym") {
-//        val yms = phPanelHeadle(args).calcYM.asInstanceOf[JsString].value
-//        val lst = yms.split(",").toList
-//        println(lst)
+//        phNhwaHandle(args).calcYM
 //    }
 //
 //    test("test generate panel file") {
