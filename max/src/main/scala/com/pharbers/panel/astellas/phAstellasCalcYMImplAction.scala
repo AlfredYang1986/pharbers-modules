@@ -11,7 +11,7 @@ object phAstellasCalcYMImplAction  {
     }
 }
 
-class phAstellasCalcYMImplAction(override val defaultArgs: pActionArgs) extends pActionTrait with java.io.Serializable {
+class phAstellasCalcYMImplAction(override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 

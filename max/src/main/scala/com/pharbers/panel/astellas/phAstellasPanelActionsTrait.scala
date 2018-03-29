@@ -3,7 +3,6 @@ package com.pharbers.panel.astellas
 import com.pharbers.panel.astellas.format._
 import com.pharbers.paction.actionbase.pActionTrait
 import com.pharbers.paction.actionContainer.pMapActionContainer
-import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
 import com.pharbers.paction.funcTrait.{jarPreloadTrait, xlsxReadingTrait}
 
 trait phAstellasPanelActionsTrait extends pMapActionContainer {
@@ -30,7 +29,7 @@ trait phAstellasPanelActionsTrait extends pMapActionContainer {
     val cmd4 = xlsxReadingTrait[phAstellasMarketsMatchFormat](markets_match_file, "markets_match_file")
 
     //5. read universe_mkt_online.xlsx
-    val cmd5 = xlsxReadingTrait[PhExcelXLSXCommonFormat](universe_file, "universe_file")
+    val cmd5 = xlsxReadingTrait[phAstellasUniverseFormat](universe_file, "universe_file")
 
 
     override val actions: List[pActionTrait] = jarPreloadTrait() ::

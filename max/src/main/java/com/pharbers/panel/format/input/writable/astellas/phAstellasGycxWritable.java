@@ -4,6 +4,7 @@ import java.util.HashMap;
 import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
 public class phAstellasGycxWritable extends PhXlsxCommonWritable {
+
     static {
         titleMap = new HashMap<String, String>() {{
             put("省份", "PROVINCES");
@@ -133,14 +134,21 @@ public class phAstellasGycxWritable extends PhXlsxCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        if ("".equals(getCellKey(lst, "PRODUCT_NAME")))
+            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
+
+        if (Double.parseDouble(getCellKey(lst, "STANDARD_UNIT")) == 0)
+            lst = setCellKey(lst, "VALUE", "0");
+
+        if (Double.parseDouble(getCellKey(lst, "VALUE")) == 0)
+            lst = setCellKey(lst, "STANDARD_UNIT", "0");
+
         String min1 = getCellKey(lst, "PRODUCT_NAME") +
                 getCellKey(lst, "APP2_COD") +
                 getCellKey(lst, "PACK_DES") +
                 getCellKey(lst, "PACK_NUMBER") +
                 getCellKey(lst, "CORP_NAME");
-
-        if ("".equals(getCellKey(lst, "PRODUCT_NAME")))
-            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
 
         return mkString(lst, delimiter) + delimiter + min1;
     }

@@ -140,11 +140,6 @@ public class phAstellasCpaWritable extends PhXlsxCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
-        String min1 = getCellKey(lst, "PRODUCT_NAME") +
-                getCellKey(lst, "APP2_COD") +
-                getCellKey(lst, "PACK_DES") +
-                getCellKey(lst, "PACK_NUMBER") +
-                getCellKey(lst, "CORP_NAME");
 
         //不要省略这个空格，必须有
         if (!" ".equals(getCellKey(lst, "PRODUCT_NAME_NOTE")))
@@ -159,7 +154,17 @@ public class phAstellasCpaWritable extends PhXlsxCommonWritable {
         if ("110561".equals(getCellKey(lst, "HOSPITAL_CODE")))
             lst = setCellKey(lst, "HOSPITAL_CODE", "110563");
 
+        if (Double.parseDouble(getCellKey(lst, "STANDARD_UNIT")) == 0)
+            lst = setCellKey(lst, "VALUE", "0");
 
+        if (Double.parseDouble(getCellKey(lst, "VALUE")) == 0)
+            lst = setCellKey(lst, "STANDARD_UNIT", "0");
+
+        String min1 = getCellKey(lst, "PRODUCT_NAME") +
+                getCellKey(lst, "APP2_COD") +
+                getCellKey(lst, "PACK_DES") +
+                getCellKey(lst, "PACK_NUMBER") +
+                getCellKey(lst, "CORP_NAME");
 
         return mkString(lst, delimiter) + delimiter + min1;
     }

@@ -129,6 +129,22 @@ public class phAstellasProductMatchWritable extends PhXlsxCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        if("".equals(getCellKey(lst, "PACK_NUMBER2")))
+            lst = setCellKey(lst, "PACK_NUMBER2", getCellKey(lst, "PACK_NUMBER1"));
+        if("抗人胸腺细胞兔免疫球蛋白".equals(getCellKey(lst, "STANDARD_MOLE_NAME")))
+            lst = setCellKey(lst, "STANDARD_MOLE_NAME", "抗人胸腺细胞免疫球蛋白");
+        if("米芙".equals(getCellKey(lst, "STANDARD_PRODUCT_NAME")))
+            lst = setCellKey(lst, "STANDARD_PRODUCT_NAME", "麦考芬酸钠");
+        if("哈乐".equals(getCellKey(lst, "STANDARD_PRODUCT_NAME")) &&
+                "片剂".equals(getCellKey(lst, "STANDARD_APP2_COD")) &&
+                    "14".equals(getCellKey(lst, "PACK_NUMBER2")))
+            lst = setCellKey(lst, "STANDARD_PRODUCT_NAME", "新哈乐");
+        if("新哈乐".equals(getCellKey(lst, "STANDARD_PRODUCT_NAME")) &&
+                "片剂".equals(getCellKey(lst, "STANDARD_APP2_COD")) &&
+                    "10".equals(getCellKey(lst, "PACK_NUMBER2")))
+            lst = setCellKey(lst, "STANDARD_PRODUCT_NAME", "哈乐");
+
         String min1 = getCellKey(lst, "PRODUCT_NAME1") + "|" +
                 getCellKey(lst, "APP2_COD1") + "|" +
                 getCellKey(lst, "PACK_DES1") + "|" +
@@ -142,8 +158,6 @@ public class phAstellasProductMatchWritable extends PhXlsxCommonWritable {
 
         lst = setCellKey(lst, "min1", min1);
         lst = setCellKey(lst, "min0", min1.replace("|", ""));
-        if("".equals(getCellKey(lst, "PACK_NUMBER2")))
-            lst = setCellKey(lst, "PACK_NUMBER2", getCellKey(lst, "PACK_NUMBER1"));
         lst = setCellKey(lst, "min2", min2);
 
         return mkString(lst, delimiter);

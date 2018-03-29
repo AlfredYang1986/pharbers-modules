@@ -4,6 +4,7 @@ import java.util.HashMap;
 import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
 public class phAstellasMarketsMatchWritable extends PhXlsxCommonWritable {
+
     static {
         titleMap = new HashMap<String, String>() {{
             put("药品名称", "MOLE_NAME");
@@ -22,15 +23,4 @@ public class phAstellasMarketsMatchWritable extends PhXlsxCommonWritable {
         return "not implements";
     }
 
-    @Override
-    protected String expendTitle(String value) {
-        return value;
-    }
-
-    @Override
-    protected String prePanelFunction(String value) {
-        String[] lst = splitValues(value);
-
-        return mkString(lst, delimiter);
-    }
 }

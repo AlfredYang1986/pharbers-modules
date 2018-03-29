@@ -11,7 +11,7 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
     @Override
     public String richWithInputRow(int index, String value) {
         if (index == 1) {
-            return expendTitle(transTitle2Eng(titleMap, value));
+            return expendTitle(transTitle2Eng(value));
         } else return expendValues(titleMap.size(), value);
     }
 
@@ -19,6 +19,7 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
     public String getRowKey(String flag) {
         return getCellKey(splitValues(getValues()), flag);
     }
+
 
 
     protected String mkString(String[] lst, String seq) {
@@ -33,12 +34,13 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
         return value.split(delimiter);
     }
 
-    protected String transTitle2Eng(Map<String, String> titleMap, String value) {
+    protected String transTitle2Eng(String value) {
         String[] lst = this.splitValues(value);
         List<String> result = new ArrayList<>(lst.length);
         StringBuilder reVal = new StringBuilder();
         for (String iter : lst) {
-            result.add(titleMap.get(iter));
+            String tmp = titleMap.get(iter);
+            result.add(tmp == null ? iter : tmp);
         }
         for (String iter : result) {
             reVal.append(iter).append(delimiter);
@@ -51,18 +53,24 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
     }
 
     protected String fullTail(String value, int tl) {
+
         String[] rLst = value.split(delimiter);
         int rl = rLst.length;
-        String[] resultLst = new String[tl];
 
-        for (int i = 0; i < rl; i++) {
-            resultLst[i] = rLst[i];
-        }
+        if(tl > rl){
+            String[] resultLst = new String[tl];
 
-        for (int i = 0; i < tl - rl; i++) {
-            resultLst[rl + i] = " ";
+            for (int i = 0; i < rl; i++) {
+                resultLst[i] = rLst[i];
+            }
+
+            for (int i = 0; i < tl - rl; i++) {
+                resultLst[rl + i] = " ";
+            }
+            return mkString(resultLst, delimiter);
+        }else{
+            return value;
         }
-        return mkString(resultLst, delimiter);
     }
 
     protected String expendValues(int tl, String value) {
