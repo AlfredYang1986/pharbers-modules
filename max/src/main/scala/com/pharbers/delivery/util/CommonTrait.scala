@@ -31,18 +31,18 @@ trait CommonTrait {
     }
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {
-        listDF.length match {
-            case 0 => throw new Exception("Empty List! unionDataFrameList Error!")
-            case 1 => listDF.head
-            case _ => listDF.head.union(unionDataFrameList(listDF.tail))
+        listDF match {
+            case Nil => throw new Exception("Empty DataFrameList! unionDataFrameList Error!")
+            case head::Nil => head
+            case head::tail => head.union(unionDataFrameList(tail))
         }
     }
 
     def unionRDDList[T](listRDD: List[RDD[T]]): RDD[T] = {
-        listRDD.length match {
-            case 0 => throw new Exception("Empty List! unionRDDList Error!")
-            case 1 => listRDD.head
-            case _ => listRDD.head.union(unionRDDList(listRDD.tail))
+        listRDD match {
+            case Nil => throw new Exception("Empty RDDList! unionRDDList Error!")
+            case head::Nil => head
+            case head::tail => head.union(unionRDDList(tail))
         }
     }
 
