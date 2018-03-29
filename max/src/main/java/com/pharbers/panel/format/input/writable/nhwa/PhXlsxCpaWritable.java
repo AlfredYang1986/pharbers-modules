@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
 
 public class PhXlsxCpaWritable extends PhExcelWritable {
-    private final String delimiter = String.valueOf((char)31);
-
     private static Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省", "PROVINCES");
         put("城市", "CITY");
@@ -31,10 +29,6 @@ public class PhXlsxCpaWritable extends PhExcelWritable {
         put("途径", "APP1_COD");
         put("生产企业", "CORP_NAME");
     }};
-
-    private String[] splitValues(String value) {
-        return value.split(delimiter);
-    }
 
     private String getCellKey(String[] lst, String flag) {
         if (flag.equals("YEAR")) {

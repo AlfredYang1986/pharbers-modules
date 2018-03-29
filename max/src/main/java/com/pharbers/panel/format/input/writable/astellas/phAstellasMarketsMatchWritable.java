@@ -8,16 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class phAstellasMarketsMatchWritable extends PhExcelWritable {
-    private final String delimiter = String.valueOf((char)31);
 
     private static Map<String, String> titleMap = new HashMap<String, String>() {{
         put("药品名称", "MOLE_NAME");
         put("竞品市场", "MARKET");
     }};
-
-    private String[] splitValues(String value) {
-        return value.split(delimiter);
-    }
 
     private String getCellKey(String[] lst, String flag) {
         if (flag.equals("MOLE_NAME")) {
@@ -32,14 +27,14 @@ public class phAstellasMarketsMatchWritable extends PhExcelWritable {
     private String transTitle2Eng(String value) {
         String[] lst = this.splitValues(value);
         List<String> result = new ArrayList<String>(lst.length);
-        String reVal = "";
+        StringBuffer reVal = new StringBuffer();
         for (String iter : lst) {
             result.add(titleMap.get(iter));
         }
         for (String iter : result) {
-            reVal += iter + delimiter;
+            reVal.append(iter).append(delimiter);
         }
-        return reVal;
+        return reVal.toString();
     }
 
     private String expendTitle(String value) {

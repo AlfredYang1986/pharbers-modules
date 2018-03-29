@@ -21,7 +21,9 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
         val dataMap = pr.asInstanceOf[MapArgs].get
         val cpa = dataMap("cpa").asInstanceOf[RDDArgs[phAstellasCpaWritable]].get
         val gycx = dataMap("gycx").asInstanceOf[RDDArgs[phAstellasGycxWritable]].get
-        val markets_match = dataMap("markets_match_file").asInstanceOf[RDDArgs[phAstellasMarketsMatchWritable]].get
+        val markets_match = dataMap("markets_match_file").asInstanceOf[RDDArgs[phAstellasMarketsMatchWritable]].get.map{ iter =>
+            (iter.getRowKey("MOLE_NAME"), iter.getRowKey("MARKET"))
+        }
         val product_match = dataMap("product_match_file").asInstanceOf[RDDArgs[PhXlsxCommonWritable]].get
         val universe = dataMap("universe_file").asInstanceOf[RDDArgs[PhXlsxCommonWritable]].get
 
@@ -33,41 +35,21 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
 
 
 
-        //2.商品名备注替换商品名
         val cpa1 = cpa.map{ iter =>
-            if (iter.getRowKey("PRODUCT_NAME_NOTE") != "")
-                iter.getRowKey("PRODUCT_NAME_NOTE")
-            else if(iter.getRowKey("PRODUCT_NAME") == "")
-                iter.getRowKey("MOLE_NAME")
-            else
-                iter.getRowKey("PRODUCT_NAME")
+            (iter.getRowKey("ATC_CODE"), iter.getRowKey("PRODUCT_NAME"), iter.getRowKey("PRODUCT_NAME_NOTE"), iter.getRowKey("MOLE_NAME"))
         }
-
-
-
-        val gycx1 = gycx.map{ iter =>
-            val moleName = if (iter.getRowKey("PRODUCT_NAME") == "")
-                iter.getRowKey("MOLE_NAME")
-            else
-                iter.getRowKey("PRODUCT_NAME")
-
-            (
-                moleName,
-                iter.getRowKey("MOLE_NAME")
-            )
-        }
-
-        gycx1.take(10).foreach(println)
-
+//        cpa1.take(10).foreach(println)
 
         //3. GYCX匹配市场
-//        val markets_match1 = markets_match.map{ iter =>
-//            (iter.getRowKey("MOLE_NAME"), iter.getRowKey("MARKET"))
-//        }
-//
-//        val gycx2 = gycx1.join(markets_match1)
-//
-//        gycx2.take(10).foreach(println)
+        val gycx1 = gycx.map{ iter =>
+            iter.getRowKey("MOLE_NAME") -> iter
+        }.join(markets_match).map{iter =>
+            iter._1 -> (iter._2._1, iter._2._2)
+        }
+
+
+
+        gycx1.take(10).foreach(println)
 
 
 

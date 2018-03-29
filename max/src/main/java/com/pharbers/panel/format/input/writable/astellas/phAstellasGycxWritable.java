@@ -7,7 +7,6 @@ import java.util.HashMap;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
 
 public class phAstellasGycxWritable extends PhExcelWritable {
-    private final String delimiter = String.valueOf((char)31);
 
     private static Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省份", "PROVINCES");
@@ -27,10 +26,6 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         put("途径", "APP1_COD");
         put("企业名称", "CORP_NAME");
     }};
-
-    private String[] splitValues(String value) {
-        return value.split(delimiter);
-    }
 
     private String getCellKey(String[] lst, String flag) {
         if (flag.equals("PROVINCES")) {
@@ -73,6 +68,67 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         // throw new Exception("not implements");
     }
 
+    private String[] setCellKey(String[] lst, String flag, String value) {
+        if (flag.equals("PROVINCES")) {
+            lst[0] = value;
+            return lst;
+        } else if (flag.equals("CITY")) {
+            lst[1] = value;
+            return lst;
+        } else if (flag.equals("YM")) {
+            lst[2] = value;
+            return lst;
+        } else if (flag.equals("HOSPITAL_CODE")) {
+            lst[3] = value;
+            return lst;
+        } else if (flag.equals("HOSPITAL_NAME")) {
+            lst[4] = value;
+            return lst;
+        } else if (flag.equals("ATC_CODE")) {
+            lst[5] = value;
+            return lst;
+        } else if (flag.equals("MOLE_NAME")) {
+            lst[6] = value;
+            return lst;
+        }else if (flag.equals("PRODUCT_NAME")) {
+            lst[7] = value;
+            return lst;
+        }else if (flag.equals("PACKAGE")) {
+            lst[8] = value;
+            return lst;
+        }else if (flag.equals("PACK_NUMBER")) {
+            lst[9] = value;
+            return lst;
+        }else if (flag.equals("PACK_DES")) {
+            lst[10] = value;
+            return lst;
+        }else if (flag.equals("VALUE")) {
+            lst[11] = value;
+            return lst;
+        }else if (flag.equals("STANDARD_UNIT")) {
+            lst[12] = value;
+            return lst;
+        }else if (flag.equals("APP2_COD")) {
+            lst[13] = value;
+            return lst;
+        }else if (flag.equals("APP1_COD")) {
+            lst[14] = value;
+            return lst;
+        }else if (flag.equals("CORP_NAME")) {
+            lst[15] = value;
+            return lst;
+        }else if (flag.equals("min1")) {
+            lst[16] = value;
+            return lst;
+        }else{
+            return lst;
+        }
+    }
+
+    private String expendTitle(String value) {
+        return value + delimiter + "min1";
+    }
+
     private String getMin1InRow(String value) {
         String[] lst = splitValues(value);
         return getCellKey(lst, "PRODUCT_NAME") +
@@ -82,36 +138,25 @@ public class phAstellasGycxWritable extends PhExcelWritable {
                getCellKey(lst, "CORP_NAME");
     }
 
-    private String transTitle2Eng(String value) {
-        String[] lst = this.splitValues(value);
-        List<String> result = new ArrayList<String>(lst.length);
-        String reVal = "";
-        for (String iter : lst) {
-            result.add(titleMap.get(iter));
-        }
-        for (String iter : result) {
-            reVal += iter + delimiter;
-        }
-        return reVal;
-    }
+    private String prePanelFunction(String value) {
+        String[] lst = splitValues(value);
+        String min1 = getMin1InRow(value);
 
-    private String expendTitle(String value) {
-        return value + "min1";
+        if ("".equals(getCellKey(lst, "PRODUCT_NAME")))
+            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
+
+        return mkString(lst, delimiter) + delimiter + min1;
     }
 
     private String expendValues(String value) {
-        int l = titleMap.size() - value.split(delimiter).length;
-        String added = "";
-        for(int i = 0; i < l ; i++){
-            added = added + delimiter;
-        }
-        return value + added + delimiter + getMin1InRow(value);
+        String fullString = fullTail(value, titleMap.size());
+        return prePanelFunction(fullString);
     }
 
     @Override
     public String richWithInputRow(int index, String value) {
         if (index == 1) {
-            return expendTitle(transTitle2Eng(value));
+            return expendTitle(transTitle2Eng(titleMap, value));
         } else return expendValues(value);
     }
 
