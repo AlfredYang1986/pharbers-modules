@@ -1,16 +1,86 @@
 package com.pharbers.panel.format.input.writable.common;
 
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
 
 public class PhXlsxCommonWritable extends PhExcelWritable {
+    protected static Map<String, String> titleMap;
 
     @Override
     public String richWithInputRow(int index, String value) {
-        return value;
+        if (index == 1) {
+            return expendTitle(transTitle2Eng(titleMap, value));
+        } else return expendValues(titleMap.size(), value);
     }
 
     @Override
     public String getRowKey(String flag) {
-        return this.getValues();
+        return getCellKey(splitValues(getValues()), flag);
     }
+
+
+    protected String mkString(String[] lst, String seq) {
+        StringBuilder temp = new StringBuilder();
+        for (String i : lst) {
+            temp.append(i).append(seq);
+        }
+        return temp.deleteCharAt(temp.length() - 1).toString();
+    }
+
+    protected String[] splitValues(String value) {
+        return value.split(delimiter);
+    }
+
+    protected String transTitle2Eng(Map<String, String> titleMap, String value) {
+        String[] lst = this.splitValues(value);
+        List<String> result = new ArrayList<>(lst.length);
+        StringBuilder reVal = new StringBuilder();
+        for (String iter : lst) {
+            result.add(titleMap.get(iter));
+        }
+        for (String iter : result) {
+            reVal.append(iter).append(delimiter);
+        }
+        return reVal.deleteCharAt(reVal.length() - 1).toString();
+    }
+
+    protected String expendTitle(String value) {
+        return value;
+    }
+
+    protected String fullTail(String value, int tl) {
+        String[] rLst = value.split(delimiter);
+        int rl = rLst.length;
+        String[] resultLst = new String[tl];
+
+        for (int i = 0; i < rl; i++) {
+            resultLst[i] = rLst[i];
+        }
+
+        for (int i = 0; i < tl - rl; i++) {
+            resultLst[rl + i] = " ";
+        }
+        return mkString(resultLst, delimiter);
+    }
+
+    protected String expendValues(int tl, String value) {
+        String fullString = fullTail(value, tl);
+        return prePanelFunction(fullString);
+    }
+
+    protected String getCellKey(String[] lst, String flag) {
+        return "not implements";
+    }
+
+    protected String[] setCellKey(String[] lst, String flag, String value) {
+        return lst;
+    }
+
+    protected String prePanelFunction(String value) {
+        String[] lst = splitValues(value);
+        return mkString(lst, delimiter);
+    }
+
 }

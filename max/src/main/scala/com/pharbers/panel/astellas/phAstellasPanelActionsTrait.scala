@@ -1,7 +1,7 @@
 package com.pharbers.panel.astellas
 
+import com.pharbers.panel.astellas.format._
 import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.panel.astellas.format.{phAstellasCpaFormat, phAstellasGycxFormat, phAstellasMarketsMatchFormat}
 import com.pharbers.paction.actionContainer.pMapActionContainer
 import com.pharbers.paction.format.input.common.PhExcelXLSXCommonFormat
 import com.pharbers.paction.funcTrait.{jarPreloadTrait, xlsxReadingTrait}
@@ -24,7 +24,7 @@ trait phAstellasPanelActionsTrait extends pMapActionContainer {
     val cmd2 = xlsxReadingTrait[phAstellasGycxFormat](gycx_file, "gycx")
 
     //3. read 产品匹配表.xlsx
-    val cmd3 = xlsxReadingTrait[PhExcelXLSXCommonFormat](product_match_file, "product_match_file")
+    val cmd3 = xlsxReadingTrait[phAstellasProductMatchFormat](product_match_file, "product_match_file")
 
     //4. read 市场匹配表.xlsx
     val cmd4 = xlsxReadingTrait[phAstellasMarketsMatchFormat](markets_match_file, "markets_match_file")

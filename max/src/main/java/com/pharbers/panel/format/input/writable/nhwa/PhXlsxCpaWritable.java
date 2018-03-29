@@ -1,13 +1,12 @@
 package com.pharbers.panel.format.input.writable.nhwa;
 
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
-import java.util.ArrayList;
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
-public class PhXlsxCpaWritable extends PhExcelWritable {
-    private static Map<String, String> titleMap = new HashMap<String, String>() {{
+public class PhXlsxCpaWritable extends PhXlsxCommonWritable {
+
+    private Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省", "PROVINCES");
         put("城市", "CITY");
         put("年", "YEAR");
@@ -30,7 +29,8 @@ public class PhXlsxCpaWritable extends PhExcelWritable {
         put("生产企业", "CORP_NAME");
     }};
 
-    private String getCellKey(String[] lst, String flag) {
+    @Override
+    protected String getCellKey(String[] lst, String flag) {
         if (flag.equals("YEAR")) {
             return lst[2];
         } else if (flag.equals("PRODUCT_NAME")) {
@@ -56,52 +56,25 @@ public class PhXlsxCpaWritable extends PhExcelWritable {
         // throw new Exception("not implements");
     }
 
-    private String getMin1InRow(String value) {
-        String[] lst = splitValues(value);
-        return getCellKey(lst, "PRODUCT_NAME") +
-               getCellKey(lst, "APP2_COD") +
-               getCellKey(lst, "PACK_DES") +
-               getCellKey(lst, "PACK_NUMBER") +
-               getCellKey(lst, "CORP_NAME");
-    }
-
-    private String getYearMonth(String value) {
-        String[] lst = splitValues(value);
-        return getCellKey(lst, "YEAR") +
-               getCellKey(lst, "MONTH");
-    }
-
-
-    private String transTitle2Eng(String value) {
-        String[] lst = this.splitValues(value);
-        List<String> result = new ArrayList<String>(lst.length);
-        String reVal = "";
-        for (String iter : lst) {
-            result.add(titleMap.get(iter));
-        }
-        for (String iter : result) {
-            reVal += iter + delimiter;
-        }
-        return reVal;
-    }
-
-    private String expendTitle(String value) {
+    @Override
+    protected String expendTitle(String value) {
         return value + "min1" + delimiter + "YM";
     }
 
-    private String expendValues(String value) {
-        return value + delimiter + getMin1InRow(value) + delimiter + getYearMonth(value);
+    @Override
+    protected String prePanelFunction(String value) {
+        String[] lst = splitValues(value);
+        String ym = getCellKey(lst, "YEAR") +
+                getCellKey(lst, "MONTH");
+        String min1 = getCellKey(lst, "PRODUCT_NAME") +
+                getCellKey(lst, "APP2_COD") +
+                getCellKey(lst, "PACK_DES") +
+                getCellKey(lst, "PACK_NUMBER") +
+                getCellKey(lst, "CORP_NAME");
+
+
+
+        return mkString(lst, delimiter) + delimiter + min1 + delimiter + ym;
     }
 
-    @Override
-    public String richWithInputRow(int index, String value) {
-        if (index == 1) {
-            return expendTitle(transTitle2Eng(value));
-        } else return expendValues(value);
-    }
-
-    @Override
-    public String getRowKey(String flag) {
-        return getCellKey(splitValues(getValues()), flag);
-    }
 }

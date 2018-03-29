@@ -1,33 +1,32 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
-public class phAstellasGycxWritable extends PhExcelWritable {
+public class phAstellasGycxWritable extends PhXlsxCommonWritable {
+    static {
+        titleMap = new HashMap<String, String>() {{
+            put("省份", "PROVINCES");
+            put("城市", "CITY");
+            put("年月", "YM");
+            put("医院", "HOSPITAL_CODE");
+            put("医院名称", "HOSPITAL_NAME");
+            put("ATC编码", "ATC_CODE");
+            put("药品名称", "MOLE_NAME");
+            put("商品名", "PRODUCT_NAME");
+            put("包装", "PACKAGE");
+            put("包装数量", "PACK_NUMBER");
+            put("规格", "PACK_DES");
+            put("金额(元)", "VALUE");
+            put("数量(支/片)", "STANDARD_UNIT");
+            put("剂型", "APP2_COD");
+            put("途径", "APP1_COD");
+            put("企业名称", "CORP_NAME");
+        }};
+    }
 
-    private static Map<String, String> titleMap = new HashMap<String, String>() {{
-        put("省份", "PROVINCES");
-        put("城市", "CITY");
-        put("年月", "YM");
-        put("医院", "HOSPITAL_CODE");
-        put("医院名称", "HOSPITAL_NAME");
-        put("ATC编码", "ATC_CODE");
-        put("药品名称", "MOLE_NAME");
-        put("商品名", "PRODUCT_NAME");
-        put("包装", "PACKAGE");
-        put("包装数量", "PACK_NUMBER");
-        put("规格", "PACK_DES");
-        put("金额(元)", "VALUE");
-        put("数量(支/片)", "STANDARD_UNIT");
-        put("剂型", "APP2_COD");
-        put("途径", "APP1_COD");
-        put("企业名称", "CORP_NAME");
-    }};
-
-    private String getCellKey(String[] lst, String flag) {
+    @Override
+    protected String getCellKey(String[] lst, String flag) {
         if (flag.equals("PROVINCES")) {
             return lst[0];
         } else if (flag.equals("CITY")) {
@@ -68,7 +67,8 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         // throw new Exception("not implements");
     }
 
-    private String[] setCellKey(String[] lst, String flag, String value) {
+    @Override
+    protected String[] setCellKey(String[] lst, String flag, String value) {
         if (flag.equals("PROVINCES")) {
             lst[0] = value;
             return lst;
@@ -125,22 +125,19 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         }
     }
 
-    private String expendTitle(String value) {
+    @Override
+    protected String expendTitle(String value) {
         return value + delimiter + "min1";
     }
 
-    private String getMin1InRow(String value) {
+    @Override
+    protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
-        return getCellKey(lst, "PRODUCT_NAME") +
-               getCellKey(lst, "APP2_COD") +
-               getCellKey(lst, "PACK_DES") +
-               getCellKey(lst, "PACK_NUMBER") +
-               getCellKey(lst, "CORP_NAME");
-    }
-
-    private String prePanelFunction(String value) {
-        String[] lst = splitValues(value);
-        String min1 = getMin1InRow(value);
+        String min1 = getCellKey(lst, "PRODUCT_NAME") +
+                getCellKey(lst, "APP2_COD") +
+                getCellKey(lst, "PACK_DES") +
+                getCellKey(lst, "PACK_NUMBER") +
+                getCellKey(lst, "CORP_NAME");
 
         if ("".equals(getCellKey(lst, "PRODUCT_NAME")))
             lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
@@ -148,20 +145,4 @@ public class phAstellasGycxWritable extends PhExcelWritable {
         return mkString(lst, delimiter) + delimiter + min1;
     }
 
-    private String expendValues(String value) {
-        String fullString = fullTail(value, titleMap.size());
-        return prePanelFunction(fullString);
-    }
-
-    @Override
-    public String richWithInputRow(int index, String value) {
-        if (index == 1) {
-            return expendTitle(transTitle2Eng(titleMap, value));
-        } else return expendValues(value);
-    }
-
-    @Override
-    public String getRowKey(String flag) {
-        return getCellKey(splitValues(getValues()), flag);
-    }
 }

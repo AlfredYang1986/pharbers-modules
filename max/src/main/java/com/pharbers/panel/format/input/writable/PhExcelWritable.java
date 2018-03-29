@@ -3,10 +3,6 @@ package com.pharbers.panel.format.input.writable;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 import com.pharbers.panel.format.input.writable.writableStrategy.PhPanelStrategy;
@@ -65,48 +61,5 @@ public abstract class PhExcelWritable implements WritableComparable<PhExcelWrita
 
     static { // register this comparator
         WritableComparator.define(PhExcelWritable.class, new Comparator());
-    }
-
-
-
-
-    protected String mkString(String[] lst, String seq) {
-        StringBuffer temp = new StringBuffer();
-        for (String i : lst) {
-            temp.append(i).append(seq);
-        }
-        return temp.deleteCharAt(temp.length() - 1).toString();
-    }
-
-    protected String[] splitValues(String value) {
-        return value.split(delimiter);
-    }
-
-    protected String transTitle2Eng(Map<String, String> titleMap, String value) {
-        String[] lst = this.splitValues(value);
-        List<String> result = new ArrayList<String>(lst.length);
-        StringBuffer reVal = new StringBuffer();
-        for (String iter : lst) {
-            result.add(titleMap.get(iter));
-        }
-        for (String iter : result) {
-            reVal.append(iter).append(delimiter);
-        }
-        return reVal.deleteCharAt(reVal.length() - 1).toString();
-    }
-
-    protected String fullTail(String value, int tl) {
-        String[] rLst = value.split(delimiter);
-        int rl = rLst.length;
-        String[] resultLst = new String[tl];
-
-        for (int i = 0; i < rl; i++) {
-            resultLst[i] = rLst[i];
-        }
-
-        for (int i = 0; i < tl - rl; i++) {
-            resultLst[rl + i] = " ";
-        }
-        return mkString(resultLst, delimiter);
     }
 }
