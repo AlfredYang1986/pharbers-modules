@@ -90,7 +90,8 @@ public abstract class PhExcelXLSXInterface {
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
                 return value.getStringCellValue();
             } else if (value.getCellType() == Cell.CELL_TYPE_BLANK
-                    || value.getCellType() == Cell.CELL_TYPE_FORMULA) {
+                    || value.getCellType() == Cell.CELL_TYPE_FORMULA
+                    || value.getCellType() == Cell.CELL_TYPE_ERROR) {
                 return "";
             } else {
                 throw new Exception("not implement : " + value.getCellType());

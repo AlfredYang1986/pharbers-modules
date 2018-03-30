@@ -2,7 +2,7 @@ package com.pharbers.paction.actionbase
 
 import org.apache.spark.rdd.RDD
 
-trait pActionArgs {
+trait pActionArgs extends java.io.Serializable {
     type t
     def get : t
 }

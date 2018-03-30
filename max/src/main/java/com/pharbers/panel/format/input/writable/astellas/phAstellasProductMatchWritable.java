@@ -135,7 +135,7 @@ public class phAstellasProductMatchWritable extends PhXlsxCommonWritable {
         if("抗人胸腺细胞兔免疫球蛋白".equals(getCellKey(lst, "STANDARD_MOLE_NAME")))
             lst = setCellKey(lst, "STANDARD_MOLE_NAME", "抗人胸腺细胞免疫球蛋白");
         if("米芙".equals(getCellKey(lst, "STANDARD_PRODUCT_NAME")))
-            lst = setCellKey(lst, "STANDARD_PRODUCT_NAME", "麦考芬酸钠");
+            lst = setCellKey(lst, "STANDARD_MOLE_NAME", "麦考芬酸钠");
         if("哈乐".equals(getCellKey(lst, "STANDARD_PRODUCT_NAME")) &&
                 "片剂".equals(getCellKey(lst, "STANDARD_APP2_COD")) &&
                     "14".equals(getCellKey(lst, "PACK_NUMBER2")))

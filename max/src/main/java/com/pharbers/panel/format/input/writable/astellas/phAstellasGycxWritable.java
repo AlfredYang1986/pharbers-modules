@@ -135,6 +135,9 @@ public class phAstellasGycxWritable extends PhXlsxCommonWritable {
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
 
+        if ("新疆维吾尔自治区".equals(getCellKey(lst, "PROVINCES")))
+            lst = setCellKey(lst, "PROVINCES", "新疆维吾尔族自治区");
+
         if ("".equals(getCellKey(lst, "PRODUCT_NAME")))
             lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
 

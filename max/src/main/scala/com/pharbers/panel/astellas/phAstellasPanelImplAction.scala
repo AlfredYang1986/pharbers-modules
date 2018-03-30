@@ -7,7 +7,11 @@ import com.pharbers.panel.format.input.writable.astellas._
   * Created by spark on 18-3-27.
   */
 object phAstellasPanelImplAction  {
-    def apply(company: String, ym: List[String], mkt: String) : pActionTrait = new phAstellasPanelImplAction(company, ym, mkt)
+    def apply(company: String, ym: List[String], mkt: String) : pActionTrait = {
+        val tmp = new phAstellasPanelImplAction(company, ym, mkt)
+        tmp.name = "panelResult"
+        tmp
+    }
 }
 
 class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) extends pActionTrait {
@@ -24,13 +28,24 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
         val markets_match = dataMap("markets_match_file").asInstanceOf[RDDArgs[phAstellasMarketsMatchWritable]].get
         val product_match = dataMap("product_match_file").asInstanceOf[RDDArgs[phAstellasProductMatchWritable]].get
         val universe = dataMap("universe_file").asInstanceOf[RDDArgs[phAstellasUniverseWritable]].get
+        val hospital = dataMap("hospital_file").asInstanceOf[RDDArgs[phAstellasHospitalWritable]].get
 
+        val hospital_cpa = hospital.filter(_.getRowKey("CPA_DIS") == " ")
+                .filter(x => x.getRowKey("CPA_CODE") != "" && x.getRowKey("GYC_CODE") != " ")
+                .map{ iter => iter.getRowKey("CPA_DODE") -> iter }
+        val hospital_gycx = hospital.filter(_.getRowKey("GYC_DIS") == " ")
+                .filter(x => x.getRowKey("GYC_CODE") != "" && x.getRowKey("GYC_CODE") != " ")
+                .map{ iter => iter.getRowKey("GYC_DODE") -> iter }
 
-        val cpa1 =
-            cpa.filter(_.getRowKey("YM") == "201710")
-                    .map { iter =>
-                        iter.getRowKey("min1") -> iter
-                    } // cpa.min1 -> cpaRDD
+        val c = cpa.map{ iter =>
+            iter.getRowKey("HOSPITAL_CODE") -> iter
+        }.leftOuterJoin(hospital_cpa).map{ iter =>
+            iter
+        }
+
+        val g = gycx.map{ iter =>
+            iter.getRowKey("HOSPITAL_CODE") -> iter
+        }
 
 
         //3. GYCX匹配市场
@@ -39,13 +54,24 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
                 (iter.getRowKey("MOLE_NAME"), iter.getRowKey("MARKET"))
             } // mkt.MOLE_NAME -> mkt.MARKET
 
+
+        val cpa1 =
+            cpa.filter(_.getRowKey("YM") == "201710")
+                    .filter(_.getRowKey("MARKET") == "阿洛刻市场")
+                    .map { iter =>
+                        iter.getRowKey("min1") -> iter
+                    } // cpa.min1 -> cpaRDD
+
         val gycx1 =
             gycx.filter(_.getRowKey("YM") == "201710")
                     .map { iter =>
                         iter.getRowKey("MOLE_NAME") -> iter
-                    }.join(markets_match1).map { iter =>
-                iter._2._1.getRowKey("min1") -> (iter._2._1, iter._2._2)
-            } // gycx.min1 -> (gycxRDD, gycx.market)
+                    }.join(markets_match1)
+                    .filter(_._2._1 == "阿洛刻市场")
+                    .map { iter =>
+                        iter._2._1.getRowKey("min1") -> (iter._2._1, iter._2._2)
+                    } // gycx.min1 -> (gycxRDD, gycx.market)
+
 
 
         //4. min1匹配  5. 修改市场
@@ -61,7 +87,7 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
                 val market = if (iter._2._2.getRowKey("STANDARD_MOLE_NAME") == "他克莫司" && iter._2._2.getRowKey("STANDARD_APP2_COD") == "软膏剂")
                     "普特彼市场"
                 else if (iter._2._2.getRowKey("STANDARD_MOLE_NAME") == "他克莫司" && iter._2._2.getRowKey("STANDARD_APP2_COD") != "软膏剂")
-                    "普特可复市场"
+                    "普乐可复市场"
                 else
                     iter._2._1.getRowKey("MARKET")
 
@@ -75,7 +101,7 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
             val market = if (iter._2._2.getRowKey("STANDARD_MOLE_NAME") == "他克莫司" && iter._2._2.getRowKey("STANDARD_APP2_COD") == "软膏剂")
                 "普特彼市场"
             else if (iter._2._2.getRowKey("STANDARD_MOLE_NAME") == "他克莫司" && iter._2._2.getRowKey("STANDARD_APP2_COD") != "软膏剂")
-                "普特可复市场"
+                "普乐可复市场"
             else
                 iter._2._1._2
 
@@ -150,15 +176,12 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
             (cpa4 union gycx4).leftOuterJoin(univers1).map { iter =>
                 (iter._1, iter._2._1._1, iter._2._1._2, iter._2._1._3, iter._2._2.getOrElse(""), iter._2._1._4, iter._2._1._5)
             }.filter(_._5 != "")
+                    .map { iter =>
+                        iter._1 + delimiter + iter._2 + delimiter + iter._3 + delimiter +
+                                iter._4 + delimiter + iter._5 + delimiter + iter._6 + delimiter + iter._7
+                    }
 
-
-        println("ddddddd")
-        panel.take(10).foreach(println)
-        println("count = " + panel.count())
-        println("ddddddd")
-
-
-        NULLArgs
+        RDDArgs(panel)
     }
 
 

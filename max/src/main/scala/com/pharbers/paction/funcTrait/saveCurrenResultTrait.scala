@@ -1,8 +1,7 @@
 package com.pharbers.paction.funcTrait
 
-import com.pharbers.paction.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
-
 import scala.reflect.ClassTag
+import com.pharbers.paction.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
 
 object saveCurrenResultTrait {
     def apply[T : ClassTag](path : String) : pActionTrait = new saveCurrenResultTrait[T](StringArgs(path))
