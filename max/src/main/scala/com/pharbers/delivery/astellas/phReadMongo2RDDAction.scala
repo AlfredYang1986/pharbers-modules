@@ -3,16 +3,23 @@ package com.pharbers.delivery.astellas
 import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
 import com.pharbers.paction.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.driver.phSparkDriver
+import org.bson.Document
 
 /**
   * Created by jeorch on 18-3-28.
   */
-object phDeliveryReadMongoAction {
+object phReadMongo2RDDAction {
     def apply(company: String, dbName: String, lstColl: List[String]): pActionTrait =
-        new phDeliveryReadMongoAction(company, dbName, lstColl)
+        new phReadMongo2RDDAction(company, dbName, lstColl)
+
+    def apply(company: String, dbName: String, lstColl: List[String], nickname: String): pActionTrait = {
+        val temp = new phReadMongo2RDDAction(company, dbName, lstColl)
+        temp.name = nickname
+        temp
+    }
 }
 
-class phDeliveryReadMongoAction(company: String, dbName: String, lstColl: List[String]) extends pActionTrait with CommonTrait {
+class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String]) extends pActionTrait with CommonTrait {
 
     override val defaultArgs: pActionArgs = NULLArgs
 
@@ -20,7 +27,7 @@ class phDeliveryReadMongoAction(company: String, dbName: String, lstColl: List[S
 
     override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
         val spark = phSparkDriver()
-        val lstRdd = lstColl.map(tempColl => spark.mongo2RDD(mongo_config_obj.mongoHost, mongo_config_obj.mongoPort, dbName, tempColl).rdd)
+        val lstRdd = lstColl.map(tempColl => spark.mongo2RDD(mongo_config_obj.mongoHost, mongo_config_obj.mongoPort, dbName, tempColl))
         RDDArgs(unionRDDList(lstRdd))
     }
 
