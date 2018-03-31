@@ -122,28 +122,28 @@ public class phAstellasHospitalWritable extends PhXlsxCommonWritable {
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
 
-        if(!"".equals(getCellKey(lst, "ACN_CODE")))
+        if(!"".equals(getCellKey(lst, "ACN_CODE")) && !" ".equals(getCellKey(lst, "ACN_CODE")))
             lst = setCellKey(lst, "STANDARD_CODE", getCellKey(lst, "ACN_CODE"));
         else{
-            if(!"".equals(getCellKey(lst, "CPA_CODE")))
+            if(!"".equals(getCellKey(lst, "CPA_CODE")) && !" ".equals(getCellKey(lst, "CPA_CODE")))
                 lst = setCellKey(lst, "STANDARD_CODE", getCellKey(lst, "CPA_CODE"));
             else
                 lst = setCellKey(lst, "STANDARD_CODE", getCellKey(lst, "GYC_CODE"));
         }
 
-        if(!"".equals(getCellKey(lst, "ACN_HOSP_NAME")))
+        if(!"".equals(getCellKey(lst, "ACN_HOSP_NAME")) && !" ".equals(getCellKey(lst, "ACN_HOSP_NAME")))
             lst = setCellKey(lst, "STANDARD_HOSP_NAME", getCellKey(lst, "ACN_HOSP_NAME"));
         else{
-            if(!"".equals(getCellKey(lst, "CPA_HOSP_NAME")))
+            if(!"".equals(getCellKey(lst, "CPA_HOSP_NAME")) && !" ".equals(getCellKey(lst, "CPA_HOSP_NAME")))
                 lst = setCellKey(lst, "STANDARD_HOSP_NAME", getCellKey(lst, "CPA_HOSP_NAME"));
             else
                 lst = setCellKey(lst, "STANDARD_HOSP_NAME", getCellKey(lst, "GYC_HOSP_NAME"));
         }
 
-        if(!"".equals(getCellKey(lst, "ACN_HOSP_LEVEL")))
+        if(!"".equals(getCellKey(lst, "ACN_HOSP_LEVEL")) && !" ".equals(getCellKey(lst, "ACN_HOSP_LEVEL")))
             lst = setCellKey(lst, "STANDARD_HOSP_LEVEL", getCellKey(lst, "ACN_HOSP_LEVEL"));
         else{
-            if(!"".equals(getCellKey(lst, "CPA_HOSP_LEVEL")))
+            if(!"".equals(getCellKey(lst, "CPA_HOSP_LEVEL")) && !" ".equals(getCellKey(lst, "CPA_HOSP_LEVEL")))
                 lst = setCellKey(lst, "STANDARD_HOSP_LEVEL", getCellKey(lst, "CPA_HOSP_LEVEL"));
             else
                 lst = setCellKey(lst, "STANDARD_HOSP_LEVEL", getCellKey(lst, "GYC_HOSP_LEVEL"));

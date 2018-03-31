@@ -25,7 +25,6 @@ trait phAstellasPanelActionsTrait extends pMapActionContainer {
             xlsxReadingTrait[phAstellasMarketsMatchFormat](markets_match_file, "markets_match_file") ::
             xlsxReadingTrait[phAstellasUniverseFormat](universe_file, "universe_file") ::
             xlsxReadingTrait[phAstellasHospitalFormat](hospital_file, "hospital_file") ::
-            saveMapResultTrait("hospital_file", panel_file + "a") ::
             phAstellasPanelImplAction(company, ym, mkt) ::
             saveMapResultTrait("panelResult", panel_file) ::
             Nil
