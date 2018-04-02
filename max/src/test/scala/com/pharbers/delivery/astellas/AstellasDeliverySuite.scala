@@ -14,7 +14,7 @@
 //    val coll1 = "235f39e3da85c2dee2a2b20d004a8b77_Allelock_1712"
 //    val mkt1 = "阿洛刻市场"
 //    val coll_with_mkt1 = s"${coll1}##${mkt1}"
-//    val destPath = s"/mnt/config/FileBase/${company_name}/Delivery"
+//    val destPath = s"/mnt/config/FileBase/${company_name}/HistoryDeliveryFiles/Max_14-"
 //
 //    val args: Map[String, List[String]] = Map(
 //        "company" -> List(company_name),

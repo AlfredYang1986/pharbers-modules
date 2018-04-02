@@ -14,4 +14,5 @@ case class phAstellasDeliveryActions(args: Map[String, List[String]]) extends ph
     override lazy val destPath: String = args.getOrElse("destPath", throw new Exception("no find destPath arg")).head
     override lazy val hospitalMatchFile: String = deliveryConfig.hospitalMatchFile
     override lazy val medicineMatchFile: String = deliveryConfig.medicineMatchFile
+    override lazy val historyFile: String = deliveryConfig.historyFile
 }

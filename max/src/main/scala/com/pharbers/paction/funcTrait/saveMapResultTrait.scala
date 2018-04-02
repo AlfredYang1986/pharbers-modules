@@ -18,19 +18,36 @@ class saveMapResultTrait(key: String, path: String) extends pActionTrait {
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}
 
     override def perform(prMap: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
-        val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
-            case Some(r) => r.asInstanceOf[RDDArgs[PhExcelWritable]].get
-            case None => ???
+
+        key match {
+            case "panelResult" => {
+                val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
+                    case Some(r) => r.asInstanceOf[RDDArgs[PhExcelWritable]].get
+                    case None => ???
+                }
+                rdd.coalesce(1).saveAsTextFile(path)
+                val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
+                    case None => throw new Exception("not single file")
+                    case Some(file) => file
+                }
+                new File(tempFile).renameTo(new File(path + ".csv"))
+            }
+            case "deliveryResult" => {
+                val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
+                    case Some(r) => r.asInstanceOf[RDDArgs[String]].get
+                    case None => ???
+                }
+                val yearMonth = rdd.take(2)(1).split(9.toChar.toString)(2)
+                rdd.coalesce(1).saveAsTextFile(path)
+                val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
+                    case None => throw new Exception("not single file")
+                    case Some(file) => file
+                }
+                new File(tempFile).renameTo(new File(path + yearMonth + ".txt"))
+            }
+            case _ => throw new Exception("no key match!")
         }
 
-        rdd.repartition(1).saveAsTextFile(path)
-
-        val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
-            case None => throw new Exception("not single file")
-            case Some(file) => file
-        }
-
-        new File(tempFile).renameTo(new File(path + ".csv"))
         delFile(path)
 
         prMap

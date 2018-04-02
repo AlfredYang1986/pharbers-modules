@@ -15,7 +15,6 @@ trait CommonTrait {
     lazy val driver =  phSparkDriver()
 
     def getResultFileFullPath(arg: String) : String = {
-
         val folder = new File(arg)
         val listFile = folder.listFiles().filter(x => x.getName.endsWith(".csv"))
         listFile.length match {
@@ -27,7 +26,7 @@ trait CommonTrait {
     def move2ExportFolder(originPath: String, destPath: String) = {
         val originFile = new File(originPath)
         val destFile = new File(destPath)
-        FileUtils.copyFile(originFile, destFile)
+        FileUtils.write(destFile, FileUtils.readFileToString(originFile), "GB2312")
     }
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {
