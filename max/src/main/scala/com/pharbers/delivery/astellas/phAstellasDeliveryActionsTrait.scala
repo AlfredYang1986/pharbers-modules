@@ -24,6 +24,6 @@ trait phAstellasDeliveryActionsTrait extends pMapActionContainer {
         phReadAstellasHistoryDataAction(historyFile, "history_rdd_key") ::
         phReadMongo2RDDAction(company, dbName, lstColl, "mongo_rdd_key") ::
         readMedicineMatchAction :: readHospitalMatchAction ::
-        phAstellasDeliveryAction() :: /*saveMapResultTrait("deliveryResult", destPath) ::*/
+        phAstellasDeliveryAction() :: saveMapResultTrait("deliveryResult", destPath) ::
         Nil
 }

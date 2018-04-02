@@ -25,7 +25,7 @@ class saveMapResultTrait(key: String, path: String) extends pActionTrait {
                     case Some(r) => r.asInstanceOf[RDDArgs[PhExcelWritable]].get
                     case None => ???
                 }
-                rdd.repartition(1).saveAsTextFile(path)
+                rdd.coalesce(1).saveAsTextFile(path)
                 val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
                     case None => throw new Exception("not single file")
                     case Some(file) => file
@@ -38,7 +38,7 @@ class saveMapResultTrait(key: String, path: String) extends pActionTrait {
                     case None => ???
                 }
                 val yearMonth = rdd.take(2)(1).split(9.toChar.toString)(2)
-                rdd.repartition(1).saveAsTextFile(path)
+                rdd.coalesce(1).saveAsTextFile(path)
                 val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
                     case None => throw new Exception("not single file")
                     case Some(file) => file

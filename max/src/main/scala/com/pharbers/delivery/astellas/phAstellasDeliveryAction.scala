@@ -32,43 +32,31 @@ class phAstellasDeliveryAction extends pActionTrait {
         val medicine_match = dataMap("medicine_match_key").asInstanceOf[RDDArgs[phAstellasMedicineMatchWritable]].get
 
         /**
-          * PreStep. If max_result[MongoRDD] has [Province] field, then this step is unnecessary！
+          * PreStep. Match max results with hospital_match_file, filling provinces and cities.
+          * Attention! Even if the max result contains a province field, use a province field that matches to the hospital_match_file.
+          * Otherwise, there will be an error in the data.
           */
-        val max_result_with_province = if (mongo_rdd.first().containsKey("Province")){
-            println("***************mongodb has Province field")
-            mongo_rdd.map(doc =>
-                (
-                    doc.get("Province").toString,
-                    doc.get("City").toString,
-                    doc.get("Date").toString,
-                    doc.get("Product").toString,
-                    doc.get("f_sales").asInstanceOf[Double],
-                    doc.get("f_units").asInstanceOf[Double],
-                    doc.get("Market").toString
-                )
+
+        val mongoRDDTuple1 = mongo_rdd.map( row => row.get("Panel_ID").toString -> row)
+        val hospitalRDDTuple = hospital_match.map(x => x.getRowKey("PHA_ID") -> x)
+        val joinedHospitalRDD = mongoRDDTuple1.leftOuterJoin(hospitalRDDTuple)
+        val max_result_with_province = joinedHospitalRDD.map(item =>
+            (
+                item._2._2.get.getRowKey("Province"),
+                item._2._2.get.getRowKey("City"),
+                item._2._1.get("Date").toString,
+                item._2._1.get("Product").toString,
+                item._2._1.get("f_sales").asInstanceOf[Double],
+                item._2._1.get("f_units").asInstanceOf[Double],
+                item._2._1.get("Market").toString
             )
-        } else {
-            println("***************mongodb has no Province field!")
-            val mongoRDDTuple1 = mongo_rdd.map( row => row.get("Panel_ID").toString -> row)
-            val hospitalRDDTuple = hospital_match.map(x => x.getRowKey("PHA_ID") -> x)
-            val joinedHospitalRDD = mongoRDDTuple1.leftOuterJoin(hospitalRDDTuple)
-            joinedHospitalRDD.map( item =>
-                (
-                    item._2._2.get.getRowKey("Province"),
-                    item._2._1.get("City").toString,
-                    item._2._1.get("Date").toString,
-                    item._2._1.get("Product").toString,
-                    item._2._1.get("f_sales").asInstanceOf[Double],
-                    item._2._1.get("f_units").asInstanceOf[Double],
-                    item._2._1.get("Market").toString
-                )
-            )
-        }
+        )
 
         /**
           * Step 1. Modify medicine_match_rdd in phAstellasMedicineMatchWritable.
           * Step 2. Filter the medicine_match_rdd && distinct
           */
+
         val medicine_filtered = medicine_match.filter(row =>
             !(!List("可多华", "保列治", "高特灵", "贝可", "得妥", "宁通", "舍尼亭", "托特罗定").contains(row.getRowKey("STANDARD_PRODUCT_NAME")) &&
                 List("多沙唑嗪", "特拉唑嗪", "非那雄胺", "托特罗定").contains(row.getRowKey("STANDARD_MOLE_NAME"))))
@@ -81,9 +69,8 @@ class phAstellasDeliveryAction extends pActionTrait {
             x.getRowKey("STANDARD_MOLE_NAME")
         )).distinct()
 
-
         /**
-          * Step 3. GroupBy max_result_rdd & sum(f_units),sum(f_sales).
+          * Step 3. GroupBy max_result_rdd[Province,City,Date,Product,Market] & sum(f_units),sum(f_sales).
           */
 
         val max_result_groupBy = max_result_with_province.map(row =>
@@ -129,17 +116,15 @@ class phAstellasDeliveryAction extends pActionTrait {
             + delimiter + row._1._5.toString + delimiter + row._1._6.toString
             + delimiter + row._1._1 + delimiter + row._2._6
         )
+//        max_result_renamed.take(10).foreach(println)
+//        println(max_result_renamed.count())
 
         /**
           * Step 9.Union old_delivery_file && save in new_delivery_file.
           */
 
-//        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
-//        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
-        val union_result = max_result_renamed
-
-        union_result.take(10).foreach(println)
-        println(union_result.count())
+        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
+        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
         RDDArgs(union_result)
     }
 }
