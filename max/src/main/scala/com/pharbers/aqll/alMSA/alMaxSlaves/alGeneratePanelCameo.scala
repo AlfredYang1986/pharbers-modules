@@ -1,7 +1,6 @@
 package com.pharbers.aqll.alMSA.alMaxSlaves
 
 import scala.concurrent.duration._
-import play.api.libs.json.{JsString, JsValue}
 
 import scala.collection.immutable.Map
 import play.api.libs.json.Json.toJson
@@ -14,11 +13,7 @@ import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.reStartMsg._
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import com.pharbers.aqll.alCalcHelp.alWebSocket.phWebSocket
-import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.scpend
-import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.ymMsg.calcYM_end
-import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
-import com.pharbers.panel.{phPanelFilePath, phPanelHeadle}
-import com.typesafe.config.ConfigFactory
+import com.pharbers.panel.phPanelHeadle
 
 /**
   * Created by jeorch on 17-10-11.

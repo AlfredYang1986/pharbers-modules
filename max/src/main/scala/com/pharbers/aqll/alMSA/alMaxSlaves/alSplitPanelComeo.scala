@@ -12,9 +12,8 @@ import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.reStartMsg._
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.splitPanelMsg._
 import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
-import com.pharbers.aqll.common.alFileHandler.fileConfig.{fileBase, outPut}
 import com.pharbers.aqll.alCalcMemory.aljobs.alJobs.{max_jobs, max_split_csv_jobs}
-import com.pharbers.panel.phPanelFilePath
+import com.pharbers.panel.panel_path_obj._
 
 /**
   * Created by alfredyang on 12/07/2017.
@@ -25,7 +24,7 @@ object alSplitPanelComeo {
               counter: ActorRef) = Props(new alSplitPanelComeo(item, counter))
 }
 
-class alSplitPanelComeo(item: alMaxRunning, counter: ActorRef) extends Actor with ActorLogging with phPanelFilePath {
+class alSplitPanelComeo(item: alMaxRunning, counter: ActorRef) extends Actor with ActorLogging {
     //TODO shijian chuancan
     val timeoutMessager = context.system.scheduler.scheduleOnce(10 minute) {
         self ! split_panel_timeout()
@@ -38,7 +37,7 @@ class alSplitPanelComeo(item: alMaxRunning, counter: ActorRef) extends Actor wit
     override def receive: Receive = {
         case split_panel_start_impl(item) => {
             val company = phRedisDriver().commonDriver.hget(item.uid, "company").map(x=>x).getOrElse(throw new Exception("not found company"))
-            val file = base_path + company + output_dir + item.tid
+            val file = p_base_path + company + p_output_dir + item.tid
 
             //方便测试
             val r = if(file.endsWith(".xlsx")){

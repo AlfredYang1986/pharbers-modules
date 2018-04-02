@@ -17,10 +17,10 @@ import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import akka.cluster.routing.{ClusterRouterPool, ClusterRouterPoolSettings}
 import com.pharbers.aqll.alMSA.alCalcAgent.alPropertyAgent.queryIdleNodeInstanceInSystemWithRole
-import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.{scpend, scpmsg}
-import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
-import com.pharbers.panel.phPanelFilePath
-import com.typesafe.config.ConfigFactory
+//import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.{scpend, scpmsg}
+//import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
+//import com.pharbers.panel.panel_path_obj
+//import com.typesafe.config.ConfigFactory
 
 /**
   * Created by jeorch on 17-10-11.
@@ -80,7 +80,7 @@ object alCameoCalcYM {
               slaveActor: ActorRef) = Props(new alCameoCalcYM(calcYMJob, slaveActor))
 }
 
-class alCameoCalcYM(calcYM_job: alPanelItem, slaveActor: ActorRef) extends Actor with ActorLogging with phPanelFilePath {
+class alCameoCalcYM(calcYM_job: alPanelItem, slaveActor: ActorRef) extends Actor with ActorLogging {
     override def receive: Receive = {
         case calcYM_start() => slaveActor ! calcYM_hand()
         case calcYM_hand() =>

@@ -16,7 +16,7 @@ import com.pharbers.driver.redis.phRedisDriver
 import com.pharbers.aqll.common.alFileHandler.databaseConfig.db1
 import com.pharbers.aqll.common.alFileHandler.fileConfig.memorySplitFile
 import com.pharbers.aqll.common.alFileHandler.fileConfig.export_file
-import com.pharbers.nhwa.DriverNHWA
+import com.pharbers.delivery.nhwa.DriverNHWA
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.immutable.Map

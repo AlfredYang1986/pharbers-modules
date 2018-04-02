@@ -18,10 +18,10 @@ import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Props}
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.panelMsg._
 import akka.cluster.routing.{ClusterRouterPool, ClusterRouterPoolSettings}
 import com.pharbers.aqll.alMSA.alCalcAgent.alPropertyAgent.queryIdleNodeInstanceInSystemWithRole
-import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.{scpend, scpmsg}
-import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
-import com.pharbers.panel.phPanelFilePath
-import com.typesafe.config.ConfigFactory
+//import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.{scpend, scpmsg}
+//import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
+//import com.pharbers.panel.phPanelFilePath
+//import com.typesafe.config.ConfigFactory
 
 /**
   * Created by jeorch on 17-8-31.
@@ -82,7 +82,7 @@ object alCameoGeneratePanel {
 }
 
 class alCameoGeneratePanel(panel_job : alPanelItem,
-                           slaveActor : ActorRef) extends Actor with ActorLogging with phPanelFilePath {
+                           slaveActor : ActorRef) extends Actor with ActorLogging {
     override def receive = {
         case generate_panel_start() => slaveActor ! generate_panel_hand()
         case generate_panel_hand() =>
