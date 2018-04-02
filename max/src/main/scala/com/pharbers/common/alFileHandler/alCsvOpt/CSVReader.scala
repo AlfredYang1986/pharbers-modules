@@ -19,7 +19,7 @@ package com.pharbers.aqll.common.alFileHandler.alCsvOpt.scala
 import java.io._
 import java.util.NoSuchElementException
 
-import com.pharbers.common.alFileHandler.alCsvOpt.java.{LineReader, ReaderLineReader, SourceLineReader}
+import com.pharbers.common.alFileHandler.alCsvOpt.{LineReader, ReaderLineReader, SourceLineReader}
 
 import scala.io.Source
 

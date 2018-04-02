@@ -1,6 +1,6 @@
-package com.pharbers.aqll.alCalcHelp.alModel.java;
+package com.pharbers.aqll.alCalcHelp.alModel;
 
-import com.pharbers.aqll.common.alFileHandler.alExcelOpt.scala.BaseExcel;
+import com.pharbers.common.alFileHandler.alExcelOpt.BaseExcel;
 
 /***
  * 医院数据库

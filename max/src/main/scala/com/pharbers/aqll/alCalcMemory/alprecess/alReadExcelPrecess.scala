@@ -6,8 +6,8 @@ import com.pharbers.aqll.alCalcHelp.DefaultData
 import com.pharbers.alCalcMemory.aldata.alStorage
 import com.pharbers.alCalcMemory.alprecess.alPrecess
 import com.pharbers.alCalcMemory.alstages.{alInitStage, alMemoryStage, alPresisStage, alStage}
-import com.pharbers.aqll.alCalcHelp.alModel.java.IntegratedData
-import com.pharbers.aqll.common.alFileHandler.alExcelOpt.scala.alExcelDataParser
+import com.pharbers.aqll.alCalcHelp.alModel.IntegratedData
+import com.pharbers.common.alFileHandler.alExcelOpt.alExcelDataParser
 import com.pharbers.ErrorCode._
 
 /**

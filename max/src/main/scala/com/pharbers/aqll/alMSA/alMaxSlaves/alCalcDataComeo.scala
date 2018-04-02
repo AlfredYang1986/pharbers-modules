@@ -1,16 +1,13 @@
 package com.pharbers.aqll.alMSA.alMaxSlaves
 
-import java.util.UUID
 import alCalcDataComeo._
 import akka.routing.BroadcastPool
 import scala.concurrent.duration._
-import scala.collection.immutable.Map
 import akka.actor.SupervisorStrategy.Escalate
 import com.pharbers.driver.redis.phRedisDriver
 import com.pharbers.aqll.alCalcHelp.alMaxDefines._
 import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.pharbers.aqll.alCalcHelp.alWebSocket.phWebSocket
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.calcMsg._
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.reStartMsg._

@@ -4,7 +4,7 @@ import com.pharbers.alCalcMemory.aljobs.alJob
 import com.pharbers.alCalcMemory.alstages.alStage
 import com.pharbers.aqll.alCalcHelp.alShareData
 import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines.{do_calc, do_map, presist_data, restore_data}
-import com.pharbers.aqll.common.alFileHandler.fileConfig._
+import com.pharbers.common.alFileHandler.fileConfig._
 
 /**
   * Created by Alfred on 13/03/2017.

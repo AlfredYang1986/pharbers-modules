@@ -11,10 +11,10 @@ import play.api.libs.json.Json.toJson
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import akka.http.scaladsl.server.Directives
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg._
+import com.pharbers.common.alFileHandler.fil
 import com.pharbers.ErrorCode._
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alCalcHelp.alAkkaHttpJson.PlayJsonSupport
-import com.pharbers.aqll.alCalcHelp.alFinalDataProcess.alFileExport
 import play.api.libs.json.OFormat
 
 /**
@@ -120,8 +120,9 @@ trait alAkkaHttpFunction extends Directives with PlayJson {
 	def alDataExport: route = post {
 		path("dataExport") {
 			entity(as[alExportItem]) { item =>
-				val result = alFileExport(item).export
-				complete(toJson(successToJson(toJson(Map("result" -> result)))))
+//				val result = alFileExport(item).export
+                //TODO: file export is too rubbish, need recoding
+				complete(toJson(successToJson(toJson(Map("result" -> "not implement")))))
 			}
 		}
 	}

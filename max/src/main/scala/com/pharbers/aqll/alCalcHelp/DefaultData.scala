@@ -1,14 +1,10 @@
 package com.pharbers.aqll.alCalcHelp
 
-import com.mongodb.casbah.MongoDB
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.aqll.common.alFileHandler.fileConfig._
-import com.pharbers.aqll.common.alFileHandler.databaseConfig._
-import com.pharbers.aqll.common.alFileHandler.alExcelOpt.scala.alExcelDataParser
-import com.pharbers.aqll.alCalcHelp.alModel.java.{AdminHospitalDataBase, IntegratedData}
-import com.pharbers.dbManagerTrait
-import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.common.alFileHandler.fileConfig._
+import com.pharbers.common.alFileHandler.alExcelOpt.alExcelDataParser
+import com.pharbers.aqll.alCalcHelp.alModel.{AdminHospitalDataBase, IntegratedData}
 
 
 object DefaultData {
@@ -26,39 +22,22 @@ object DefaultData {
     def hospdatabase(path: String, company: String, market: String): List[AdminHospitalDataBase] = {
         val hospdata_ch_file = file_path.hosp
         val hospdata_en_file = file_path.field_names_hosp
-        type targt = AdminHospitalDataBase
-        val hospdatabase = new alExcelDataParser(new targt, hospdata_en_file, hospdata_ch_file)
+        type target = AdminHospitalDataBase
+        val hospdatabase = new alExcelDataParser(new target, hospdata_en_file, hospdata_ch_file)
 
         val mkt_file_local = panel_path_obj.p_client_path + company +
             panel_path_obj.p_universe_file.replace("##market##", market).replace(".csv", ".xlsx")
         hospdatabase.prase(mkt_file_local)("")
-        hospdatabase.data.toList.asInstanceOf[List[targt]]
+        hospdatabase.data.toList.asInstanceOf[List[target]]
     }
 
     val integratedxmlpath_ch = file_path.integrated
     val integratedxmlpath_en = file_path.field_names_integrated
 
     def integratedbase(filename: String, company: String): List[IntegratedData] = {
-        type targt = IntegratedData
-        val integratedbase = new alExcelDataParser(new targt, integratedxmlpath_en, integratedxmlpath_ch)
+        type target = IntegratedData
+        val integratedbase = new alExcelDataParser(new target, integratedxmlpath_en, integratedxmlpath_ch)
         integratedbase.prase(fileBase + company + outPut + filename)("")
-        integratedbase.data.toList.asInstanceOf[List[targt]]
+        integratedbase.data.toList.asInstanceOf[List[target]]
     }
 }
-
-//trait DBList extends dbInstanceManager {
-////    implicit val dbc: _data_connection
-//}
-//
-//object dbAdmin extends DBList {
-//    override implicit val dbc: _data_connection =  getDataAdmin(dbhost, dbport.toInt, dbuser, dbpwd)
-//    val dba: MongoDB = dbc._conn.getDB("admin")
-//}
-//
-//object dbcores extends DBList {
-//    override implicit val dbc: _data_connection =  getDataCores(dbhost, dbport.toInt, dbuser, dbpwd, db1)
-//}
-//
-//object dbbasic extends DBList {
-//    override implicit val dbc: _data_connection =  getDataBasic(dbhost, dbport.toInt, dbuser, dbpwd, db2)
-//}

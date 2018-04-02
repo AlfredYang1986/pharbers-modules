@@ -9,7 +9,6 @@ import akka.actor.{Actor, ActorLogging, OneForOneStrategy, Props, SupervisorStra
 import akka.util.Timeout
 import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
 import com.pharbers.aqll.alMSA.alCalcAgent.alPropertyAgent.takeNodeForRole
-import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.aggregationMsg.{aggregationDataHand, aggregationDataImpl}
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.generateDeliveryFile.{generateDeliveryFileHand, generateDeliveryFileImpl}
 
 import scala.concurrent.Await

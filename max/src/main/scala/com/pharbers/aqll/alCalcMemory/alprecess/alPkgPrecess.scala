@@ -1,6 +1,6 @@
 package com.pharbers.aqll.alCalcMemory.alprecess
 
-import com.pharbers.aqll.common.alCmd.alShellCmdExce
+import com.pharbers.common.alCmd.alShellCmdExce
 
 /**
   * Created by qianpeng on 2017/3/17.

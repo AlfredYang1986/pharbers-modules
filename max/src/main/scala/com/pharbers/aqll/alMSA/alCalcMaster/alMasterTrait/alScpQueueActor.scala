@@ -10,7 +10,7 @@ import akka.actor.{Actor, ActorLogging, PoisonPill, Props}
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg._
 import com.pharbers.aqll.alCalcHelp.alMaxDefines.alMaxRunning
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
-import com.pharbers.aqll.common.alFileHandler.fileConfig.{group, memorySplitFile, scpPath, sync, user}
+import com.pharbers.common.alFileHandler.fileConfig.{group, memorySplitFile, scpPath, sync, user}
 
 /**
   * Created by clock on 17-9-6.

@@ -5,7 +5,7 @@ import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.alSplitStrategy.core_
 import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.server_info
 import com.pharbers.alCalcMemory.alstages.alStage
 import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
-import com.pharbers.aqll.common.alFileHandler.fileConfig._
+import com.pharbers.common.alFileHandler.fileConfig._
 
 /**
   * Created by Alfred on 11/03/2017.

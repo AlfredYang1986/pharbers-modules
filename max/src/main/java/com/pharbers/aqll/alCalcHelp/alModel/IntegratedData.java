@@ -1,12 +1,11 @@
-package com.pharbers.aqll.alCalcHelp.alModel.java;
+package com.pharbers.aqll.alCalcHelp.alModel;
 
-
-import com.pharbers.aqll.common.alFileHandler.alExcelOpt.java.Excel;
-import com.pharbers.aqll.common.alFileHandler.alExcelOpt.scala.BaseExcel;
+import com.pharbers.common.alFileHandler.alExcelOpt.Excel;
+import com.pharbers.common.alFileHandler.alExcelOpt.BaseExcel;
 
 import java.io.Serializable;
 
-import com.pharbers.aqll.common.alString.alStringOpt;
+import com.pharbers.common.alString.alStringOpt;
 
 public class IntegratedData extends BaseExcel implements Serializable {
 

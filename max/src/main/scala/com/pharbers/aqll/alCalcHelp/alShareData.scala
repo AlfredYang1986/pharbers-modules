@@ -1,7 +1,7 @@
 package com.pharbers.aqll.alCalcHelp
 
-import com.pharbers.aqll.alCalcHelp.alModel.java.IntegratedData
-import com.pharbers.aqll.alCalcHelp.alModel.scala.westMedicineIncome
+import com.pharbers.aqll.alCalcHelp.alModel.IntegratedData
+import com.pharbers.aqll.alCalcHelp.alModel.westMedicineIncome
 import com.pharbers.common.alString.alStringOpt._
 
 /**

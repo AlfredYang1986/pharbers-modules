@@ -2,9 +2,9 @@ package com.pharbers.aqll.alMSA.alMaxCmdJob
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
-import com.pharbers.aqll.common.alCmd.scpcmd.scpCmd
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg._
-import com.pharbers.aqll.common.alCmd.pkgcmd.{pkgCmd, unPkgCmd}
+import com.pharbers.common.alCmd.scpcmd.scpCmd
+import com.pharbers.common.alCmd.pkgcmd.{pkgCmd, unPkgCmd}
 
 object alCmdActor {
 	def props() = Props[alCmdActor]

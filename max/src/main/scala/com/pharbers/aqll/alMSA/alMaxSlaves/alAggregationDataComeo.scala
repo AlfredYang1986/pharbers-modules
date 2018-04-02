@@ -1,7 +1,6 @@
 package com.pharbers.aqll.alMSA.alMaxSlaves
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Cancellable, PoisonPill, Props}
-import com.pharbers.aqll.alCalcHelp.alFinalDataProcess.alWeightSum
 import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
 import com.pharbers.aqll.alCalcHelp.alWebSocket.phWebSocket
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.aggregationMsg._
@@ -9,7 +8,6 @@ import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.reStartMsg.canIReStart
 
 import scala.concurrent.duration._
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
-import com.pharbers.driver.redis.phRedisDriver
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.immutable.Map
 
@@ -29,7 +27,8 @@ class alAggregationDataComeo(uid: String, table: String, counter: ActorRef) exte
 	
 	def aggregation: Receive = {
 		case aggregationDataImpl(_, company, temp) =>
-			val result = alWeightSum(uid, company, s"$company$temp", 1).aggregation
+//			val result = alWeightSum(uid, company, s"$company$temp", 1).aggregation
+			val result = false
 			self ! aggregationDataEnd(result)
 			
 		case aggregationDataEnd(result) =>

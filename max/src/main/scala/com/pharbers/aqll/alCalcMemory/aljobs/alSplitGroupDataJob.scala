@@ -4,7 +4,7 @@ import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefine
 import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.alSplitStrategy._
 import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.server_info
 import com.pharbers.alCalcMemory.alstages.alStage
-import com.pharbers.aqll.common.alFileHandler.fileConfig._
+import com.pharbers.common.alFileHandler.fileConfig._
 import scala.concurrent.duration._
 import akka.util.Timeout
 import com.pharbers.alCalcMemory.aljobs.alJob

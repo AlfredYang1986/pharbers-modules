@@ -1,4 +1,4 @@
-package com.pharbers.aqll.alCalcHelp.alModel.scala
+package com.pharbers.aqll.alCalcHelp.alModel
 
 object westMedicineIncome {
 	def apply(args: Any*) = {

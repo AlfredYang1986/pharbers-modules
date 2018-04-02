@@ -11,7 +11,7 @@ import com.pharbers.alCalcMemory.alstages.alStage
 import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.pharbers.aqll.common.alFileHandler.fileConfig._
+import com.pharbers.common.alFileHandler.fileConfig._
 import com.pharbers.aqll.alCalcHelp.alMaxDefines.alMaxRunning
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.groupMsg._
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.reStartMsg._
@@ -19,7 +19,7 @@ import com.pharbers.alCalcMemory.alprecess.alsplitstrategy.server_info
 import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
 import com.pharbers.aqll.alCalcMemory.aljobs.alJobs.{common_jobs, grouping_jobs}
 import akka.actor.{Actor, ActorLogging, ActorRef, OneForOneStrategy, PoisonPill, Props, SupervisorStrategy}
-import com.pharbers.aqll.alCalcHelp.alModel.java.IntegratedData
+import com.pharbers.aqll.alCalcHelp.alModel.IntegratedData
 import com.pharbers.aqll.alCalcHelp.alShareData
 
 /**
