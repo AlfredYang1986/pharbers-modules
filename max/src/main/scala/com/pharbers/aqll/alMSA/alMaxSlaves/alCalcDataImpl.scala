@@ -1,6 +1,7 @@
 package com.pharbers.aqll.alMSA.alMaxSlaves
 
 import java.io.File
+
 import scala.math.BigDecimal
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.driver.redis.phRedisDriver
@@ -16,11 +17,11 @@ import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alCalcHelp.alFinalDataProcess.alBsonPath
 import com.pharbers.aqll.alCalcHelp.alModel.IntegratedData
 import com.pharbers.aqll.alCalcHelp.alModel.westMedicineIncome
-import com.pharbers.common.alFileHandler.alFilesOpt.alFileOpt
 import com.pharbers.aqll.alCalcHelp.{alSegmentGroup, alShareData}
 import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
 import com.pharbers.common.alFileHandler.fileConfig.{calc, memorySplitFile, sync}
 import com.pharbers.aqll.alCalcMemory.aljobs.alJobs.{common_jobs, worker_core_calc_jobs}
+import com.pharbers.common.alFileHandler.filesopt.alFileOpt
 import com.pharbers.sercuity.Sercurity
 
 /**

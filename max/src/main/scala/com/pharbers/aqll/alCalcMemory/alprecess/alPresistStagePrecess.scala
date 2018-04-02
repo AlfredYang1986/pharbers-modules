@@ -7,7 +7,7 @@ import com.pharbers.alCalcMemory.aldata.alStorage
 import com.pharbers.alCalcMemory.alprecess.alPrecess
 import com.pharbers.alCalcMemory.alstages.alStage
 import com.pharbers.common.alFileHandler.fileConfig._
-import com.pharbers.common.alFileHandler.alFilesOpt.alFileOpt
+import com.pharbers.common.alFileHandler.filesopt.alFileOpt
 
 /**
   * Created by Alfred on 10/03/2017.

@@ -2,6 +2,7 @@ package com.pharbers.aqll.alMSA.alMaxSlaves
 
 import akka.pattern.ask
 import akka.util.Timeout
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.actor.SupervisorStrategy.Restart
@@ -11,12 +12,12 @@ import com.pharbers.aqll.alMSA.alMaxCmdJob.alCmdActor
 import com.pharbers.aqll.alCalcHelp.alMaxDefines.alMaxRunning
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.calcMsg._
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
-import com.pharbers.common.alFileHandler.alFilesOpt.alFileOpt
 import com.pharbers.aqll.alCalcMemory.aljobs.alJobs.split_group_jobs
 import com.pharbers.aqll.alMSA.alCalcAgent.alPropertyAgent.takeNodeForRole
 import akka.actor.{Actor, ActorLogging, OneForOneStrategy, Props, SupervisorStrategy}
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg.scpMsg.{unpkgend, unpkgmsgMutiPath}
 import com.pharbers.common.alFileHandler.fileConfig.{calc, group, memorySplitFile, root, sync}
+import com.pharbers.common.alFileHandler.filesopt.alFileOpt
 
 /**
   * Created by alfredyang on 13/07/2017.

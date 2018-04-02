@@ -1,4 +1,4 @@
-package com.pharbers.common.alFileHandler.alXmlOpt
+package com.pharbers.common.alFileHandler.filesopt
 
 /**
   * Created by qianpeng on 2017/5/11.

@@ -1,6 +1,6 @@
-package com.pharbers.common.alFileHandler.alFilesOpt
+package com.pharbers.common.alFileHandler.filesopt
 
-import java.io.{File, FileWriter, PrintWriter, RandomAccessFile}
+import java.io.{File, FileWriter, PrintWriter}
 
 import com.pharbers.memory.pages.flushMemory
 
