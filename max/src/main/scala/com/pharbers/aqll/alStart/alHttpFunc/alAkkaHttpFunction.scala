@@ -11,7 +11,6 @@ import play.api.libs.json.Json.toJson
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import akka.http.scaladsl.server.Directives
 import com.pharbers.aqll.alMSA.alCalcMaster.alCalcMsg._
-import com.pharbers.common.alFileHandler.fil
 import com.pharbers.ErrorCode._
 import com.pharbers.aqll.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.aqll.alCalcHelp.alAkkaHttpJson.PlayJsonSupport

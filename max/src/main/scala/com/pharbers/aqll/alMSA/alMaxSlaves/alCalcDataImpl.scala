@@ -21,6 +21,7 @@ import com.pharbers.aqll.alCalcHelp.{alSegmentGroup, alShareData}
 import com.pharbers.aqll.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
 import com.pharbers.common.alFileHandler.fileConfig.{calc, memorySplitFile, sync}
 import com.pharbers.aqll.alCalcMemory.aljobs.alJobs.{common_jobs, worker_core_calc_jobs}
+import com.pharbers.sercuity.Sercurity
 
 /**
   * Created by alfredyang on 13/07/2017.
@@ -220,9 +221,9 @@ class alCalcDataImpl extends Actor with ActorLogging{
             "f_units" -> mrd.finalResultsUnit,
             "f_sales" -> mrd.finalResultsValue,
             "Date" -> DateUtil.getDateLong(mrd.yearAndmonth.toString),
-            "prov_Index" -> alEncryptionOpt.md5(mrd.getV("province").toString + mrd.getV("market1Ch").toString + mrd.minimumUnitCh + DateUtil.getDateLong(mrd.yearAndmonth.toString)),
-            "city_Index" -> alEncryptionOpt.md5(mrd.getV("province").toString + mrd.getV("prefecture").toString + mrd.getV("market1Ch").toString + mrd.minimumUnitCh + DateUtil.getDateLong(mrd.yearAndmonth.toString)),
-            "hosp_Index" -> alEncryptionOpt.md5(mrd.getV("province").toString +
+            "prov_Index" -> Sercurity.md5Hash(mrd.getV("province").toString + mrd.getV("market1Ch").toString + mrd.minimumUnitCh + DateUtil.getDateLong(mrd.yearAndmonth.toString)),
+            "city_Index" -> Sercurity.md5Hash(mrd.getV("province").toString + mrd.getV("prefecture").toString + mrd.getV("market1Ch").toString + mrd.minimumUnitCh + DateUtil.getDateLong(mrd.yearAndmonth.toString)),
+            "hosp_Index" -> Sercurity.md5Hash(mrd.getV("province").toString +
                 mrd.getV("prefecture").toString +
                 mrd.phaid +
                 mrd.getV("market1Ch").toString +
