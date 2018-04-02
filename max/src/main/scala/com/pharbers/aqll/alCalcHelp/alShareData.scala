@@ -2,7 +2,7 @@ package com.pharbers.aqll.alCalcHelp
 
 import com.pharbers.aqll.alCalcHelp.alModel.java.IntegratedData
 import com.pharbers.aqll.alCalcHelp.alModel.scala.westMedicineIncome
-import com.pharbers.aqll.common.alString.alStringOpt._
+import com.pharbers.common.alString.alStringOpt._
 
 /**
   * Created by Alfred on 13/03/2017.
@@ -96,18 +96,18 @@ class alSegmentGroup {
     def sales: Double = getV("sales") match {
         case d: Double => d
         case s: String => s.toString.toDouble
-        case _ => println("sales fuck");???
+        case _ => ???
     }
     
     def units: Double = getV("unit") match {
         case d: Double => d
         case s: String => s.toString.toDouble
-        case _ => println("unit fuck");???
+        case _ => ???
     }
     
     def calc: Double = getV("calc") match {
         case d: Double => d
         case s: String => s.toString.toDouble
-        case _ => println("calc fuck");???
+        case _ => ???
     }
 }

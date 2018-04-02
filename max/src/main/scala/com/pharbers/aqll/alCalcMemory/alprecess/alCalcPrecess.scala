@@ -4,7 +4,7 @@ import com.pharbers.alCalcMemory.alOther.alException.alException
 import com.pharbers.alCalcMemory.aldata.{alInitStorage, alStorage}
 import com.pharbers.alCalcMemory.alprecess.alPrecess
 import com.pharbers.alCalcMemory.alstages.{alInitStage, alMemoryStage, alPresisStage, alStage}
-import com.pharbers.aqll.common.alErrorCode.alErrorCode._
+import com.pharbers.ErrorCode._
 
 /**
   * Created by Alfred on 10/03/2017.

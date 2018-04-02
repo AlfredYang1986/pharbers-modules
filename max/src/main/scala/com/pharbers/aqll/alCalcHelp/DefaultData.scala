@@ -2,13 +2,14 @@ package com.pharbers.aqll.alCalcHelp
 
 import com.mongodb.casbah.MongoDB
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.aqll.common.alDao.dataFactory._
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.aqll.common.alDao.data_connection
 import com.pharbers.aqll.common.alFileHandler.fileConfig._
 import com.pharbers.aqll.common.alFileHandler.databaseConfig._
 import com.pharbers.aqll.common.alFileHandler.alExcelOpt.scala.alExcelDataParser
 import com.pharbers.aqll.alCalcHelp.alModel.java.{AdminHospitalDataBase, IntegratedData}
+import com.pharbers.dbManagerTrait
+import com.pharbers.dbManagerTrait.dbInstanceManager
+
 
 object DefaultData {
     object file_path extends PharbersInjectModule {
@@ -45,19 +46,19 @@ object DefaultData {
     }
 }
 
-trait DBList {
-    implicit val dbc: data_connection
-}
-
-object dbAdmin extends DBList {
-    override implicit val dbc: data_connection =  getDataAdmin(dbhost, dbport.toInt, dbuser, dbpwd)
-    val dba: MongoDB = dbc._conn.getDB("admin")
-}
-
-object dbcores extends DBList {
-    override implicit val dbc: data_connection =  getDataCores(dbhost, dbport.toInt, dbuser, dbpwd, db1)
-}
-
-object dbbasic extends DBList {
-    override implicit val dbc: data_connection =  getDataBasic(dbhost, dbport.toInt, dbuser, dbpwd, db2)
-}
+//trait DBList extends dbInstanceManager {
+////    implicit val dbc: _data_connection
+//}
+//
+//object dbAdmin extends DBList {
+//    override implicit val dbc: _data_connection =  getDataAdmin(dbhost, dbport.toInt, dbuser, dbpwd)
+//    val dba: MongoDB = dbc._conn.getDB("admin")
+//}
+//
+//object dbcores extends DBList {
+//    override implicit val dbc: _data_connection =  getDataCores(dbhost, dbport.toInt, dbuser, dbpwd, db1)
+//}
+//
+//object dbbasic extends DBList {
+//    override implicit val dbc: _data_connection =  getDataBasic(dbhost, dbport.toInt, dbuser, dbpwd, db2)
+//}
