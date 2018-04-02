@@ -1,7 +1,7 @@
 package com.pharbers.paction.format.input
 
-import com.pharbers.panel.format.input.excel.xls.PhExcelXLSInterface._
-import com.pharbers.panel.format.input.excel.xls.PhExcelXLSInterface
+import com.pharbers.common.excel.xls.PhExcelXLSInterface._
+import com.pharbers.common.excel.xls.PhExcelXLSInterface
 
 object PhExcelXLS {
 

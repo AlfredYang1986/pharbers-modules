@@ -1,4 +1,4 @@
-package com.pharbers.panel.format.input.excel.xlsx;
+package com.pharbers.common.excel.xlsx;
 
 import java.io.*;
 import org.apache.poi.ss.usermodel.*;

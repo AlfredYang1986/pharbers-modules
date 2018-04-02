@@ -1,6 +1,6 @@
 package com.pharbers.aqll.alCalcHelp.alModel;
 
-import com.pharbers.common.alFileHandler.alExcelOpt.BaseExcel;
+import com.pharbers.common.excel.event.BaseExcel;
 
 /***
  * 医院数据库

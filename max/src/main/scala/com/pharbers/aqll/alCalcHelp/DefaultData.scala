@@ -3,7 +3,7 @@ package com.pharbers.aqll.alCalcHelp
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.baseModules.PharbersInjectModule
 import com.pharbers.common.alFileHandler.fileConfig._
-import com.pharbers.common.alFileHandler.alExcelOpt.alExcelDataParser
+import com.pharbers.common.excel.event.alExcelDataParser
 import com.pharbers.aqll.alCalcHelp.alModel.{AdminHospitalDataBase, IntegratedData}
 
 
