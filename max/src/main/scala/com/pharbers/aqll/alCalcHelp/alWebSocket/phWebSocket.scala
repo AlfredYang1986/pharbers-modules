@@ -2,7 +2,6 @@ package com.pharbers.aqll.alCalcHelp.alWebSocket
 
 import com.pharbers.http.HTTP
 import play.api.libs.json.Json.toJson
-import com.pharbers.aqll.alCalcHelp.alLog.alTempLog
 import scala.collection.immutable.Map
 import com.pharbers.baseModules.PharbersInjectModule
 
@@ -31,7 +30,7 @@ case class phWebSocket(uid: String) extends PharbersInjectModule {
             )
             ws.post(json)
         } catch {
-            case _: java.net.ConnectException => alTempLog("web socket ConnectException, failed msg = " + msg)
+            case _: java.net.ConnectException => println("web socket ConnectException, failed msg = " + msg)
         }
     }
 }
