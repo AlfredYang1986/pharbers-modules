@@ -27,8 +27,7 @@ class xlsxReadingTrait[T <: FileInputFormat[NullWritable, PhExcelWritable] : Cla
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
 
-        RDDArgs(sc.
-            newAPIHadoopFile[NullWritable, PhExcelWritable,
-            T](defaultArgs.get.toString).map (x => x._2))
+        RDDArgs(sc.newAPIHadoopFile[NullWritable, PhExcelWritable, T](
+            defaultArgs.get.toString).map (x => x._2))
     }
 }
