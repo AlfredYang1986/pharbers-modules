@@ -1,11 +1,11 @@
 package com.pharbers.panel.astellas
 
-import com.pharbers.pactions.actionContainer.pMapActionContainer
+import com.pharbers.pactions.jobs.sequenceJobWithMap
 import com.pharbers.pactions.generalactions.{jarPreloadAction, xlsxReadingAction}
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.astellas.format.{phAstellasCpaFormat, phAstellasGycxFormat}
 
-trait phAstellasCalcYMActionsTrait extends pMapActionContainer {
+trait phAstellasCalcYMActionsTrait extends sequenceJobWithMap {
     val cpa_file: String
     val gycx_file: String
 

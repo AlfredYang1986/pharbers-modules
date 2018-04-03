@@ -3,9 +3,9 @@ package com.pharbers.panel.astellas
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.actionbase.pActionTrait
-import com.pharbers.pactions.actionContainer.pMapActionContainer
+import com.pharbers.pactions.jobs.sequenceJobWithMap
 
-trait phAstellasPanelActionsTrait extends pMapActionContainer {
+trait phAstellasPanelActionsTrait extends sequenceJobWithMap {
     val company: String
     val cpa_file: String
     val gycx_file: String
