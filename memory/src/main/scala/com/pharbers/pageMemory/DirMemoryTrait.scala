@@ -1,7 +1,7 @@
-package com.pharbers.pactions.generalactions.memory.pages
+package com.pharbers.pageMemory
 
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.pactions.generalactions.memory.pages.fop.dir.dirFlushTrait
+import com.pharbers.pageMemory.fop.dir.dirFlushTrait
 
 trait DirMemoryTrait extends PharbersInjectModule {
     override val id: String = "flush-memory"

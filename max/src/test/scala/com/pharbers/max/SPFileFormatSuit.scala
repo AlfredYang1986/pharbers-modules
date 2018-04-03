@@ -1,26 +1,18 @@
-//package com.pharbers.max
-//
-//import com.pharbers.pactions.actionbase.NULLArgs
-//import org.scalatest.FunSuite
-//
-//class SPFileFormatSuit extends FunSuite {
-//
-//    object tf extends NhwaYMActions
-//    test("Spark File Convert") {
-//        import tf.progressFunc
-//        tf.perform(NULLArgs)
+package com.pharbers.max
+
+import com.pharbers.panel.nhwa.phNhwaCalcYMJob
+import com.pharbers.panel.nhwa.phNhwaPanelJob
+import org.scalatest.FunSuite
+
+class SPFileFormatSuit extends FunSuite {
+
+    implicit def progressFunc(progress: Double, flag: String) : Unit = Unit
+//    test("nhwa calc ym") {
+//        phNhwaCalcYMJob("resource/test-02.xlsx", "result/nhwa/ym").perform()
 //    }
-//
-//    test("edit distance") {
-//        val a = "aabbcc"
-//        val b = "aabcc"
-//
-//        ph_alg.edit_distance(a, b) === 1
-//        ph_alg.edit_distance("ATC编码", "ATC码") === 1
-//    }
-//
-//    object tf extends NhwaPanelActions
-//    test("Spark File Convert") {
-//        tf.perform(NULLArgs)
-//    }
-//}
+
+    test("nhwa panel generator") {
+        phNhwaPanelJob("resource/nhwa/test-02.xlsx", "resource/midTmp", "result/nhwa/panel").perform()
+    }
+
+}

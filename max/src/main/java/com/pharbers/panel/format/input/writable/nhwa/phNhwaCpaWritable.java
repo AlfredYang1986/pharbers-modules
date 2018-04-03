@@ -1,12 +1,15 @@
 package com.pharbers.panel.format.input.writable.nhwa;
 
-import java.util.Map;
+import com.pharbers.panel.format.input.writable.PhExcelWritable;
+
 import java.util.HashMap;
-import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
+import java.util.Map;
 
-public class phNhwaCpaWritable extends PhXlsxCommonWritable {
+// TODO : 以后在兼容 先跑通
+//public class phNhwaCpaWritable extends PhXlsxCommonWritable {
+public class phNhwaCpaWritable extends PhExcelWritable {
 
-    private Map<String, String> titleMap = new HashMap<String, String>() {{
+    Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省", "PROVINCES");
         put("城市", "CITY");
         put("年", "YEAR");
@@ -29,8 +32,32 @@ public class phNhwaCpaWritable extends PhXlsxCommonWritable {
         put("生产企业", "CORP_NAME");
     }};
 
+    protected String expendTitle(String value) {
+        return value + "min1" + delimiter + "YM";
+    }
+
     @Override
-    protected String getCellKey(String[] lst, String flag) {
+    public String richWithInputRow(int index, String value) {
+        if (index == 1) {
+            return expendTitle(value);
+        } else {
+            String[] lst = this.splitValues(value);
+            String min1 = lst[8] + lst[14] + lst[10] + lst[11] + lst[16];
+            String month;
+            if(lst[4].length() == 1) month = "0" + lst[4];
+            else month = lst[4];
+
+            return value + delimiter + min1 + delimiter + lst[2] + month;
+        }
+    }
+
+    protected String[] splitValues(String value) {
+        return value.split(String.valueOf((char)31));
+    }
+
+    @Override
+    public String getRowKey(String flag) {
+        String[] lst = splitValues(getValues());
         if (flag.equals("YEAR")) {
             return lst[2];
         } else if (flag.equals("PRODUCT_NAME")) {
@@ -49,32 +76,13 @@ public class phNhwaCpaWritable extends PhXlsxCommonWritable {
         }else if (flag.equals("HOSPITAL_CODE")) {
             return lst[5];
         }else if (flag.equals("YM")) {
-            return lst[18];
+            return lst[lst.length - 1];
+        } else if (flag.equals("min1")) {
+            return lst[lst.length - 2]; // lst[8] + lst[14] + lst[10] + lst[11] + lst[16];
+        } else {
+            return "not implements";
+            // throw new Exception("not implements");
         }
 
-        return "not implements";
-        // throw new Exception("not implements");
     }
-
-    @Override
-    protected String expendTitle(String value) {
-        return value + "min1" + delimiter + "YM";
-    }
-
-    @Override
-    protected String prePanelFunction(String value) {
-        String[] lst = splitValues(value);
-        String ym = getCellKey(lst, "YEAR") +
-                getCellKey(lst, "MONTH");
-        String min1 = getCellKey(lst, "PRODUCT_NAME") +
-                getCellKey(lst, "APP2_COD") +
-                getCellKey(lst, "PACK_DES") +
-                getCellKey(lst, "PACK_NUMBER") +
-                getCellKey(lst, "CORP_NAME");
-
-
-
-        return mkString(lst, delimiter) + delimiter + min1 + delimiter + ym;
-    }
-
 }

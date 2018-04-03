@@ -9,6 +9,7 @@ object jarPreloadAction {
 
 class jarPreloadAction extends pActionTrait { //this : pFileSystem =>
 
+    name = "jar loaded"
     override val defaultArgs : pActionArgs = NULLArgs
 
     lazy val lst =  ("commons-codec-1.5.jar", "./jar/commons-codec-1.9.jar") ::

@@ -3,7 +3,9 @@ package com.pharbers.common.another_file_package
 import scala.io.Source
 import java.io.{File, FileWriter, PrintWriter}
 
-import com.pharbers.memory.pages.flushMemory
+import com.pharbers.pageMemory.flushMemory
+
+import scala.io.Source
 
 /**
   * Created by qianpeng on 2017/5/12.
