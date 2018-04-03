@@ -1,6 +1,6 @@
 <pharbers-modules>
     <panel_config>
-        <base_path value="resource/"/>
+        <base_path value="/mnt/config/FileBase/"/>
         <client_file_path value="/mnt/config/FileBase/"/>
         <product_match_file value="/匹配表.xlsx" />
         <markets_match_file value="/通用名市场定义.xlsx" />
@@ -11,27 +11,4 @@
         <output_dir value="/Panel/" />
         <cache_dir value="Cache/" />
     </panel_config>
-
-    <company_fea9f203d4f593a96f0d6faa91ba24ba>
-        <markets value="INF" />
-        <!--INF,SPE,URO,AI_W,CNS_Z,DVP,ELQ,AI_S,        LD,ONC,PAIN,HTN,AI_R-->
-        <!--CNS_R,HTN2,PAIN_C       -panel-->
-        <!--AI_D,ZYVOX       -no match-->
-
-        <INF value="com.pharbers.panel.pfizer.phPfizerHandle" />
-        <SPE value="com.pharbers.panel.pfizer.phPfizerHandle" />
-        <URO value="com.pharbers.panel.pfizer.phPfizerHandle" />
-    </company_fea9f203d4f593a96f0d6faa91ba24ba>
-
-    <company_8ee0ca24796f9b7f284d931650edbd4b>
-        <markets value="麻醉市场"/>
-
-        <麻醉市场 value="com.pharbers.panel.nhwa.phNhwaHandle" />
-    </company_8ee0ca24796f9b7f284d931650edbd4b>
-
-    <company_235f39e3da85c2dee2a2b20d004a8b77>
-        <markets value="Allelock"/>
-
-        <Allelock value="com.pharbers.panel.astellas.phAstellasHandle" />
-    </company_235f39e3da85c2dee2a2b20d004a8b77>
 </pharbers-modules>

@@ -1,12 +1,12 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
+import scala.collection.immutable.Map
+import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.jobs.sequenceJob
-import com.pharbers.panel.format.input.writable.nhwa.PhXlsxCpaWritable
-import com.pharbers.pactions.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
 import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.panel.astellas.phAstellasCalcYMImplAction
-
 import scala.collection.immutable.Map
 
 object phNhwaCalcYMJob {
@@ -35,16 +35,8 @@ trait phNhwaCalcYMJob extends sequenceJob {
     val cpa_file: String
     val cache_location: String
 
-    val fym : PhXlsxCpaWritable => String = _.getRowKey("YM")
-    val fc : PhXlsxCpaWritable => String = _.getRowKey("HOSPITAL_CODE")
-    val m : MapArgs = MapArgs(Map(
-        "fym" -> SingleArgFuncArgs[PhXlsxCpaWritable, String](fym),
-        "fc" -> SingleArgFuncArgs[PhXlsxCpaWritable, String](fc)
-    ))
-
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-                xlsxReadingAction[PhXlsxCpaFormat](cpa_file) ::
-                phAstellasCalcYMImplAction("") ::
-                saveCurrenResultAction(cache_location) ::
+                xlsxReadingAction[phNhwaCpaFormat](cpa_file) ::
+                phNhwaCalcYMImplAction() ::
                 Nil
 } 

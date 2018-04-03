@@ -1,13 +1,13 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat, PhXlsxThirdSheetFormat}
-import com.pharbers.pactions.actionbase.pActionTrait
-import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
-import com.pharbers.pactions.jobs.{choiceJob, sequenceJob, sequenceJobWithMap}
-import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.panel_path_obj
+import com.pharbers.common.excel.input._
+import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
+import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 
-object phNhwaPanelJob { // extends phNhwaPanelJob {
+object phNhwaPanelJob {
 
     def apply(args : Map[String, List[String]])(_ym: List[String], _mkt: String) : phNhwaPanelJob = {
         new phNhwaPanelJob {
@@ -21,11 +21,11 @@ object phNhwaPanelJob { // extends phNhwaPanelJob {
 
             override lazy val cpa_file = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + cpa
 
-            override lazy val product_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_product_match_file
-            override lazy val markets_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_markets_match_file
+            override lazy val product_match_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_product_match_file
+            override lazy val markets_match_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_markets_match_file
             override lazy val universe_file = panel_path_obj.p_base_path + company + panel_path_obj.p_universe_file.replace("##market##", mkt)
-            override lazy val not_published_hosp_file = panel_path_obj.p_base_path + company + panel_path_obj.p_not_published_hosp_file
-            override lazy val full_hosp_file = panel_path_obj.p_base_path + company + panel_path_obj.p_fill_hos_data_file
+            override lazy val not_published_hosp_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_not_published_hosp_file
+            override lazy val full_hosp_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_fill_hos_data_file
 
             override lazy val cache_location = panel_path_obj.p_base_path + panel_path_obj.p_cache_dir
         }
