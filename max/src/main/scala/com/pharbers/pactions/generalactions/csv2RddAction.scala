@@ -4,11 +4,14 @@ import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver
 
 object csv2RddAction {
-    def apply(path : String) : pActionTrait = new csv2RddAction(StringArgs(path))
+    def apply(path : String , n : String) : pActionTrait = {
+        val tmp = new csv2RddAction(StringArgs(path))
+        tmp.name = n
+        tmp
+    }
 }
 
 class csv2RddAction(override val defaultArgs: pActionArgs) extends pActionTrait {
-
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 
     }

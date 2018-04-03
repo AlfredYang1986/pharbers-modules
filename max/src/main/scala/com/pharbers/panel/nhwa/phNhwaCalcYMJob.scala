@@ -37,7 +37,7 @@ trait phNhwaCalcYMJob extends sequenceJob {
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
                 xlsxReadingAction[phNhwaCpaFormat](cpa_file) ::
-                phNhwaCalcYMJobImpl() ::
+                phNhwaCalcYMConcretJob() ::
                 saveCurrenResultAction(cache_location) ::
                 Nil
 } 

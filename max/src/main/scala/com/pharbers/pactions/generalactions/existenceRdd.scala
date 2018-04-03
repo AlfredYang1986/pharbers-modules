@@ -14,5 +14,5 @@ class existenceRdd(override val defaultArgs: pActionArgs) extends pActionTrait {
     }
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs =
-        BooleanArgs(PhMemory.isExist(args.asInstanceOf[StringArgs].get))
+        BooleanArgs(PhMemory.isExist(defaultArgs.asInstanceOf[StringArgs].get))
 }

@@ -24,7 +24,7 @@ case class phNhwaHandle(args: Map[String, List[String]]) extends phPanelTrait wi
 
 
     override def getPanelFile(ym: List[String], mkt: String, t: Int, c: Int): JsValue = {
-        phNhwaPanelJob(args)(ym, mkt).perform()
+//        phNhwaPanelJob(args)(ym, mkt).perform()
         toJson("")
     }
 

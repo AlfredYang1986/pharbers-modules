@@ -10,10 +10,10 @@ trait choiceJob extends pActionTrait {
                         (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
 
         assert(actions.length == 3)
-        val result = actions.head.perform(pr)
+        val result = actions.head.perform(defaultArgs)
         if (result.asInstanceOf[BooleanArgs].get) {
-            midTmpContainer(actions.tail.head :: Nil, f).perform(pr)
-        } else midTmpContainer(actions.tail.tail.head :: Nil, f).perform(pr)
+            midTmpContainer(actions.tail.tail.head :: Nil, f).perform(pr)       // false
+        } else midTmpContainer(actions.tail.head :: Nil, f).perform(pr)         // true
     }
 
     override val defaultArgs: pActionArgs = NULLArgs

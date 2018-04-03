@@ -5,15 +5,15 @@ import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable
 
 import scala.reflect.ClassTag
 
-object phNhwaCalcYMJobImpl  {
+object phNhwaCalcYMConcretJob  {
     def apply[T : ClassTag](name: String = "", args : pActionArgs = NULLArgs) : pActionTrait = {
-        val temp = new phNhwaCalcYMJobImpl[T](args)
+        val temp = new phNhwaCalcYMConcretJob[T](args)
         temp.name = name
         temp
     }
 }
 
-class phNhwaCalcYMJobImpl[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
+class phNhwaCalcYMConcretJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 

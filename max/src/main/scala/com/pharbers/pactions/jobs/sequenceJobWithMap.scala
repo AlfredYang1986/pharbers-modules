@@ -8,11 +8,14 @@ trait sequenceJobWithMap extends pActionTrait {
 
     override def perform(pr : pActionArgs = MapArgs(Map().empty))
                         (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
+
         if (actions.isEmpty) return pr
         else {
-            val tmp = if (pr.isInstanceOf[MapArgs])
-                MapArgs(pr.asInstanceOf[MapArgs].get + (actions.head.name -> actions.head.perform(pr)))
-            else pr
+            val tmp =
+                if (pr.isInstanceOf[MapArgs])
+                    MapArgs(pr.asInstanceOf[MapArgs].get +
+                        (actions.head.name -> actions.head.perform(pr)))
+                else pr
 
             midMapContainer(actions.tail, f).perform(tmp)
         }
