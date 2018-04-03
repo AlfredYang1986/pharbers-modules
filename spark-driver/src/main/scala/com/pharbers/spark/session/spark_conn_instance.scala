@@ -1,4 +1,4 @@
-package com.pharbers.spark.driver.connect
+package com.pharbers.spark.session
 
 import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}

@@ -2,7 +2,7 @@ package com.pharbers.delivery.astellas
 
 import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
 import com.pharbers.paction.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
-import com.pharbers.spark.driver.phSparkDriver
+import com.pharbers.spark.phSparkDriver
 import org.bson.Document
 
 /**

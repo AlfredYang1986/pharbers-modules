@@ -1,4 +1,4 @@
-package com.pharbers.spark.driver.connect
+package com.pharbers.spark.session
 
 /**
   * Created by clock on 18-2-27.

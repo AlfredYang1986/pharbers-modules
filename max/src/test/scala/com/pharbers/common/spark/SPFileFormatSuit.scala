@@ -7,7 +7,7 @@
 //
 //import scala.reflect.ClassTag
 //
-//class SPFileFormatSuit extends FunSuite {
+//class com.pharbers.max.SPFileFormatSuit extends FunSuite {
 //    test("Spark File Convert") {
 //        type T = ClassTag.type
 //        case class a() extends NhwaYMActions

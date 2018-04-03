@@ -2,10 +2,11 @@ package com.pharbers.panel.nhwa
 
 import java.io.File
 import java.util.UUID
+
+import com.pharbers.spark.phSparkDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import org.apache.spark.sql.DataFrame
-import com.pharbers.spark.driver.phSparkDriver
 import org.apache.spark.sql.types.{DoubleType, LongType}
 
 /**

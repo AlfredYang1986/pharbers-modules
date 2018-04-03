@@ -1,4 +1,4 @@
-package com.pharbers.spark.driver.connect
+package com.pharbers.spark.session
 
 import com.pharbers.baseModules.PharbersInjectModule
 

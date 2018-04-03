@@ -1,9 +1,6 @@
-//package spark
+package com.pharbers.max
 
-import com.pharbers.aqll.common.algorithm.ph_alg
 import com.pharbers.paction.actionbase.NULLArgs
-import com.pharbers.panel.NhwaPanelActions
-import com.pharbers.panel.nhwa.NhwaYMActions
 import org.scalatest.FunSuite
 
 class SPFileFormatSuit extends FunSuite {
@@ -22,9 +19,8 @@ class SPFileFormatSuit extends FunSuite {
 //        ph_alg.edit_distance("ATC编码", "ATC码") === 1
 //    }
 
-    object tf extends NhwaPanelActions
-    test("Spark File Convert") {
-        import tf.progressFunc
-        tf.perform(NULLArgs)
-    }
+//    object tf extends NhwaPanelActions
+//    test("Spark File Convert") {
+//        tf.perform(NULLArgs)
+//    }
 }

@@ -1,10 +1,10 @@
-package com.pharbers.spark.driver.manager
+package com.pharbers.spark
 
-import org.bson.Document
 import com.mongodb.spark.MongoSpark
-import com.mongodb.spark.rdd.MongoRDD
 import com.mongodb.spark.config.ReadConfig
-import com.pharbers.spark.driver.connect.spark_conn_instance
+import com.mongodb.spark.rdd.MongoRDD
+import com.pharbers.spark.session.spark_conn_instance
+import org.bson.Document
 
 /**
   * Created by clock on 18-2-27.

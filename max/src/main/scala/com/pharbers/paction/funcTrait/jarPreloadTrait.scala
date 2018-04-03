@@ -1,7 +1,7 @@
 package com.pharbers.paction.funcTrait
 
-import com.pharbers.spark.driver.phSparkDriver
 import com.pharbers.paction.actionbase.{NULLArgs, pActionArgs, pActionTrait}
+import com.pharbers.spark.phSparkDriver
 
 object jarPreloadTrait {
     def apply() : pActionTrait = new jarPreloadTrait()

@@ -2,7 +2,7 @@ package com.pharbers.delivery.util
 
 import java.io.File
 
-import com.pharbers.spark.driver.phSparkDriver
+import com.pharbers.spark.phSparkDriver
 import org.apache.commons.io.FileUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
