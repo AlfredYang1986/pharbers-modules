@@ -4,8 +4,8 @@ import com.pharbers.panel.panel_path_obj
 import com.pharbers.common.excel.input._
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.pactions.generalactions.{csv2RddAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
-import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 
 object phNhwaPanelJob {
 
@@ -51,7 +51,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
 
     val cache_location: String
 
-    val cmd6 = xlsxReadingAction[PhXlsxCpaFormat](cpa_file, "cpa") ::
+    val cmd6 = xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
                     saveCurrenResultAction(cache_location + "cpa") ::
                         csv2RddAction(cache_location + "/cpa") :: Nil
 

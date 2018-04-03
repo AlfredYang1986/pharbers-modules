@@ -20,8 +20,6 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
         return getCellKey(splitValues(getValues()), flag);
     }
 
-
-
     protected String mkString(String[] lst, String seq) {
         StringBuilder temp = new StringBuilder();
         for (String i : lst) {
@@ -90,5 +88,4 @@ public class PhXlsxCommonWritable extends PhExcelWritable {
         String[] lst = splitValues(value);
         return mkString(lst, delimiter);
     }
-
 }
