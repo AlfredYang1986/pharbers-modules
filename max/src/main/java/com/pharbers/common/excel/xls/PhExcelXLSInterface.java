@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.math.BigDecimal;
+
 public abstract class PhExcelXLSInterface {
     public static final class workbook {
         workbook(Workbook b) {
@@ -62,7 +64,12 @@ public abstract class PhExcelXLSInterface {
                 if(temp.endsWith(".0")) return temp.replace(".0", "");
                 else return temp;
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
-                return value.getStringCellValue();
+                String temp = value.getStringCellValue();
+                try{
+                    return new BigDecimal(temp).toString();
+                }catch(NumberFormatException e){
+                    return temp;
+                }
             } else {
                 throw new Exception("not implement");
             }

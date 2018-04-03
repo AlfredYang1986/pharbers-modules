@@ -31,29 +31,29 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
         val hospital = dataMap("hospital_file").asInstanceOf[RDDArgs[phAstellasHospitalWritable]].get
 
         val hospital_cpa =
-            hospital.filter(_.getRowKey("CPA_DIS") == " ")
+            hospital.filter(iter => iter.getRowKey("CPA_DIS") == " " || iter.getRowKey("CPA_DIS") == "" )
                 .filter(x => x.getRowKey("CPA_CODE") != "" && x.getRowKey("CPA_CODE") != " ")
                 .map { iter => iter.getRowKey("CPA_CODE") -> iter }
         val hospital_gycx =
-            hospital.filter(_.getRowKey("GYC_DIS") == " ")
+            hospital.filter(iter => iter.getRowKey("GYC_DIS") == " " || iter.getRowKey("GYC_DIS") == "" )
                 .filter(x => x.getRowKey("GYC_CODE") != "" && x.getRowKey("GYC_CODE") != " ")
                 .map { iter => iter.getRowKey("GYC_CODE") -> iter }
 
         val standard_cpa_code =
             cpa0.map { iter => iter.getRowKey("HOSPITAL_CODE") -> iter }
-                .leftOuterJoin(hospital_cpa)
-                .filter(_._2._2.isDefined)
-                .map { iter =>
-                    iter._2._2.get.getRowKey("STANDARD_CODE") + "_" + iter._2._1.getRowKey("YM") -> iter._2._1
-                }
+                    .leftOuterJoin(hospital_cpa)
+                    .filter(_._2._2.isDefined)
+                    .map { iter =>
+                        iter._2._2.get.getRowKey("STANDARD_CODE") + "_" + iter._2._1.getRowKey("YM") -> iter._2._1
+                    }
 
         val standard_gyc_code =
             gycx0.map { iter => iter.getRowKey("HOSPITAL_CODE") -> iter }
-                .leftOuterJoin(hospital_gycx)
-                .filter(_._2._2.isDefined)
-                .map { iter =>
-                    iter._2._2.get.getRowKey("STANDARD_CODE") + "_" + iter._2._1.getRowKey("YM") -> iter._2._1
-                }
+                    .leftOuterJoin(hospital_gycx)
+                    .filter(_._2._2.isDefined)
+                    .map { iter =>
+                        iter._2._2.get.getRowKey("STANDARD_CODE") + "_" + iter._2._1.getRowKey("YM") -> iter._2._1
+                    }
 
         val double_hosp_code = standard_cpa_code.map(_._1 -> 1).intersection(standard_gyc_code.map(_._1 -> 1))
 
@@ -61,7 +61,8 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
         //3. GYCX匹配市场
         val markets_match1 = markets_match.map { iter => (iter.getRowKey("MOLE_NAME"), iter.getRowKey("MARKET")) } // mkt.MOLE_NAME -> mkt.MARKET
 
-        val cpa1 = cpa0.map { iter => iter.getRowKey("min1") -> iter } // cpa.min1 -> cpaRDD
+        val cpa1 = cpa0.filter(_.getRowKey("YM") == "201710")
+                .filter(_.getRowKey("MARKET") == "阿洛刻市场").map { iter => iter.getRowKey("min1") -> iter } // cpa.min1 -> cpaRDD
 
         val gycx1 =
             standard_gyc_code.leftOuterJoin(double_hosp_code)
@@ -143,16 +144,18 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
 
         // 7. group 后 求和
         val cpa4 =
-            cpa3.map { iter => // market -> (cpaRDD, productRDD)
-                (iter._2._1.getRowKey("HOSPITAL_CODE"), iter._2._1.getRowKey("YM"), iter._2._2.getRowKey("min2"), iter._1) ->
+            cpa3.filter(_._2._1.getRowKey("HOSPITAL_CODE") != "HOSPITAL_CODE")
+                    .map { iter => // market -> (cpaRDD, productRDD)
+                (iter._2._1.getRowKey("HOSPITAL_CODE").toLong, iter._2._1.getRowKey("YM"), iter._2._2.getRowKey("min2"), iter._1) ->
                         (iter._2._1.getRowKey("VALUE").toDouble, iter._2._1.getRowKey("STANDARD_UNIT").toDouble)
             }.reduceByKey((p, n) => (p._1 + n._1, p._2 + n._2)).map { iter =>
                 iter._1._1 -> (iter._1._2, iter._1._3, iter._1._4, iter._2._1, iter._2._2)
             } // HOSPITAL_CODE -> (YM, min2, mkt, values, units)
 
         val gycx4 =
-            gycx3.map { iter => // market -> (cpaRDD, productRDD)
-                (iter._2._1.getRowKey("HOSPITAL_CODE"), iter._2._1.getRowKey("YM"), iter._2._2.getRowKey("min2"), iter._1) ->
+            gycx3.filter(_._2._1.getRowKey("HOSPITAL_CODE") != "HOSPITAL_CODE")
+                    .map { iter => // market -> (cpaRDD, productRDD)
+                (iter._2._1.getRowKey("HOSPITAL_CODE").toLong, iter._2._1.getRowKey("YM"), iter._2._2.getRowKey("min2"), iter._1) ->
                         (iter._2._1.getRowKey("VALUE").toDouble, iter._2._1.getRowKey("STANDARD_UNIT").toDouble)
             }.reduceByKey((p, n) => (p._1 + n._1, p._2 + n._2)).map { iter =>
                 iter._1._1 -> (iter._1._2, iter._1._3, iter._1._4, iter._2._1, iter._2._2)
@@ -163,17 +166,20 @@ class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) 
         // 处理univers,只保留样本医院
         val universe1 =
             universe.filter(iter => iter.getRowKey("PANEL_ID") != "" && iter.getRowKey("PANEL_ID") != " ")
-                    .map { iter =>
-                        iter.getRowKey("PANEL_ID") -> iter.getRowKey("PHA_ID")
+                            .filter(_.getRowKey("PANEL_ID") != "PANEL_ID").map { iter =>
+                        iter.getRowKey("PANEL_ID").toLong -> iter.getRowKey("PHA_ID")
                     } // univers.PANEL_ID -> univers.PHA_ID
 
+        val total = cpa4 union gycx4
+
+        val panel0 = total.leftOuterJoin(universe1)
         val panel =
-            (cpa4 union gycx4).leftOuterJoin(universe1)
-                    .filter(_._2._2.isDefined)
+
+                    panel0.filter(_._2._2.isDefined)
                     .map { iter =>
                         (iter._1, iter._2._1._1, iter._2._1._2, iter._2._1._3, iter._2._2.get, iter._2._1._4, iter._2._1._5)
                     }
-                    .filter(_._5 != "")
+                    .filter(iter => iter._5 != "" || iter._5 != " ")
                     .map { iter =>
                         iter._1 + delimiter + iter._2 + delimiter + iter._3 + delimiter +
                                 iter._4 + delimiter + iter._5 + delimiter + iter._6 + delimiter + iter._7

@@ -21,11 +21,17 @@ trait phAstellasPanelActionsTrait extends sequenceJobWithMap {
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             xlsxReadingAction[phAstellasCpaFormat](cpa_file, "cpa") ::
+//            saveMapResultAction("cpa", panel_file + "cpa") ::
             xlsxReadingAction[phAstellasGycxFormat](gycx_file, "gycx") ::
+//            saveMapResultAction("gycx", panel_file + "gycx") ::
             xlsxReadingAction[phAstellasProductMatchFormat](product_match_file, "product_match_file") ::
+//            saveMapResultAction("product_match_file", panel_file + "pmf") ::
             xlsxReadingAction[phAstellasMarketsMatchFormat](markets_match_file, "markets_match_file") ::
+//            saveMapResultAction("markets_match_file", panel_file + "mmf") ::
             xlsxReadingAction[phAstellasUniverseFormat](universe_file, "universe_file") ::
+//            saveMapResultAction("universe_file", panel_file + "uf") ::
             xlsxReadingAction[phAstellasHospitalFormat](hospital_file, "hospital_file") ::
+//            saveMapResultAction("hospital_file", panel_file + "hf") ::
             phAstellasPanelImplAction(company, ym, mkt) ::
             saveMapResultAction[PhExcelWritable]("panelResult", panel_file, ".csv") ::
             Nil

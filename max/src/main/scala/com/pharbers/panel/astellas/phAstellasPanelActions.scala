@@ -16,10 +16,10 @@ case class phAstellasPanelActions(args: Map[String, List[String]])
     override lazy val cpa_file = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + cpa
     override lazy val gycx_file = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + gycx
 
-    override lazy val product_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_product_match_file
-    override lazy val markets_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_markets_match_file
+    override lazy val product_match_file = panel_path_obj.p_base_path + company// + panel_path_obj.p_product_match_file
+    override lazy val markets_match_file = panel_path_obj.p_base_path + company// + panel_path_obj.p_markets_match_file
     override lazy val hospital_file = panel_path_obj.p_base_path + company + "/医院名称编码等级三源互匹20180314.xlsx"
-    override lazy val universe_file = panel_path_obj.p_base_path + company + panel_path_obj.p_universe_file.replace("##market##", mkt)
+    override lazy val universe_file = panel_path_obj.p_base_path + company// + panel_path_obj.p_universe_file.replace("##market##", mkt)
 
     lazy val panelID = UUID.randomUUID.toString
     override lazy val panel_file = panel_path_obj.p_base_path + company + panel_path_obj.p_output_dir + panelID

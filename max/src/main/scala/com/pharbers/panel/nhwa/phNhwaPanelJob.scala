@@ -1,13 +1,13 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat, PhXlsxThirdSheetFormat}
-import com.pharbers.pactions.actionbase.pActionTrait
-import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
-import com.pharbers.pactions.jobs.sequenceJob
-import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.panel.panel_path_obj
+import com.pharbers.common.excel.input._
+import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
+import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 
-object phNhwaPanelJob { // extends phNhwaPanelJob {
+object phNhwaPanelJob {
 
     def apply(args : Map[String, List[String]])(_ym: List[String], _mkt: String) : phNhwaPanelJob = {
         new phNhwaPanelJob {
@@ -21,20 +21,23 @@ object phNhwaPanelJob { // extends phNhwaPanelJob {
 
             override lazy val cpa_file = panel_path_obj.p_base_path + company + panel_path_obj.p_source_dir + cpa
 
-            override lazy val product_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_product_match_file
-            override lazy val markets_match_file = panel_path_obj.p_base_path + company + panel_path_obj.p_markets_match_file
+            override lazy val product_match_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_product_match_file
+            override lazy val markets_match_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_markets_match_file
             override lazy val universe_file = panel_path_obj.p_base_path + company + panel_path_obj.p_universe_file.replace("##market##", mkt)
-            override lazy val not_published_hosp_file = panel_path_obj.p_base_path + company + panel_path_obj.p_not_published_hosp_file
-            override lazy val full_hosp_file = panel_path_obj.p_base_path + company + panel_path_obj.p_fill_hos_data_file
+            override lazy val not_published_hosp_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_not_published_hosp_file
+            override lazy val full_hosp_file = panel_path_obj.p_base_path + company + NhwaFilePath.p_fill_hos_data_file
 
             override lazy val cache_location = panel_path_obj.p_base_path + panel_path_obj.p_cache_dir
         }
     }
-
-
 }
 
-trait phNhwaPanelJob extends sequenceJob {
+/**
+  * 6. read CPA文件第一页
+  * 7. read CPA文件第二页
+  */
+
+trait phNhwaPanelJob extends sequenceJobWithMap {
     val company: String
     val cpa_file: String
     val ym: List[String]
@@ -69,7 +72,7 @@ trait phNhwaPanelJob extends sequenceJob {
     /**
       * 4. read 补充医院
       */
-    val cmd4 = xlsxReadingAction[PhXlsxCpaFormat](full_hosp_file, "full_hosp_file")
+    val cmd4 = xlsxReadingAction[phNhwaCpaFormat](full_hosp_file, "full_hosp_file")
     val cmd40 = saveCurrenResultAction(cache_location + cmd4.name)
 
     /**
@@ -82,23 +85,16 @@ trait phNhwaPanelJob extends sequenceJob {
     /**
       * 6. read CPA文件第一页
       */
-    val cmd6 = xlsxReadingAction[PhXlsxCpaFormat](cpa_file, "cpa")
+    val cmd6 = xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa")
     val cmd60 = saveCurrenResultAction(cache_location + cmd6.name)
 
     /**
       * 7. read CPA文件第二页
       */
     val cmd7 = xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file")
-    val cmd70 = saveCurrenResultAction(cache_location + cmd7.name)
+//    val cmd70 = saveCurrenResultAction(cache_location + cmd7.name)
 
-    override val actions: List[pActionTrait] = jarPreloadAction() ::
-            cmd1 ::cmd10 ::
-            cmd2 ::cmd20 ::
-            cmd3 :: cmd30 ::
-            cmd4 :: cmd40 ::
-            cmd5 :: cmd50 ::
-            cmd6 :: cmd60 ::
-            cmd7 :: cmd70 ::
-            phNhwaPanelConcretJob(company, cache_location, ym, mkt) ::
-            Nil
+    override val actions: List[pActionTrait] =
+        jarPreloadAction() :: PhNhwaPreActions.actions :::
+            (cmd6 :: cmd7 :: phNhwaPanelConcretJob(company, cache_location, ym, mkt) :: Nil)
 }
