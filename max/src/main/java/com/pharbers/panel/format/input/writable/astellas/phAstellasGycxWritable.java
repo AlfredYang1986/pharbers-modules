@@ -156,4 +156,14 @@ public class phAstellasGycxWritable extends PhXlsxCommonWritable {
         return mkString(lst, delimiter) + delimiter + min1;
     }
 
+    @Override
+    public String richWithInputRow(int index, String value) {
+        if (index == 1)
+            return fullTail("", titleMap.size());
+        else if (index == 2) {
+            return expendTitle(transTitle2Eng(value));
+        } else
+            return expendValues(titleMap.size(), value);
+    }
+
 }

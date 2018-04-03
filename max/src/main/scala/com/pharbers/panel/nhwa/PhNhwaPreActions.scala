@@ -1,11 +1,11 @@
 package com.pharbers.panel.nhwa
 
 import com.pharbers.baseModules.PharbersInjectModule
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.pactions.actionbase.pActionTrait
-import com.pharbers.pactions.generalactions.{csv2RddAction, existenceRdd, saveCurrenResultAction, xlsxReadingAction}
+import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
 import com.pharbers.pactions.jobs.{choiceJob, sequenceJob, sequenceJobWithMap}
-import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
+import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.pactions.generalactions.{csv2RddAction, existenceRdd, saveCurrenResultAction, xlsxReadingAction}
 
 /**
   * 1. read 2017年未出版医院名单.xlsx
@@ -70,7 +70,7 @@ object PhNhwaPreActions extends sequenceJobWithMap with PharbersInjectModule {
                     } :: csv2RddAction(cache_location + "/product_match_file") :: Nil
         } ::
         new choiceJob{
-            val cmd4 = xlsxReadingAction[PhXlsxCpaFormat](fill_hos_data_file, "full_hosp_file")
+            val cmd4 = xlsxReadingAction[phNhwaCpaFormat](fill_hos_data_file, "full_hosp_file")
             val cmd40 = saveCurrenResultAction(cache_location + cmd4.name)
 
             val actions =

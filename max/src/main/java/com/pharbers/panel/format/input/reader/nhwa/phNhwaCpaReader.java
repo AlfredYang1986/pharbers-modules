@@ -3,10 +3,10 @@ package com.pharbers.panel.format.input.reader.nhwa;
 import java.io.IOException;
 import org.apache.hadoop.io.NullWritable;
 import com.pharbers.panel.format.input.writable.PhExcelWritable;
-import com.pharbers.panel.format.input.writable.nhwa.PhXlsxCpaWritable;
+import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable;
 import com.pharbers.panel.format.input.reader.common.PhExcelXLSXCommonReader;
 
-public class PhXlsxCpaReader extends PhExcelXLSXCommonReader<NullWritable, PhExcelWritable> {
+public class phNhwaCpaReader extends PhExcelXLSXCommonReader<NullWritable, PhExcelWritable> {
 
     @Override
     public NullWritable getCurrentKey() throws IOException, InterruptedException {
@@ -15,7 +15,7 @@ public class PhXlsxCpaReader extends PhExcelXLSXCommonReader<NullWritable, PhExc
 
     @Override
     public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
-        PhXlsxCpaWritable reVal = new PhXlsxCpaWritable();
+        phNhwaCpaWritable reVal = new phNhwaCpaWritable();
         String s = reVal.richWithInputRow(parser.currentIndex(), value);
         reVal.setValues(s);
         return reVal;

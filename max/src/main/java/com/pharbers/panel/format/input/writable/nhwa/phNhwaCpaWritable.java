@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
-public class PhXlsxCpaWritable extends PhXlsxCommonWritable {
+public class phNhwaCpaWritable extends PhXlsxCommonWritable {
 
     private Map<String, String> titleMap = new HashMap<String, String>() {{
         put("省", "PROVINCES");
