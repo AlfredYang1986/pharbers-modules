@@ -2,7 +2,7 @@ package com.pharbers.common.another_file_package
 
 import java.io.{File, FileWriter, PrintWriter}
 
-import com.pharbers.memory.pages.flushMemory
+import com.pharbers.pactions.generalactions.memory.pages.flushMemory
 
 import scala.io.Source
 

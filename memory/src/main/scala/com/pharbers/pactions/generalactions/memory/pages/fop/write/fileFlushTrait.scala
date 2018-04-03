@@ -1,4 +1,4 @@
-package com.pharbers.memory.pages.fop.write
+package com.pharbers.pactions.generalactions.memory.pages.fop.write
 
 import java.io.{File, RandomAccessFile}
 import java.nio.MappedByteBuffer

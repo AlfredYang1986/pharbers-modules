@@ -1,10 +1,10 @@
-package com.pharbers.memory.pages.fop.read
+package com.pharbers.pactions.generalactions.memory.pages.fop.read
 
 import java.io.{File, RandomAccessFile}
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
-trait fileStorage3 extends fileStorageTrait {
+trait fileStorage extends fileStorageTrait {
 
     val path : String
     val bufferSize : Int
@@ -48,8 +48,6 @@ trait fileStorage3 extends fileStorageTrait {
         }
     }
 
-    def hasNextPage : Boolean = mem.position != fileLength
-
     def nextPage : Int = {
         val pos = mem.position // page * pageSize
         val result = adjustPositionAcc(pos - 1)
@@ -60,10 +58,10 @@ trait fileStorage3 extends fileStorageTrait {
     override def capCurrentPage(pg : Int, buf : Array[Byte]) : Long = {
         val result = math.min(buf.length, fileLength - mem.position.toLong)
         mem.get(buf, 0, result.toInt)
-        nextPage
         result
     }
 
     lazy val fileLength = raf.length
-    override def pageCount : Int = ???
+    override def pageCount : Int = (fileLength / pageSize + 1).toInt
+    override def hasNextPage: Boolean = ???
 }
