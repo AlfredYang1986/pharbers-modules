@@ -14,13 +14,13 @@ import com.pharbers.panel.phPanelTrait
 case class phNhwaHandle(args: Map[String, List[String]]) extends phPanelTrait with phDeliveryTrait{
 
     override def calcYM: JsValue = {
-        phNhwaCalcYMActions(args).perform()
+        phNhwaCalcYMJob(args).perform()
         toJson("")
     }
 
 
     override def getPanelFile(ym: List[String], mkt: String, t: Int, c: Int): JsValue = {
-        phNhwaPanelActions(args)(ym, mkt).perform()
+        phNhwaPanelJob(args)(ym, mkt).perform()
         toJson("")
     }
 
