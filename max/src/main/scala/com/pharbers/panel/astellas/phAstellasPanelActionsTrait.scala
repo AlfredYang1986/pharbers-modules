@@ -4,6 +4,7 @@ import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.actionContainer.pMapActionContainer
+import com.pharbers.panel.format.input.writable.PhExcelWritable
 
 trait phAstellasPanelActionsTrait extends pMapActionContainer {
     val company: String
@@ -26,6 +27,6 @@ trait phAstellasPanelActionsTrait extends pMapActionContainer {
             xlsxReadingAction[phAstellasUniverseFormat](universe_file, "universe_file") ::
             xlsxReadingAction[phAstellasHospitalFormat](hospital_file, "hospital_file") ::
             phAstellasPanelImplAction(company, ym, mkt) ::
-            saveMapResultAction("panelResult", panel_file) ::
+            saveMapResultAction[PhExcelWritable]("panelResult", panel_file, ".csv") ::
             Nil
 }
