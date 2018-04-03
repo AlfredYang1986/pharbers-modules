@@ -3,16 +3,38 @@ package com.pharbers.panel.nhwa
 import java.io.File
 import java.util.UUID
 
+import com.pharbers.panel.panel_path_obj
 import com.pharbers.spark.phSparkDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.{DoubleType, LongType}
 
+object phNhwaPanelConcretJobImpl {
+
+    def apply(company : String, cache_dir : String)(implicit sd : phSparkDriver) : phNhwaPanelConcretJobImpl = {
+        new phNhwaPanelConcretJobImpl {
+
+            override val sparkDriver = sd
+            override val cpa_file: String = cache_dir + "/cpa"
+            override val gycx_file: String = ""
+
+            override val product_match_file: String = cache_dir + "/product_match_file"
+            override val universe_file: String = cache_dir + "/universe_file"
+            override val markets_match_file: String = cache_dir + "/markets_match_file"
+            override val not_arrival_hosp_file: String = cache_dir + "/not_arrival_hosp_file"
+            override val not_published_hosp_file: String = cache_dir + "/not_published_hosp_file"
+            override val full_hosp_file: String = cache_dir + "/full_hosp_file"
+
+            override val output_location: String = panel_path_obj.p_base_path + company + panel_path_obj.p_output_dir
+        }
+    }
+}
+
 /**
   * Created by clock on 18-3-6.
   */
-trait phNhwaPanelImplTrait {
+trait phNhwaPanelConcretJobImpl {
     val sparkDriver: phSparkDriver
 
     val cpa_file: String
