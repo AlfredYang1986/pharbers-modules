@@ -1,55 +1,33 @@
 package com.pharbers.pactions.generalactions
 
 import java.io.File
-import java.util.UUID
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.format.input.writable.PhExcelWritable
 
 /**
   * Created by spark on 18-3-30.
   */
 object saveMapResultAction {
-    def apply(key: String, path: String): pActionTrait = new saveMapResultAction(key, path)
+    def apply[T](key: String, path: String, suffix: String): pActionTrait = new saveMapResultAction[T](key, path, suffix)
 }
 
-class saveMapResultAction(key: String, path: String) extends pActionTrait {
+class saveMapResultAction[T](key: String, path: String, suffix: String) extends pActionTrait {
     override val defaultArgs: pActionArgs = NULLArgs
 
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}
 
     override def perform(prMap: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
 
-        key match {
-            case "panelResult" => {
-                val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
-                    case Some(r) => r.asInstanceOf[RDDArgs[PhExcelWritable]].get
-                    case None => ???
-                }
-                rdd.coalesce(1).saveAsTextFile(path)
-                val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
-                    case None => throw new Exception("not single file")
-                    case Some(file) => file
-                }
-                new File(tempFile).renameTo(new File(path + ".csv"))
-            }
-            case "deliveryResult" => {
-                val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
-                    case Some(r) => r.asInstanceOf[RDDArgs[String]].get
-                    case None => ???
-                }
-                val yearMonth = rdd.take(2)(1).split(9.toChar.toString)(2)
-                rdd.coalesce(1).saveAsTextFile(path)
-                val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
-                    case None => throw new Exception("not single file")
-                    case Some(file) => file
-                }
-                new File(tempFile).renameTo(new File(path + yearMonth + ".txt"))
-            }
-            case _ => throw new Exception("no key match!")
+        val rdd = prMap.asInstanceOf[MapArgs].get.get(key) match {
+            case Some(r) => r.asInstanceOf[RDDArgs[T]].get
+            case None => ???
         }
-
+        rdd.coalesce(1).saveAsTextFile(path)
+        val tempFile = getAllFile(path).find(x => !x.endsWith("crc") && x.contains("part-")) match {
+            case None => throw new Exception("not single file")
+            case Some(file) => file
+        }
+        new File(tempFile).renameTo(new File(path + suffix))
         delFile(path)
-
         prMap
     }
 
@@ -76,4 +54,5 @@ class saveMapResultAction(key: String, path: String) extends pActionTrait {
         }
         parent.delete()
     }
+
 }
