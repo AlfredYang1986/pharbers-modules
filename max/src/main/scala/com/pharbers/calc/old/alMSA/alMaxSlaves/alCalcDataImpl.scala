@@ -6,12 +6,12 @@ import scala.math.BigDecimal
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.driver.redis.phRedisDriver
 import com.pharbers.bson.writer.bsonFlushMemory
-import com.pharbers.memory.pages.dirFlushMemory
+import com.pharbers.pactions.generalactions.memory.pages.dirFlushMemory
 import com.pharbers.alCalcMemory.aldata.alStorage
 import com.pharbers.alCalcMemory.alstages.alStage
 import com.pharbers.calc.old.alCalcHelp.alLog.alTempLog
 import com.pharbers.common.datatype.date.DateUtil
-import com.pharbers.memory.pages.fop.dir.dirPageStorage
+import com.pharbers.pactions.generalactions.memory.pages.fop.dir.dirPageStorage
 import com.pharbers.calc.old.alMSA.alCalcMaster.alCalcMsg.calcMsg._
 import com.pharbers.calc.old.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.calc.old.alCalcHelp.alFinalDataProcess.alBsonPath
