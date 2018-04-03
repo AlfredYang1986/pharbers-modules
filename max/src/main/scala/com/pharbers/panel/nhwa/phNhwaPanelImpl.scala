@@ -1,7 +1,7 @@
 package com.pharbers.panel.nhwa
 
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.spark.driver.phSparkDriver
+import com.pharbers.spark.phSparkDriver
 
 class phNhwaPanelImpl(company: String, cache_dir: String)(implicit sd: phSparkDriver) extends phNhwaPanelImplTrait {
     override val sparkDriver = sd

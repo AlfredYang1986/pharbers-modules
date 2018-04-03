@@ -1,9 +1,9 @@
 package com.pharbers.delivery.astellas
 
 import com.pharbers.delivery.astellas.format.{phAstellasHospitalMatchFormat, phAstellasMedicineMatchFormat}
-import com.pharbers.paction.actionContainer.pMapActionContainer
-import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.paction.funcTrait.{jarPreloadTrait, saveMapResultTrait, xlsxReadingTrait}
+import com.pharbers.pactions.actionContainer.pMapActionContainer
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.pactions.generalactions.{jarPreloadAction, saveMapResultAction, xlsxReadingAction}
 
 /**
   * Created by jeorch on 18-3-28.
@@ -17,13 +17,13 @@ trait phAstellasDeliveryActionsTrait extends pMapActionContainer {
     val hospitalMatchFile: String
     val medicineMatchFile: String
 
-    val readHospitalMatchAction = xlsxReadingTrait[phAstellasHospitalMatchFormat](hospitalMatchFile, "hospital_match_key")
-    val readMedicineMatchAction = xlsxReadingTrait[phAstellasMedicineMatchFormat](medicineMatchFile, "medicine_match_key")
+    val readHospitalMatchAction = xlsxReadingAction[phAstellasHospitalMatchFormat](hospitalMatchFile, "hospital_match_key")
+    val readMedicineMatchAction = xlsxReadingAction[phAstellasMedicineMatchFormat](medicineMatchFile, "medicine_match_key")
 
-    override val actions: List[pActionTrait] = jarPreloadTrait() ::
+    override val actions: List[pActionTrait] = jarPreloadAction() ::
         phReadAstellasHistoryDataAction(historyFile, "history_rdd_key") ::
         phReadMongo2RDDAction(company, dbName, lstColl, "mongo_rdd_key") ::
         readMedicineMatchAction :: readHospitalMatchAction ::
-        phAstellasDeliveryAction() :: saveMapResultTrait("deliveryResult", destPath) ::
+        phAstellasDeliveryAction() :: saveMapResultAction("deliveryResult", destPath) ::
         Nil
 }

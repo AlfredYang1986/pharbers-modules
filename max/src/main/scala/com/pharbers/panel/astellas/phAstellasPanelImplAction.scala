@@ -1,6 +1,6 @@
 package com.pharbers.panel.astellas
 
-import com.pharbers.paction.actionbase._
+import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.format.input.writable.astellas._
 
 /**

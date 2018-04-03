@@ -2,7 +2,7 @@ package com.pharbers.delivery.nhwa
 
 import java.util.UUID
 
-import com.pharbers.paction.actionbase.{NULLArgs, pActionArgs, pActionTrait}
+import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
 /**
   * Created by jeorch on 18-3-28.

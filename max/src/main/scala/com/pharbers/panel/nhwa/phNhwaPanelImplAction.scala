@@ -1,7 +1,7 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.paction.actionbase._
-import com.pharbers.spark.driver.phSparkDriver
+import com.pharbers.pactions.actionbase._
+import com.pharbers.spark.phSparkDriver
 
 object phNhwaPanelImplAction {
     def apply(company: String, cache_dir: String, ym: List[String], mkt: String): pActionTrait =

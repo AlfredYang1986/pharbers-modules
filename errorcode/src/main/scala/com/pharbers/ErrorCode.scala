@@ -41,4 +41,9 @@ object ErrorCode extends PharbersSingletonModule {
     def errorToJson(name: String): JsValue =
         Json.toJson(Map("status" -> toJson("error"), "error" ->
             toJson(Map("code" -> toJson(this.getErrorCodeByName(name)), "message" -> toJson(this.getErrorMessageByName(name))))))
+
+    def successToJson(result: JsValue = toJson("OK"), page: JsValue = toJson("")): Option[Map[String,JsValue]] = {
+        Some(Map("status" -> toJson("success"), "result" ->
+            toJson(Map("result" -> result, "page" -> page))))
+    }
 }
