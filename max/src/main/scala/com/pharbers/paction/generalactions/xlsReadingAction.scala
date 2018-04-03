@@ -1,4 +1,4 @@
-package com.pharbers.paction.funcTrait
+package com.pharbers.paction.generalactions
 
 import org.apache.hadoop.io.NullWritable
 import com.pharbers.paction.actionbase._
@@ -8,17 +8,17 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 
 import scala.reflect.ClassTag
 
-object xlsReadingTrait {
-    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String) : pActionTrait = new xlsReadingTrait[T](StringArgs(path))
+object xlsReadingAction {
+    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String) : pActionTrait = new xlsReadingAction[T](StringArgs(path))
 
     def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String, name : String) : pActionTrait = {
-        val tmp = new xlsReadingTrait[T](StringArgs(path))
+        val tmp = new xlsReadingAction[T](StringArgs(path))
         tmp.name = name
         tmp
     }
 }
 
-class xlsReadingTrait[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
+class xlsReadingAction[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 

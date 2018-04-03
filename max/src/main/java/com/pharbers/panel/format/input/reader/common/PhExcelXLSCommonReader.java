@@ -7,7 +7,7 @@ import scala.collection.JavaConversions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
-import com.pharbers.paction.format.input.PhExcelXLS;
+import com.pharbers.common.excel.input.PhExcelXLS;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 

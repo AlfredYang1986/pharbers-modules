@@ -1,4 +1,4 @@
-package com.pharbers.paction.funcTrait
+package com.pharbers.paction.generalactions
 
 import java.io.File
 import java.util.UUID
@@ -8,11 +8,11 @@ import com.pharbers.panel.format.input.writable.PhExcelWritable
 /**
   * Created by spark on 18-3-30.
   */
-object saveMapResultTrait {
-    def apply(key: String, path: String): pActionTrait = new saveMapResultTrait(key, path)
+object saveMapResultAction {
+    def apply(key: String, path: String): pActionTrait = new saveMapResultAction(key, path)
 }
 
-class saveMapResultTrait(key: String, path: String) extends pActionTrait {
+class saveMapResultAction(key: String, path: String) extends pActionTrait {
     override val defaultArgs: pActionArgs = NULLArgs
 
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}

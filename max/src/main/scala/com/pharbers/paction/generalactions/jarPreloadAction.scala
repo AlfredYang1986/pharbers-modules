@@ -1,13 +1,13 @@
-package com.pharbers.paction.funcTrait
+package com.pharbers.paction.generalactions
 
 import com.pharbers.paction.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 
-object jarPreloadTrait {
-    def apply() : pActionTrait = new jarPreloadTrait()
+object jarPreloadAction {
+    def apply() : pActionTrait = new jarPreloadAction()
 }
 
-class jarPreloadTrait extends pActionTrait { //this : pFileSystem =>
+class jarPreloadAction extends pActionTrait { //this : pFileSystem =>
 
     override val defaultArgs : pActionArgs = NULLArgs
 

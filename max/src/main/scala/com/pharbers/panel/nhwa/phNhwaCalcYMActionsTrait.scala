@@ -4,7 +4,7 @@ import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
 import com.pharbers.paction.actionContainer.pActionContainer
 import com.pharbers.panel.format.input.writable.nhwa.PhXlsxCpaWritable
 import com.pharbers.paction.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
-import com.pharbers.paction.funcTrait.{jarPreloadTrait, saveCurrenResultTrait, xlsxReadingTrait}
+import com.pharbers.paction.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.panel.astellas.phAstellasCalcYMImplAction
 
 trait phNhwaCalcYMActionsTrait extends pActionContainer {
@@ -18,9 +18,9 @@ trait phNhwaCalcYMActionsTrait extends pActionContainer {
         "fc" -> SingleArgFuncArgs[PhXlsxCpaWritable, String](fc)
     ))
 
-    override val actions: List[pActionTrait] = jarPreloadTrait() ::
-                xlsxReadingTrait[PhXlsxCpaFormat](cpa_file) ::
+    override val actions: List[pActionTrait] = jarPreloadAction() ::
+                xlsxReadingAction[PhXlsxCpaFormat](cpa_file) ::
                 phAstellasCalcYMImplAction("") ::
-                saveCurrenResultTrait(cache_location) ::
+                saveCurrenResultAction(cache_location) ::
                 Nil
 } 

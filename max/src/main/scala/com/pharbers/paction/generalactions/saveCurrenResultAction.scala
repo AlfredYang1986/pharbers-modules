@@ -1,13 +1,13 @@
-package com.pharbers.paction.funcTrait
+package com.pharbers.paction.generalactions
 
 import scala.reflect.ClassTag
 import com.pharbers.paction.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
 
-object saveCurrenResultTrait {
-    def apply[T : ClassTag](path : String) : pActionTrait = new saveCurrenResultTrait[T](StringArgs(path))
+object saveCurrenResultAction {
+    def apply[T : ClassTag](path : String) : pActionTrait = new saveCurrenResultAction[T](StringArgs(path))
 }
 
-class saveCurrenResultTrait[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
+class saveCurrenResultAction[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {
 
