@@ -1,10 +1,10 @@
 package com.pharbers.panel.nhwa
 
 import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat, PhXlsxThirdSheetFormat}
-import com.pharbers.paction.actionbase.pActionTrait
+import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
-import com.pharbers.paction.actionContainer.pActionContainer
-import com.pharbers.paction.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
+import com.pharbers.pactions.actionContainer.pActionContainer
+import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 
 trait phNhwaPanelActionsTrait extends pActionContainer {
     val company: String

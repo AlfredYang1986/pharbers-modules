@@ -1,6 +1,6 @@
 package com.pharbers.max
 
-import com.pharbers.paction.actionbase.NULLArgs
+import com.pharbers.pactions.actionbase.NULLArgs
 import org.scalatest.FunSuite
 
 class SPFileFormatSuit extends FunSuite {

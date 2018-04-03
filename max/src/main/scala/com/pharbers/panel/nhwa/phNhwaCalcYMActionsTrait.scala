@@ -1,10 +1,10 @@
 package com.pharbers.panel.nhwa
 
 import com.pharbers.panel.nhwa.format.PhXlsxCpaFormat
-import com.pharbers.paction.actionContainer.pActionContainer
+import com.pharbers.pactions.actionContainer.pActionContainer
 import com.pharbers.panel.format.input.writable.nhwa.PhXlsxCpaWritable
-import com.pharbers.paction.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
-import com.pharbers.paction.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
+import com.pharbers.pactions.actionbase.{MapArgs, SingleArgFuncArgs, pActionTrait}
+import com.pharbers.pactions.generalactions.{jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.panel.astellas.phAstellasCalcYMImplAction
 
 trait phNhwaCalcYMActionsTrait extends pActionContainer {

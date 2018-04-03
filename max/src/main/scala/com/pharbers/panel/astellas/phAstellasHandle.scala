@@ -2,7 +2,7 @@ package com.pharbers.panel.astellas
 
 import com.pharbers.delivery.astellas.phAstellasDeliveryActions
 import com.pharbers.delivery.util.phDeliveryTrait
-import com.pharbers.paction.actionbase.{MapArgs, RDDArgs}
+import com.pharbers.pactions.actionbase.{MapArgs, RDDArgs}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 

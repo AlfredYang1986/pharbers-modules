@@ -1,6 +1,6 @@
 package com.pharbers.delivery.astellas
 
-import com.pharbers.paction.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
+import com.pharbers.pactions.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 
 /**

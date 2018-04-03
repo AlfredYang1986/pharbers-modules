@@ -2,7 +2,7 @@ package com.pharbers.panel
 
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-import com.pharbers.panel.util.xml.phHanderXmlTrait
+import com.pharbers.panel.util.phHanderXmlTrait
 
 /**
   * Created by clock on 18-3-6.

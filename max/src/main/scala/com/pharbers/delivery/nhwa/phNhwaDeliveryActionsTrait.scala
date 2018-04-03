@@ -1,7 +1,7 @@
 package com.pharbers.delivery.nhwa
 
-import com.pharbers.paction.actionContainer.pActionContainer
-import com.pharbers.paction.actionbase.pActionTrait
+import com.pharbers.pactions.actionContainer.pActionContainer
+import com.pharbers.pactions.actionbase.pActionTrait
 
 /**
   * Created by jeorch on 18-3-28.

@@ -1,6 +1,6 @@
 package com.pharbers.panel.nhwa
 
-import com.pharbers.paction.actionbase._
+import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver
 
 object phNhwaPanelImplAction {

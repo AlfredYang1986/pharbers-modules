@@ -1,8 +1,8 @@
 package com.pharbers.panel.astellas
 
-import com.pharbers.paction.actionContainer.pMapActionContainer
-import com.pharbers.paction.generalactions.{jarPreloadAction, xlsxReadingAction}
-import com.pharbers.paction.actionbase.pActionTrait
+import com.pharbers.pactions.actionContainer.pMapActionContainer
+import com.pharbers.pactions.generalactions.{jarPreloadAction, xlsxReadingAction}
+import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.astellas.format.{phAstellasCpaFormat, phAstellasGycxFormat}
 
 trait phAstellasCalcYMActionsTrait extends pMapActionContainer {

@@ -1,9 +1,9 @@
 package com.pharbers.panel.astellas
 
-import com.pharbers.paction.generalactions._
+import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.astellas.format._
-import com.pharbers.paction.actionbase.pActionTrait
-import com.pharbers.paction.actionContainer.pMapActionContainer
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.pactions.actionContainer.pMapActionContainer
 
 trait phAstellasPanelActionsTrait extends pMapActionContainer {
     val company: String
