@@ -40,73 +40,53 @@ object PhNhwaPreActions extends sequenceJobWithMap with PharbersInjectModule {
 
     override val actions: List[pActionTrait] =
         new choiceJob {
-            val cmd1 = xlsxReadingAction[PhExcelXLSXCommonFormat](not_published_hosp_file, "not_published_hosp_file")
-            val cmd10 = saveCurrenResultAction(cache_location + cmd1.name)
-
             val actions =
                 existenceRdd("not_published_hosp_file") ::
                     new sequenceJob {
-                        override val actions: List[pActionTrait] = cmd1 :: cmd10 :: Nil
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhExcelXLSXCommonFormat](not_published_hosp_file, "not_published_hosp_file") ::
+                            saveCurrenResultAction(cache_location + "not_published_hosp_file") ::
+                            csv2RddAction(cache_location + "/not_published_hosp_file") :: Nil
                     } :: csv2RddAction(cache_location + "/not_published_hosp_file") :: Nil
         } ::
         new choiceJob{
-            val cmd2 = xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, "universe_file")
-            val cmd20 = saveCurrenResultAction(cache_location + cmd2.name)
-
             val actions =
                 existenceRdd("universe_file") ::
                     new sequenceJob {
-                        override val actions: List[pActionTrait] = cmd2 :: cmd20 :: Nil
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, "universe_file") ::
+                            saveCurrenResultAction(cache_location + "universe_file") ::
+                            csv2RddAction(cache_location + "/universe_file") :: Nil
                     } :: csv2RddAction(cache_location + "/universe_file") :: Nil
         } ::
         new choiceJob{
-            val cmd3 = xlsxReadingAction[PhExcelXLSXCommonFormat](product_match_file, "product_match_file")
-            val cmd30 = saveCurrenResultAction(cache_location + cmd3.name)
-
             val actions =
                 existenceRdd("product_match_file") ::
                     new sequenceJob {
-                        override val actions: List[pActionTrait] = cmd3 :: cmd30 :: Nil
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhExcelXLSXCommonFormat](product_match_file, "product_match_file") ::
+                                saveCurrenResultAction(cache_location + "product_match_file") ::
+                                csv2RddAction(cache_location + "/product_match_file") :: Nil
                     } :: csv2RddAction(cache_location + "/product_match_file") :: Nil
         } ::
         new choiceJob{
-            val cmd4 = xlsxReadingAction[PhXlsxCpaFormat](fill_hos_data_file, "full_hosp_file")
-            val cmd40 = saveCurrenResultAction(cache_location + cmd4.name)
-
             val actions =
                 existenceRdd("full_hosp_file") ::
                     new sequenceJob {
-                        override val actions: List[pActionTrait] = cmd4 :: cmd40 :: Nil
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhXlsxCpaFormat](fill_hos_data_file, "full_hosp_file") ::
+                                saveCurrenResultAction(cache_location + "full_hosp_file") ::
+                                csv2RddAction(cache_location + "/full_hosp_file") :: Nil
                     } :: csv2RddAction(cache_location + "/full_hosp_file") :: Nil
         } ::
         new choiceJob {
-            val cmd5 = xlsxReadingAction[PhXlsxThirdSheetFormat](markets_match_file, "markets_match_file")
-            val cmd50 = saveCurrenResultAction(cache_location + cmd5.name)
-
             val actions =
                 existenceRdd("markets_match_file") ::
                     new sequenceJob {
-                        override val actions: List[pActionTrait] = cmd5 :: cmd50 :: Nil
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhXlsxThirdSheetFormat](markets_match_file, "markets_match_file") ::
+                                saveCurrenResultAction(cache_location + "markets_match_file") ::
+                                csv2RddAction(cache_location + "/markets_match_file") :: Nil
                     } :: csv2RddAction(cache_location + "/markets_match_file") :: Nil
         } :: Nil
-//        new choiceJob{
-//            val cmd6 = xlsxReadingAction[PhXlsxCpaFormat](cpa_file, "cpa")
-//            val cmd60 = saveCurrenResultAction(cache_location + cmd6.name)
-//
-//            val actions =
-//                existenceRdd("cpa") ::
-//                    new sequenceJob {
-//                        override val actions: List[pActionTrait] = cmd6 :: cmd60 :: Nil
-//                    } :: csv2RddAction(cache_location + "/cpa") :: Nil
-//        } ::
-//        new choiceJob{
-//            val cmd7 = xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file")
-//            val cmd70 = saveCurrenResultAction(cache_location + cmd7.name)
-//
-//            val actions =
-//                existenceRdd("not_arrival_hosp_file") ::
-//                    new sequenceJob {
-//                        override val actions: List[pActionTrait] = cmd7 :: cmd70 :: Nil
-//                    } :: csv2RddAction(cache_location + "/not_arrival_hosp_file") :: Nil
-//        } :: Nil
 }

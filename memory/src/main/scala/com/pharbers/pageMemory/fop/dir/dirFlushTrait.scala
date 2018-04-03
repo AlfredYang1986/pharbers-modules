@@ -1,6 +1,7 @@
-package com.pharbers.pactions.generalactions.memory.pages.fop.dir
+package com.pharbers.pageMemory.fop.dir
 
-import com.pharbers.pactions.generalactions.memory.pages.fop.write.fileFlushTrait
+import com.pharbers.pageMemory.fop.write.fileFlushTrait
+
 
 trait dirFlushTrait {
 

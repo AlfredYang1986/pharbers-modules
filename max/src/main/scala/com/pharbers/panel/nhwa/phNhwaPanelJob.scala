@@ -51,12 +51,14 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
 
     val cache_location: String
 
-    val cmd6 = xlsxReadingAction[PhXlsxCpaFormat](cpa_file, "cpa")
-//    val cmd60 = saveCurrenResultAction(cache_location + cmd6.name)
-    val cmd7 = xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file")
-//    val cmd70 = saveCurrenResultAction(cache_location + cmd7.name)
+    val cmd6 = xlsxReadingAction[PhXlsxCpaFormat](cpa_file, "cpa") ::
+                    saveCurrenResultAction(cache_location + "cpa") ::
+                        csv2RddAction(cache_location + "/cpa") :: Nil
+
+    val cmd7 = xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file") ::
+                    saveCurrenResultAction(cache_location + "not_arrival_hosp_file") :: Nil
 
     override val actions: List[pActionTrait] =
         jarPreloadAction() :: PhNhwaPreActions.actions :::
-            (cmd6 :: cmd7 :: phNhwaPanelConcretJob(company, cache_location, ym, mkt) :: Nil)
+            (cmd6 ::: cmd7 ::: phNhwaPanelConcretJob(company, cache_location, ym, mkt) :: Nil)
 }

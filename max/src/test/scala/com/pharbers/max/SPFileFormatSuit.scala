@@ -1,16 +1,15 @@
 package com.pharbers.max
 
-import com.pharbers.pactions.actionbase.NULLArgs
+import com.pharbers.panel.nhwa.phNhwaCalcYMJob
 import org.scalatest.FunSuite
 
 class SPFileFormatSuit extends FunSuite {
 
-//    object tf extends NhwaYMActions
-//    test("Spark File Convert") {
-//        import tf.progressFunc
-//        tf.perform(NULLArgs)
-//    }
-//
+    implicit def progressFunc(progress: Double, flag: String) : Unit = Unit
+    test("Spark File Convert") {
+        phNhwaCalcYMJob("resource/test-01.xlsx", "result/nhwa/ym").perform()
+    }
+
 //    test("edit distance") {
 //        val a = "aabbcc"
 //        val b = "aabcc"

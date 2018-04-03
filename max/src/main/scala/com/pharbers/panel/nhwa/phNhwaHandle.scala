@@ -14,7 +14,7 @@ import com.pharbers.panel.phPanelTrait
 case class phNhwaHandle(args: Map[String, List[String]]) extends phPanelTrait with phDeliveryTrait{
 
     override def calcYM: JsValue = {
-        phNhwaCalcYMJob(args).perform()
+//        phNhwaCalcYMJob(args).perform()
         toJson("")
     }
 

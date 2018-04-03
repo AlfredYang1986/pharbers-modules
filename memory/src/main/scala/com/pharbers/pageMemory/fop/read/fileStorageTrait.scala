@@ -1,4 +1,4 @@
-package com.pharbers.pactions.generalactions.memory.pages.fop.read
+package com.pharbers.pageMemory.fop.read
 
 trait fileStorageTrait {
     def seekToPage(page: Int) : Long

@@ -1,8 +1,8 @@
-package com.pharbers.pactions.generalactions.memory.pages.fop.dir
+package com.pharbers.pageMemory.fop.dir
 
 import java.io.File
 
-import com.pharbers.pactions.generalactions.memory.pages.{pageMemory2, pageMemory3}
+import com.pharbers.pageMemory.pageMemory3
 
 trait dirPageStorageTrait {
     val path : String

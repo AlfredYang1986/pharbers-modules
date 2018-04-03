@@ -1,8 +1,8 @@
-package com.pharbers.pactions.generalactions.memory.pages.fop.read
+package com.pharbers.pageMemory.fop.read
 
 import java.nio.charset.StandardCharsets
 
-trait pageStorage2 {
+trait pageStorage {
 
     protected val chl = '\n'.toByte
     protected val pageSize : Int
@@ -13,12 +13,21 @@ trait pageStorage2 {
     protected var pos_p = -1
 
     lazy val buf : Array[Byte] = new Array[Byte](pageSize)
+    val pageCount = fs.pageCount
     var cur_page : Int = 0
 
+    private var line_head_p : Int = -1
+    def line_head = fs.seekToPage(cur_page) + line_head_p
+    private var line_last_p : Int = -1
+    def line_last = fs.seekToPage(cur_page) + line_last_p
+
     def curInStorage : Array[Byte] = {
+        fs.seekToPage(cur_page)
         limit_p = fs.capCurrentPage(cur_page, buf)
         mark_p = 0
         pos_p = 0
+        line_head_p = 0
+        line_last_p = 0
 
         buf
     }
@@ -37,6 +46,8 @@ trait pageStorage2 {
         else {
             try {
                 val line = nextCharAcc(pos_p)
+                line_head_p = line_last_p
+                line_last_p = mark_p
                 Some(new String(line, StandardCharsets.UTF_8))
             } catch {
                 case _ : java.lang.ArrayIndexOutOfBoundsException => None
@@ -61,12 +72,12 @@ trait pageStorage2 {
         pageDateAcc()
     }
 
-    def allData(func : Stream[String] => Unit) : Unit = {
+    def allData : Stream[String] = {
         def pageAcc(c : Int) : Stream[String] = {
-            if (fs.hasNextPage) {
+            if (c < pageCount) {
+                cur_page = c
                 curInStorage
-                func(pageData)
-                pageAcc(c + 1)
+                pageData #::: pageAcc(c + 1)
             } else Stream.empty
         }
         pageAcc(0)
