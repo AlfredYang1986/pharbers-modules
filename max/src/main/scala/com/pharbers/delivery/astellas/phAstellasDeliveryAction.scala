@@ -84,7 +84,7 @@ class phAstellasDeliveryAction extends pActionTrait {
           * Step 4. Merge max_result with medicine_distinct.
           */
 
-        val max_result_merged = max_result_groupBy.leftOuterJoin(medicine_distinct)
+        val max_result_merged = max_result_groupBy.join(medicine_distinct)
 
         /**
           * Step 5.Split [Product] field have been completed when the medicine.xlsx is loaded
@@ -98,33 +98,34 @@ class phAstellasDeliveryAction extends pActionTrait {
           * Step 7.Filter max_result_merged by some fields.
           */
 
-        val max_result_filter = max_result_merged.filter(row => !(!(List("粉针剂","注射剂").contains(row._2._2.get._2)) && List("米开民市场", "佩尔市场").contains(row._2._1._1))
-            && !(List("粉针剂", "注射剂", "滴眼剂").contains(row._2._2.get._2) && row._2._1._1.equals("阿洛刻市场"))
-            && !(row._2._2.get._2.equals("滴眼剂") && row._2._1._1.equals("普乐可复市场"))
-            && !(row._2._2.get._1.equals("保法止"))
-        ).filter(row => !List("倍他司汀", "阿魏酰γ-丁二胺/植物生长素", "丙磺舒", "复方别嘌醇").contains(row._2._2.get._6))
-            .map(row => (row._2._1, row._2._2.get))
+
+        val max_result_filter = max_result_merged.filter(row => !(!(List("粉针剂","注射剂").contains(row._2._2._2)) && List("米开民市场", "佩尔市场").contains(row._2._1._1))
+            && !(List("粉针剂", "注射剂", "滴眼剂").contains(row._2._2._2) && row._2._1._1.equals("阿洛刻市场"))
+            && !(row._2._2._2.equals("滴眼剂") && row._2._1._1.equals("普乐可复市场"))
+            && !(row._2._2._1.equals("保法止"))
+        ).filter(row => !List("倍他司汀", "阿魏酰γ-丁二胺/植物生长素", "丙磺舒", "复方别嘌醇").contains(row._2._2._6))
+            .map(row => (row._2._1, row._2._2))
 
         /**
           * Step 8.Select 12 columns and rename them.
           */
 
-        val max_result_renamed = max_result_filter.map(row => row._1._2 + delimiter + row._1._3
-            + delimiter + row._1._4 + delimiter + row._2._1
-            + delimiter + row._2._2 + delimiter + row._2._3
-            + delimiter + row._2._4 + delimiter + row._2._5
-            + delimiter + row._1._5.toString + delimiter + row._1._6.toString
-            + delimiter + row._1._1 + delimiter + row._2._6
-        )
-//        max_result_renamed.take(10).foreach(println)
-//        println(max_result_renamed.count())
+        val max_result_renamed = max_result_filter.sortBy(x => x._1._2)
+            .map(row => row._1._2 + delimiter + row._1._3
+                + delimiter + row._1._4 + delimiter + row._2._1
+                + delimiter + row._2._2 + delimiter + row._2._3
+                + delimiter + row._2._4 + delimiter + row._2._5
+                + delimiter + row._1._5.toString + delimiter + row._1._6.toString
+                + delimiter + row._1._1 + delimiter + row._2._6
+            )
 
         /**
           * Step 9.Union old_delivery_file && save in new_delivery_file.
           */
 
-        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
-        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
-        RDDArgs(union_result)
+//        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
+//        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
+        RDDArgs(max_result_renamed)
     }
+
 }

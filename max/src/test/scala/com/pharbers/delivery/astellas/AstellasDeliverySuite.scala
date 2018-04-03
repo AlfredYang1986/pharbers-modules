@@ -11,18 +11,45 @@
 //class AstellasDeliverySuite extends FunSuite {
 //    val company_name = "235f39e3da85c2dee2a2b20d004a8b77"
 //    val dbName = "Max_Test"
-//    val coll1 = "235f39e3da85c2dee2a2b20d004a8b77_Allelock_1712"
-//    val mkt1 = "阿洛刻市场"
-//    val coll_with_mkt1 = s"${coll1}##${mkt1}"
-//    val destPath = s"/mnt/config/FileBase/${company_name}/HistoryDeliveryFiles/Max_14-"
+//    val yearMonth = "1712"
+//    val destPath = s"/mnt/config/FileBase/${company_name}/HistoryDeliveryFiles/Max_14-${yearMonth}"
 //
-//    val args: Map[String, List[String]] = Map(
-//        "company" -> List(company_name),
-//        "dbName" -> List(dbName),
-//        "lstColl" -> List(coll_with_mkt1),
-//        "destPath" -> List(destPath)
-//    )
+//    /**
+//      * c("Allelock", "阿洛刻市场"),
+//      * c("Mycamine", "米开民市场"),
+//      * c("Prograf", "普乐可复市场"),
+//      * c("Perdipine", "佩尔市场"),
+//      * c("Harnal", "哈乐市场"),
+//      * c("Gout", "痛风市场"),
+//      * c("Vesicare", "卫喜康市场"),
+//      * c("Grafalon", "GRAFALON市场")
+//      */
+//
 //    test("test astellas delivery"){
+//
+//        val testPath = new File("/home/jeorch/work/test/bash-test")
+//        val lst_coll_with_mkt = testPath.listFiles().map { one =>
+//            val tempFile = one.getName
+//            val tempColl = tempFile.split(".csv").head
+//            val tempMkt = tempFile.split("_").head match {
+//                case "Allelock" =>"阿洛刻市场"
+//                case "Mycamine" => "米开民市场"
+//                case "Prograf" => "普乐可复市场"
+//                case "Perdipine" => "佩尔市场"
+//                case "Harnal" => "哈乐市场"
+//                case "Gout" => "痛风市场"
+//                case "Vesicare" => "卫喜康市场"
+//                case "Grafalon" => "GRAFALON市场"
+//            }
+//            s"${tempColl}##${tempMkt}"
+//        }.toList
+//        val args: Map[String, List[String]] = Map(
+//            "company" -> List(company_name),
+//            "dbName" -> List(dbName),
+//            "lstColl" -> lst_coll_with_mkt,
+//            "destPath" -> List(destPath)
+//        )
+////        lst_coll_with_mkt.foreach(println)
 //        delTempFile(new File(destPath))
 //        phAstellasHandle(args).generateDeliveryFile
 //    }
