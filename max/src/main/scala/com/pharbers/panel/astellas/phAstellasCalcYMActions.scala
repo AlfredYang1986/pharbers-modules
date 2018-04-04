@@ -4,6 +4,7 @@ import scala.collection.immutable.Map
 import com.pharbers.panel.panel_path_obj
 
 case class phAstellasCalcYMActions(args: Map[String, List[String]]) extends phAstellasCalcYMActionsTrait {
+    override val name = ""
     lazy val uid: String = args.getOrElse("uid", throw new Exception("no find uid arg")).head
     lazy val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
     lazy val cpa: String = args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head

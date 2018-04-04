@@ -4,6 +4,7 @@ import java.io.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+// 暂时不用
 public class PhExcelXLSPOIImpl {
 
     private Workbook cwb = null;

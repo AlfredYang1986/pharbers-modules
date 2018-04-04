@@ -4,13 +4,11 @@ import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 
 object jarPreloadAction {
-    def apply() : pActionTrait = new jarPreloadAction()
+    def apply(arg_name: String = "jarPreloadJob") : pActionTrait =
+        new jarPreloadAction(arg_name)
 }
 
-class jarPreloadAction extends pActionTrait { //this : pFileSystem =>
-
-    name = "jar loaded"
-    override val defaultArgs : pActionArgs = NULLArgs
+class jarPreloadAction(override val name: String) extends pActionTrait { //this : pFileSystem =>
 
     lazy val lst =  ("commons-codec-1.5.jar", "./jar/commons-codec-1.9.jar") ::
                     ("dom4j-1.1.jar", "./jar/dom4j-1.1.jar") ::
@@ -20,10 +18,6 @@ class jarPreloadAction extends pActionTrait { //this : pFileSystem =>
                     ("poi-ooxml-schemas-3.8.jar", "./jar/poi-ooxml-schemas-3.13.jar") ::
                     ("xlsx-streamer-1.0.2.jar", "./jar/xlsx-streamer-1.0.2.jar") ::
                     ("pharbers-max-0.1.jar", "./target/pharbers-max-0.1.jar") :: Nil
-
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
-
-    }
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
@@ -36,4 +30,7 @@ class jarPreloadAction extends pActionTrait { //this : pFileSystem =>
 
         NULLArgs
     }
+
+    override val defaultArgs : pActionArgs = NULLArgs
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 }

@@ -8,6 +8,8 @@ case class phAstellasPanelActions(args: Map[String, List[String]])
                                  (override val ym: List[String],
                                   override val mkt: String) extends phAstellasPanelActionsTrait {
 
+    override val name = ""
+
     lazy val uid: String = args.getOrElse("uid", throw new Exception("no find uid arg")).head
     override lazy val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
     lazy val cpa: String = args.getOrElse("cpas", throw new Exception("no find CPAs arg")).head

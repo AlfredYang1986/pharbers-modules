@@ -1,28 +1,23 @@
 package com.pharbers.pactions.generalactions
 
+import scala.reflect.ClassTag
 import org.apache.hadoop.io.NullWritable
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.format.input.writable.PhExcelWritable
 import com.pharbers.spark.phSparkDriver
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
-
-import scala.reflect.ClassTag
+import com.pharbers.panel.format.input.writable.PhExcelWritable
 
 object xlsxReadingAction {
-    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String) : pActionTrait = new xlsxReadingAction[T](StringArgs(path))
+    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](arg_path: String,
+                                                                              arg_name: String): pActionTrait =
+        new xlsxReadingAction[T](StringArgs(arg_path), arg_name)
 
-    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](path : String, name : String) : pActionTrait = {
-        val tmp = new xlsxReadingAction[T](StringArgs(path))
-        tmp.name = name
-        tmp
-    }
 }
 
-class xlsxReadingAction[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait { //this : pFileSystem =>
+class xlsxReadingAction[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs,
+                                                                                        override val name: String) extends pActionTrait { //this : pFileSystem =>
 
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
-
-    }
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc

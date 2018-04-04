@@ -1,8 +1,7 @@
 package com.pharbers.max
 
-import com.pharbers.panel.nhwa.phNhwaCalcYMJob
-import com.pharbers.panel.nhwa.phNhwaPanelJob
 import org.scalatest.FunSuite
+import com.pharbers.panel.nhwa.phNhwaPanelJob
 
 class SPFileFormatSuit extends FunSuite {
 
@@ -12,7 +11,7 @@ class SPFileFormatSuit extends FunSuite {
 //    }
 
     test("nhwa panel generator") {
-        phNhwaPanelJob("resource/nhwa/test-02.xlsx", "resource/midTmp", "result/nhwa/panel").perform()
+        phNhwaPanelJob("/mnt/config/Client/171215恩华2017年10月检索.xlsx", "result/nhwa/panel").perform()
     }
 
 }

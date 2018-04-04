@@ -6,12 +6,14 @@ import com.pharbers.panel.format.input.writable.astellas.{phAstellasCpaWritable,
 object phAstellasCalcYMImplAction  {
     def apply(name: String, args : pActionArgs = NULLArgs) : pActionTrait = {
         val temp = new phAstellasCalcYMImplAction(args)
-        temp.name = name
+//        temp.name = name
         temp
     }
 }
 
 class phAstellasCalcYMImplAction(override val defaultArgs: pActionArgs) extends pActionTrait {
+
+    override val name: String = ""
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 

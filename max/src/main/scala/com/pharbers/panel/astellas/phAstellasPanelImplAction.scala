@@ -9,12 +9,14 @@ import com.pharbers.panel.format.input.writable.astellas._
 object phAstellasPanelImplAction  {
     def apply(company: String, ym: List[String], mkt: String) : pActionTrait = {
         val tmp = new phAstellasPanelImplAction(company, ym, mkt)
-        tmp.name = "panelResult"
+//        tmp.name = "panelResult"
         tmp
     }
 }
 
 class phAstellasPanelImplAction(company: String, ym: List[String], mkt: String) extends pActionTrait {
+
+    override val name: String = ""
 
     val delimiter = 31.toChar.toString
     override val defaultArgs: pActionArgs = NULLArgs

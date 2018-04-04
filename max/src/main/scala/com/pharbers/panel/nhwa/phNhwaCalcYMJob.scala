@@ -32,11 +32,12 @@ object phNhwaCalcYMJob {
 }
 
 trait phNhwaCalcYMJob extends sequenceJob {
+    override val name: String = ""
     val cpa_file: String
     val cache_location: String
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-                xlsxReadingAction[phNhwaCpaFormat](cpa_file) ::
+                xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
                 phNhwaCalcYMConcretJob() ::
                 saveCurrenResultAction(cache_location) ::
                 Nil

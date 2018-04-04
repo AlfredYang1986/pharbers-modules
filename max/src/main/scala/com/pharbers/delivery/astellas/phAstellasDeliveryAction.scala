@@ -10,12 +10,13 @@ import org.bson.Document
 object phAstellasDeliveryAction {
     def apply(): pActionTrait = {
         val temp = new phAstellasDeliveryAction
-        temp.name = "deliveryResult"
+//        temp.name = "deliveryResult"
         temp
     }
 }
 
 class phAstellasDeliveryAction extends pActionTrait {
+    override val name = "phAstellasDeliveryAction"
 
     val delimiter = 9.toChar.toString
 

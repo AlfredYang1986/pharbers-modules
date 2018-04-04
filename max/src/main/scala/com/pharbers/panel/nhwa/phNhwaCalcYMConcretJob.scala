@@ -8,13 +8,14 @@ import scala.reflect.ClassTag
 object phNhwaCalcYMConcretJob  {
     def apply[T : ClassTag](name: String = "", args : pActionArgs = NULLArgs) : pActionTrait = {
         val temp = new phNhwaCalcYMConcretJob[T](args)
-        temp.name = name
+//        temp.name = name
         temp
     }
 }
 
 class phNhwaCalcYMConcretJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
+    override val name: String = ""
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
     override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {

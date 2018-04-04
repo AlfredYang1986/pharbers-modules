@@ -1,47 +1,36 @@
 package com.pharbers.panel.nhwa
 
-import java.io.File
-import java.util.UUID
-
-import com.pharbers.pactions.actionbase._
-import com.pharbers.spark.phSparkDriver
 import org.apache.spark.sql.DataFrame
+import com.pharbers.spark.phSparkDriver
+import com.pharbers.pactions.actionbase._
 import org.apache.spark.sql.types.{DoubleType, LongType}
-import play.api.libs.json.JsValue
-import play.api.libs.json.Json.toJson
 
-// TODO : job 和 Impl是可以合并的
 object phNhwaPanelConcretJob {
-//    def apply(company: String, cache_dir: String, ym: List[String], mkt: String): pActionTrait =
-//        new phNhwaPanelConcretJob(company, cache_dir, ym, mkt)
-
-    def apply(args : MapArgs) : pActionTrait = new phNhwaPanelConcretJob(args);
+    def apply(args : MapArgs) : pActionTrait = new phNhwaPanelConcretJob(args)
 }
 
 class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pActionTrait {
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
+    override val name: String = "phNhwaPanelConcretJob"
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
-    }
+    val sparkDriver: phSparkDriver = phSparkDriver()
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-//        println(s"xxxxxxx ===========> $defaultArgs")
-//        println(s"xxxxxxx ===========> $args")
 
-        val des = defaultArgs.asInstanceOf[MapArgs].get.get("des").get.asInstanceOf[StringArgs].get
-        val ym = defaultArgs.asInstanceOf[MapArgs].get.get("ym").get.asInstanceOf[ListArgs].get.map (x => x.asInstanceOf[StringArgs].get)
-        val mkt = defaultArgs.asInstanceOf[MapArgs].get.get("mkt").get.asInstanceOf[StringArgs].get
+        val des = defaultArgs.asInstanceOf[MapArgs].get("des").asInstanceOf[StringArgs].get
+        val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[ListArgs].get.map (x => x.asInstanceOf[StringArgs].get)
+        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
-        val cpa = args.asInstanceOf[MapArgs].get.get("cpa").get.asInstanceOf[DFArgs].get
-        val markets_match_file = args.asInstanceOf[MapArgs].get.get("markets_match_file").get.asInstanceOf[DFArgs].get
-        val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get.get("not_arrival_hosp_file").get.asInstanceOf[DFArgs].get
-        val not_published_hosp_file = args.asInstanceOf[MapArgs].get.get("not_published_hosp_file").get.asInstanceOf[DFArgs].get
-        val full_hosp_file : DataFrame = null // args.asInstanceOf[MapArgs].get.get("full_hosp_file").get.asInstanceOf[DFArgs].get
-        val product_match_file = args.asInstanceOf[MapArgs].get.get("product_match_file").get.asInstanceOf[DFArgs].get
-        val universe_file = args.asInstanceOf[MapArgs].get.get("universe_file").get.asInstanceOf[DFArgs].get
+        val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
+        val markets_match_file = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
+        val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get
+        val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get
+        val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get
+        val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get
+        val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
-        val sparkDriver = phSparkDriver()
 
-        def getPanelFile(ym: List[String], mkt: String, t: Int = 0, c: Int = 0) : pActionArgs = {
+        def getPanelFile(ym: List[String], mkt: String) : pActionArgs = {
 
             val result = ym.map { x =>
                 val full_cpa = fullCPA(cpa, x)
@@ -182,10 +171,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
 //            panel_name
 //        }
 
-        println(s"destination is $des")
-        println(s"year month list is $ym")
-        println(s"market is $mkt")
-
         println(s"cpa load data ")
         cpa.show(false)
 
@@ -198,8 +183,8 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         println(s"not_published_hosp_file load data ")
         not_published_hosp_file.show(false)
 
-//        println(s"full_hosp_file load data ")
-//        full_hosp_file.show(false)
+        println(s"full_hosp_file load data ")
+        full_hosp_file.show(false)
 
         println(s"product_match_file load data ")
         product_match_file.show(false)

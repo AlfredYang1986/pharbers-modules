@@ -10,12 +10,13 @@ object phReadAstellasHistoryDataAction {
     def apply(historyFilePath: String): pActionTrait = new phReadAstellasHistoryDataAction(historyFilePath)
     def apply(historyFilePath: String, nickname: String): pActionTrait = {
         val temp = new phReadAstellasHistoryDataAction(historyFilePath)
-        temp.name = nickname
+//        temp.name = nickname
         temp
     }
 }
 
 class phReadAstellasHistoryDataAction(historyFilePath: String) extends pActionTrait {
+    override val name: String = "  "
     override val defaultArgs: pActionArgs = NULLArgs
 
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}

@@ -13,12 +13,14 @@ object phReadMongo2RDDAction {
 
     def apply(company: String, dbName: String, lstColl: List[String], nickname: String): pActionTrait = {
         val temp = new phReadMongo2RDDAction(company, dbName, lstColl)
-        temp.name = nickname
+//        temp.name = nickname
         temp
     }
 }
 
 class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String]) extends pActionTrait with CommonTrait {
+
+    override val name: String = ""
 
     override val defaultArgs: pActionArgs = NULLArgs
 

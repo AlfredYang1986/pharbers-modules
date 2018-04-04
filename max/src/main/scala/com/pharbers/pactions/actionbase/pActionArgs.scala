@@ -55,5 +55,5 @@ case class BinaryArgsFuncArgs[T1, T2, R](func : (T1, T2) => R) extends pActionAr
 
 object NULLArgs extends pActionArgs {
     type t = Unit
-    override def get : Unit  = ???
+    override def get : Unit  = Unit
 }
