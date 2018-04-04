@@ -52,13 +52,13 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
 
     val df = MapArgs(
         Map(
-            "des" -> StringArgs(mid_dir),
-            "ym" -> ListArgs(StringArgs("201710") :: Nil),
+            "ym" -> StringArgs("201710"),
             "mkt" -> StringArgs("麻醉市场")
         )
     )
 
-    override val actions: List[pActionTrait] =
-        jarPreloadAction() :: PhNhwaPreActions.actions :::
-            (readCpa :: readNotArrivalHosp :: phNhwaPanelConcretJob(df) :: Nil)
+    override val actions: List[pActionTrait] = jarPreloadAction() ::
+            PhNhwaPreActions.actions :::
+            readCpa :: readNotArrivalHosp ::
+            phNhwaPanelConcretJob(df) :: Nil
 }

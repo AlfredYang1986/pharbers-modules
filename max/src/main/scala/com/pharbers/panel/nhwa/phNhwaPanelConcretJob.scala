@@ -17,8 +17,7 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
 
-        val des = defaultArgs.asInstanceOf[MapArgs].get("des").asInstanceOf[StringArgs].get
-        val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[ListArgs].get.map (x => x.asInstanceOf[StringArgs].get)
+        val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
@@ -29,53 +28,42 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
+        def getPanelFile(ym: String, mkt: String) : pActionArgs = {
 
-        def getPanelFile(ym: List[String], mkt: String) : pActionArgs = {
-
-            val result = ym.map { x =>
-                val full_cpa = fullCPA(cpa, x)
-                val product_match = loadProductMatch(product_match_file)
-                val markets_match = markets_match_file // load(markets_match_file)
-                // val universe = load(universe_file.replace("##market##", mkt)).filter(s"DOI like '$mkt'")
-                val universe = loadUniverse(universe_file, mkt)
-                val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
-                val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
-//                val panel = trimPanel(filted_panel, markets_product_match)
-                trimPanel(filted_panel, markets_product_match)
-//                panel.coalesce(1).write
-//                     .format("csv")
-//                     .option("delimiter", 31.toChar.toString)
-//                     .save(des)
-            }.map (DFArgs(_))
+            val full_cpa = fullCPA(cpa, ym)
+            val product_match = loadProductMatch(product_match_file)
+            val markets_match = markets_match_file
+            val universe = loadUniverse(universe_file, mkt)
+            val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
+            val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
+            val result = Map(ym -> DFArgs(trimPanel(filted_panel, markets_product_match)))
             sparkDriver.ss.stop()
-            ListArgs(result)
+            MapArgs(result)
         }
 
-//        def load(file_path: String) = sparkDriver.csv2RDD(file_path, delimiter = 31.toChar.toString)
-
-        def fullCPA(cpa: DataFrame /*String*/, ym: String): DataFrame = {
+        def fullCPA(cpa: DataFrame, ym: String): DataFrame = {
 
             val filter_month = ym.takeRight(2).toInt.toString
-            val primal_cpa = cpa/*load(cpa)*/.filter(s"YM like '$ym'")
-            val not_arrival_hosp = not_arrival_hosp_file //load(not_arrival_hosp_file)
+            val primal_cpa = cpa.filter(s"YM like '$ym'")
+            val not_arrival_hosp = not_arrival_hosp_file
                 .withColumnRenamed("月份", "month")
                 .filter(s"month like '%$filter_month%'")
                 .withColumnRenamed("医院编码", "ID")
                 .select("ID")
-            val not_published_hosp = not_published_hosp_file //load(not_published_hosp_file)
+            val not_published_hosp = not_published_hosp_file
                 .withColumnRenamed("id", "ID")
             val miss_hosp = not_arrival_hosp.union(not_published_hosp).distinct()
             val reduced_cpa = primal_cpa.join(miss_hosp, primal_cpa("HOSPITAL_CODE") === miss_hosp("ID"), "left").filter("ID is null").drop("ID")
-            val full_hosp_id = full_hosp_file/*load(full_hosp_file)*/.filter(s"MONTH like $filter_month")
+            val full_hosp_id = full_hosp_file.filter(s"MONTH like $filter_month")
             val full_hosp = miss_hosp.join(full_hosp_id, full_hosp_id("HOSPITAL_CODE") === miss_hosp("ID")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
 
             import sparkDriver.ss.implicits._
             reduced_cpa.union(full_hosp).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
         }
 
-        def loadProductMatch(product_match_file: DataFrame /*String*/): DataFrame = {
+        def loadProductMatch(product_match_file: DataFrame): DataFrame = {
 
-            product_match_file/*load(product_match_file)*/
+            product_match_file
                 .withColumnRenamed("药品名称", "NAME")
                 .withColumnRenamed("商品名", "PRODUCT_NAME")
                 .withColumnRenamed("剂型", "APP2_COD")
@@ -89,12 +77,10 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
                 .distinct()
         }
 
-        def loadUniverse(universe_file: DataFrame /*String*/, mkt: String): DataFrame = {
+        def loadUniverse(universe_file: DataFrame, mkt: String): DataFrame = {
 
             import sparkDriver.ss.implicits._
-//            load(universe_file)
-            (universe_file)
-                .withColumnRenamed("样本医院编码", "ID")
+            universe_file.withColumnRenamed("样本医院编码", "ID")
                 .withColumnRenamed("PHA医院名称", "HOSP_NAME")
                 .withColumnRenamed("PHA ID", "HOSP_ID")
                 .withColumnRenamed("市场", "DOI")
@@ -126,72 +112,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
                 .withColumnRenamed("sum(Sales)", "Sales")
         }
 
-//        def writePanel(panel: DataFrame): String = {
-//            def getAllFile(dir: String): Array[String] = {
-//                val list = new File(dir).listFiles()
-//                list.flatMap {file =>
-//                    if (file.isDirectory) {
-//                        getAllFile(file.getAbsolutePath)
-//                    } else {
-//                        Array(file.getAbsolutePath)
-//                    }
-//                }
-//            }
-//
-//            def delFile(dir: String): Unit = {
-//                val parent = new File(dir)
-//                val list = parent.listFiles()
-//                list.foreach {file =>
-//                    if (file.isDirectory) {
-//                        delFile(file.getAbsolutePath)
-//                    } else {
-//                        file.delete()
-//                    }
-//                }
-//                parent.delete()
-//            }
-//
-//            val temp_name = UUID.randomUUID.toString
-//            val panel_name = temp_name + ".csv"
-//            val temp_panel_dir = des + temp_name
-//            val panel_location = des + panel_name
-//
-//            panel.coalesce(1).write
-//                .format("csv")
-//                .option("delimiter", 31.toChar.toString)
-//                .save(temp_panel_dir)
-//
-//            val tempFile = getAllFile(temp_panel_dir).find(_.endsWith(".csv")) match {
-//                case None => throw new Exception("not single file")
-//                case Some(file) => file
-//            }
-//            new File(tempFile).renameTo(new File(panel_location))
-//            delFile(temp_panel_dir)
-//
-//            panel_name
-//        }
-
-        println(s"cpa load data ")
-        cpa.show(false)
-
-        println(s"markets_match_file load data ")
-        markets_match_file.show(false)
-
-        println(s"not_arrival_hosp_file load data ")
-        not_arrival_hosp_file.show(false)
-
-        println(s"not_published_hosp_file load data ")
-        not_published_hosp_file.show(false)
-
-        println(s"full_hosp_file load data ")
-        full_hosp_file.show(false)
-
-        println(s"product_match_file load data ")
-        product_match_file.show(false)
-
-        println(s"universe_file load data ")
-        universe_file.show(false)
-
-        NULLArgs
+        getPanelFile(ym, mkt)
     }
 }
