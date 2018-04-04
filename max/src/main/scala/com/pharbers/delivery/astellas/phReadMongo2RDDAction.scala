@@ -8,19 +8,11 @@ import com.pharbers.spark.phSparkDriver
   * Created by jeorch on 18-3-28.
   */
 object phReadMongo2RDDAction {
-    def apply(company: String, dbName: String, lstColl: List[String]): pActionTrait =
-        new phReadMongo2RDDAction(company, dbName, lstColl)
-
-    def apply(company: String, dbName: String, lstColl: List[String], nickname: String): pActionTrait = {
-        val temp = new phReadMongo2RDDAction(company, dbName, lstColl)
-//        temp.name = nickname
-        temp
-    }
+    def apply(company: String, dbName: String, lstColl: List[String], name: String): pActionTrait =
+        new phReadMongo2RDDAction(company, dbName, lstColl, name)
 }
 
-class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String]) extends pActionTrait with CommonTrait {
-
-    override val name: String = ""
+class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String], override val name: String) extends pActionTrait with CommonTrait {
 
     override val defaultArgs: pActionArgs = NULLArgs
 

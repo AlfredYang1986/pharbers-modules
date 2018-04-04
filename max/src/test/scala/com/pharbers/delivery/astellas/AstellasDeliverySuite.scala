@@ -14,17 +14,6 @@
 //    val yearMonth = "1712"
 //    val destPath = s"/mnt/config/FileBase/${company_name}/HistoryDeliveryFiles/Max_14-${yearMonth}"
 //
-//    /**
-//      * c("Allelock", "阿洛刻市场"),
-//      * c("Mycamine", "米开民市场"),
-//      * c("Prograf", "普乐可复市场"),
-//      * c("Perdipine", "佩尔市场"),
-//      * c("Harnal", "哈乐市场"),
-//      * c("Gout", "痛风市场"),
-//      * c("Vesicare", "卫喜康市场"),
-//      * c("Grafalon", "GRAFALON市场")
-//      */
-//
 //    test("test astellas delivery"){
 //
 //        val testPath = new File("/home/jeorch/work/test/bash-test")

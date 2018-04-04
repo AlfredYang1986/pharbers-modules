@@ -7,16 +7,10 @@ import com.pharbers.spark.phSparkDriver
   * Created by jeorch on 18-4-2.
   */
 object phReadAstellasHistoryDataAction {
-    def apply(historyFilePath: String): pActionTrait = new phReadAstellasHistoryDataAction(historyFilePath)
-    def apply(historyFilePath: String, nickname: String): pActionTrait = {
-        val temp = new phReadAstellasHistoryDataAction(historyFilePath)
-//        temp.name = nickname
-        temp
-    }
+    def apply(historyFilePath: String, name: String): pActionTrait = new phReadAstellasHistoryDataAction(historyFilePath, name)
 }
 
-class phReadAstellasHistoryDataAction(historyFilePath: String) extends pActionTrait {
-    override val name: String = "  "
+class phReadAstellasHistoryDataAction(historyFilePath: String, override val name: String) extends pActionTrait {
     override val defaultArgs: pActionArgs = NULLArgs
 
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}
