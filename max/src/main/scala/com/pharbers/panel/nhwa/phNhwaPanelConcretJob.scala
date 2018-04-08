@@ -6,14 +6,14 @@ import com.pharbers.pactions.actionbase._
 import org.apache.spark.sql.types.{DoubleType, LongType}
 
 object phNhwaPanelConcretJob {
-    def apply(args : MapArgs) : pActionTrait = new phNhwaPanelConcretJob(args)
+    def apply(args: MapArgs): pActionTrait = new phNhwaPanelConcretJob(args)
 }
 
 class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pActionTrait {
-    override val name: String = "phNhwaPanelConcretJob"
+    override val name: String = "panel"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
-    val sparkDriver: phSparkDriver = phSparkDriver()
+    lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
 
@@ -21,7 +21,7 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
-        val markets_match_file = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
+        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get
         val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get
         val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get
@@ -31,14 +31,13 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         def getPanelFile(ym: String, mkt: String) : pActionArgs = {
 
             val full_cpa = fullCPA(cpa, ym)
-            val product_match = loadProductMatch(product_match_file)
-            val markets_match = markets_match_file
-            val universe = loadUniverse(universe_file, mkt)
+            val product_match = trimProductMatch(product_match_file)
+            val universe = trimUniverse(universe_file, mkt)
             val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
             val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
-            val result = Map(ym -> DFArgs(trimPanel(filted_panel, markets_product_match)))
-            sparkDriver.ss.stop()
-            MapArgs(result)
+            val panelDF = trimPanel(filted_panel, markets_product_match)
+//            sparkDriver.sc.stop()
+            DFArgs(panelDF)
         }
 
         def fullCPA(cpa: DataFrame, ym: String): DataFrame = {
@@ -61,7 +60,7 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
             reduced_cpa.union(full_hosp).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
         }
 
-        def loadProductMatch(product_match_file: DataFrame): DataFrame = {
+        def trimProductMatch(product_match_file: DataFrame): DataFrame = {
 
             product_match_file
                 .withColumnRenamed("药品名称", "NAME")
@@ -77,7 +76,7 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
                 .distinct()
         }
 
-        def loadUniverse(universe_file: DataFrame, mkt: String): DataFrame = {
+        def trimUniverse(universe_file: DataFrame, mkt: String): DataFrame = {
 
             import sparkDriver.ss.implicits._
             universe_file.withColumnRenamed("样本医院编码", "ID")
@@ -114,4 +113,5 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
 
         getPanelFile(ym, mkt)
     }
+
 }
