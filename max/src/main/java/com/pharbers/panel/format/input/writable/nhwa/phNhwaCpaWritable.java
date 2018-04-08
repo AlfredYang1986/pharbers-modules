@@ -78,7 +78,18 @@ public class phNhwaCpaWritable extends phNhwaCommonWritable {
 
     @Override
     protected String[] setCellKey(String[] lst, String flag, String value) {
-        return lst;
+        if (flag.equals("PRODUCT_NAME")) {
+            lst[8] = value;
+            return lst;
+        }else if (flag.equals("VALUE")) {
+            lst[12] = value;
+            return lst;
+        }else if (flag.equals("STANDARD_UNIT")) {
+            lst[13] = value;
+            return lst;
+        }else{
+            return lst;
+        }
     }
 
     @Override
@@ -89,6 +100,13 @@ public class phNhwaCpaWritable extends phNhwaCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        if("".equals(getCellKey(lst, "PRODUCT_NAME")))
+            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
+        if("".equals(getCellKey(lst, "VALUE")))
+            lst = setCellKey(lst, "VALUE", "0");
+        if("".equals(getCellKey(lst, "STANDARD_UNIT")))
+            lst = setCellKey(lst, "STANDARD_UNIT", "0");
 
         String min1 = getCellKey(lst, "PRODUCT_NAME") +
                 getCellKey(lst, "APP2_COD") +

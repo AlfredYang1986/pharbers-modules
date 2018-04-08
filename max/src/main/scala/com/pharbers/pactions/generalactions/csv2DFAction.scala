@@ -3,14 +3,14 @@ package com.pharbers.pactions.generalactions
 import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver
 
-object csv2RddAction {
+object csv2DFAction {
     def apply(arg_path : String,
               arg_name : String = "csv2RddJob") : pActionTrait =
-        new csv2RddAction(StringArgs(arg_path), arg_name)
+        new csv2DFAction(StringArgs(arg_path), arg_name)
 }
 
-class csv2RddAction(override val defaultArgs: pActionArgs,
-                    override val name: String) extends pActionTrait {
+class csv2DFAction(override val defaultArgs: pActionArgs,
+                   override val name: String) extends pActionTrait {
 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
