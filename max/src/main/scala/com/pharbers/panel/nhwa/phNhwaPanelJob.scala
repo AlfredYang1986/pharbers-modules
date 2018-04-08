@@ -10,7 +10,7 @@ import com.pharbers.panel.common.phSavePanelJob
 
 object phNhwaPanelJob {
 
-    def apply(arg_cpa : String, arg_ym: String, arg_mkt: String) : phNhwaPanelJob = {
+    def apply(arg_cpa: String, arg_ym: String, arg_mkt: String) : phNhwaPanelJob = {
         new phNhwaPanelJob {
             override lazy val cpa_file: String = arg_cpa
             override lazy val ym: String = arg_ym

@@ -11,7 +11,8 @@ object phCalcYM2JVJob  {
 }
 
 class phCalcYM2JVJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
-    override val name: String = "phCalcYM2JVJob"
+
+    override val name: String = "result"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
     override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
