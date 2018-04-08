@@ -1,4 +1,4 @@
-package com.pharbers.panel.util
+package com.pharbers.panel.common
 
 import java.io.File
 
