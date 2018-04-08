@@ -46,6 +46,7 @@ class phSavePanelJob(override val defaultArgs: pActionArgs) extends pActionTrait
 
         panel.coalesce(1).write
                 .format("csv")
+                .option("header", value = true)
                 .option("delimiter", 31.toChar.toString)
                 .save(temp_panel_dir)
 

@@ -2,12 +2,11 @@ package com.pharbers.panel.nhwa
 
 import java.util.UUID
 import com.pharbers.pactions.jobs._
-import com.pharbers.common.excel.input._
+import com.pharbers.panel.nhwa.format._
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phSavePanelJob
-import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
 
 object phNhwaPanelJob {
 
@@ -52,7 +51,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
     val readNotArrivalHosp = new sequenceJob {
         override val name = "not_arrival_hosp_file"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file") ::
+            xlsxReadingAction[phNhwaCpaSecondSheetFormat](cpa_file, "not_arrival_hosp_file") ::
                     saveCurrenResultAction(temp_dir + "not_arrival_hosp_file") ::
                     csv2DFAction(temp_dir + "not_arrival_hosp_file") :: Nil
     }
