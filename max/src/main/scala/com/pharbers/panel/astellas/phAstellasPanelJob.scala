@@ -1,6 +1,7 @@
 package com.pharbers.panel.astellas
 
 import java.util.UUID
+
 import com.pharbers.pactions.jobs._
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.panel_path_obj
@@ -8,6 +9,7 @@ import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 
 object phAstellasPanelJob {
 
@@ -26,6 +28,7 @@ object phAstellasPanelJob {
 
 trait phAstellasPanelJob extends sequenceJobWithMap {
     override val name: String = "phAstellasPanelJob"
+    implicit val companyArgs: phMemoryArgs = phMemoryArgs("Astellas")
 
     val ym: String
     val mkt: String
