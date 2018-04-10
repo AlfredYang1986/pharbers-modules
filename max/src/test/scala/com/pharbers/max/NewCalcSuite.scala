@@ -11,7 +11,7 @@ import com.pharbers.calc.phMaxJob
 class NewCalcSuite extends FunSuite{
     implicit def progressFunc(progress: Double, flag: String): Unit = Unit
 
-    test("nhwa calc ym") {
+    test("nhwa calc test") {
         val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
         println(s"MAX计算开始时间" + dateformat.format(new Date()))
         println()
