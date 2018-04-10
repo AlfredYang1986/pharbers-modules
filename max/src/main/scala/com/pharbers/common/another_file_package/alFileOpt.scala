@@ -3,12 +3,11 @@ package com.pharbers.common.another_file_package
 import scala.io.Source
 import java.io.{File, FileWriter, PrintWriter}
 
-import com.pharbers.memory.pages.flushMemory
+import com.pharbers.pageMemory.flushMemory
 
 /**
   * Created by qianpeng on 2017/5/12.
   */
-
 object alFileOpt {
 	def convertString(str: String): String =
 		str.charAt(str.length - 1).toString match {
