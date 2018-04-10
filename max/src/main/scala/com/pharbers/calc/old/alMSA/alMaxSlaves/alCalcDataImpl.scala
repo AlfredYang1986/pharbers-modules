@@ -21,8 +21,8 @@ import com.pharbers.calc.old.alCalcHelp.{alSegmentGroup, alShareData}
 import com.pharbers.calc.old.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
 import com.pharbers.calc.old.alCalcMemory.aljobs.alJobs.{common_jobs, worker_core_calc_jobs}
 import com.pharbers.common.another_file_package.alFileOpt
-import com.pharbers.pageMemory.dirFlushMemory
-import com.pharbers.pageMemory.fop.dir.dirPageStorage
+import com.pharbers.memory.pages.dirFlushMemory
+import com.pharbers.memory.pages.fop.dir.dirPageStorage
 
 /**
   * Created by alfredyang on 13/07/2017.
