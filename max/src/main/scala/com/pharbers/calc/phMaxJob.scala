@@ -46,8 +46,8 @@ trait phMaxJob extends sequenceJobWithMap {
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             loadPanelData ::
             readUniverseFile ::
-            phMaxSplitJob() ::
-            phMaxGroupJob() ::
-            phMaxCalcJob() ::
-            phMaxBsonJob() :: Nil
+            phMaxSplitAction() ::
+            phMaxGroupAction() ::
+            phMaxCalcAction() ::
+            phMaxBsonAction() :: Nil
 }

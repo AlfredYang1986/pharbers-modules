@@ -1,21 +1,17 @@
 package com.pharbers.calc
 
-import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
+import com.pharbers.pactions.actionbase._
 
-/**
-  * Created by jeorch on 18-4-10.
-  */
 object phMaxCalcAction {
-    def apply(uid: String,name: String): pActionTrait = new phMaxCalcAction(uid, name)
+    def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxCalcAction(args)
 }
 
-class phMaxCalcAction(uid: String, override val name: String) extends pActionTrait {
-    override val defaultArgs: pActionArgs = NULLArgs
+class phMaxCalcAction(override val defaultArgs : pActionArgs) extends pActionTrait {
+    override val name: String = "max_calc_action"
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
-
-        defaultArgs
+    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+        NULLArgs
     }
+
 }
