@@ -16,7 +16,7 @@ class NewCalcSuite extends FunSuite{
         println(s"MAX计算开始时间" + dateformat.format(new Date()))
         println()
 
-        val result = phMaxJob("8543ae17-5be8-4d40-ba83-ebffc5b2c21a.csv").perform().get
+        val result = phMaxJob("test_panel.csv").perform().get
 
         println("result = " + result)
         println()

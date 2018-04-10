@@ -1,5 +1,7 @@
 package com.pharbers.calc
 
+import java.util.UUID
+
 import com.pharbers.pactions.jobs._
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
@@ -22,9 +24,10 @@ trait phMaxJob extends sequenceJobWithMap {
     val panel_name: String
     val universe_name: String
 
-    val panel_file: String = panel_path_obj.p_resultPath + panel_name
+    val panel_file: String = panel_path_obj.p_resultPath + panel_name.split(".").head
     val universe_file: String = panel_path_obj.p_matchFilePath + universe_name
     val temp_dir: String = panel_path_obj.p_cachePath + panel_name + "/"
+    val temp_universe_name: String = UUID.randomUUID().toString
 
     // 1. load panel data
     val loadPanelData = new sequenceJob {
@@ -37,9 +40,9 @@ trait phMaxJob extends sequenceJobWithMap {
     val readUniverseFile = new sequenceJob {
         override val name = "universe_data"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, "max_universe_data") ::
-                    saveCurrenResultAction(temp_dir + "max_universe_data") ::
-                    csv2DFAction(temp_dir + "max_universe_data") :: Nil
+            xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, temp_universe_name) ::
+                    saveCurrenResultAction(temp_dir + temp_universe_name) ::
+                    csv2DFAction(temp_dir + temp_universe_name) :: Nil
     }
 
 
