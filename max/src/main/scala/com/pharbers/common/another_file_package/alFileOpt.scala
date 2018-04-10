@@ -1,8 +1,8 @@
 package com.pharbers.common.another_file_package
 
 import scala.io.Source
+import com.pharbers.pageMemory.flushMemory
 import java.io.{File, FileWriter, PrintWriter}
-import com.pharbers.memory.pages.flushMemory
 
 /**
   * Created by qianpeng on 2017/5/12.
