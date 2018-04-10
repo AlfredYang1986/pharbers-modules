@@ -6,6 +6,7 @@ import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
 import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 
 /**
   * 1. read 2017年未出版医院名单.xlsx
@@ -15,6 +16,7 @@ import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdShee
   * 5. read 通用名市场定义, 读第三页
   */
 case class phNhwaPreActions(temp_name: String) {
+    implicit val companyArgs: phMemoryArgs = phMemoryArgs("Nhwa")
     val match_dir: String = panel_path_obj.p_matchFilePath
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
 

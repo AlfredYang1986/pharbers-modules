@@ -157,9 +157,7 @@ public class phAstellasGycxWritable extends phAstellasCommonWritable {
 
     @Override
     public String richWithInputRow(int index, String value) {
-        if (index == 1)
-            return fullTail("", titleMap.size());
-        else if (index == 2) {
+        if (index == 1) {
             return expendTitle(transTitle2Eng(value));
         } else
             return expendValues(titleMap.size(), value);
