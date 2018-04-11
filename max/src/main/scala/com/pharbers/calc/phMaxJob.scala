@@ -51,6 +51,6 @@ trait phMaxJob extends sequenceJobWithMap {
             readUniverseFile ::
             phMaxSplitAction() ::
             phMaxGroupAction() ::
-            phMaxCalcAction() ::
+            phMaxCalcActionq() ::
             phMaxBsonAction() :: Nil
 }
