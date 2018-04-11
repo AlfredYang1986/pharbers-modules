@@ -18,12 +18,12 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
     import sparkDriver.ss.implicits._
 
     override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+
         val panelDF = {
             pr.asInstanceOf[MapArgs].get("panel_data").asInstanceOf[DFArgs].get
                     .withColumnRenamed("Date", "YM")
                     .withColumnRenamed("Strength", "min1")
                     .withColumnRenamed("DOI", "MARKET")
-                    .withColumnRenamed("HOSP_ID", "HOSP_ID")
                     .selectExpr("YM", "min1", "MARKET", "HOSP_ID", "Sales", "Units")
         }
 
@@ -46,16 +46,24 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
                     .withColumnRenamed("sum(Units)", "sumUnits")
         }
 
-        val joinData = panelDF join universeDF.filter(col("NEED_MAX_HOSP") === "1")
+        val joinData = {
+            (panelDF join universeDF.filter(col("NEED_MAX_HOSP") === "1"))
+                    .drop("HOSP_ID", "Sales", "Units")
+        }
 
         val calcData = {
             joinData.join(
                 panelSumed,
                 joinData("YM") <=> panelSumed("sumYM")
                         && joinData("min1") <=> panelSumed("sumMin1")
-                        && joinData("PHA_ID") <=> panelSumed("sumHosp_ID")
+                        && joinData("PHA_ID") <=> panelSumed("sumHosp_ID"),
+                "left"
             )
         }
+
+
+        val a = panelDF.select("HOSP_ID").distinct().count()
+        val b = joinData.select("PHA_ID").distinct().count()
 
 
         calcData.show(false)
