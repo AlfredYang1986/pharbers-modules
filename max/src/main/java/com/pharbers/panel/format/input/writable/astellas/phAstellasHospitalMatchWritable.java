@@ -1,12 +1,11 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
-import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 import java.util.HashMap;
 
 /**
  * Created by jeorch on 18-3-29.
  */
-public class phAstellasHospitalMatchWritable extends PhXlsxCommonWritable {
+public class phAstellasHospitalMatchWritable extends phAstellasCommonWritable {
 
     static {
         titleMap = new HashMap<String, String>() {{

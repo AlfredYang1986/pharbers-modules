@@ -8,14 +8,10 @@ import org.bson.Document
   * Created by jeorch on 18-3-29.
   */
 object phAstellasDeliveryAction {
-    def apply(): pActionTrait = {
-        val temp = new phAstellasDeliveryAction
-        temp.name = "deliveryResult"
-        temp
-    }
+    def apply(name: String): pActionTrait = new phAstellasDeliveryAction(name)
 }
 
-class phAstellasDeliveryAction extends pActionTrait {
+class phAstellasDeliveryAction(override val name:String) extends pActionTrait {
 
     val delimiter = 9.toChar.toString
 
@@ -110,7 +106,7 @@ class phAstellasDeliveryAction extends pActionTrait {
           * Step 8.Select 12 columns and rename them.
           */
 
-        val max_result_renamed = max_result_filter.sortBy(x => x._1._2)
+        val max_result_renamed = max_result_filter
             .map(row => row._1._2 + delimiter + row._1._3
                 + delimiter + row._1._4 + delimiter + row._2._1
                 + delimiter + row._2._2 + delimiter + row._2._3

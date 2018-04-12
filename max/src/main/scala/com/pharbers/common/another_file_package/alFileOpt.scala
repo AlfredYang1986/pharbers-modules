@@ -5,12 +5,9 @@ import java.io.{File, FileWriter, PrintWriter}
 
 import com.pharbers.pageMemory.flushMemory
 
-import scala.io.Source
-
 /**
   * Created by qianpeng on 2017/5/12.
   */
-
 object alFileOpt {
 	def convertString(str: String): String =
 		str.charAt(str.length - 1).toString match {

@@ -6,7 +6,7 @@ import com.pharbers.delivery.util.phDeliveryConfig
   * Created by jeorch on 18-3-28.
   */
 case class phAstellasDeliveryActions(args: Map[String, List[String]]) extends phAstellasDeliveryActionsTrait {
-
+    override val name = ""
     lazy val deliveryConfig = phDeliveryConfig(company)
     override lazy val company: String = args.getOrElse("company", throw new Exception("no find company arg")).head
     override lazy val dbName: String = args.getOrElse("dbName", throw new Exception("no find dbName arg")).head

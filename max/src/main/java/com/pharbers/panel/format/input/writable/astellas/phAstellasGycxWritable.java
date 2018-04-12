@@ -1,9 +1,8 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
 import java.util.HashMap;
-import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
 
-public class phAstellasGycxWritable extends PhXlsxCommonWritable {
+public class phAstellasGycxWritable extends phAstellasCommonWritable {
 
     static {
         titleMap = new HashMap<String, String>() {{
@@ -158,9 +157,7 @@ public class phAstellasGycxWritable extends PhXlsxCommonWritable {
 
     @Override
     public String richWithInputRow(int index, String value) {
-        if (index == 1)
-            return fullTail("", titleMap.size());
-        else if (index == 2) {
+        if (index == 1) {
             return expendTitle(transTitle2Eng(value));
         } else
             return expendValues(titleMap.size(), value);

@@ -5,9 +5,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
+// 暂时不用
 public abstract class PhExcelXLSInterface {
     public static final class workbook {
         workbook(Workbook b) {
@@ -58,11 +59,10 @@ public abstract class PhExcelXLSInterface {
             return new Pair(prev.value.getRowNum(), value.getColumnIndex());
         }
 
+        DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
         public String queryCellString() throws Exception {
             if (value.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                String temp = String.valueOf(value.getNumericCellValue());
-                if(temp.endsWith(".0")) return temp.replace(".0", "");
-                else return temp;
+                return String.valueOf(decimalFormat.format(value.getNumericCellValue()));
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
                 String temp = value.getStringCellValue();
                 try{

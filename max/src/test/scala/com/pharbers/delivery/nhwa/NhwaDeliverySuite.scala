@@ -1,6 +1,5 @@
 //package com.pharbers.delivery.nhwa
 //
-//import com.pharbers.panel.nhwa.phNhwaHandle
 //import org.scalatest.FunSuite
 //
 ///**
@@ -20,6 +19,6 @@
 //    )
 //
 //    test("test nhwa delivery"){
-//        phNhwaHandle(args).generateDeliveryFile
+//        phNhwaDeliveryActions(args).perform()
 //    }
 //}

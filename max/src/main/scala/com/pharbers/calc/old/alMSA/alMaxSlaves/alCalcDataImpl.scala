@@ -3,26 +3,26 @@ package com.pharbers.calc.old.alMSA.alMaxSlaves
 import java.io.File
 
 import scala.math.BigDecimal
+import com.pharbers.sercuity.Sercurity
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.driver.redis.phRedisDriver
 import com.pharbers.bson.writer.bsonFlushMemory
 import com.pharbers.alCalcMemory.aldata.alStorage
 import com.pharbers.alCalcMemory.alstages.alStage
-import com.pharbers.calc.old.alCalcHelp.alLog.alTempLog
 import com.pharbers.common.datatype.date.DateUtil
+import com.pharbers.calc.old.alCalcHelp.alLog.alTempLog
+import com.pharbers.common.another_file_package.fileConfig._
+import com.pharbers.calc.old.alCalcHelp.alModel.IntegratedData
 import com.pharbers.calc.old.alMSA.alCalcMaster.alCalcMsg.calcMsg._
 import com.pharbers.calc.old.alMSA.alClusterLister.alAgentIP.masterIP
 import com.pharbers.calc.old.alCalcHelp.alFinalDataProcess.alBsonPath
-import com.pharbers.calc.old.alCalcHelp.alModel.IntegratedData
 import com.pharbers.calc.old.alCalcHelp.alModel.westMedicineIncome
 import com.pharbers.calc.old.alCalcHelp.{alSegmentGroup, alShareData}
 import com.pharbers.calc.old.alCalcMemory.alprecess.alprecessdefines.alPrecessDefines._
-import com.pharbers.common.another_file_package.fileConfig.{calc, memorySplitFile, sync}
 import com.pharbers.calc.old.alCalcMemory.aljobs.alJobs.{common_jobs, worker_core_calc_jobs}
 import com.pharbers.common.another_file_package.alFileOpt
 import com.pharbers.pageMemory.dirFlushMemory
 import com.pharbers.pageMemory.fop.dir.dirPageStorage
-import com.pharbers.sercuity.Sercurity
 
 /**
   * Created by alfredyang on 13/07/2017.

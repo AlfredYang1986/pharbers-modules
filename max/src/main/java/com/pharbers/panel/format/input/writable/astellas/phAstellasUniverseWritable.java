@@ -1,10 +1,8 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
-import com.pharbers.panel.format.input.writable.common.PhXlsxCommonWritable;
-
 import java.util.HashMap;
 
-public class phAstellasUniverseWritable extends PhXlsxCommonWritable {
+public class phAstellasUniverseWritable extends phAstellasCommonWritable {
 
     static {
         titleMap = new HashMap<String, String>() {{

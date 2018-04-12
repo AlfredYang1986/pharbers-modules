@@ -15,6 +15,7 @@ object phNhwaDeliveryAction {
 class phNhwaDeliveryAction (company: String, dbName: String, lstColl: List[String],
                             destPath: String) extends pActionTrait {
     override val defaultArgs: pActionArgs = NULLArgs
+    override val name: String = ""
 
     override implicit def progressFunc(progress: Double, flag: String): Unit = {}
 

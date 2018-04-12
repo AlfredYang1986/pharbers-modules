@@ -6,20 +6,21 @@ trait sequenceJob extends pActionTrait {
 
     val actions : List[pActionTrait]
 
-    override def perform(pr : pActionArgs = NULLArgs)
-                        (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
-        if (actions.isEmpty) return pr
-        else midTmpContainer(actions.tail, f).perform(actions.head.perform(pr))
-    }
-
+    override val name: String
     override val defaultArgs: pActionArgs = NULLArgs
     override implicit def progressFunc(progress: Double, flag: String) : Unit = Unit
+
+    override def perform(pr : pActionArgs = NULLArgs)
+                        (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
+        if (actions.isEmpty) pr
+        else midTmpContainer(actions.tail, f, name).perform(actions.head.perform(pr))
+    }
+
 }
 
-
-
 case class midTmpContainer(override val actions : List[pActionTrait],
-                           f : (Double, String) => Unit) extends sequenceJob {
+                           f : (Double, String) => Unit,
+                           override val name: String) extends sequenceJob {
 
     override implicit def progressFunc(progress: Double, flag: String) : Unit = f
 }
