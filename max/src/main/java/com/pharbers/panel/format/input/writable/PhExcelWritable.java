@@ -1,17 +1,14 @@
 package com.pharbers.panel.format.input.writable;
 
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
+import com.pharbers.panel.format.input.writable.writableStrategy.PhPanelStrategy;
 
-import com.pharbers.panel.format.input.writable.PhExcelWritableConf;
-
-public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
+public abstract class PhExcelWritable implements WritableComparable<PhExcelWritable>, PhPanelStrategy , java.io.Serializable {
+    protected final String delimiter = String.valueOf((char)31);
 
     private String values = null; // new ArrayList<String>();
 
@@ -28,7 +25,7 @@ public class PhExcelWritable implements WritableComparable<PhExcelWritable> {
 
     @Override
     public void write(DataOutput out) throws IOException {
-        System.out.println(values);
+//        System.out.println(values);
         out.writeUTF(values);
     }
 

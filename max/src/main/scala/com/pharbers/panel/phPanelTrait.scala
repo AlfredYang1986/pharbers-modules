@@ -1,7 +1,7 @@
 package com.pharbers.panel
 
 import play.api.libs.json.JsValue
-import com.pharbers.panel.util.common.phDataHandleTrait
+import com.pharbers.panel.common.phDataHandleTrait
 
 /**
   * Created by clock on 18-3-6.

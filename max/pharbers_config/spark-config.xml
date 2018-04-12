@@ -1,8 +1,8 @@
 <pharbers-modules>
     <spark-config>
-        <!--<host value="192.168.100.174" />-->
-        <host value="127.0.0.1" />
+        <host value="192.168.100.176" />
+        <!--<host value="localhost" />-->
         <port value="9999" />
-        <name value="nhwa-panel" />
+        <name value="Magic-SparkStreaming" />
     </spark-config>
 </pharbers-modules>
