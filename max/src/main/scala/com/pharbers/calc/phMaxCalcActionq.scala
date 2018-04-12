@@ -77,13 +77,16 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
         val result = {
             calcData.join(groupData, calcData("SYM") === groupData("SYM")).drop("SYM")
                     .withColumn("f_sales",
-                        when($"IS_PANEL_HOSP" === 1, $"sumSales")
-                                .when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
-                                .otherwise($"aveSales" * $"WEST_MEDICINE_INCOME" * $"FACTOR"))
+                        when($"IS_PANEL_HOSP" === 1, $"sumSales").otherwise(
+                            when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
+                                    .otherwise($"aveSales" * $"WEST_MEDICINE_INCOME" * $"FACTOR")
+                        )
+                    )
                     .withColumn("f_units",
-                        when($"IS_PANEL_HOSP" === 1, $"sumUnits")
-                                .when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
-                                .otherwise($"aveUnits" * $"WEST_MEDICINE_INCOME" * $"FACTOR"))
+                        when($"IS_PANEL_HOSP" === 1, $"sumUnits").otherwise(
+                            when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
+                                    .otherwise($"aveUnits" * $"WEST_MEDICINE_INCOME" * $"FACTOR"))
+                    )
                     .filter($"f_sales" =!= 0 and $"f_units" =!= 0)
                     .selectExpr("min1", "PHA_ID", "f_sales", "f_units")
         }

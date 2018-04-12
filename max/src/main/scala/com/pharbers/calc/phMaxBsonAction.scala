@@ -1,5 +1,7 @@
 package com.pharbers.calc
 
+import java.util.UUID
+
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.panel_path_obj
 
@@ -14,7 +16,7 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
     override def perform(prMap: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
 
         val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-        val result_location = panel_path_obj.p_resultPath + "test_max_result"
+        val result_location = panel_path_obj.p_resultPath + UUID.randomUUID().toString
 
         max_result.coalesce(5).write
                 .format("csv")
