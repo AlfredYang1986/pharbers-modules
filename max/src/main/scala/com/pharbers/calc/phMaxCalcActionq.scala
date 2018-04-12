@@ -35,7 +35,8 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
                     .withColumnRenamed("Segment", "SEGMENT")
                     .withColumnRenamed("西药收入", "WEST_MEDICINE_INCOME")
                     .withColumnRenamed("Factor", "FACTOR")
-                    .selectExpr("PHA_ID", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "WEST_MEDICINE_INCOME", "FACTOR")
+                    .withColumnRenamed("Province", "PROVINCE")
+                    .selectExpr("PHA_ID", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "WEST_MEDICINE_INCOME", "FACTOR", "PROVINCE")
         }
 
         val panelSumed = {
@@ -43,33 +44,21 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
                     .agg(Map("Units" -> "sum", "Sales" -> "sum"))
                     .withColumnRenamed("sum(Sales)", "sumSales")
                     .withColumnRenamed("sum(Units)", "sumUnits")
-                    .withColumn("sumYHM", concat(col("YM"), col("HOSP_ID"), col("min1")))
-                    .select("sumYHM", "sumSales", "sumUnits")
+                    .withColumn("sumHYM", concat(col("HOSP_ID"), col("YM"), col("min1")))
+                    .select("sumHYM", "sumSales", "sumUnits")
         }
 
-//        val segmentLst = {
-//            universeDF
-//                    .withColumn("SEGMENT", 'SEGMENT.cast(LongType))
-//                    .select("SEGMENT")
-//                    .distinct()
-//                    .sort("SEGMENT")
-//        }
-//
-//        val resultLst = segmentLst.map { segment =>
-//
-//        }
-
         val joinData = {
-            (panelDF join universeDF)
-                    .withColumn("YHM", concat(col("YM"), col("PHA_ID"), col("min1")))
+            (panelDF.select("YM", "min1").distinct() join universeDF)
+                    .withColumn("HYM", concat(col("PHA_ID"), col("YM"), col("min1")))
         }
 
         val calcData = {
-            joinData.join(panelSumed, joinData("YHM") === panelSumed("sumYHM"), "left")
-                    .withColumn("s_Sales", when($"sumSales".isNull, 0.0).when($"IS_PANEL_HOSP" === 0, 0.0).otherwise($"sumSales"))
-                    .withColumn("s_Units", when($"sumUnits".isNull, 0.0).when($"IS_PANEL_HOSP" === 0, 0.0).otherwise($"sumUnits"))
+            joinData.join(panelSumed, joinData("HYM") === panelSumed("sumHYM"), "left")
+                    .withColumn("s_Sales", when($"sumSales".isNull, 0.0).otherwise($"sumSales"))
+                    .withColumn("s_Units", when($"sumUnits".isNull, 0.0).otherwise($"sumUnits"))
                     .withColumn("SYM", concat(col("SEGMENT"), col("YM"), col("min1")))
-                    .drop("YHM", "sumYHM", "sumSales", "sumUnits")
+                    .drop("HYM", "sumHYM")
         }
 
         val groupData = {
@@ -79,7 +68,7 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
                     .withColumnRenamed("sum(s_Sales)", "sumSales")
                     .withColumnRenamed("sum(s_Units)", "sumUnits")
                     .withColumnRenamed("sum(WEST_MEDICINE_INCOME)", "sumWestIncome")
-                    .filter(col("sumSales") =!= 0 && col("sumUnits") =!= 0)
+                    .filter(col("sumSales") =!= 0 and col("sumUnits") =!= 0)
                     .withColumn("aveSales", col("sumSales") / col("sumWestIncome"))
                     .withColumn("aveUnits", col("sumUnits") / col("sumWestIncome"))
                     .select("SYM", "aveSales", "aveUnits")
@@ -88,17 +77,20 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
         val result = {
             calcData.join(groupData, calcData("SYM") === groupData("SYM")).drop("SYM")
                     .withColumn("f_sales",
-                        when($"IS_PANEL_HOSP" === "1", $"Sales")
+                        when($"IS_PANEL_HOSP" === 1, $"sumSales")
                                 .when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
                                 .otherwise($"aveSales" * $"WEST_MEDICINE_INCOME" * $"FACTOR"))
-//                    .withColumn("f_units",
-//                        when(col("IS_PANEL_HOSP") === "1", col("Units"))
-//                                .when(col("aveSales") < 0 or col("aveUnits") < 0, 0.0)
-//                                .otherwise(col("aveUnits") * col("WEST_MEDICINE_INCOME") * col("FACTOR")))
-                    .filter($"f_sales" =!= 0)// and $"f_units" =!= 0)
+                    .withColumn("f_units",
+                        when($"IS_PANEL_HOSP" === 1, $"sumUnits")
+                                .when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
+                                .otherwise($"aveUnits" * $"WEST_MEDICINE_INCOME" * $"FACTOR"))
+                    .filter($"f_sales" =!= 0 and $"f_units" =!= 0)
+                    .selectExpr("min1", "PHA_ID", "f_sales", "f_units")
         }
 
         println(result.count())
+        result.show(false)
+
         DFArgs(result)
     }
 

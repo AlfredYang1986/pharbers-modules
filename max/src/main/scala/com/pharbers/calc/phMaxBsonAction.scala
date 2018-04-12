@@ -13,14 +13,14 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
 
     override def perform(prMap: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
 
-//        val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-//        val result_location = panel_path_obj.p_resultPath + "test_max_result"
-//
-//        max_result.coalesce(1).write
-//                .format("csv")
-//                .option("header", value = true)
-//                .option("delimiter", 31.toChar.toString)
-//                .save(result_location)
+        val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
+        val result_location = panel_path_obj.p_resultPath + "test_max_result"
+
+        max_result.coalesce(5).write
+                .format("csv")
+                .option("header", value = true)
+                .option("delimiter", 31.toChar.toString)
+                .save(result_location)
 
         StringArgs("OK")
 
