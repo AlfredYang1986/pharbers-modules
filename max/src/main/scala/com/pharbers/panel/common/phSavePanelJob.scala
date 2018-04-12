@@ -1,6 +1,5 @@
 package com.pharbers.panel.common
 
-import java.io.File
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.actionbase._
 
