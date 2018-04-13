@@ -36,7 +36,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Prefecture", "westMedicineIncome")
         }
 
-        val panelSumed = {
+        val panelSummed = {
             panelDF.groupBy("YM", "min1", "HOSP_ID")
                 .agg(Map("Units" -> "sum", "Sales" -> "sum"))
                 .withColumnRenamed("YM", "sumYM")
@@ -48,9 +48,9 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
 
         val joinDataWithEmptyValue = panelDF.select("YM", "min1").distinct() join universeDF
 
-        val joinData = joinDataWithEmptyValue.join(panelSumed, joinDataWithEmptyValue("PHA_ID") === panelSumed("sumHosp_ID")
-            && joinDataWithEmptyValue("YM") === panelSumed("sumYM")
-            && joinDataWithEmptyValue("min1") === panelSumed("sumMin1"), "left")
+        val joinData = joinDataWithEmptyValue.join(panelSummed, joinDataWithEmptyValue("PHA_ID") === panelSummed("sumHosp_ID")
+            && joinDataWithEmptyValue("YM") === panelSummed("sumYM")
+            && joinDataWithEmptyValue("min1") === panelSummed("sumMin1"), "left")
             .withColumn("j_sumSales", when($"sumSales".isNull, 0.0).otherwise($"sumSales"))
             .withColumn("j_sumUnits", when($"sumUnits".isNull, 0.0).otherwise($"sumUnits"))
             .drop("sumSales","sumUnits")
@@ -74,18 +74,15 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 && joinData("min1") === segmentDF("s_min1")
                 && joinData("YM") === segmentDF("s_YM"))
             .drop("s_SEGMENT","s_min1","s_YM")
-            .withColumn("t_sumSales", when($"IS_PANEL_HOSP" === 1,$"sumSales").otherwise(
-                when($"avg_Sales".<(0.0),0.0)
+            .withColumn("f_sales", when($"IS_PANEL_HOSP" === 1,$"sumSales").otherwise(
+                when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
                     .otherwise($"Factor"*$"avg_Sales"*$"westMedicineIncome")
             ))
-            .withColumn("t_sumUnits", when($"IS_PANEL_HOSP" === 1,$"sumUnits").otherwise(
-                when($"avg_Units".<(0.0),0.0)
+            .withColumn("f_units", when($"IS_PANEL_HOSP" === 1,$"sumUnits").otherwise(
+                when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
                     .otherwise($"Factor"*$"avg_Units"*$"westMedicineIncome")
             ))
             .drop("s_sumSales","s_sumUnits","s_westMedicineIncome")
-            .withColumn("f_sales",when($"IS_PANEL_HOSP" === 1 and $"sumSales" === 0.0, 0.0).otherwise($"t_sumSales"))
-            .withColumn("f_units",when($"IS_PANEL_HOSP" === 1 and $"sumUnits" === 0.0, 0.0).otherwise($"t_sumUnits"))
-            .drop("t_sumSales","t_sumUnits")
             .filter(col("f_units") =!= 0 && col("f_sales") =!= 0)
             .withColumn("Sales",$"f_sales"/$"Factor")
             .withColumn("Units",$"f_units"/$"Factor")
@@ -95,11 +92,11 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
             .withColumnRenamed("Prefecture","City")
             .withColumnRenamed("min1","Product")
 
-//        ResultDF.show(10)
-//        println(ResultDF.count())
-//
-//        val test = ResultDF.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
-//        test.show()
+//        ResultDF.show(100)
+        println(ResultDF.count())
+
+        val test = ResultDF.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
+        test.show()
 
         DFArgs(ResultDF)
     }
