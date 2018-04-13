@@ -133,5 +133,6 @@ trait phAstellasPanelJob extends sequenceJobWithMap {
             load_cpa ::
             load_gycx ::
             phAstellasPanelConcretJob(df) ::
-            phSavePanelJob(df) :: Nil
+            phSavePanelJob(df) ::
+            Nil
 }
