@@ -18,7 +18,7 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
         val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val result_location = panel_path_obj.p_resultPath + UUID.randomUUID().toString
 
-        max_result.coalesce(5).write
+        max_result.coalesce(1).write
                 .format("csv")
                 .option("header", value = true)
                 .option("delimiter", 31.toChar.toString)

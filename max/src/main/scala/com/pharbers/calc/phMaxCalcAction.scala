@@ -69,7 +69,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
             .withColumn("avg_Sales",$"s_sumSales"/$"s_westMedicineIncome")
             .withColumn("avg_Units",$"s_sumUnits"/$"s_westMedicineIncome")
 
-        val thirdSum2 = joinData
+        val ResultDF = joinData
             .join(segmentDF, joinData("SEGMENT") === segmentDF("s_SEGMENT")
                 && joinData("min1") === segmentDF("s_min1")
                 && joinData("YM") === segmentDF("s_YM"))
@@ -86,16 +86,22 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
             .withColumn("f_sales",when($"IS_PANEL_HOSP" === 1 and $"sumSales" === 0.0, 0.0).otherwise($"t_sumSales"))
             .withColumn("f_units",when($"IS_PANEL_HOSP" === 1 and $"sumUnits" === 0.0, 0.0).otherwise($"t_sumUnits"))
             .drop("t_sumSales","t_sumUnits")
-
-        val FinalSum = thirdSum2
             .filter(col("f_units") =!= 0 && col("f_sales") =!= 0)
+            .withColumn("Sales",$"f_sales"/$"Factor")
+            .withColumn("Units",$"f_units"/$"Factor")
+            .select("PHA_ID","YM","Prefecture","min1","Sales","Units","Factor","f_sales","f_units")
+            .withColumnRenamed("PHA_ID","Panel_ID")
+            .withColumnRenamed("YM","Date")
+            .withColumnRenamed("Prefecture","City")
+            .withColumnRenamed("min1","Product")
 
-        FinalSum.show(10)
-//        println(FinalSum.count())
-//        val test = FinalSum.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
+//        ResultDF.show(10)
+//        println(ResultDF.count())
+//
+//        val test = ResultDF.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
 //        test.show()
 
-        NULLArgs
+        DFArgs(ResultDF)
     }
 
 }
