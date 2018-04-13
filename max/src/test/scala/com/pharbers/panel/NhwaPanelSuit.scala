@@ -26,7 +26,7 @@
 //        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result = phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+//        val result = phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201710", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 //
 //        println("result = " + result)
 //        println()

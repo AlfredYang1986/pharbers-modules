@@ -46,7 +46,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumnRenamed("sum(Units)", "sumUnits")
         }
 
-        val joinDataWithEmptyValue = (panelDF.select("YM", "min1").distinct() join universeDF)
+        val joinDataWithEmptyValue = panelDF.select("YM", "min1").distinct() join universeDF
 
         val joinData = joinDataWithEmptyValue.join(panelSumed, joinDataWithEmptyValue("PHA_ID") === panelSumed("sumHosp_ID")
             && joinDataWithEmptyValue("YM") === panelSumed("sumYM")
@@ -57,7 +57,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
             .withColumnRenamed("j_sumSales","sumSales")
             .withColumnRenamed("j_sumUnits","sumUnits")
 
-        val segmentDF = (joinData.filter(col("NEED_MAX_HOSP") === "1"))
+        val segmentDF = joinData.filter(col("NEED_MAX_HOSP") === "1")
             .groupBy("SEGMENT", "min1", "YM")
             .agg(Map("sumSales" -> "sum", "sumUnits" -> "sum", "westMedicineIncome" -> "sum"))
             .withColumnRenamed("SEGMENT", "s_SEGMENT")

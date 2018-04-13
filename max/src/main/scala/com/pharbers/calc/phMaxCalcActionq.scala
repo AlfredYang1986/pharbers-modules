@@ -1,8 +1,6 @@
 package com.pharbers.calc
 
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.LongType
-
 import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase._
 
@@ -12,7 +10,6 @@ object phMaxCalcActionq {
 
 class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTrait {
     override val name: String = "max_calc_action"
-
     override implicit def progressFunc(progress: Double, flag: String) : Unit = {}
 
     override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
@@ -68,15 +65,17 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
                     .withColumnRenamed("sum(s_Sales)", "sumSales")
                     .withColumnRenamed("sum(s_Units)", "sumUnits")
                     .withColumnRenamed("sum(WEST_MEDICINE_INCOME)", "sumWestIncome")
-                    .filter(col("sumSales") =!= 0 and col("sumUnits") =!= 0)
                     .withColumn("aveSales", col("sumSales") / col("sumWestIncome"))
                     .withColumn("aveUnits", col("sumUnits") / col("sumWestIncome"))
+                    .filter(col("aveSales") =!= 0 and col("aveUnits") =!= 0)
                     .select("SYM", "aveSales", "aveUnits")
         }
 
+
+        val ta = calcData.join(groupData, calcData("SYM") === groupData("SYM")).drop("SYM")
+
         val result = {
-            calcData.join(groupData, calcData("SYM") === groupData("SYM")).drop("SYM")
-                    .withColumn("f_sales",
+                    ta.withColumn("f_sales",
                         when($"IS_PANEL_HOSP" === 1, $"sumSales").otherwise(
                             when($"aveSales" < 0 or $"aveUnits" < 0, 0.0)
                                     .otherwise($"aveSales" * $"WEST_MEDICINE_INCOME" * $"FACTOR")
@@ -92,7 +91,10 @@ class phMaxCalcActionq(override val defaultArgs: pActionArgs) extends pActionTra
         }
 
         println(result.count())
-        result.show(false)
+//        result.show(false)
+
+        val test = result.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
+        test.show()
 
         DFArgs(result)
     }
