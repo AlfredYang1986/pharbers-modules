@@ -32,12 +32,6 @@ trait phMaxJob extends sequenceJobWithMap {
     /// 留做测试
     val temp_panel_name: String = UUID.randomUUID().toString
 
-    // 0. load compare result
-    val loadCompareResult = new sequenceJob {
-        override val name: String = "compare_result"
-        override val actions: List[pActionTrait] = csv2DFAction(panel_path_obj.p_resultPath + "00_luo_00/Nhwa_Max_1712.csv", ",") :: Nil
-    }
-
     // 1. load panel data
     val loadPanelData = new sequenceJob {
         override val name: String = "panel_data"
@@ -67,7 +61,6 @@ trait phMaxJob extends sequenceJobWithMap {
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             loadPanelData ::
-            loadCompareResult ::
 //            loadPanelDataOfExcel ::
             readUniverseFile ::
             phMaxSplitAction() ::
