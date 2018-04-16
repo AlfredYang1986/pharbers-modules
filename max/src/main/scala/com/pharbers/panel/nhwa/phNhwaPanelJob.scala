@@ -40,9 +40,9 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
     val readCpa = new sequenceJob {
         override val name = "cpa"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[phNhwaCpaFormat](cpa_file, temp_name + "cpa") ::
-                    saveCurrenResultAction(temp_dir + temp_name + "cpa") ::
-                    csv2DFAction(temp_dir + temp_name + "cpa") :: Nil
+            xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
+                    saveCurrenResultAction(temp_dir + "cpa") ::
+                    csv2DFAction(temp_dir + "cpa") :: Nil
     }
 
     /**
@@ -51,9 +51,9 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
     val readNotArrivalHosp = new sequenceJob {
         override val name = "not_arrival_hosp_file"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[phNhwaCpaSecondSheetFormat](cpa_file, temp_name + "not_arrival_hosp_file") ::
-                    saveCurrenResultAction(temp_dir + temp_name + "not_arrival_hosp_file") ::
-                    csv2DFAction(temp_dir + temp_name + "not_arrival_hosp_file") :: Nil
+            xlsxReadingAction[phNhwaCpaSecondSheetFormat](cpa_file, "not_arrival_hosp_file") ::
+                    saveCurrenResultAction(temp_dir + "not_arrival_hosp_file") ::
+                    csv2DFAction(temp_dir + "not_arrival_hosp_file") :: Nil
     }
 
     val df = MapArgs(

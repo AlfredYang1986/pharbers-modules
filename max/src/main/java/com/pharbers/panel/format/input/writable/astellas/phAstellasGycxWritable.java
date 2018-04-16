@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class phAstellasGycxWritable extends phAstellasCommonWritable {
 
-    static {
+    public phAstellasGycxWritable() {
         titleMap = new HashMap<String, String>() {{
             put("省份", "PROVINCES");
             put("城市", "CITY");

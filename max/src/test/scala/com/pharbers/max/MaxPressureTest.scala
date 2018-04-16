@@ -16,7 +16,7 @@ class MaxPressureTest extends Specification {
         s2"""
     This is a specification to check the max result correctness
     The max result should
-        successfully pass max calc                                               ${doLoopJob2(3)}
+        successfully pass max calc                                               ${doLoopJob(3)}
                                                                  """
 
 //    (1 to 3).foldLeft(Fragments.empty)((res, i) => res.append("test "+i ! {
