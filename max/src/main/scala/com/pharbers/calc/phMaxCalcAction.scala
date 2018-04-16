@@ -103,8 +103,6 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                     .select("Panel_ID", "Date", "City", "Product", "f_sales", "f_units")
         }
 
-        println("resultDF count = " + resultDF.count())
-
         DFArgs(resultDF)
     }
 

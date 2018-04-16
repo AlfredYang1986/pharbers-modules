@@ -17,7 +17,7 @@
 //        println(s"MAX计算开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result = phMaxJob("panel_luo_12.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val result = phMaxJob("00_luo_00/Nhwa_Panel_1712.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
 //
 //        println("result = " + result)
 //        println()

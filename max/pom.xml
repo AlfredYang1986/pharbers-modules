@@ -219,6 +219,18 @@
                     <artifactId>akka-http-xml_2.11</artifactId>
                     <version>10.0.1</version>
                 </dependency>
+                <dependency>
+                    <groupId>com.mmakowski</groupId>
+                    <artifactId>maven-specs2-plugin</artifactId>
+                    <version>0.4.2</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.specs2</groupId>
+                    <artifactId>specs2-core_2.11</artifactId>
+                    <version>3.7</version>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>
@@ -299,6 +311,20 @@
                         <id>test</id>
                         <goals>
                             <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mmakowski</groupId>
+                <artifactId>specs2-maven-plugin</artifactId>
+                <version>0.4.4</version>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run-specs</goal>
                         </goals>
                     </execution>
                 </executions>
