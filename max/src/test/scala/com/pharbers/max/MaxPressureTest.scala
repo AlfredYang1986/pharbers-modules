@@ -3,19 +3,25 @@ package com.pharbers.max
 import com.pharbers.calc.phMaxJob
 import com.pharbers.pactions.actionbase.{DFArgs, MapArgs}
 import com.pharbers.panel.nhwa.phNhwaPanelJob
-import org.specs2.Specification
+import org.specs2.execute.Result
+import org.specs2.mutable.Specification
+import org.specs2.specification.core.{Fragment, Fragments}
 
 /**
   * Created by jeorch on 18-4-13.
   */
 class MaxPressureTest extends Specification {
 
-    def is =
+    override def is =
         s2"""
     This is a specification to check the max result correctness
     The max result should
-        successfully pass max calc                                               $e2
+        successfully pass max calc                                               ${doLoopJob2(3)}
                                                                  """
+
+//    (1 to 3).foldLeft(Fragments.empty)((res, i) => res.append("test "+i ! {
+//        e2
+//    }))
 
     def e2 = {
 
@@ -48,6 +54,24 @@ class MaxPressureTest extends Specification {
 
     def ~=(x: Any, y: Any, precision: Double) = {
         if ((x.asInstanceOf[Double] - y.asInstanceOf[Double]).abs < precision) true else false
+    }
+
+    def doLoopJob(count: Int): Boolean = {
+        var canDoJob: Boolean = false
+        canDoJob = if(count == 1) true else doLoopJob(count - 1)
+        e2
+        canDoJob mustEqual true
+        canDoJob
+    }
+
+    def doLoopJob2(count: Int): Boolean = {
+        val panelResult1 = phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201711", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get.toString
+        println(s"panelResult = ${panelResult1}")
+
+        val panelResult2 = phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get.toString
+        println(s"panelResult = ${panelResult2}")
+
+        true
     }
 
 }
