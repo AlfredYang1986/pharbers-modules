@@ -40,6 +40,7 @@
                     <version>1.0.6</version>
                 </dependency>
 
+
                 <!-- poi -->
                 <dependency>
                     <groupId>org.apache.poi</groupId>
@@ -61,19 +62,26 @@
                     <artifactId>commons-codec</artifactId>
                     <version>1.9</version>
                 </dependency>
+                <!-- poi stream reader -->
+                <dependency>
+                    <groupId>com.monitorjbl</groupId>
+                    <artifactId>xlsx-streamer</artifactId>
+                    <version>1.0.2</version>
+                </dependency>
+
 
                 <!-- specs test -->
+                <dependency>
+                    <groupId>org.scalatest</groupId>
+                    <artifactId>scalatest_2.11</artifactId>
+                    <version>3.0.1</version>
+                    <scope>test</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.specs2</groupId>
                     <artifactId>specs2_2.11</artifactId>
                     <version>3.7</version>
                     <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.scalatest</groupId>
-                    <artifactId>scalatest_2.11</artifactId>
-                    <version>3.0.1</version>
                     <scope>test</scope>
                 </dependency>
 
@@ -104,18 +112,6 @@
                     <version>0.1</version>
                 </dependency>
                 <dependency>
-                    <groupId>com.databricks</groupId>
-                    <artifactId>spark-avro_2.11</artifactId>
-                    <version>3.2.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.spark</groupId>
-                    <artifactId>spark-streaming_2.11</artifactId>
-                    <version>2.0.0</version>
-                </dependency>
-
-                <!-- pharbers memory -->
-                <dependency>
                     <groupId>com.pharbers</groupId>
                     <artifactId>pharbers-memory</artifactId>
                     <version>0.1</version>
@@ -126,6 +122,27 @@
                     <version>0.1</version>
                 </dependency>
 
+
+                <!-- spark lib -->
+                <dependency>
+                    <groupId>com.databricks</groupId>
+                    <artifactId>spark-avro_2.11</artifactId>
+                    <version>3.2.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-streaming_2.11</artifactId>
+                    <version>2.0.0</version>
+                </dependency>
+                <!-- Hadoop test artifact for running mini clusters -->
+                <dependency>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-minicluster</artifactId>
+                    <version>${hadooop.version}</version>
+                    <scope>test</scope>
+                </dependency>
+
+
                 <!-- mongodb lib -->
                 <dependency>
                     <groupId>org.mongodb</groupId>
@@ -134,20 +151,6 @@
                     <type>pom</type>
                 </dependency>
 
-                <!-- poi stream reader -->
-                <dependency>
-                    <groupId>com.monitorjbl</groupId>
-                    <artifactId>xlsx-streamer</artifactId>
-                    <version>1.0.2</version>
-                </dependency>
-
-                <!-- Hadoop test artifact for running mini clusters -->
-                <dependency>
-                    <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-minicluster</artifactId>
-                    <version>${hadooop.version}</version>
-                    <scope>test</scope>
-                </dependency>
 
                 <!-- akka actor -->
                 <dependency>
@@ -215,12 +218,6 @@
                     <groupId>com.typesafe.akka</groupId>
                     <artifactId>akka-http-xml_2.11</artifactId>
                     <version>10.0.1</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.specs2</groupId>
-                    <artifactId>specs2-core_2.11</artifactId>
-                    <version>3.8.6</version>
-                    <scope>test</scope>
                 </dependency>
             </dependencies>
         </profile>

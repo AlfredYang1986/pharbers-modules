@@ -1,6 +1,7 @@
 package com.pharbers.panel.nhwa
 
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.functions._
 import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase._
 import org.apache.spark.sql.types.{DoubleType, LongType}
@@ -69,7 +70,14 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
                 .withColumnRenamed("规格", "PACK_DES")
                 .withColumnRenamed("包装数量", "PACK_NUMBER")
                 .withColumnRenamed("生产企业", "CORP_NAME")
-                .withColumnRenamed("min1_标准", "min2")
+                .withColumnRenamed("商品名_标准", "s_PRODUCT_NAME")
+                .withColumnRenamed("药品规格_标准", "s_PACK_DES")
+                .withColumnRenamed("剂型_标准", "s_APP2_COD")
+                .withColumnRenamed("生产企业_标准", "s_CORP_NAME")
+                .withColumn("min2",
+                    when(col("min1_标准") =!= "", col("min1_标准"))
+                            .otherwise(col("s_PRODUCT_NAME") + col("s_APP2_COD") + col("s_PACK_DES") + col("PACK_NUMBER") + col("PACK_NUMBER"))
+                )
                 .selectExpr("concat(PRODUCT_NAME,APP2_COD,PACK_DES,PACK_NUMBER,CORP_NAME) as min1", "min2", "NAME")
                 .withColumnRenamed("min2", "min1_标准")
                 .withColumnRenamed("NAME", "通用名")
