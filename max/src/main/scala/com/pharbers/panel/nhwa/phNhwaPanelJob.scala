@@ -64,11 +64,11 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
         )
     )
 
-    override val actions: List[pActionTrait] =
-        jarPreloadAction() ::
-                phNhwaPreActions(temp_name).actions :::
-                readCpa ::
-                readNotArrivalHosp ::
-                phNhwaPanelConcretJob(df) ::
-                phSavePanelJob(df) :: Nil
+    override val actions: List[pActionTrait] = jarPreloadAction() ::
+            phNhwaPreActions(temp_name).actions :::
+            readCpa ::
+            readNotArrivalHosp ::
+            phNhwaPanelConcretJob(df) ::
+            phSavePanelJob(df) ::
+            Nil
 }

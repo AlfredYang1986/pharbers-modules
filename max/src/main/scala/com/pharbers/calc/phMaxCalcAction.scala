@@ -1,5 +1,7 @@
 package com.pharbers.calc
 
+import org.apache.spark.sql.functions._
+import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase._
 import org.apache.spark.sql.functions.col
 
@@ -11,102 +13,97 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
     override val name: String = "max_calc_action"
     override implicit def progressFunc(progress: Double, flag: String) : Unit = {}
 
+    lazy val sparkDriver: phSparkDriver = phSparkDriver()
+    import sparkDriver.ss.implicits._
+
     override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
 
         val panelDF = {
             pr.asInstanceOf[MapArgs].get("panel_data").asInstanceOf[DFArgs].get
-                .withColumnRenamed("Date", "YM")
-                .withColumnRenamed("Strength", "min1")
-                .withColumnRenamed("DOI", "MARKET")
-                .selectExpr("YM", "min1", "HOSP_ID", "Sales", "Units")
+                    .withColumnRenamed("Date", "YM")
+                    .withColumnRenamed("Strength", "min1")
+                    .withColumnRenamed("DOI", "MARKET")
+                    .selectExpr("YM", "min1", "HOSP_ID", "Sales", "Units")
         }
 
         val universeDF = {
             pr.asInstanceOf[MapArgs].get("universe_data").asInstanceOf[DFArgs].get
-                .withColumnRenamed("PHA ID", "PHA_ID")
-                .withColumnRenamed("If Panel_All", "IS_PANEL_HOSP")
-                .withColumnRenamed("If Panel_To Use", "NEED_MAX_HOSP")
-                .withColumnRenamed("Segment", "SEGMENT")
-                .withColumnRenamed("西药收入", "westMedicineIncome")
-                .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Prefecture", "westMedicineIncome")
+                    .withColumnRenamed("PHA ID", "PHA_ID")
+                    .withColumnRenamed("If Panel_All", "IS_PANEL_HOSP")
+                    .withColumnRenamed("If Panel_To Use", "NEED_MAX_HOSP")
+                    .withColumnRenamed("Segment", "SEGMENT")
+                    .withColumnRenamed("西药收入", "westMedicineIncome")
+                    .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Prefecture", "westMedicineIncome")
         }
 
-        val panelSumed = {
+        val panelSummed = {
             panelDF.groupBy("YM", "min1", "HOSP_ID")
-                .agg(Map("Units" -> "sum", "Sales" -> "sum"))
-                .withColumnRenamed("YM", "sumYM")
-                .withColumnRenamed("min1", "sumMin1")
-                .withColumnRenamed("HOSP_ID", "sumHosp_ID")
-                .withColumnRenamed("sum(Sales)", "sumSales")
-                .withColumnRenamed("sum(Units)", "sumUnits")
+                    .agg(Map("Units" -> "sum", "Sales" -> "sum"))
+                    .withColumnRenamed("YM", "sumYM")
+                    .withColumnRenamed("min1", "sumMin1")
+                    .withColumnRenamed("HOSP_ID", "sumHosp_ID")
+                    .withColumnRenamed("sum(Sales)", "sumSales")
+                    .withColumnRenamed("sum(Units)", "sumUnits")
         }
 
-        val joinDataWithEmptyValue = (panelDF.select("YM", "min1") join universeDF)
+        val joinDataWithEmptyValue = panelDF.select("YM", "min1").distinct() join universeDF
 
-        val joinData = joinDataWithEmptyValue.join(panelSumed, joinDataWithEmptyValue("PHA_ID") === panelSumed("sumHosp_ID")
-            && joinDataWithEmptyValue("YM") === panelSumed("sumYM")
-            && joinDataWithEmptyValue("min1") === panelSumed("sumMin1"), "left")
+        val joinData = {
+            joinDataWithEmptyValue
+                    .join(panelSummed,
+                        joinDataWithEmptyValue("PHA_ID") === panelSummed("sumHosp_ID")
+                                && joinDataWithEmptyValue("YM") === panelSummed("sumYM")
+                                && joinDataWithEmptyValue("min1") === panelSummed("sumMin1"),
+                        "left")
+                    .withColumn("j_sumSales", when($"sumSales".isNull, 0.0).otherwise($"sumSales"))
+                    .withColumn("j_sumUnits", when($"sumUnits".isNull, 0.0).otherwise($"sumUnits"))
+                    .drop("sumSales", "sumUnits")
+                    .withColumnRenamed("j_sumSales", "sumSales")
+                    .withColumnRenamed("j_sumUnits", "sumUnits")
+        }
 
-        val segmentDF = (joinData.filter(col("NEED_MAX_HOSP") === "1"))
-            .groupBy("SEGMENT", "min1", "YM")
-            .agg(Map("sumSales" -> "sum", "sumUnits" -> "sum", "westMedicineIncome" -> "sum"))
-            .withColumnRenamed("SEGMENT", "s_SEGMENT")
-            .withColumnRenamed("min1", "s_min1")
-            .withColumnRenamed("YM", "s_YM")
-            .withColumnRenamed("sum(sumSales)", "s_sumSales")
-            .withColumnRenamed("sum(sumUnits)", "s_sumUnits")
-            .withColumnRenamed("sum(westMedicineIncome)", "s_westMedicineIncome")
+        val segmentDF = {
+            joinData.filter(col("NEED_MAX_HOSP") === "1")
+                    .groupBy("SEGMENT", "min1", "YM")
+                    .agg(Map("sumSales" -> "sum", "sumUnits" -> "sum", "westMedicineIncome" -> "sum"))
+                    .withColumnRenamed("SEGMENT", "s_SEGMENT")
+                    .withColumnRenamed("min1", "s_min1")
+                    .withColumnRenamed("YM", "s_YM")
+                    .withColumnRenamed("sum(sumSales)", "s_sumSales")
+                    .withColumnRenamed("sum(sumUnits)", "s_sumUnits")
+                    .withColumnRenamed("sum(westMedicineIncome)", "s_westMedicineIncome")
+                    .withColumn("avg_Sales", $"s_sumSales" / $"s_westMedicineIncome")
+                    .withColumn("avg_Units", $"s_sumUnits" / $"s_westMedicineIncome")
+                    .drop("s_sumSales", "s_sumUnits", "s_westMedicineIncome")
+        }
 
-        val secondSum = joinData
-//        val secondSum = (joinData.filter(col("NEED_MAX_HOSP") === "1"))
-//            .groupBy("SEGMENT", "min1", "YM")
-//            .agg(Map("sumSales" -> "sum", "sumUnits" -> "sum", "westMedicineIncome" -> "sum",
-//                "PHA_ID" -> "first", "Factor" -> "first",
-//                "IS_PANEL_HOSP" -> "first", "NEED_MAX_HOSP" -> "first",
-//                "Prefecture" -> "first", "sumYM" -> "first",
-//                "sumMin1" -> "first", "sumHosp_ID" -> "first"))
-//            .withColumnRenamed("sum(sumSales)", "sumSales")
-//            .withColumnRenamed("sum(sumUnits)", "sumUnits")
-//            .withColumnRenamed("sum(westMedicineIncome)", "westMedicineIncome")
-//            .withColumnRenamed("first(PHA_ID)", "PHA_ID")
-//            .withColumnRenamed("first(Factor)", "Factor")
-//            .withColumnRenamed("first(IS_PANEL_HOSP)", "IS_PANEL_HOSP")
-//            .withColumnRenamed("first(NEED_MAX_HOSP)", "NEED_MAX_HOSP")
-//            .withColumnRenamed("first(Prefecture)", "Prefecture")
-//            .withColumnRenamed("first(sumYM)", "sumYM")
-//            .withColumnRenamed("first(sumMin1)", "sumMin1")
-//            .withColumnRenamed("first(sumHosp_ID)", "sumHosp_ID")
-//            .union(joinData.filter(col("NEED_MAX_HOSP") =!= "1"))
+        val resultDF = {
+            joinData
+                    .join(segmentDF,
+                        joinData("SEGMENT") === segmentDF("s_SEGMENT")
+                                && joinData("min1") === segmentDF("s_min1")
+                                && joinData("YM") === segmentDF("s_YM"))
+                    .drop("s_SEGMENT", "s_min1", "s_YM")
+                    .withColumn("f_sales",
+                        when($"IS_PANEL_HOSP" === 1, $"sumSales").otherwise(
+                            when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
+                                    .otherwise($"Factor" * $"avg_Sales" * $"westMedicineIncome")
+                        ))
+                    .withColumn("f_units",
+                        when($"IS_PANEL_HOSP" === 1, $"sumUnits").otherwise(
+                            when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
+                                    .otherwise($"Factor" * $"avg_Units" * $"westMedicineIncome")
+                        ))
+                    .drop("s_sumSales", "s_sumUnits", "s_westMedicineIncome")
+                    .filter(col("f_units") =!= 0 && col("f_sales") =!= 0)
+                    .withColumnRenamed("PHA_ID", "Panel_ID")
+                    .withColumnRenamed("YM", "Date")
+                    .withColumnRenamed("Prefecture", "City")
+                    .withColumnRenamed("min1", "Product")
+                    .select("Panel_ID", "Date", "City", "Product", "f_sales", "f_units")
+        }
 
-        val thirdSum1 = (secondSum.filter(col("IS_PANEL_HOSP") === "1"))
-            .withColumn("f_sales", secondSum("sumSales"))
-            .withColumn("f_units", secondSum("sumUnits"))
-
-        val thirdSum2_temp = secondSum.filter(col("IS_PANEL_HOSP") =!= "1")
-            .join(segmentDF, secondSum("SEGMENT") === segmentDF("s_SEGMENT")
-                && secondSum("min1") === segmentDF("s_min1")
-                && secondSum("YM") === segmentDF("s_YM"))
-            .drop("s_SEGMENT","s_min1","s_YM","sumSales","sumUnits","westMedicineIncome")
-            .withColumnRenamed("s_sumSales","sumSales")
-            .withColumnRenamed("s_sumUnits","sumUnits")
-            .withColumnRenamed("s_westMedicineIncome","westMedicineIncome")
-
-        val thirdSum2_1 = thirdSum2_temp.filter(col("sumUnits") < 0 && col("sumSales") < 0)
-            .withColumn("f_sales", secondSum("sumSales")*0)
-            .withColumn("f_units", secondSum("sumUnits")*0)
-
-        val thirdSum2_2 = thirdSum2_temp.filter(!(col("sumUnits") < 0 && col("sumSales") < 0))
-            .withColumn("f_sales", secondSum("sumSales")*secondSum("westMedicineIncome")*secondSum("Factor"))
-            .withColumn("f_units", secondSum("sumUnits")*secondSum("westMedicineIncome")*secondSum("Factor"))
-
-        val thirdSumFinal = thirdSum1.union(thirdSum2_1.union(thirdSum2_2))
-
-        //        thirdSumFinal.show(10)
-        println(thirdSumFinal.count())
-        //        val test = thirdSumFinal.agg(Map("f_sales" -> "sum", "f_units" -> "sum"))
-        //        test.show()
-
-        NULLArgs
+        DFArgs(resultDF)
     }
 
 }

@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class phNhwaCpaWritable extends phNhwaCommonWritable {
 
-    static {
-        titleMap = new HashMap<String, String>() {{
+    public phNhwaCpaWritable() {
+        super.titleMap = new HashMap<String, String>() {{
             put("省", "PROVINCES");
             put("城市", "CITY");
             put("年", "YEAR");

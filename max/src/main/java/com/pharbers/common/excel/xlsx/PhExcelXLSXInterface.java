@@ -81,13 +81,13 @@ public abstract class PhExcelXLSXInterface {
             return new Pair(prev.value.getRowNum(), value.getColumnIndex());
         }
 
-        DecimalFormat decimalFormat = new DecimalFormat("###################.###########");
+        DecimalFormat decimalFormat = new DecimalFormat("###################.################");
         public String queryCellString() throws Exception {
 
             if (value == null) {
                 return "";
             } else if (value.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                return String.valueOf(decimalFormat.format(value.getNumericCellValue()));
+                return decimalFormat.format(new BigDecimal(value.getNumericCellValue()));
             } else if (value.getCellType() == Cell.CELL_TYPE_STRING) {
                 String temp = value.getStringCellValue();
                 try{

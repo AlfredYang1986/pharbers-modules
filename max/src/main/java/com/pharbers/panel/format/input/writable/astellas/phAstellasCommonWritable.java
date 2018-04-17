@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class phAstellasCommonWritable extends PhExcelWritable {
-    protected static Map<String, String> titleMap;
+    protected static Map<String, String> titleMap = null;
 
     @Override
     public String richWithInputRow(int index, String value) {

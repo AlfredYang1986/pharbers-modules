@@ -10,7 +10,7 @@ trait spark_conn_instance extends spark_conn_config {
     private val conf = new SparkConf()
             .setAppName(sparkMasterName)
             .setMaster(s"spark://$sparkMasterHost:$sparkMasterPort")
-            .set("spark.executor.memory", "2g")
+            .set("spark.executor.memory", "1g")
             .set("spark.executor.extraJavaOptions",
                 """
                   | -XX:+UseG1GC -XX:+PrintFlagsFinal

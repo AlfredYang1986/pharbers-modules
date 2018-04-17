@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class phAstellasHospitalWritable extends phAstellasCommonWritable {
 
-    static {
+    public phAstellasHospitalWritable() {
         titleMap = new HashMap<String, String>() {{
             put("ACN编码", "ACN_CODE");
             put("ACN医院名称", "ACN_HOSP_NAME");
