@@ -6,7 +6,7 @@ import play.api.libs.json.JsValue
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 
-object commonMacro {
+object CURDMacro {
     def pushMacro(d2m : JsValue => DBObject,
                   ssr : DBObject => Map[String, JsValue],
                   data : JsValue,
