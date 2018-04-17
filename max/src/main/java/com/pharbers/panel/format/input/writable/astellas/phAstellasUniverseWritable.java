@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class phAstellasUniverseWritable extends phAstellasCommonWritable {
 
-    static {
+    public phAstellasUniverseWritable() {
         titleMap = new HashMap<String, String>() {{
             put("公司", "COMPANY");
             put("年", "YEAR");

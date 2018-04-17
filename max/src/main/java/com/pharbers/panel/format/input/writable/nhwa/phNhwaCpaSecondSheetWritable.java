@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class phNhwaCpaSecondSheetWritable extends phNhwaCommonWritable {
 
-    static {
-        titleMap = new HashMap<String, String>() {{
+    public phNhwaCpaSecondSheetWritable() {
+        super.titleMap = new HashMap<String, String>() {{
             put("医院编码", "医院编码");
             put("月份", "月份");
             put("", "na");

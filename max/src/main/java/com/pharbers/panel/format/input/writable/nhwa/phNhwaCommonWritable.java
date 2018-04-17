@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class phNhwaCommonWritable extends PhExcelWritable {
-    protected static Map<String, String> titleMap;
+    public Map<String, String> titleMap = null;
 
     @Override
     public String richWithInputRow(int index, String value) {
