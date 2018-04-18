@@ -36,11 +36,12 @@ trait phAstellasPanelJob extends sequenceJobWithMap {
     val gyc_file: String
     val temp_name: String
 
+    val mkt_cn: String = getMktCN(mkt)
     val match_dir: String = panel_path_obj.p_matchFilePath
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
     val product_match_file: String = match_dir + "astellas/20171018药品最小单位IMS packid匹配表.xlsx"
     val markets_match_file: String = match_dir + "astellas/20170203药品名称匹配市场.xlsx"
-    val universe_file: String = match_dir + "astellas/UNIVERSE_Allelock_online.xlsx"
+    val universe_file: String = match_dir + s"astellas/UNIVERSE_${mkt}_online.xlsx"
     val hospital_file: String = match_dir + "astellas/医院名称编码等级三源互匹20180314.xlsx"
 
     //1. read 产品匹配表
@@ -121,9 +122,23 @@ trait phAstellasPanelJob extends sequenceJobWithMap {
         Map(
             "ym" -> StringArgs(ym),
             "mkt" -> StringArgs(mkt),
+            "mkt_cn" -> StringArgs(mkt_cn),
             "name" -> StringArgs(temp_name)
         )
     )
+
+    def getMktCN(mkt: String): String = {
+        mkt match {
+            case "Allelock" => "阿洛刻市场"
+            case "Mycamine" => "米开民市场"
+            case "Prograf" => "普乐可复市场"
+            case "Perdipine" => "佩尔市场"
+            case "Harnal" => "哈乐市场"
+            case "Gout" => "痛风市场"
+            case "Vesicare" => "卫喜康市场"
+            case "Grafalon" => "Grafalon市场"
+        }
+    }
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             load_product_match_file ::
