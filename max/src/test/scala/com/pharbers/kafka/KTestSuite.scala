@@ -1,5 +1,8 @@
 package com.pharbers.kafka
 
+import java.util.concurrent.Executors
+
+import com.pharbers.chain.kafkaConsumer
 import com.pharbers.chain.kafkaPushTopic
 import com.pharbers.chain.kafkaLstTopics
 import com.pharbers.chain.kafkaPushRecord
@@ -21,4 +24,8 @@ class KTestSuite extends FunSuite{
         case class pushRecord() extends kafkaPushRecord
         pushRecord().pushRecord("abcde", "abcde", "alfred", 50)("alfredyang")
     }
+
+    case class consumer(override val group_id: String, override val topic: String) extends kafkaConsumer
+    val tmp = Executors.newFixedThreadPool(1)
+    tmp.submit(consumer("abc", "alfredyang"))
 }
