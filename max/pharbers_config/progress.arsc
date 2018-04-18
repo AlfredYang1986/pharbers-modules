@@ -4,7 +4,7 @@
     "name": "payload",
     "fields":[
         {
-            "name": "id",  "type": ["int", "null"]
+            "name": "id",  "type": ["string", "null"]
         },
         {
             "name": "name", "type": "string"
