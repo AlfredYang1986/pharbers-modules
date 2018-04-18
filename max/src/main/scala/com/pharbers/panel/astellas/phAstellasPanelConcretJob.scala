@@ -26,8 +26,8 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val mkt_cn = defaultArgs.asInstanceOf[MapArgs].get("mkt_cn").asInstanceOf[StringArgs].get
 
-        val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
-        val gycx = args.asInstanceOf[MapArgs].get("gycx").asInstanceOf[DFArgs].get
+        val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get.filter(col("YM") === ym)
+        val gycx = args.asInstanceOf[MapArgs].get("gycx").asInstanceOf[DFArgs].get.filter(col("YM") === ym)
         val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
@@ -65,8 +65,8 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
                 .withColumn("STANDARD_UNIT", 'STANDARD_UNIT.cast(DoubleType))
                 .withColumnRenamed("STANDARD_UNIT", "Units")
                 .withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
-                .filter(col("YM") === ym).filter(col("MARKET") === mkt_cn)
-        }
+                .filter(col("MARKET") === mkt_cn)
+        }.distinct()
 
         val product_match = {
             product_match_file.select("min0", "min2", "STANDARD_MOLE_NAME", "STANDARD_APP2_COD", "STANDARD_PRODUCT_NAME")
