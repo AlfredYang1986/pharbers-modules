@@ -14,6 +14,9 @@
         },
         {
             "name": "progress", "type": ["int", "null"]
+        },
+        {
+            "name": "result", "type": ["string", "null"]
         }
     ]
 }

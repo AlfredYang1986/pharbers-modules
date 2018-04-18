@@ -2,10 +2,9 @@ package com.pharbers.kafka
 
 import java.util.concurrent.Executors
 
-import com.pharbers.chain.kafkaConsumer
-import com.pharbers.chain.kafkaPushTopic
-import com.pharbers.chain.kafkaLstTopics
-import com.pharbers.chain.kafkaPushRecord
+import akka.actor.ActorSystem
+import com.pharbers.channel.chanelImpl.{kafkaConsumer, kafkaLstTopics, kafkaPushRecord}
+import com.pharbers.channel.clacProgressChannel
 import org.scalatest.FunSuite
 
 class KTestSuite extends FunSuite{
@@ -15,17 +14,24 @@ class KTestSuite extends FunSuite{
 //        createTopic().pushTopic("alfredyang")
 //    }
 
-    test("kafka topic listing") {
-        case class lstTopic() extends kafkaLstTopics
-        lstTopic().lstTopics.foreach(println(_))
-    }
+//    test("kafka topic listing") {
+//        case class lstTopic() extends kafkaLstTopics
+//        lstTopic().lstTopics.foreach(println(_))
+//    }
+
+    implicit val asys = ActorSystem("test")
+    val ch = clacProgressChannel("abcde")(asys)
 
     test("kafka push record to topic alfredyang") {
-        case class pushRecord() extends kafkaPushRecord
-        pushRecord().pushRecord("abcde", "abcde", "alfred", 50)("alfredyang")
+        import ch.precord
+        ch.pushRecord(Map("id" -> "abcde",
+                          "name" -> "abcde",
+                          "stages" -> "alfred",
+                          "progress" -> 90.asInstanceOf[Number]))
+
+        Thread.sleep(5000)
     }
 
-    case class consumer(override val group_id: String, override val topic: String) extends kafkaConsumer
     val tmp = Executors.newFixedThreadPool(1)
-    tmp.submit(consumer("abc", "alfredyang"))
+    tmp.submit(ch)
 }

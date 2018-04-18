@@ -1,8 +1,9 @@
-package com.pharbers.chain
+package com.pharbers.channel.chanelImpl
 
 import java.io.File
 import java.util.Properties
 
+import scala.collection.JavaConverters._
 import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.avro.io.EncoderFactory
@@ -10,11 +11,16 @@ import org.apache.avro.specific.SpecificDatumWriter
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.kafka.clients.producer.{KafkaProducer, Producer, ProducerRecord}
 
-trait kafkaPushRecord {
-    def pushRecord(id : String, name : String, stages : String, progress : Int)(topic : String) = {
+trait kafkaPushRecord { this : kafkaBasicConf =>
+
+    implicit val precord : (GenericData.Record, Map[String, Any]) => Unit = ((record, m) =>
+        record.getSchema.getFields.asScala.foreach (x =>
+            m.get(x.name()).map( y => record.put(x.name(), y)).getOrElse(Unit)))
+
+    def pushRecord(m : Map[String, AnyRef])(implicit f : (GenericData.Record, Map[String, Any]) => Unit) = {
         val props = new Properties()
 
-        props.put("bootstrap.servers", "localhost:9092")
+        props.put("bootstrap.servers", endpoints)
         props.put("acks", "all")
         props.put("retries", Integer.valueOf(0))
         props.put("batch.size", Integer.valueOf(16384))
@@ -26,12 +32,9 @@ trait kafkaPushRecord {
 
         val producer : Producer[String, Array[Byte]] = new KafkaProducer(props)
 
-        val schema = new Schema.Parser().parse(new File("pharbers_config/progress.arsc"))
+        val schema = new Schema.Parser().parse(new File(schemapath))
         val payload = new GenericData.Record(schema)
-        payload.put("id", id)
-        payload.put("name", name)
-        payload.put("stages", stages)
-        payload.put("progress", progress)
+        f(payload, m)
         println(s"Original Message : " + payload)
 
         val writer = new SpecificDatumWriter[GenericRecord](schema)

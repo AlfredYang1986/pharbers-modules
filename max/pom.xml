@@ -40,7 +40,6 @@
                     <version>1.0.6</version>
                 </dependency>
 
-
                 <!-- poi -->
                 <dependency>
                     <groupId>org.apache.poi</groupId>
@@ -69,6 +68,11 @@
                     <version>1.0.2</version>
                 </dependency>
 
+                <dependency>
+                    <groupId>com.typesafe.play</groupId>
+                    <artifactId>play-json_2.11</artifactId>
+                    <version>2.5.0-M2</version>
+                </dependency>
 
                 <!-- specs test -->
                 <dependency>
@@ -121,7 +125,11 @@
                     <artifactId>pharbers-third</artifactId>
                     <version>0.1</version>
                 </dependency>
-
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-pattern</artifactId>
+                    <version>0.1</version>
+                </dependency>
 
                 <!-- spark lib -->
                 <dependency>
