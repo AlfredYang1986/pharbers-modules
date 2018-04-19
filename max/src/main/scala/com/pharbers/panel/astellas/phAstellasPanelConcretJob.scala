@@ -125,6 +125,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
         // 根据universeCode，只保留样本医院panel
         val panel = {
             groupedTotal.join(universeCode, groupedTotal("HOSPITAL_CODE") === universeCode("PANLE_ID"))
+                .filter(col("MARKET") === mkt_cn)
                 .withColumn("ID", col("HOSPITAL_CODE").cast(LongType))
                 .withColumn("Hosp_name", col("HOSP_NAME"))
                 .withColumn("Date", col("YM"))
