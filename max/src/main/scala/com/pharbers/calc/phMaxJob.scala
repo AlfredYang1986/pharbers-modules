@@ -27,7 +27,6 @@ trait phMaxJob extends sequenceJobWithMap {
     val universe_file: String = panel_path_obj.p_matchFilePath + universe_name
     val temp_dir: String = panel_path_obj.p_cachePath + panel_name + "/"
     val temp_universe_name: String = UUID.randomUUID().toString
-    val delimiter = 31.toChar.toString
 
     /// 留做测试
     val temp_panel_name: String = UUID.randomUUID().toString

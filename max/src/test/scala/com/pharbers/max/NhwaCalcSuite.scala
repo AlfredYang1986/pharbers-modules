@@ -9,7 +9,7 @@
 ///**
 //  * Created by jeorch on 18-4-10.
 //  */
-//class NewCalcSuite extends FunSuite{
+//class NhwaCalcSuite extends FunSuite{
 //    implicit def progressFunc(progress: Double, flag: String): Unit = Unit
 //
 //    test("nhwa calc test") {
