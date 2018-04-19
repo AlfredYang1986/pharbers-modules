@@ -27,6 +27,7 @@
 //        compareResultSales = compareResultSum(0).get(0).asInstanceOf[Double]
 //        compareResultUnits = compareResultSum(0).get(1).asInstanceOf[Double]
 //        println(s"compareResultCount = ${compareResultCount}")
+
 //        println(s"compareResultSales = ${compareResultSales}")flatten
 //        println(s"compareResultUnits = ${compareResultUnits}")
 //    }
@@ -76,6 +77,8 @@
 //
 //}
 //
+<<<<<<< HEAD
+=======
 
 import com.pharbers.calc.phMaxJob
 import com.pharbers.pactions.actionbase.{DFArgs, MapArgs}
@@ -160,3 +163,4 @@ class MaxPressureTest extends Specification with BeforeAll {
 
 }
 
+>>>>>>> Pharbers-CLOCK-1016
