@@ -30,4 +30,4 @@ trait phNhwaCalcYMJob extends sequenceJob {
                 saveCurrenResultAction(cache_location) ::
                 phCalcYM2JVJob() ::
                 Nil
-} 
+}

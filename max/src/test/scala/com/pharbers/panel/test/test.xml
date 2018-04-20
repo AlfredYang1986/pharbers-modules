@@ -1,0 +1,11 @@
+<xml>
+    <tests>
+        <test>
+            <company value="nhwa" />
+            <Data value="201712" />
+            <market value="麻醉市场"/>
+            <inputFile value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
+            <output name="1"/>
+        </test>
+    </tests>
+</xml>
