@@ -8,10 +8,10 @@ import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 
 object phMaxJob {
-    def apply(arg_panel_name: String) : phMaxJob = {
+    def apply(arg_panel_name: String, universe_file_name: String) : phMaxJob = {
         new phMaxJob {
             override lazy val panel_name: String = arg_panel_name
-            override lazy val universe_name: String = "nhwa/universe_麻醉市场_online.xlsx"
+            override lazy val universe_name: String = universe_file_name
         }
     }
 }
@@ -59,8 +59,8 @@ trait phMaxJob extends sequenceJobWithMap {
 
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-            loadPanelData ::
-//            loadPanelDataOfExcel ::
+//            loadPanelData ::
+            loadPanelDataOfExcel ::
             readUniverseFile ::
             phMaxSplitAction() ::
             phMaxGroupAction() ::

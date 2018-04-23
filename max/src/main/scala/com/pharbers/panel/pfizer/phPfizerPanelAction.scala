@@ -25,6 +25,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
+        val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get
         val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get
