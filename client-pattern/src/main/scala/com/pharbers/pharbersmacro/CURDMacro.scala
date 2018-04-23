@@ -1,8 +1,7 @@
-package module.common.pharbersmacro
+package com.pharbers.pharbersmacro
 
-import com.mongodb.casbah.Imports._
+import com.mongodb.DBObject
 import play.api.libs.json.JsValue
-
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox.Context
 
@@ -26,6 +25,7 @@ object CURDMacro {
         }
     }
 
+
     def popMacro(qc : JsValue => DBObject,
                  popr : DBObject => Map[String, JsValue],
                  data : JsValue,
@@ -43,6 +43,7 @@ object CURDMacro {
             """
         }
     }
+
 
     def queryMacro(qc : JsValue => DBObject,
                    dr : DBObject => Map[String, JsValue],
@@ -63,6 +64,7 @@ object CURDMacro {
         }
     }
 
+
     def queryMultiMacro(qcm : JsValue => DBObject,
                         sr : DBObject => Map[String, JsValue],
                         data : JsValue,
@@ -77,6 +79,28 @@ object CURDMacro {
                     implicit val qcm = $qcm
                     implicit val sr = $sr
                     processor (value => returnValue(queryMulti(value)($db), $outter))($data)
+                }
+            """
+        }
+    }
+
+
+    def updateMacro(qcm: JsValue => DBObject,
+                    up: (DBObject, JsValue) => DBObject,
+                    sr: DBObject => Map[String, JsValue],
+                    data: JsValue,
+                    db: String,
+                    outter: String): (Option[Map[String, JsValue]], Option[JsValue]) = macro updateMacrosImpls.macroImpl
+    class updateMacrosImpls(val c: Context) {
+        import c.universe._
+        def macroImpl(qcm : c.Tree, up : c.Tree, sr : c.Tree, data : c.Tree, db : c.Tree, outter : c.Tree): c.Tree = {
+            println("update macro compiling ...")
+            q"""
+                {
+                    implicit val qcm = $qcm
+                    implicit val up = $up
+                    implicit val sr = $sr
+                    processor (value => returnValue(update(value)($db), $outter))($data)
                 }
             """
         }
