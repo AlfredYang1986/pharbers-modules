@@ -66,7 +66,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
                 .withColumnRenamed("STANDARD_UNIT", "Units")
                 .withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
                 .filter(col("MARKET") === mkt_cn)
-        }.distinct()
+        }/*.distinct()*/
 
         val product_match = {
             product_match_file.select("min0", "min2", "STANDARD_MOLE_NAME", "STANDARD_APP2_COD", "STANDARD_PRODUCT_NAME")

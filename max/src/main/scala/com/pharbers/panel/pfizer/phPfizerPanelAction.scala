@@ -1,7 +1,9 @@
 package com.pharbers.panel.pfizer
 
 import com.pharbers.pactions.actionbase._
+import org.apache.spark.sql.functions._
 import com.pharbers.spark.phSparkDriver
+import org.apache.avro.generic.GenericData.StringType
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, when}
 import org.apache.spark.sql.types.{DoubleType, LongType}
@@ -26,26 +28,30 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
-        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
-        val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get
-        val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get
-        val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get
-        val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get
+        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get   //通用名市场定义
+        val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
+        val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get    //2017年未出版医院名单
+        val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get  //补充医院
+            .withColumn("MONTH", when(col("MONTH").>=(10), col("MONTH"))
+                .otherwise(concat(col("MONTH").*(0).cast("int"), col("MONTH"))))
+            .withColumn("YM", concat(col("YEAR"), col("MONTH")))
+            .withColumn("min1", concat(col("PRODUCT_NAME"),col("APP2_COD"),col("PACK_DES"),col("PACK_NUMBER"),col("CORP_NAME")))
+        val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get  //产品标准化 vs IMS_Pfizer_6市场others
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
         def getPanelFile(ym: String, mkt: String) : pActionArgs = {
 
-            val full_cpa = fullCPA(cpa, ym)
-            val product_match = trimProductMatch(product_match_file)
+            val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
+            val product_match = trimProductMatch(product_match_file)    //m1
             val universe = trimUniverse(universe_file, mkt)
             val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
-            val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
+            val filted_panel = full_cpa_gyc.join(universe, full_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, markets_product_match)
             //            sparkDriver.sc.stop()
             DFArgs(panelDF)
         }
 
-        def fullCPA(cpa: DataFrame, ym: String): DataFrame = {
+        def fullCPAandGYCX(cpa: DataFrame, ym: String): DataFrame = {
 
             val filter_month = ym.takeRight(2).toInt.toString
             val primal_cpa = cpa.filter(s"YM like '$ym'")
@@ -56,35 +62,19 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
                 .select("ID")
             val not_published_hosp = not_published_hosp_file
                 .withColumnRenamed("id", "ID")
+                .select("ID")
             val miss_hosp = not_arrival_hosp.union(not_published_hosp).distinct()
             val reduced_cpa = primal_cpa.join(miss_hosp, primal_cpa("HOSPITAL_CODE") === miss_hosp("ID"), "left").filter("ID is null").drop("ID")
             val full_hosp_id = full_hosp_file.filter(s"MONTH like $filter_month")
             val full_hosp = miss_hosp.join(full_hosp_id, full_hosp_id("HOSPITAL_CODE") === miss_hosp("ID")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
 
             import sparkDriver.ss.implicits._
-            reduced_cpa.union(full_hosp).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
+            reduced_cpa.union(full_hosp).union(gyc.filter(s"YM like '$ym'")).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
         }
 
         def trimProductMatch(product_match_file: DataFrame): DataFrame = {
-
             product_match_file
-                .withColumnRenamed("药品名称", "NAME")
-                .withColumnRenamed("商品名", "PRODUCT_NAME")
-                .withColumnRenamed("剂型", "APP2_COD")
-                .withColumnRenamed("规格", "PACK_DES")
-                .withColumnRenamed("包装数量", "PACK_NUMBER")
-                .withColumnRenamed("生产企业", "CORP_NAME")
-                .withColumnRenamed("商品名_标准", "s_PRODUCT_NAME")
-                .withColumnRenamed("药品规格_标准", "s_PACK_DES")
-                .withColumnRenamed("剂型_标准", "s_APP2_COD")
-                .withColumnRenamed("生产企业_标准", "s_CORP_NAME")
-                .withColumn("min2",
-                    when(col("min1_标准") =!= "", col("min1_标准"))
-                        .otherwise(col("s_PRODUCT_NAME") + col("s_APP2_COD") + col("s_PACK_DES") + col("PACK_NUMBER") + col("PACK_NUMBER"))
-                )
-                .selectExpr("concat(PRODUCT_NAME,APP2_COD,PACK_DES,PACK_NUMBER,CORP_NAME) as min1", "min2", "NAME")
-                .withColumnRenamed("min2", "min1_标准")
-                .withColumnRenamed("NAME", "通用名")
+                .select("min1", "min1_标准", "通用名")
                 .distinct()
         }
 
@@ -98,7 +88,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
                 .withColumnRenamed("If Panel_All", "SAMPLE")
                 .filter("SAMPLE like '1'")
                 .selectExpr("ID", "HOSP_NAME", "HOSP_ID", "DOI", "DOI as DOIE")
-                .filter(s"DOI like '$mkt'")
+                .filter(s"DOI like '$mkt%'")
                 .withColumn("ID", 'ID.cast(LongType))
         }
 
