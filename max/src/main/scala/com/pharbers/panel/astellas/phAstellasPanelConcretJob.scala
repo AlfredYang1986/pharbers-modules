@@ -57,7 +57,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
         val total = {
             val filtered_cpa = cpa.select("HOSPITAL_CODE", "YM", "MOLE_NAME", "min1", "MARKET", "VALUE", "STANDARD_UNIT")
             val have_market_gycx = delete_double_gycx.join(markets_match, delete_double_gycx("GYC_MOLE_NAME") === markets_match("MOLE_NAME"))
-                .select(filtered_cpa.columns.head, filtered_cpa.columns.tail: _*)
+                .select(filtered_cpa.columns.head, filtered_cpa.columns.tail: _*).distinct()
 
             filtered_cpa.union(have_market_gycx)
                 .withColumn("VALUE", 'VALUE.cast(DoubleType))
@@ -66,7 +66,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
                 .withColumnRenamed("STANDARD_UNIT", "Units")
                 .withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
                 .filter(col("MARKET") === mkt_cn)
-        }/*.distinct()*/
+        }
 
         val product_match = {
             product_match_file.select("min0", "min2", "STANDARD_MOLE_NAME", "STANDARD_APP2_COD", "STANDARD_PRODUCT_NAME")
