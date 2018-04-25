@@ -8,7 +8,7 @@ import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, sav
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat}
+import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat, phPfizerGycxFormat}
 
 /**
   * Created by jeorch on 18-4-18.
@@ -48,7 +48,7 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
     val readCpa = new sequenceJob {
         override val name = "cpa"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[PhExcelXLSXCommonFormat](cpa_file, "cpa") ::
+            xlsxReadingAction[phPfizerCpaFormat](cpa_file, "cpa") ::
                 saveCurrenResultAction(temp_dir + "cpa") ::
                 csv2DFAction(temp_dir + "cpa") :: Nil
     }
@@ -70,7 +70,7 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
     val readGyc = new sequenceJob {
         override val name = "gyc"
         override val actions: List[pActionTrait] =
-            xlsxReadingAction[PhExcelXLSXCommonFormat](gyc_file, "gyc") ::
+            xlsxReadingAction[phPfizerGycxFormat](gyc_file, "gyc") ::
                 saveCurrenResultAction(temp_dir + "gyc") ::
                 csv2DFAction(temp_dir + "gyc") :: Nil
     }

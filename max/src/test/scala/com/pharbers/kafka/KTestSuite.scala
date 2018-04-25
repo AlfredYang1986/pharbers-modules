@@ -4,7 +4,7 @@
 //
 //import akka.actor.ActorSystem
 //import com.pharbers.channel.chanelImpl.{kafkaConsumer, kafkaLstTopics, kafkaPushRecord}
-//import com.pharbers.channel.msgChannel
+//import com.pharbers.channel.clacProgressChannel
 //import org.scalatest.FunSuite
 //
 //class KTestSuite extends FunSuite{
@@ -20,18 +20,14 @@
 ////    }
 //
 //    implicit val asys = ActorSystem("test")
-//    val ch = msgChannel("alfredyang")(asys)
+//    val ch = clacProgressChannel("abcde")(asys)
 //
 //    test("kafka push record to topic alfredyang") {
 //        import ch.precord
-//        ch.pushRecord(
-//            Map(
-//                "id" -> "abcde",
-//                "name" -> "abcde",
-//                "stages" -> "alfred",
-//                "progress" -> 90.asInstanceOf[Number]
-//            )
-//        )
+//        ch.pushRecord(Map("id" -> "abcde",
+//                          "name" -> "abcde",
+//                          "stages" -> "alfred",
+//                          "progress" -> 90.asInstanceOf[Number]))
 //
 //        Thread.sleep(5000)
 //    }

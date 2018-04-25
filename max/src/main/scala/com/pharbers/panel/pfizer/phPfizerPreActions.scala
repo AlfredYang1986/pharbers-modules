@@ -16,7 +16,8 @@ case class phPfizerPreActions(temp_name: String) {
     val match_dir: String = panel_path_obj.p_matchFilePath
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
 
-    val universe_file: String = match_dir + "pfizer/universe_INF_online.xlsx"
+//    val universe_file: String = match_dir + "pfizer/universe_INF_online.xlsx"
+    val universe_file: String = match_dir + "pfizer/universe_URO_online.xlsx"
     val not_published_hosp_file: String = match_dir + "pfizer/2017年未出版医院名单.xlsx"
     val fill_hos_data_file: String = match_dir + "pfizer/补充医院.csv"
     val product_match_file: String = match_dir + "pfizer/产品标准化 vs IMS_Pfizer_6市场others.xlsx"
@@ -31,7 +32,7 @@ case class phPfizerPreActions(temp_name: String) {
                 new sequenceJob {
                     override val name: String = "read_not_published_hosp_file_job"
                     override val actions: List[pActionTrait] =
-                        xlsxReadingAction[PhExcelXLSXCommonFormat](not_published_hosp_file, "not_published_hosp_file") ::
+                        xlsxReadingAction[PhXlsxThirdSheetFormat](not_published_hosp_file, "not_published_hosp_file") ::
                             saveCurrenResultAction(temp_dir + "not_published_hosp_file") ::
                             csv2DFAction(temp_dir + "not_published_hosp_file") :: Nil
                 } :: Nil
@@ -77,7 +78,7 @@ case class phPfizerPreActions(temp_name: String) {
                     new sequenceJob {
                         override val name: String = "read_markets_match_file_job"
                         override val actions: List[pActionTrait] =
-                            xlsxReadingAction[PhXlsxThirdSheetFormat](markets_match_file, "markets_match_file") ::
+                            xlsxReadingAction[PhExcelXLSXCommonFormat](markets_match_file, "markets_match_file") ::
                                 saveCurrenResultAction(temp_dir + "markets_match_file") ::
                                 csv2DFAction(temp_dir + "markets_match_file") :: Nil
                     } :: Nil
