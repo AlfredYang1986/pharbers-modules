@@ -11,9 +11,9 @@ object readXmlFile{
     val company = xmlFile\"tests"\"test"\"company"\"@value"
     val data = xmlFile\"tests"\"test"\"Data"\"@value"
     val market = xmlFile\"tests"\"test"\"market"\"@value"
-    val inputFile = xmlFile\"tests"\"test"\"inputFile"\"@value"
-
-    val parameter = Map("company" -> company.toString(), "data" -> data.toString(), "market" -> market.toString(), "inputFile" -> inputFile.toString())
+    val cpa_file = xmlFile\"tests"\"test"\"cpa_file"\"@value"
+    val matchFile = xmlFile\"tests"\"test"\"matchFile"\"@value"
+    val parameter = Map("company" -> company.toString(), "data" -> data.toString(), "market" -> market.toString(), "cpa_file" -> cpa_file.toString(), "matchFile" -> matchFile.toString())
     parameter
   }
 }

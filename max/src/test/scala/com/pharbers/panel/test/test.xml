@@ -4,8 +4,8 @@
             <company value="nhwa" />
             <Data value="201712" />
             <market value="麻醉市场"/>
-            <inputFile value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
-            <output name="1"/>
+            <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
+            <matchFile value="/home/cui/download/验收结果比对表.xlsx" />
         </test>
     </tests>
 </xml>
