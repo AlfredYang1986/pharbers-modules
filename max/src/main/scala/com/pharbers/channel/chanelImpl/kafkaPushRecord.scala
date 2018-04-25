@@ -3,21 +3,23 @@ package com.pharbers.channel.chanelImpl
 import java.io.File
 import java.util.Properties
 
-import scala.collection.JavaConverters._
+import com.pharbers.common.algorithm.alTempLog
 import org.apache.avro.Schema
-import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.avro.io.EncoderFactory
+
+import scala.collection.JavaConverters._
 import org.apache.avro.specific.SpecificDatumWriter
 import org.apache.commons.io.output.ByteArrayOutputStream
+import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.kafka.clients.producer.{KafkaProducer, Producer, ProducerRecord}
 
 trait kafkaPushRecord { this : kafkaBasicConf =>
 
-    implicit val precord : (GenericData.Record, Map[String, Any]) => Unit = ((record, m) =>
-        record.getSchema.getFields.asScala.foreach (x =>
-            m.get(x.name()).map( y => record.put(x.name(), y)).getOrElse(Unit)))
+    implicit val precord : (GenericData.Record, Map[String, Any]) => Unit = (record, m) =>
+        record.getSchema.getFields.asScala.foreach(x =>
+            m.get(x.name()).map(y => record.put(x.name(), y)).getOrElse(Unit))
 
-    def pushRecord(m : Map[String, AnyRef])(implicit f : (GenericData.Record, Map[String, Any]) => Unit) = {
+    def pushRecord(m : Map[String, AnyRef])(implicit f : (GenericData.Record, Map[String, Any]) => Unit): Unit = {
         val props = new Properties()
 
         props.put("bootstrap.servers", endpoints)
@@ -35,7 +37,7 @@ trait kafkaPushRecord { this : kafkaBasicConf =>
         val schema = new Schema.Parser().parse(new File(schemapath))
         val payload = new GenericData.Record(schema)
         f(payload, m)
-        println(s"Original Message : " + payload)
+        alTempLog(s"Original Message : " + payload)
 
         val writer = new SpecificDatumWriter[GenericRecord](schema)
         val out = new ByteArrayOutputStream()
@@ -45,7 +47,6 @@ trait kafkaPushRecord { this : kafkaBasicConf =>
         out.close()
 
         val serializedBytes  = out.toByteArray
-        println(s"Sending message in bytes : " + serializedBytes)
 
         val message = new ProducerRecord[String, Array[Byte]](topic, serializedBytes)
         producer.send(message)

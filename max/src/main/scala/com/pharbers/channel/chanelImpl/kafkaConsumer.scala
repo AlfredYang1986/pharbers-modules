@@ -1,27 +1,29 @@
 package com.pharbers.channel.chanelImpl
 
 import java.io.File
+
+import akka.pattern.ask
+import akka.actor.Props
+import akka.util.Timeout
 import java.util.Properties
 
-import akka.actor.{Actor, IndirectActorProducer, Props}
-import akka.actor.ActorSystem
-import akka.pattern.ask
-import akka.util.Timeout
-
-import com.pharbers.bmmessages.{MessageRoutes, excute}
-import com.pharbers.bmpattern.RoutesActor
+import scala.concurrent.Await
 import org.apache.avro.Schema
-import org.apache.avro.generic.{GenericData, GenericRecord}
-import org.apache.avro.io.DecoderFactory
-import org.apache.avro.specific.SpecificDatumReader
-import org.apache.kafka.clients.consumer.KafkaConsumer
+import akka.actor.ActorSystem
+
+import scala.language.postfixOps
+import scala.concurrent.duration._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-//import org.apache.kafka.streams.KafkaStreams
 import scala.collection.JavaConverters._
+import org.apache.avro.io.DecoderFactory
+import com.pharbers.bmpattern.RoutesActor
+import org.apache.avro.generic.GenericRecord
+import org.apache.avro.specific.SpecificDatumReader
+import com.pharbers.bmmessages.{MessageRoutes, excute}
+import com.pharbers.common.algorithm.alTempLog
+import org.apache.kafka.clients.consumer.KafkaConsumer
 
 trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
     val group_id : String
@@ -30,11 +32,10 @@ trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
     implicit val dispatch : ActorSystem
     val consumeHandler : JsValue => MessageRoutes
 
-    def commonExcution(msr : MessageRoutes) = {
+    def commonExcution(msr : MessageRoutes): Unit = {
         val act = dispatch.actorOf(Props[RoutesActor])
         val r = act ? excute(msr)
         val result = Await.result(r.mapTo[JsValue], t.duration)
-        println(s"alfred test result is $result")
     }
 
     implicit val content : GenericRecord => JsValue = { record =>
@@ -47,12 +48,12 @@ trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
                         case null => None
                         case value => Some(x.name -> value.toString)
                     }
-                }.filter(_ != None).map (_.get).toMap
+                }.filter(_.isDefined).map (_.get).toMap
             )
         }
     }
 
-    lazy val consumer = {
+    lazy val consumer: KafkaConsumer[String, Array[Byte]] = {
         val props = new Properties()
         props.put("bootstrap.servers", endpoints)
         props.put("group.id", group_id)
@@ -67,19 +68,13 @@ trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
     }
 
     override def run(): Unit = {
-
         while (true) {
-            consumer.poll(100).asScala.toList.map { record =>
-                println(s"offset = ${record.offset}, key = ${record.key}, value = ${record.value}")
-
-                val received_message = record.value
-                println(s"received message is $received_message")
-//                val schema = new Schema.Parser().parse(new File("pharbers_config/progress.arsc"))
+            consumer.poll(100).asScala.toList.foreach { record =>
                 val schema = new Schema.Parser().parse(new File(schemapath))
                 val reader = new SpecificDatumReader[GenericRecord](schema)
-                val decoder = DecoderFactory.get().binaryDecoder(received_message, null)
+                val decoder = DecoderFactory.get().binaryDecoder(record.value, null)
                 val payload = reader.read(null, decoder)
-                println("Message received : " + payload)
+                alTempLog(s"Received message : " + payload)
 
                 commonExcution(consumeHandler(content(payload)))
             }

@@ -1,10 +1,8 @@
 package com.pharbers.channel.chanelImpl
 
 import java.util.Properties
-
-import org.apache.kafka.clients.admin.{AdminClient, AdminClientConfig, NewTopic}
-
 import scala.collection.JavaConverters._
+import org.apache.kafka.clients.admin.{AdminClient, AdminClientConfig, NewTopic}
 
 trait kafkaPushTopic { this : kafkaBasicConf =>
 
@@ -19,9 +17,10 @@ trait kafkaPushTopic { this : kafkaBasicConf =>
 
         admin.createTopics(
             (new NewTopic(name,
-                          partitions.asInstanceOf[Number].intValue,
-                          replication.asInstanceOf[Number].shortValue).configs(Map.empty[String, String].asJava) :: Nil)
-                .asJava
+                partitions.asInstanceOf[Number].intValue,
+                replication.asInstanceOf[Number].shortValue
+            ).configs(Map.empty[String, String].asJava) :: Nil)
+                    .asJava
         ).values.asScala.map { x =>
             try {
                 x._2.get
