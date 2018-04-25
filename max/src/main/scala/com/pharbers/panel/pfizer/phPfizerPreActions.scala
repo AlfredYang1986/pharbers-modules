@@ -1,12 +1,11 @@
 package com.pharbers.panel.pfizer
 
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 import com.pharbers.pactions.generalactions.{csv2DFAction, existenceRdd, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.pactions.jobs.{choiceJob, sequenceJob}
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.panel.pfizer.format.phPfizerCpaFormat
 
 /**
   * Created by jeorch on 18-4-18.
@@ -16,28 +15,13 @@ case class phPfizerPreActions(temp_name: String) {
     val match_dir: String = panel_path_obj.p_matchFilePath
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
 
-//    val universe_file: String = match_dir + "pfizer/universe_INF_online.xlsx"
-    val universe_file: String = match_dir + "pfizer/universe_URO_online.xlsx"
-    val not_published_hosp_file: String = match_dir + "pfizer/2017年未出版医院名单.xlsx"
+    val universe_file: String = match_dir + "pfizer/universe_INF_online.xlsx"
     val fill_hos_data_file: String = match_dir + "pfizer/补充医院.csv"
-    val product_match_file: String = match_dir + "pfizer/产品标准化 vs IMS_Pfizer_6市场others.xlsx"
+    val product_match_file: String = match_dir + "pfizer/产品标准化 vs IMS_Pfizer_6市场others_0329.xlsx"
     val markets_match_file: String = match_dir + "pfizer/通用名市场定义.xlsx"
-    val hos_prod_scope_file: String = match_dir + "pfizer/医院产品范围_MAX.xlsx"
 
     val actions: List[pActionTrait] =
         new choiceJob {
-            override val name = "not_published_hosp_file"
-            val actions: List[pActionTrait] = existenceRdd("not_published_hosp_file") ::
-                csv2DFAction(temp_dir + "/not_published_hosp_file") ::
-                new sequenceJob {
-                    override val name: String = "read_not_published_hosp_file_job"
-                    override val actions: List[pActionTrait] =
-                        xlsxReadingAction[PhXlsxThirdSheetFormat](not_published_hosp_file, "not_published_hosp_file") ::
-                            saveCurrenResultAction(temp_dir + "not_published_hosp_file") ::
-                            csv2DFAction(temp_dir + "not_published_hosp_file") :: Nil
-                } :: Nil
-        } ::
-            new choiceJob {
                 override val name = "universe_file"
                 val actions: List[pActionTrait] = existenceRdd("universe_file") ::
                     csv2DFAction(temp_dir + "universe_file") ::

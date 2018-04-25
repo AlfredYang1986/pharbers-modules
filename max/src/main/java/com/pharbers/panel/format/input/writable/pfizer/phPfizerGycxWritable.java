@@ -61,57 +61,57 @@ public class phPfizerGycxWritable extends phPfizerCommonWritable {
         // throw new Exception("not implements");
     }
 
-//    @Override
-//    protected String[] setCellKey(String[] lst, String flag, String value) {
-//        if (flag.equals("CITY")) {
-//            lst[0] = value;
-//            return lst;
-//        } else if (flag.equals("YEAR")) {
-//            lst[1] = value;
-//            return lst;
-//        } else if (flag.equals("MONTH")) {
-//            lst[2] = value;
-//            return lst;
-//        } else if (flag.equals("HOSPITAL_CODE")) {
-//            lst[3] = value;
-//            return lst;
-//        } else if (flag.equals("MOLE_NAME")) {
-//            lst[4] = value;
-//            return lst;
-//        } else if (flag.equals("PRODUCT_NAME")) {
-//            lst[5] = value;
-//            return lst;
-//        } else if (flag.equals("PACK_DES")) {
-//            lst[6] = value;
-//            return lst;
-//        }else if (flag.equals("PACK_NUMBER")) {
-//            lst[7] = value;
-//            return lst;
-//        }else if (flag.equals("VALUE")) {
-//            lst[8] = value;
-//            return lst;
-//        }else if (flag.equals("STANDARD_UNIT")) {
-//            lst[9] = value;
-//            return lst;
-//        }else if (flag.equals("APP2_COD")) {
-//            lst[10] = value;
-//            return lst;
-//        }else if (flag.equals("APP1_COD")) {
-//            lst[11] = value;
-//            return lst;
-//        }else if (flag.equals("CORP_NAME")) {
-//            lst[12] = value;
-//            return lst;
-//        }else if (flag.equals("YM")) {
-//            lst[13] = value;
-//            return lst;
-//        }else if (flag.equals("min1")) {
-//            lst[13] = value;
-//            return lst;
-//        }else{
-//            return lst;
-//        }
-//    }
+    @Override
+    protected String[] setCellKey(String[] lst, String flag, String value) {
+        if (flag.equals("CITY")) {
+            lst[0] = value;
+            return lst;
+        } else if (flag.equals("YEAR")) {
+            lst[1] = value;
+            return lst;
+        } else if (flag.equals("MONTH")) {
+            lst[2] = value;
+            return lst;
+        } else if (flag.equals("HOSPITAL_CODE")) {
+            lst[3] = value;
+            return lst;
+        } else if (flag.equals("MOLE_NAME")) {
+            lst[4] = value;
+            return lst;
+        } else if (flag.equals("PRODUCT_NAME")) {
+            lst[5] = value;
+            return lst;
+        } else if (flag.equals("PACK_DES")) {
+            lst[6] = value;
+            return lst;
+        }else if (flag.equals("PACK_NUMBER")) {
+            lst[7] = value;
+            return lst;
+        }else if (flag.equals("VALUE")) {
+            lst[8] = value;
+            return lst;
+        }else if (flag.equals("STANDARD_UNIT")) {
+            lst[9] = value;
+            return lst;
+        }else if (flag.equals("APP2_COD")) {
+            lst[10] = value;
+            return lst;
+        }else if (flag.equals("APP1_COD")) {
+            lst[11] = value;
+            return lst;
+        }else if (flag.equals("CORP_NAME")) {
+            lst[12] = value;
+            return lst;
+        }else if (flag.equals("YM")) {
+            lst[13] = value;
+            return lst;
+        }else if (flag.equals("min1")) {
+            lst[13] = value;
+            return lst;
+        }else{
+            return lst;
+        }
+    }
 
     @Override
     protected String expendTitle(String value) {
@@ -121,6 +121,13 @@ public class phPfizerGycxWritable extends phPfizerCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        if("".equals(getCellKey(lst, "PRODUCT_NAME")))
+            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
+        if("".equals(getCellKey(lst, "VALUE")))
+            lst = setCellKey(lst, "VALUE", "0");
+        if("".equals(getCellKey(lst, "STANDARD_UNIT")))
+            lst = setCellKey(lst, "STANDARD_UNIT", "0");
 
         String ym = getCellKey(lst, "YEAR") + getCellKey(lst, "MONTH");
 

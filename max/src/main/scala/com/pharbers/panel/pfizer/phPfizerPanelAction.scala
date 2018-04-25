@@ -29,8 +29,8 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get   //通用名市场定义
+            .filter(s"Market like '$mkt%'")
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
-        val not_published_hosp_file = args.asInstanceOf[MapArgs].get("not_published_hosp_file").asInstanceOf[DFArgs].get    //2017年未出版医院名单
         val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get  //补充医院
             .withColumn("MONTH", when(col("MONTH").>=(10), col("MONTH"))
                 .otherwise(concat(col("MONTH").*(0).cast("int"), col("MONTH"))))
@@ -44,7 +44,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
             val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
             val product_match = trimProductMatch(product_match_file)    //m1
             val universe = trimUniverse(universe_file, mkt)
-            val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
+            val markets_product_match = product_match.join(markets_match, product_match("通用名") === markets_match("通用名_原始"))
             val filted_panel = full_cpa_gyc.join(universe, full_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, markets_product_match)
             //            sparkDriver.sc.stop()
@@ -60,10 +60,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
                 .filter(s"month like '%$filter_month%'")
                 .withColumnRenamed("医院编码", "ID")
                 .select("ID")
-            val not_published_hosp = not_published_hosp_file
-                .withColumnRenamed("id", "ID")
-                .select("ID")
-            val miss_hosp = not_arrival_hosp.union(not_published_hosp).distinct()
+            val miss_hosp = not_arrival_hosp.distinct()
             val reduced_cpa = primal_cpa.join(miss_hosp, primal_cpa("HOSPITAL_CODE") === miss_hosp("ID"), "left").filter("ID is null").drop("ID")
             val full_hosp_id = full_hosp_file.filter(s"MONTH like $filter_month")
             val full_hosp = miss_hosp.join(full_hosp_id, full_hosp_id("HOSPITAL_CODE") === miss_hosp("ID")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
@@ -94,7 +91,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
 
         def trimPanel(filted_panel: DataFrame, markets_product_match: DataFrame): DataFrame = {
             import sparkDriver.ss.implicits._
-            val temp = filted_panel.join(markets_product_match, filted_panel("min1") === markets_product_match("min1"))
+            val temp = filted_panel.join(markets_product_match, filted_panel("min1") === markets_product_match("min1")).drop(markets_product_match("min1"))
                 .withColumn("ID", 'ID.cast(LongType))
                 .withColumnRenamed("HOSP_NAME", "Hosp_name")
                 .withColumnRenamed("YM", "Date")
