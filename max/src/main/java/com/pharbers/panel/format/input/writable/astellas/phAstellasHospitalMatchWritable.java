@@ -7,7 +7,7 @@ import java.util.HashMap;
  */
 public class phAstellasHospitalMatchWritable extends phAstellasCommonWritable {
 
-    static {
+    public phAstellasHospitalMatchWritable() {
         titleMap = new HashMap<String, String>() {{
             put("PHA ID", "PHA_ID");
             put("标准_省", "Province");

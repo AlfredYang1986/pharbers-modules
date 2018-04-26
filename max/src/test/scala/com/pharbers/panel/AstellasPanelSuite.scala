@@ -26,9 +26,10 @@
 //        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result = phAstellasPanelJob("/mnt/config/Client/astl_cpa-10.xlsx", "/mnt/config/Client/astl_gycx_1-10.xlsx", "201710", "阿洛刻市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-//
+//        val result = phAstellasPanelJob("/mnt/config/Client/astl_cpa-12.xlsx", "/mnt/config/Client/astl_gycx_1-12.xlsx", "201712", "Allelock").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+////        val result = phAstellasPanelJob("/mnt/config/Client/astl_cpa-10.xlsx", "/mnt/config/Client/astl_gycx_1-10.xlsx", "201710", "Grafalon").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 //        println("result = " + result)
+//
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
 //    }

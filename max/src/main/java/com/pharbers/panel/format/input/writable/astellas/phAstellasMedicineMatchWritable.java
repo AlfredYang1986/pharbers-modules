@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class phAstellasMedicineMatchWritable extends phAstellasCommonWritable {
 
-    static {
+    public phAstellasMedicineMatchWritable() {
         titleMap = new HashMap<String, String>() {{
             put("药品名称1", "MOLE_NAME1");
             put("商品名1", "PRODUCT_NAME1");

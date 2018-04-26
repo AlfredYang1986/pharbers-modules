@@ -2,7 +2,7 @@
 //
 //import java.io.File
 //
-//import com.pharbers.panel.astellas.phAstellasHandle
+//import com.pharbers.delivery.astellas.phAstellasDeliveryActions
 //import org.scalatest.FunSuite
 //
 ///**
@@ -40,7 +40,7 @@
 //        )
 ////        lst_coll_with_mkt.foreach(println)
 //        delTempFile(new File(destPath))
-//        phAstellasHandle(args).generateDeliveryFile
+//        phAstellasDeliveryActions(args).perform()
 //    }
 //
 //    def delTempFile(fileName: File): Unit ={

@@ -16,7 +16,7 @@ class saveCurrenResultAction[T : ClassTag](override val defaultArgs: pActionArgs
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val rdd = args.asInstanceOf[RDDArgs[T]].get
-        rdd.repartition(1).saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get)
+        rdd.coalesce(1).saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get)
         args
     }
 }

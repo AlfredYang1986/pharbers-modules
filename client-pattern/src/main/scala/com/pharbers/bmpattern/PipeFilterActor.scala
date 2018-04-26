@@ -4,22 +4,10 @@ import scala.concurrent.duration._
 import akka.actor.ActorLogging
 import akka.actor.ActorRef
 import akka.actor.Props
-//import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.JsValue
 import akka.actor.Actor
 import play.api.libs.json.Json.toJson
 import com.pharbers.bmmessages._
-//import bmlogic.auth.{AuthModule, msg_AuthCommand}
-//import bmlogic.phonecode.{PhoneCodeModule, msg_PhoneCodeCommand}
-//import bmlogic.profile.{ProfileModule, msg_ProfileCommand}
-//import bmlogic.kidnap.{KidnapModule, msg_KidnapCommand}
-//import bmlogic.order.{OrderModule, msg_OrderCommand}
-//import bmlogic.timemanager.{TimemanagerModule, msg_TMCommand}
-//import bmlogic.collections.{CollectionsModule, msg_CollectionsCommand}
-//import bmlogic.emxmpp.{EMModule, msg_EMMessageCommand}
-//import bmlogic.dongdaselectedservice.{msg_SelectedServiceCommand, SelectedServiceModule}
-//import bmlogic.orderDate.{msg_OrderDateCommand, OrderDateModule}
-//import bmlogic.common.placeholder.{msg_PlaceHoldCommand, PlaceHolderModule}
 
 object PipeFilterActor {
 	def prop(originSender : ActorRef, msr : MessageRoutes) : Props = {

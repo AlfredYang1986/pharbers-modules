@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class phAstellasCpaWritable extends phAstellasCommonWritable {
 
-    static{
+    public phAstellasCpaWritable() {
         titleMap = new HashMap<String, String>() {{
             put("省", "PROVINCES");
             put("城市", "CITY");
