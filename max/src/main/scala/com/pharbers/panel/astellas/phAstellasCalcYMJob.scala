@@ -34,4 +34,4 @@ trait phAstellasCalcYMJob extends sequenceJobWithMap {
                 saveMapResultAction("calcYMWithGycx", cache_location + "gycx") ::
                 phCalcYM2JVJobWithCpaAndGyc() ::
                 Nil
-} 
+}

@@ -1,6 +1,6 @@
 package com.pharbers.panel.test.Builder
 
-class NhwaParamterBuilder[PassedStep <: BuildStep] private(
+class NhwaParamterBuilder[PassedStep <: NhwaBuildStep] private(
                                                                var company: String,
                                                                var data: String,
                                                                var market: String,
@@ -15,19 +15,19 @@ class NhwaParamterBuilder[PassedStep <: BuildStep] private(
     pb.cpa_file
   )
 
-  def setCompany(company: String): NhwaParamterBuilder[HasCompanyStep] = {
+  def setCompany(company: String): NhwaParamterBuilder[NhwaCompanyStep] = {
     this.company = company
-    new NhwaParamterBuilder[HasCompanyStep](this)
+    new NhwaParamterBuilder[NhwaCompanyStep](this)
   }
 
-  def setData(data: String): NhwaParamterBuilder[HasDataStep] = {
+  def setData(data: String): NhwaParamterBuilder[NhwaDataStep] = {
     this.data = data
-    new NhwaParamterBuilder[HasDataStep](this)
+    new NhwaParamterBuilder[NhwaDataStep](this)
   }
 
-  def setMarket(market: String)(implicit ev: PassedStep =:= HasDataStep): NhwaParamterBuilder[HasMarketStep] = {
+  def setMarket(market: String)(implicit ev: PassedStep =:= NhwaDataStep): NhwaParamterBuilder[NhwaMarketStep] = {
     this.market = market
-    new NhwaParamterBuilder[HasMarketStep](this)
+    new NhwaParamterBuilder[NhwaMarketStep](this)
   }
 
   def setCpa_file(cpa_file: String): NhwaParamterBuilder[PassedStep] = {
@@ -35,9 +35,9 @@ class NhwaParamterBuilder[PassedStep <: BuildStep] private(
     this
   }
 
-  def build()(implicit ev: PassedStep =:= HasMarketStep):NhwaParamter = NhwaParamter(company, data, market, cpa_file)
+  def build()(implicit ev: PassedStep =:= NhwaMarketStep):NhwaParamter = NhwaParamter(company, data, market, cpa_file)
 }
 
 object NhwaParamterBuilder {
-  def apply() = new NhwaParamterBuilder[BuildStep]()
+  def apply() = new NhwaParamterBuilder[NhwaBuildStep]()
 }

@@ -1,8 +1,6 @@
 package com.pharbers.panel.test.readExcelFile
 
 import java.io.FileInputStream
-
-import com.pharbers.panel.test.readXmlFile
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
 object ReadExcelFile{
@@ -14,7 +12,5 @@ object ReadExcelFile{
     val sales = xssfSheet.getRow(1).getCell(5).getNumericCellValue
     val units = xssfSheet.getRow(1).getCell(6).getNumericCellValue
     List(hosptalCount, sales, units)
-//    val a = row.getCell(colNumber).getNumericCellValue.getClass
-//    println(a)
   }
 }
