@@ -3,11 +3,11 @@ package com.pharbers.channel.chanelImpl
 import java.io.File
 import java.util.Properties
 
-import com.pharbers.common.algorithm.alTempLog
 import org.apache.avro.Schema
-import org.apache.avro.io.EncoderFactory
-
 import scala.collection.JavaConverters._
+import org.apache.avro.io.EncoderFactory
+import com.pharbers.common.algorithm.alTempLog
+
 import org.apache.avro.specific.SpecificDatumWriter
 import org.apache.commons.io.output.ByteArrayOutputStream
 import org.apache.avro.generic.{GenericData, GenericRecord}
