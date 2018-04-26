@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 //package com.pharbers.panel
 //
 //import java.util.Date
@@ -34,6 +35,9 @@
 //    }
 //
 //}
+=======
+package com.pharbers.panel
+>>>>>>> Stashed changes
 
 import java.util.Date
 import org.scalatest.FunSuite
