@@ -42,6 +42,22 @@ public class phPfizerCpaWritable extends phPfizerCommonWritable {
     }
 
     @Override
+    protected String[] setCellKey(String[] lst, String flag, String value) {
+        if (flag.equals("PRODUCT_NAME")) {
+            lst[5] = value;
+            return lst;
+        }else if (flag.equals("VALUE")) {
+            lst[8] = value;
+            return lst;
+        }else if (flag.equals("STANDARD_UNIT")) {
+            lst[9] = value;
+            return lst;
+        }else{
+            return lst;
+        }
+    }
+
+    @Override
     protected String expendTitle(String value) {
         return value + delimiter + "YM" + delimiter + "min1";
     }
@@ -49,6 +65,13 @@ public class phPfizerCpaWritable extends phPfizerCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        if("".equals(getCellKey(lst, "PRODUCT_NAME")))
+            lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
+        if("".equals(getCellKey(lst, "VALUE")))
+            lst = setCellKey(lst, "VALUE", "0");
+        if("".equals(getCellKey(lst, "STANDARD_UNIT")))
+            lst = setCellKey(lst, "STANDARD_UNIT", "0");
 
         String ym = getCellKey(lst, "YEAR") + getCellKey(lst, "MONTH");
 
