@@ -47,3 +47,4 @@ trait callJobRequestTrait {
     }
 
 }
+
