@@ -1,21 +1,19 @@
-package com.pharbers.panel.pfizer
+package com.pharbers.panel.pfizer.actions
 
 import com.pharbers.pactions.actionbase._
-import org.apache.spark.sql.functions._
 import com.pharbers.spark.phSparkDriver
-import org.apache.avro.generic.GenericData.StringType
 import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.functions.{col, when}
+import org.apache.spark.sql.functions.{col, when, _}
 import org.apache.spark.sql.types.{DoubleType, LongType}
 
 /**
   * Created by jeorch on 18-4-18.
   */
-object phPfizerPanelAction {
-    def apply(args: MapArgs): pActionTrait = new phPfizerPanelAction(args)
+object phPfizerPanelCommonAction {
+    def apply(args: MapArgs): pActionTrait = new phPfizerPanelCommonAction(args)
 }
 
-class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActionTrait {
+class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
@@ -43,7 +41,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
 
             val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
             val product_match = trimProductMatch(product_match_file)    //m1
-            val universe = trimUniverse(universe_file, mkt)
+            val universe = trimUniverse(universe_file)
             val markets_product_match = product_match.join(markets_match, product_match("通用名") === markets_match("通用名_原始"))
             val filted_panel = full_cpa_gyc.join(universe, full_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, markets_product_match)
@@ -63,7 +61,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
             val miss_hosp = not_arrival_hosp.distinct()
             val reduced_cpa = primal_cpa.join(miss_hosp, primal_cpa("HOSPITAL_CODE") === miss_hosp("ID"), "left").filter("ID is null").drop("ID")
             val full_hosp_id = full_hosp_file.filter(s"MONTH like $filter_month")
-            val full_hosp = miss_hosp.join(full_hosp_id, full_hosp_id("HOSPITAL_CODE") === miss_hosp("ID")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
+            val full_hosp = miss_hosp.join(full_hosp_id, miss_hosp("ID") === full_hosp_id("HOSPITAL_CODE")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
 
             import sparkDriver.ss.implicits._
             reduced_cpa.union(full_hosp).union(gyc.filter(s"YM like '$ym'")).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
@@ -75,7 +73,7 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
                 .distinct()
         }
 
-        def trimUniverse(universe_file: DataFrame, mkt: String): DataFrame = {
+        def trimUniverse(universe_file: DataFrame): DataFrame = {
 
             import sparkDriver.ss.implicits._
             universe_file.withColumnRenamed("样本医院编码", "ID")
@@ -85,7 +83,6 @@ class phPfizerPanelAction(override val defaultArgs : pActionArgs) extends pActio
                 .withColumnRenamed("If Panel_All", "SAMPLE")
                 .filter("SAMPLE like '1'")
                 .selectExpr("ID", "HOSP_NAME", "HOSP_ID", "DOI", "DOI as DOIE")
-                .filter(s"DOI like '$mkt%'")
                 .withColumn("ID", 'ID.cast(LongType))
         }
 
