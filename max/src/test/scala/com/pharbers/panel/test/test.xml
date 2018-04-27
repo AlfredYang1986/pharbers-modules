@@ -1,16 +1,22 @@
- <tests>
+ <tests matchFile="/home/cui/download/验收结果比对表 (复件).xlsx">
         <test>
             <company value="nhwa" />
             <data value="201712" />
             <market value="麻醉市场"/>
             <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
-            <matchFile value="/home/cui/download/验收结果比对表.xlsx" />
+
         </test>
-        <test>
-            <company value="asttlas" />
-            <data value="201712" />
-            <market value="1" />
-            <cpa_file value="1" />
-            <gycx_file value="1" />
-        </test>
+     <test>
+         <company value="nhwa" />
+         <data value="201712" />
+         <market value="麻醉市场"/>
+         <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
+     </test>
+        <!--<test>-->
+            <!--<company value="asttlas" />-->
+            <!--<data value="201712" />-->
+            <!--<market value="Allelock" />-->
+            <!--<cpa_file value="/mnt/config/Client/astl_cpa-10.xlsx" />-->
+            <!--<gycx_file value="/mnt/config/Client/astl_gycx_1-10.xlsx" />-->
+        <!--</test>-->
  </tests>

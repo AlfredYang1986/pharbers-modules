@@ -8,8 +8,8 @@ import scala.xml._
   * 读取xml文件
   */
 class ReadXmlFile {
+  val xmlFile = XML.loadFile("/home/cui/download/pharbers-modules/max/src/test/scala/com/pharbers/panel/test/test.xml")
   def readXmlFile ={
-    val xmlFile = XML.loadFile("/home/cui/download/pharbers-modules/max/src/test/scala/com/pharbers/panel/test/test.xml")
     var companyList: List[CompanyParamter] = Nil
     xmlFile match {
       case  <tests>{allTest @ _*}</tests> =>
@@ -33,7 +33,10 @@ class ReadXmlFile {
         }
       case _ => throw new IllegalArgumentException("xml结构不正确")
     }
-    companyList  
+    companyList
+  }
+  def getMatchFile: String ={
+    (xmlFile\"@matchFile").toString()
   }
 }
 
