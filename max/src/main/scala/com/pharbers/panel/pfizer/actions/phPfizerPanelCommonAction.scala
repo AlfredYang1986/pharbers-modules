@@ -26,26 +26,22 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
-        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get   //通用名市场定义
-            .filter(s"Market like '$mkt%'")
+        //待匹配min1_标准的min1表
+        val splitMktResultDF = args.asInstanceOf[MapArgs].get("noSplitMarketAction").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
         val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get  //补充医院
             .withColumn("MONTH", when(col("MONTH").>=(10), col("MONTH"))
                 .otherwise(concat(col("MONTH").*(0).cast("int"), col("MONTH"))))
             .withColumn("YM", concat(col("YEAR"), col("MONTH")))
             .withColumn("min1", concat(col("PRODUCT_NAME"),col("APP2_COD"),col("PACK_DES"),col("PACK_NUMBER"),col("CORP_NAME")))
-        val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get  //产品标准化 vs IMS_Pfizer_6市场others
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
         def getPanelFile(ym: String, mkt: String) : pActionArgs = {
 
             val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
-            val product_match = trimProductMatch(product_match_file)    //m1
             val universe = trimUniverse(universe_file)
-            val markets_product_match = product_match.join(markets_match, product_match("通用名") === markets_match("通用名_原始"))
             val filted_panel = full_cpa_gyc.join(universe, full_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
-            val panelDF = trimPanel(filted_panel, markets_product_match)
-            //            sparkDriver.sc.stop()
+            val panelDF = trimPanel(filted_panel, splitMktResultDF)
             DFArgs(panelDF)
         }
 
@@ -86,9 +82,9 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
                 .withColumn("ID", 'ID.cast(LongType))
         }
 
-        def trimPanel(filted_panel: DataFrame, markets_product_match: DataFrame): DataFrame = {
+        def trimPanel(filted_panel: DataFrame, min1_match: DataFrame): DataFrame = {
             import sparkDriver.ss.implicits._
-            val temp = filted_panel.join(markets_product_match, filted_panel("min1") === markets_product_match("min1")).drop(markets_product_match("min1"))
+            val temp = filted_panel.join(min1_match, filted_panel("min1") === min1_match("min1")).drop(min1_match("min1"))
                 .withColumn("ID", 'ID.cast(LongType))
                 .withColumnRenamed("HOSP_NAME", "Hosp_name")
                 .withColumnRenamed("YM", "Date")

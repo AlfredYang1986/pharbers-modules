@@ -22,7 +22,7 @@
 //          * 有问题的大多都是分拆出来的市场:
 //          * AI_R_zith(头孢孟多问题),
 //          */
-//        val mkt = "INF"
+//        val mkt = "PAIN_other"
 //
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"生成panel测试开始时间" + dateformat.format(new Date()))

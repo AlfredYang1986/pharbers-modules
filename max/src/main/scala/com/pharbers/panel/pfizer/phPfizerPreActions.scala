@@ -18,8 +18,9 @@ case class phPfizerPreActions(mkt: String, temp_name: String) {
 
     val universe_file: String = match_dir + s"pfizer/universe_${mkt}_online.xlsx"
     val fill_hos_data_file: String = match_dir + "pfizer/补充医院utf8_31.txt"
-    val product_match_file: String = match_dir + "pfizer/产品标准化 vs IMS_Pfizer_6市场others_0329.xlsx"
+    val product_match_file: String = match_dir + "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx"
     val markets_match_file: String = match_dir + "pfizer/通用名市场定义.xlsx"
+    val pfc_match_file: String = match_dir + "pfizer/PACKID生成panel.xlsx"
 
     val actions: List[pActionTrait] =
         new choiceJob {
@@ -68,6 +69,18 @@ case class phPfizerPreActions(mkt: String, temp_name: String) {
                             xlsxReadingAction[PhExcelXLSXCommonFormat](markets_match_file, "markets_match_file") ::
                                 saveCurrenResultAction(temp_dir + "markets_match_file") ::
                                 csv2DFAction(temp_dir + "markets_match_file") :: Nil
+                    } :: Nil
+            } ::
+            new choiceJob {
+                override val name = "pfc_match_file"
+                val actions: List[pActionTrait] = existenceRdd("pfc_match_file") ::
+                    csv2DFAction(temp_dir + "pfc_match_file") ::
+                    new sequenceJob {
+                        override val name: String = "read_pfc_match_file_job"
+                        override val actions: List[pActionTrait] =
+                            xlsxReadingAction[PhExcelXLSXCommonFormat](pfc_match_file, "pfc_match_file") ::
+                                saveCurrenResultAction(temp_dir + "pfc_match_file") ::
+                                csv2DFAction(temp_dir + "pfc_match_file") :: Nil
                     } :: Nil
             } :: Nil
 }

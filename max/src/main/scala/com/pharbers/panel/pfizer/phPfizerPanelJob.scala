@@ -8,7 +8,7 @@ import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, sav
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.panel.pfizer.actions.phPfizerPanelCommonAction
+import com.pharbers.panel.pfizer.actions.{phPfizerPanelCommonAction, phPfizerPanelNoSplitAction, phPfizerPanelSplitOneChildStrategyAction}
 import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat, phPfizerGycxFormat}
 
 /**
@@ -84,31 +84,33 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         )
     )
 
-    val detailJobsMap: Map[String, pActionTrait] = Map(
-        "AI_R_zith" -> phPfizerPanelCommonAction(df),
-        "AI_S" -> phPfizerPanelCommonAction(df),
-        "CNS_Z" -> phPfizerPanelCommonAction(df),
-        "ELIQUIS" -> phPfizerPanelCommonAction(df),
-        "INF" -> phPfizerPanelCommonAction(df),
-        "LD" -> phPfizerPanelCommonAction(df),
-        "ONC_other" -> phPfizerPanelCommonAction(df),
-        "ONC_aml" -> phPfizerPanelCommonAction(df),
-        "PAIN_lyrica" -> phPfizerPanelCommonAction(df),
-        "Specialty_champix" -> phPfizerPanelCommonAction(df),
-        "Specialty_other" -> phPfizerPanelCommonAction(df),
-        "Urology_other" -> phPfizerPanelCommonAction(df),
-        "Urology_viagra" -> phPfizerPanelCommonAction(df),
+    val splitMktJobsMap: Map[String, pActionTrait] = Map(
+        "AI_R_zith" -> phPfizerPanelNoSplitAction(df),
+        "AI_S" -> phPfizerPanelNoSplitAction(df),
+        "CNS_Z" -> phPfizerPanelNoSplitAction(df),
+        "ELIQUIS" -> phPfizerPanelNoSplitAction(df),
+        "INF" -> phPfizerPanelNoSplitAction(df),
+        "LD" -> phPfizerPanelNoSplitAction(df),
+        "ONC_other" -> phPfizerPanelNoSplitAction(df),
+        "ONC_aml" -> phPfizerPanelNoSplitAction(df),
+        "PAIN_lyrica" -> phPfizerPanelNoSplitAction(df),
+        "Specialty_champix" -> phPfizerPanelNoSplitAction(df),
+        "Specialty_other" -> phPfizerPanelNoSplitAction(df),
+        "Urology_other" -> phPfizerPanelNoSplitAction(df),
+        "Urology_viagra" -> phPfizerPanelNoSplitAction(df),
 
-        "PAIN_other" -> phPfizerPanelCommonAction(df),
-        "PAIN_C" -> phPfizerPanelCommonAction(df),
-        "HTN" -> phPfizerPanelCommonAction(df),
-        "HTN2" -> phPfizerPanelCommonAction(df),
-        "AI_R_other" -> phPfizerPanelCommonAction(df),
-        "AI_W" -> phPfizerPanelCommonAction(df),
-        "AI_D" -> phPfizerPanelCommonAction(df),
-        "ZYVOX" -> phPfizerPanelCommonAction(df),
+        "PAIN_C" -> phPfizerPanelNoSplitAction(df),
+        "HTN2" -> phPfizerPanelNoSplitAction(df),
+        "AI_D" -> phPfizerPanelNoSplitAction(df),
+        "ZYVOX" -> phPfizerPanelNoSplitAction(df),
 
-        "DVP" -> phPfizerPanelCommonAction(df)
+        "PAIN_other" -> phPfizerPanelSplitOneChildStrategyAction(df),
+        "HTN" -> phPfizerPanelNoSplitAction(df),
+        "AI_R_other" -> phPfizerPanelNoSplitAction(df),
+        "AI_W" -> phPfizerPanelNoSplitAction(df),
+
+        "CNS_R" -> phPfizerPanelNoSplitAction(df),
+        "DVP" -> phPfizerPanelNoSplitAction(df)
     )
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
@@ -116,7 +118,8 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         readCpa ::
         readNotArrivalHosp ::
         readGyc ::
-        detailJobsMap.get(mkt).getOrElse(throw new Exception(s"undefined market=${mkt}")) ::
+        splitMktJobsMap.get(mkt).getOrElse(throw new Exception(s"undefined market=${mkt}")) ::
+        phPfizerPanelCommonAction(df) ::
         phSavePanelJob(df) ::
         Nil
 }
