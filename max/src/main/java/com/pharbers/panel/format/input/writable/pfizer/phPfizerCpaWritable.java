@@ -16,21 +16,21 @@ public class phPfizerCpaWritable extends phPfizerCommonWritable {
         } else if (flag.equals("MOLE_NAME")) {
             return lst[4];
         } else if (flag.equals("PRODUCT_NAME")) {
-            return lst[5];
+            return lst[5].trim();
         } else if (flag.equals("PACK_DES")) {
-            return lst[6];
+            return lst[6].trim();
         }else if (flag.equals("PACK_NUMBER")) {
-            return lst[7];
+            return lst[7].trim();
         }else if (flag.equals("VALUE")) {
             return lst[8];
         }else if (flag.equals("STANDARD_UNIT")) {
             return lst[9];
         }else if (flag.equals("APP2_COD")) {
-            return lst[10];
+            return lst[10].trim();
         }else if (flag.equals("APP1_COD")) {
             return lst[11];
         }else if (flag.equals("CORP_NAME")) {
-            return lst[12];
+            return lst[12].trim();
         }else if (flag.equals("YM")) {
             return lst[13];
         }else if (flag.equals("min1")) {
@@ -46,13 +46,16 @@ public class phPfizerCpaWritable extends phPfizerCommonWritable {
         if (flag.equals("PRODUCT_NAME")) {
             lst[5] = value;
             return lst;
-        }else if (flag.equals("VALUE")) {
+        } else if (flag.equals("PACK_DES")) {
+            lst[6] = value;
+            return lst;
+        } else if (flag.equals("VALUE")) {
             lst[8] = value;
             return lst;
-        }else if (flag.equals("STANDARD_UNIT")) {
+        } else if (flag.equals("STANDARD_UNIT")) {
             lst[9] = value;
             return lst;
-        }else{
+        } else{
             return lst;
         }
     }
@@ -65,6 +68,8 @@ public class phPfizerCpaWritable extends phPfizerCommonWritable {
     @Override
     protected String prePanelFunction(String value) {
         String[] lst = splitValues(value);
+
+        lst = setCellKey(lst, "PACK_DES", getCellKey(lst, "PACK_DES"));
 
         if("".equals(getCellKey(lst, "PRODUCT_NAME")))
             lst = setCellKey(lst, "PRODUCT_NAME", getCellKey(lst, "MOLE_NAME"));
