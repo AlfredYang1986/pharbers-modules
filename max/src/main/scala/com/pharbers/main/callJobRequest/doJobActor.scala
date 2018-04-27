@@ -2,6 +2,8 @@ package com.pharbers.main.callJobRequest
 
 import play.api.libs.json.JsValue
 import akka.actor.{Actor, ActorLogging, Props}
+import com.pharbers.pactions.actionbase.MapArgs
+import com.pharbers.panel.nhwa.phNhwaPanelJob
 
 /**
   * Created by spark on 18-4-26.
@@ -28,20 +30,19 @@ class doJobActor extends Actor with ActorLogging {
     }
 
     def doYmCalc(jv: JsValue): Unit = {
-        val args =
-            (jv \ "args").asOpt[String].get
+
+        val args = (jv \ "args").asOpt[String].get
                     .tail.init
                     .split(",").map(_.split("="))
                     .map(x => x.head -> x.last)
                     .toMap
-
-        //        val result = args("company") match {
-        //            case "nhwa" => phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-        //            case _ => ???
-        //        }
-
+        val result = args("company") match {
+            case "nhwa" => phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+            case _ => ???
+        }
         println("args = " + args.toString)
         println("计算月份完成")
+
     }
 
     def doPanel(jv: JsValue): Unit = {
