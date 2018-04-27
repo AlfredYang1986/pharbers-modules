@@ -39,9 +39,10 @@ trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
     }
 
     implicit val content : GenericRecord => JsValue = { record =>
-        val tmp = record.get("result")
-        if (record.get("result") != null) toJson(tmp.toString)
-        else {
+/// 杨总本意是接受的消息如果result不为空，则只保留result
+//        val tmp = record.get("result")
+//        if (record.get("result") != null) toJson(tmp.toString)
+//        else {
             toJson(
                 record.getSchema.getFields.asScala.map { x =>
                     record.get(x.name) match {
@@ -50,7 +51,7 @@ trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
                     }
                 }.filter(_.isDefined).map (_.get).toMap
             )
-        }
+//        }
     }
 
     lazy val consumer: KafkaConsumer[String, Array[Byte]] = {
