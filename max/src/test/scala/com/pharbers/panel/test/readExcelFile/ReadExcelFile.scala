@@ -3,22 +3,28 @@ package com.pharbers.panel.test.readExcelFile
 import java.io.FileInputStream
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
-class ReadExcelFile(xls_file: String, rows: Int){
+
+class ReadExcelFile{
+  val xls_file: String = "/home/cui/download/验收结果比对表 (复件).xlsx"
   val ins = new FileInputStream(xls_file)
   val xssfWorkbook = new XSSFWorkbook(ins)
-  val xssfSheet = xssfWorkbook.getSheetAt(1)
-  def readExcel={
-    val excelResult: List[Map[String, Any]] = Range(1,rows+1).map(row => getCellValue(row)).toList
-    excelResult
-  }
-  def getCellValue(row: Int): Map[String, Any] ={
-    val hosptalsum = xssfSheet.getRow(row).getCell(3).getNumericCellValue
-    val sales = xssfSheet.getRow(row).getCell(5).getNumericCellValue
-    val units = xssfSheet.getRow(row).getCell(6).getNumericCellValue
-    Map("hosptalsum" -> hosptalsum, "sales" -> sales, "units" -> units)
+  val sheet = xssfWorkbook.getSheetAt(1)
+  val firstRowNumber = sheet.getFirstRowNum
+  val lastRowNumber = sheet.getLastRowNum
+  val hosptalnum = sheet.getRow(firstRowNumber).getCell(3).toString
+  val productnum = sheet.getRow(firstRowNumber).getCell(4).toString
+  val sales = sheet.getRow(firstRowNumber).getCell(5).toString
+  val units = sheet.getRow(firstRowNumber).getCell(6).toString
+  val excelResultList:List[Map[String, String]] = Range(1,lastRowNumber+1).map(row => getRows(row)).toList
+  def getRows(row: Int): Map[String, String] ={
+    Map(hosptalnum -> sheet.getRow(row).getCell(3).toString,
+      productnum -> sheet.getRow(row).getCell(4).toString,
+      sales -> sheet.getRow(row).getCell(5).toString,
+      units -> sheet.getRow(row).getCell(6).toString
+    )
   }
 }
 
 object ReadExcelFile{
-  def apply(xls_file: String, rows: Int): ReadExcelFile = new ReadExcelFile(xls_file, rows)
+  def apply(): List[Map[String,String]] = new ReadExcelFile().excelResultList
 }

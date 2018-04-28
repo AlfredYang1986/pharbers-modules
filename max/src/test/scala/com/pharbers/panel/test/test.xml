@@ -1,16 +1,18 @@
  <tests matchFile="/home/cui/download/验收结果比对表 (复件).xlsx">
-        <test>
-            <company value="nhwa" />
-            <data value="201712" />
-            <market value="麻醉市场"/>
-            <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
-
-        </test>
      <test>
          <company value="nhwa" />
          <data value="201712" />
          <market value="麻醉市场"/>
          <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
+         <jobType value="panel" />
+     </test>
+     <test>
+         <company value="nhwa" />
+         <data value="201712" />
+         <market value="麻醉市场"/>
+         <jobType value="max" />
+         <cpa_file value="/mnt/config/Client/180211恩华17年1-12月检索.xlsx" />
+         <jobType value="panel" />
      </test>
         <!--<test>-->
             <!--<company value="asttlas" />-->
@@ -20,3 +22,11 @@
             <!--<gycx_file value="/mnt/config/Client/astl_gycx_1-10.xlsx" />-->
         <!--</test>-->
  </tests>
+         <!--case "Allelock" => "阿洛刻市场"-->
+         <!--case "Mycamine" => "米开民市场"-->
+         <!--case "Prograf" => "普乐可复市场"-->
+         <!--case "Perdipine" => "佩尔市场"-->
+         <!--case "Harnal" => "哈乐市场"-->
+         <!--case "Gout" => "痛风市场"-->
+         <!--case "Vesicare" => "卫喜康市场"-->
+         <!--case "Grafalon" => "Grafalon市场"-->

@@ -7,7 +7,7 @@ class GetResult {
     val companyList = ReadXmlFile().readXmlFile
     val resultList: List[String] = ExecuteJob(companyList).getresultPath
     val csvResult: List[Map[String, Any]] = resultList.map(r => ReadCSVFile().getcsvResult(r))
-    val excelResult: List[Map[String, Any]] = ReadExcelFile(ReadXmlFile().getMatchFile, csvResult.size).readExcel
+    val excelResult: List[Map[String, Any]] = ReadExcelFile()
     List(csvResult, excelResult)
   }
 }

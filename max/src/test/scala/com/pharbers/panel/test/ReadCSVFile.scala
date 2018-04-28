@@ -13,10 +13,11 @@ class ReadCSVFile{
       .option("delimiter",31.toChar.toString)
       .load(s"/mnt/config/Result/${csvFileName}")//文件的路径
     val hosptalsum = data.select("ID").rdd.distinct().count()
+    val productsum = data.select("Prod_NAME").rdd.distinct().count()
     val sumArray = data.select("Units","Sales").agg(Map("Units" -> "sum", "Sales" -> "sum")).collect()
     val sales = sumArray(0).get(1).formatted("%.1f").toDouble
     val units = sumArray(0).get(0)
-    Map("hosptalsum"->hosptalsum,"sales" -> sales,"units" -> units)
+    Map("hosptalsum"->hosptalsum,"productsum" -> productsum,"sales" -> sales,"units" -> units)
   }
 }
 

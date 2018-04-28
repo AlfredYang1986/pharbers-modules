@@ -8,12 +8,17 @@ import com.pharbers.panel.test.Builder.{AsttlasParamter, CompanyParamter, NhwaPa
 class ExecuteJob(list: List[CompanyParamter]) {
   def getresultPath: List[String] ={
     val resultlst: List[String] = list.map(x => x match {
-      case nhwaparamter: NhwaParamter => executeJob(nhwaparamter)
+      case nhwaParamter: NhwaParamter => executeJob(nhwaParamter)
       case asttlasParamter: AsttlasParamter => executeJob(asttlasParamter)
     })
     resultlst
   }
   def executeJob(nhwaParamter:NhwaParamter): String ={
+//    val panelresult = phNhwaPanelJob(nhwaParamter.cpa_file, nhwaParamter.data, nhwaParamter.market).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+//    val result = nhwaParamter.market match {
+//      case "panel" => phNhwaPanelJob(nhwaParamter.cpa_file, nhwaParamter.data, nhwaParamter.market).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+//      case "max" => panelresult
+//    }
     val result = phNhwaPanelJob(nhwaParamter.cpa_file, nhwaParamter.data, nhwaParamter.market).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
     result.toString
   }
