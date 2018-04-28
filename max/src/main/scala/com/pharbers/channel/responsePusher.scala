@@ -5,19 +5,19 @@ import java.util.Date
 import play.api.libs.json.{JsString, JsValue}
 import com.pharbers.channel.chanelImpl._
 
-case class progressPusher() extends kafkaBasicConf with kafkaPushRecord {
+case class responsePusher() extends kafkaBasicConf with kafkaPushRecord {
 
     override lazy val endpoints: String = kafka_config_obj.endpoints
     override lazy val schemapath: String = kafka_config_obj.progressSP
     override lazy val topic: String = kafka_config_obj.progressTopic
 
-    def sendProgress(progress: Int, result: JsValue)
-                    (jv: JsValue)
-                    (implicit func: (Int, JsValue, JsValue) => Map[String, AnyRef]): Unit = {
+    def callJobResponse(result: JsValue, progress: Int = 0)
+                       (jv: JsValue)
+                       (implicit func: (Int, JsValue, JsValue) => Map[String, AnyRef]): Unit = {
         this.pushRecord(func(progress, result, jv))(this.precord)
     }
 
-    implicit val result2progress: (Int, JsValue, JsValue) => Map[String, AnyRef] =
+    implicit val result2map: (Int, JsValue, JsValue) => Map[String, AnyRef] =
         (progress, result, jv) =>
             Map(
                 "job_id" -> (jv \ "job_id").asOpt[String].get,

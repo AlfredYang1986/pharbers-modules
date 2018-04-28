@@ -8,6 +8,7 @@ import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, sav
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.panel.panel_path_obj
+import com.pharbers.panel.pfizer.actions.{phPfizerPanelCommonAction, phPfizerPanelNoSplitAction, phPfizerPanelSplitOneChildStrategyAction}
 import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat, phPfizerGycxFormat}
 
 /**
@@ -83,12 +84,42 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         )
     )
 
+    val splitMktJobsMap: Map[String, pActionTrait] = Map(
+        "AI_R_zith" -> phPfizerPanelNoSplitAction(df),
+        "AI_S" -> phPfizerPanelNoSplitAction(df),
+        "CNS_Z" -> phPfizerPanelNoSplitAction(df),
+        "ELIQUIS" -> phPfizerPanelNoSplitAction(df),
+        "INF" -> phPfizerPanelNoSplitAction(df),
+        "LD" -> phPfizerPanelNoSplitAction(df),
+        "ONC_other" -> phPfizerPanelNoSplitAction(df),
+        "ONC_aml" -> phPfizerPanelNoSplitAction(df),
+        "PAIN_lyrica" -> phPfizerPanelNoSplitAction(df),
+        "Specialty_champix" -> phPfizerPanelNoSplitAction(df),
+        "Specialty_other" -> phPfizerPanelNoSplitAction(df),
+        "Urology_other" -> phPfizerPanelNoSplitAction(df),
+        "Urology_viagra" -> phPfizerPanelNoSplitAction(df),
+
+        "PAIN_C" -> phPfizerPanelNoSplitAction(df),
+        "HTN2" -> phPfizerPanelNoSplitAction(df),
+        "AI_D" -> phPfizerPanelNoSplitAction(df),
+        "ZYVOX" -> phPfizerPanelNoSplitAction(df),
+
+        "PAIN_other" -> phPfizerPanelSplitOneChildStrategyAction(df),
+        "HTN" -> phPfizerPanelNoSplitAction(df),
+        "AI_R_other" -> phPfizerPanelNoSplitAction(df),
+        "AI_W" -> phPfizerPanelNoSplitAction(df),
+
+        "CNS_R" -> phPfizerPanelNoSplitAction(df),
+        "DVP" -> phPfizerPanelNoSplitAction(df)
+    )
+
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-        phPfizerPreActions(temp_name).actions :::
+        phPfizerPreActions(mkt, temp_name).actions :::
         readCpa ::
         readNotArrivalHosp ::
         readGyc ::
-        phPfizerPanelAction(df) ::
+        splitMktJobsMap.get(mkt).getOrElse(throw new Exception(s"undefined market=${mkt}")) ::
+        phPfizerPanelCommonAction(df) ::
         phSavePanelJob(df) ::
         Nil
 }
