@@ -27,7 +27,7 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
         //待匹配min1_标准的min1表
-        val splitMktResultDF = args.asInstanceOf[MapArgs].get("noSplitMarketAction").asInstanceOf[DFArgs].get
+        val splitMktResultDF = args.asInstanceOf[MapArgs].get("SplitMarketAction").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
         val full_hosp_file : DataFrame = args.asInstanceOf[MapArgs].get("full_hosp_file").asInstanceOf[DFArgs].get  //补充医院
             .withColumn("MONTH", when(col("MONTH").>=(10), col("MONTH"))
@@ -47,7 +47,7 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
 
         def fullCPAandGYCX(cpa: DataFrame, ym: String): DataFrame = {
 
-            val filter_month = ym.takeRight(2).toInt.toString
+            val filter_month = ym.takeRight(2).toInt
             val primal_cpa = cpa.filter(s"YM like '$ym'")
             val not_arrival_hosp = not_arrival_hosp_file
                 .withColumnRenamed("月份", "month")
@@ -56,11 +56,11 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
                 .select("ID")
             val miss_hosp = not_arrival_hosp.distinct()
             val reduced_cpa = primal_cpa.join(miss_hosp, primal_cpa("HOSPITAL_CODE") === miss_hosp("ID"), "left").filter("ID is null").drop("ID")
-            val full_hosp_id = full_hosp_file.filter(s"MONTH like $filter_month")
+            val full_hosp_id = full_hosp_file.filter(col("MONTH") === filter_month)
             val full_hosp = miss_hosp.join(full_hosp_id, miss_hosp("ID") === full_hosp_id("HOSPITAL_CODE")).drop("ID").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)
 
             import sparkDriver.ss.implicits._
-            reduced_cpa.union(full_hosp).union(gyc.filter(s"YM like '$ym'")).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
+            reduced_cpa.union(full_hosp).union(gyc.filter(s"YM like '$ym'").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
         }
 
         def trimProductMatch(product_match_file: DataFrame): DataFrame = {

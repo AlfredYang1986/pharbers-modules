@@ -23,19 +23,19 @@ class phPfizerFillHospitalRdd2DfAction(override val defaultArgs: pActionArgs, ov
         val fillHospital = rdd_temp
             .map(_.split(31.toChar.toString))
             .map(row => FillHospitalFormat(
-                row(0).trim,
-                row(1).trim,
-                row(2).trim,
-                row(3).trim,
-                row(4).trim,
-                row(5).trim,
-                row(6).trim,
-                row(7).trim,
-                row(8).trim,
-                row(9).trim,
-                row(10).trim,
-                row(11).trim,
-                row(12).trim
+                row(0).replaceAll(34.toChar.toString," ").trim,
+                row(1).replaceAll(34.toChar.toString," ").trim,
+                row(2).replaceAll(34.toChar.toString," ").trim,
+                row(3).replaceAll(34.toChar.toString," ").trim,
+                row(4).replaceAll(34.toChar.toString," ").trim,
+                row(5).replaceAll(34.toChar.toString," ").trim,
+                row(6).replaceAll(34.toChar.toString," ").trim,
+                row(7).replaceAll(34.toChar.toString," ").trim,
+                row(8).replaceAll(34.toChar.toString," ").trim,
+                row(9).replaceAll(34.toChar.toString," ").trim,
+                row(10).replaceAll(34.toChar.toString," ").trim,
+                row(11).replaceAll(34.toChar.toString," ").trim,
+                row(12).replaceAll(34.toChar.toString," ").trim
             ))
         val df = sparkDriver.ss.createDataFrame(fillHospital)
         DFArgs(df)

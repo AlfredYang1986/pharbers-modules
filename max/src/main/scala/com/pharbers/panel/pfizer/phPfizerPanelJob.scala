@@ -8,7 +8,7 @@ import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, sav
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.panel.panel_path_obj
-import com.pharbers.panel.pfizer.actions.{phPfizerPanelCommonAction, phPfizerPanelNoSplitAction, phPfizerPanelSplitOneChildStrategyAction}
+import com.pharbers.panel.pfizer.actions.{phPfizerPanelCommonAction, phPfizerPanelNoSplitAction, phPfizerPanelSplitMarketAction, phPfizerPanelSplitOneChildStrategyAction}
 import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat, phPfizerGycxFormat}
 
 /**
@@ -98,16 +98,15 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         "Specialty_other" -> phPfizerPanelNoSplitAction(df),
         "Urology_other" -> phPfizerPanelNoSplitAction(df),
         "Urology_viagra" -> phPfizerPanelNoSplitAction(df),
-
         "PAIN_C" -> phPfizerPanelNoSplitAction(df),
         "HTN2" -> phPfizerPanelNoSplitAction(df),
         "AI_D" -> phPfizerPanelNoSplitAction(df),
         "ZYVOX" -> phPfizerPanelNoSplitAction(df),
 
-        "PAIN_other" -> phPfizerPanelSplitOneChildStrategyAction(df),
-        "HTN" -> phPfizerPanelNoSplitAction(df),
-        "AI_R_other" -> phPfizerPanelNoSplitAction(df),
-        "AI_W" -> phPfizerPanelNoSplitAction(df),
+        "PAIN_other" -> phPfizerPanelSplitMarketAction(df),
+        "HTN" -> phPfizerPanelSplitMarketAction(df),
+        "AI_W" -> phPfizerPanelSplitMarketAction(df),
+        "AI_R_other" -> phPfizerPanelSplitMarketAction(df),
 
         "CNS_R" -> phPfizerPanelNoSplitAction(df),
         "DVP" -> phPfizerPanelNoSplitAction(df)

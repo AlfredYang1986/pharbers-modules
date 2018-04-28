@@ -17,7 +17,11 @@ case class phPfizerPreActions(mkt: String, temp_name: String) {
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
 
     val universe_file: String = match_dir + s"pfizer/universe_${mkt}_online.xlsx"
-    val fill_hos_data_file: String = match_dir + "pfizer/补充医院utf8_31.txt"
+    /**
+      * 不同年份有不同的补充文件,是否需要进行历史补充医院的合并?
+      * ToDo:为了满足用户不仅仅可以计算当月,还可以计算历史月份
+      */
+    val fill_hos_data_file: String = match_dir + "pfizer/补充医院utf8_2018.txt"
     val product_match_file: String = match_dir + "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx"
     val markets_match_file: String = match_dir + "pfizer/通用名市场定义.xlsx"
     val pfc_match_file: String = match_dir + "pfizer/PACKID生成panel.xlsx"
