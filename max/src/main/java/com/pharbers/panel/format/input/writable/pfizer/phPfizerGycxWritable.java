@@ -6,6 +6,7 @@ public class phPfizerGycxWritable extends phPfizerCommonWritable {
 
     public phPfizerGycxWritable() {
         titleMap = new HashMap<String, String>() {{
+            put("省/自治区/直辖市", "PROVINCE");
             put("城市", "CITY");
             put("年", "YEAR");
             put("月", "MONTH");
@@ -24,37 +25,39 @@ public class phPfizerGycxWritable extends phPfizerCommonWritable {
 
     @Override
     protected String getCellKey(String[] lst, String flag) {
-        if (flag.equals("CITY")) {
+        if (flag.equals("PROVINCE")) {
             return lst[0];
-        } else if (flag.equals("YEAR")) {
+        } else if (flag.equals("CITY")) {
             return lst[1];
-        } else if (flag.equals("MONTH")) {
-            if(lst[2].length() == 1) return "0" + lst[2];
+        } else if (flag.equals("YEAR")) {
             return lst[2];
-        } else if (flag.equals("HOSPITAL_CODE")) {
+        } else if (flag.equals("MONTH")) {
+            if(lst[3].length() == 1) return "0" + lst[3];
             return lst[3];
-        } else if (flag.equals("MOLE_NAME")) {
+        } else if (flag.equals("HOSPITAL_CODE")) {
             return lst[4];
-        } else if (flag.equals("PRODUCT_NAME")) {
+        } else if (flag.equals("MOLE_NAME")) {
             return lst[5];
-        } else if (flag.equals("PACK_DES")) {
+        } else if (flag.equals("PRODUCT_NAME")) {
             return lst[6];
-        }else if (flag.equals("PACK_NUMBER")) {
+        } else if (flag.equals("PACK_DES")) {
             return lst[7];
-        }else if (flag.equals("VALUE")) {
+        }else if (flag.equals("PACK_NUMBER")) {
             return lst[8];
-        }else if (flag.equals("STANDARD_UNIT")) {
+        }else if (flag.equals("VALUE")) {
             return lst[9];
-        }else if (flag.equals("APP2_COD")) {
+        }else if (flag.equals("STANDARD_UNIT")) {
             return lst[10];
-        }else if (flag.equals("APP1_COD")) {
+        }else if (flag.equals("APP2_COD")) {
             return lst[11];
-        }else if (flag.equals("CORP_NAME")) {
+        }else if (flag.equals("APP1_COD")) {
             return lst[12];
-        }else if (flag.equals("YM")) {
+        }else if (flag.equals("CORP_NAME")) {
             return lst[13];
-        }else if (flag.equals("min1")) {
+        }else if (flag.equals("YM")) {
             return lst[14];
+        }else if (flag.equals("min1")) {
+            return lst[15];
         }
 
         return "not implements";
@@ -63,50 +66,53 @@ public class phPfizerGycxWritable extends phPfizerCommonWritable {
 
     @Override
     protected String[] setCellKey(String[] lst, String flag, String value) {
-        if (flag.equals("CITY")) {
+        if (flag.equals("PROVINCE")) {
             lst[0] = value;
             return lst;
-        } else if (flag.equals("YEAR")) {
+        } else if (flag.equals("CITY")) {
             lst[1] = value;
             return lst;
-        } else if (flag.equals("MONTH")) {
+        } else if (flag.equals("YEAR")) {
             lst[2] = value;
             return lst;
-        } else if (flag.equals("HOSPITAL_CODE")) {
+        } else if (flag.equals("MONTH")) {
             lst[3] = value;
             return lst;
-        } else if (flag.equals("MOLE_NAME")) {
+        } else if (flag.equals("HOSPITAL_CODE")) {
             lst[4] = value;
             return lst;
-        } else if (flag.equals("PRODUCT_NAME")) {
+        } else if (flag.equals("MOLE_NAME")) {
             lst[5] = value;
             return lst;
-        } else if (flag.equals("PACK_DES")) {
+        } else if (flag.equals("PRODUCT_NAME")) {
             lst[6] = value;
             return lst;
-        }else if (flag.equals("PACK_NUMBER")) {
+        } else if (flag.equals("PACK_DES")) {
             lst[7] = value;
             return lst;
-        }else if (flag.equals("VALUE")) {
+        }else if (flag.equals("PACK_NUMBER")) {
             lst[8] = value;
             return lst;
-        }else if (flag.equals("STANDARD_UNIT")) {
+        }else if (flag.equals("VALUE")) {
             lst[9] = value;
             return lst;
-        }else if (flag.equals("APP2_COD")) {
+        }else if (flag.equals("STANDARD_UNIT")) {
             lst[10] = value;
             return lst;
-        }else if (flag.equals("APP1_COD")) {
+        }else if (flag.equals("APP2_COD")) {
             lst[11] = value;
             return lst;
-        }else if (flag.equals("CORP_NAME")) {
+        }else if (flag.equals("APP1_COD")) {
             lst[12] = value;
             return lst;
-        }else if (flag.equals("YM")) {
+        }else if (flag.equals("CORP_NAME")) {
             lst[13] = value;
             return lst;
+        }else if (flag.equals("YM")) {
+            lst[14] = value;
+            return lst;
         }else if (flag.equals("min1")) {
-            lst[13] = value;
+            lst[15] = value;
             return lst;
         }else{
             return lst;
