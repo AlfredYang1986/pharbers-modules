@@ -3,7 +3,7 @@ package com.pharbers.main.callJobRequest
 import akka.actor.ActorSystem
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-import com.pharbers.channel.progressPusher
+import com.pharbers.channel.responsePusher
 import com.pharbers.bmmessages.CommonModules
 
 /**
@@ -37,12 +37,12 @@ trait callJobRequestTrait {
     def responseJob(jv: JsValue)
                    (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
 
-        val pp: progressPusher = progressPusher()
+        val pp: responsePusher = responsePusher()
         import pp._
 
-        val result = toJson("test -> ok")
+        val result = toJson("call job -> success")
 
-        sendProgress(80, result)(jv)
+        callJobResponse(result)(jv)
         (Some(Map[String, JsValue]().empty), None)
     }
 

@@ -11,5 +11,5 @@ object main extends App {
     val config = ConfigFactory.load("split-new-master")
     val system = ActorSystem("maxActor", config)
 
-    callJobConsumer("abcd")(system)
+    callJobConsumer("max_calc")(system)
 }

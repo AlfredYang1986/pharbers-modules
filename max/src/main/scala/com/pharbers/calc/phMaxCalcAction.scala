@@ -33,7 +33,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                     .withColumnRenamed("If Panel_To Use", "NEED_MAX_HOSP")
                     .withColumnRenamed("Segment", "SEGMENT")
                     .withColumnRenamed("西药收入", "westMedicineIncome")
-                    .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Prefecture", "westMedicineIncome")
+                    .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Province", "Prefecture", "westMedicineIncome")
         }
 
         val panelSummed = {
@@ -100,7 +100,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                     .withColumnRenamed("YM", "Date")
                     .withColumnRenamed("Prefecture", "City")
                     .withColumnRenamed("min1", "Product")
-                    .select("Panel_ID", "Date", "City", "Product", "Factor", "f_sales", "f_units")
+                    .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units")
         }
 
         DFArgs(resultDF)
