@@ -11,12 +11,12 @@ import com.pharbers.panel.pfizer.actions.phPfizerFillHospitalRdd2DfAction
 /**
   * Created by jeorch on 18-4-18.
   */
-case class phPfizerPreActions(mkt: String, temp_name: String) {
+case class phPfizerPreActions(mkt: String, temp_name: String) extends phPfizerPanelCommonTrait {
     implicit val companyArgs: phMemoryArgs = phMemoryArgs("Pfizer")
     val match_dir: String = panel_path_obj.p_matchFilePath
     val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
 
-    val universe_file: String = match_dir + s"pfizer/universe_${mkt}_online.xlsx"
+    val universe_file: String = match_dir + s"pfizer/universe_${getFatherMarket(mkt)}_online.xlsx"
     /**
       * 不同年份有不同的补充文件,是否需要进行历史补充医院的合并?
       * ToDo:为了满足用户不仅仅可以计算当月,还可以计算历史月份
@@ -87,5 +87,6 @@ case class phPfizerPreActions(mkt: String, temp_name: String) {
                                 csv2DFAction(temp_dir + "pfc_match_file") :: Nil
                     } :: Nil
             } :: Nil
+
 }
 

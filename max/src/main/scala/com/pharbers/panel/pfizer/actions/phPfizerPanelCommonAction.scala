@@ -1,6 +1,7 @@
 package com.pharbers.panel.pfizer.actions
 
 import com.pharbers.pactions.actionbase._
+import com.pharbers.panel.pfizer.phPfizerPanelCommonTrait
 import com.pharbers.spark.phSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, when, _}
@@ -13,7 +14,7 @@ object phPfizerPanelCommonAction {
     def apply(args: MapArgs): pActionTrait = new phPfizerPanelCommonAction(args)
 }
 
-class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait {
+class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait with phPfizerPanelCommonTrait {
     override val name: String = "panel"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
@@ -26,6 +27,9 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
+        //通用名市场定义 =>表b0
+        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
+            .filter(s"Market like '${getFatherMarket(mkt)}%'")
         //待匹配min1_标准的min1表
         val splitMktResultDF = args.asInstanceOf[MapArgs].get("SplitMarketAction").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
@@ -36,11 +40,12 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
             .withColumn("min1", concat(col("PRODUCT_NAME"),col("APP2_COD"),col("PACK_DES"),col("PACK_NUMBER"),col("CORP_NAME")))
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
-        def getPanelFile(ym: String, mkt: String) : pActionArgs = {
+        def getPanelFile: pActionArgs = {
 
             val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
+            val filter_cpa_gyc = full_cpa_gyc.join(markets_match, full_cpa_gyc("MOLE_NAME") === markets_match("通用名_原始"))
             val universe = trimUniverse(universe_file)
-            val filted_panel = full_cpa_gyc.join(universe, full_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
+            val filted_panel = filter_cpa_gyc.join(universe, filter_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, splitMktResultDF)
             DFArgs(panelDF)
         }
@@ -103,7 +108,7 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
                 .withColumnRenamed("sum(Sales)", "Sales")
         }
 
-        getPanelFile(ym, mkt)
+        getPanelFile
     }
 
 }

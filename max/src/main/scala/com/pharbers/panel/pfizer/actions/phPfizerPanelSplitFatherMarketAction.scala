@@ -6,11 +6,11 @@ import org.apache.spark.sql.DataFrame
 /**
   * Created by jeorch on 18-4-28.
   */
-object phPfizerPanelSplitMarketAction {
-    def apply(args: MapArgs): pActionTrait = new phPfizerPanelSplitMarketAction(args)
+object phPfizerPanelSplitFatherMarketAction {
+    def apply(args: MapArgs): pActionTrait = new phPfizerPanelSplitFatherMarketAction(args)
 }
 
-class phPfizerPanelSplitMarketAction(override val defaultArgs : pActionArgs) extends pActionTrait{
+class phPfizerPanelSplitFatherMarketAction(override val defaultArgs : pActionArgs) extends pActionTrait{
     override val name: String = "SplitMarketAction"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
@@ -19,9 +19,7 @@ class phPfizerPanelSplitMarketAction(override val defaultArgs : pActionArgs) ext
         //在通用名市场定义中包含的此市场
         val current_mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val childMarkets = getChildMarkets(current_mkt)
-        //通用名市场定义 =>表b0
-        val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
-            .filter(s"Market like '$current_mkt%'")
+
         //产品标准化 vs IMS_Pfizer_6市场others
         val product_match_file = args.asInstanceOf[MapArgs].get("product_match_file").asInstanceOf[DFArgs].get
         //PACKID生成panel
@@ -33,10 +31,9 @@ class phPfizerPanelSplitMarketAction(override val defaultArgs : pActionArgs) ext
         val product_match = product_match_file
             .select("min1", "min1_标准", "通用名", "pfc")
             .distinct()
-        val markets_product_match = product_match.join(markets_match, product_match("通用名") === markets_match("通用名_原始"))
 
-        val spilt_markets_product_match = markets_product_match
-            .join(pfc_filtered, markets_product_match("pfc") === pfc_filtered("Pack_ID"), "left").filter("Pack_ID is null")
+        val spilt_markets_product_match = product_match
+            .join(pfc_filtered, product_match("pfc") === pfc_filtered("Pack_ID"), "left").filter("Pack_ID is null")
             .drop(pfc_filtered("Pack_ID"))
             .drop(pfc_filtered("Market"))
 
@@ -62,7 +59,7 @@ class phPfizerPanelSplitMarketAction(override val defaultArgs : pActionArgs) ext
         case "AI_R_other" => "AI_D"::"ZYVOX"::Nil
         case "PAIN_other" => "PAIN_C"::Nil
         case "HTN" => "HTN2"::Nil
-        case "AI_W" => "PAIN_C"::Nil
+        case "AI_W" => "AI_D"::Nil
         case _ => throw new Exception(s"Error in phPfizerPanelSplitOneChildStrategyAction. Market=${curr_mkt} has no child market!")
     }
 
