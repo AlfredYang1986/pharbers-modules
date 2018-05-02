@@ -12,20 +12,15 @@
 //  */
 //class PfizerPanelSuite extends FunSuite {
 //
+//    /**
+//      * 出错市场:"HTN","PAIN_C","AI_D","HTN2"
+//      *
+//      * 两个特殊市场:
+//      * "DVP","CNS_R"(Max算法有改动!!)
+//      */
+//
 //    test("pfizer generate panel"){
-//        /**
-//          * 已通过1712月的对数的市场:
-//          * INF(3462),CNS_Z(5844),AI_S(7013)
-//          * 已通过1802月的对数的市场:
-//          * INF(2992),PAIN_other(14311)
-//          * (罗然他们给我们的12月比对panel中有If_Panel_All===0的一些医院,
-//          * 需要删了这些医院条数后进行比对)
-//          *
-//          * 有问题的大多都是分拆出来的市场:
-//          * AI_R_zith(头孢孟多问题),
-//          */
-//        val mkt = "AI_R_zith"
-////        val mkt = "AI_R_other"
+//        val mkt = "ZYVOX"
 //
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
