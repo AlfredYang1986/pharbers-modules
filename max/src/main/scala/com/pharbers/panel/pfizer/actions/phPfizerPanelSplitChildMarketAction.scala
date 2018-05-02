@@ -31,8 +31,8 @@ class phPfizerPanelSplitChildMarketAction (override val defaultArgs : pActionArg
 
         val spilt_markets_product_match = product_match
             .join(pfc_filtered, product_match("pfc") === pfc_filtered("Pack_ID"))
-            .drop(pfc_filtered("Pack_ID"))
-            .drop(pfc_filtered("Market"))
+            .select("min1", "min1_标准")
+            .distinct()
 
         DFArgs(spilt_markets_product_match)
     }
