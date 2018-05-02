@@ -43,17 +43,17 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
                         .split(",").map(_.split("="))
                         .map(x => x.head.trim -> x.last.trim)
                         .toMap
-            val result = "ymcalc" /*(args("company") match {
+            val result = "201711,201712" /*(args("company") match {
                 case "nhwa" => phNhwaCalcYMJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx").perform()
                 case _ => ???
             }).asInstanceOf[JVArgs].get*/
 
-            // TODO 暂时先放这，肯定不好
-            phSparkDriver().ss.stop
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
             println("计算月份完成, result = " + result)
 
             responseJob(toJson(result))(jv) // send Kafka message
-            sendMessage("testUser", "ymCalc", "done", toJson(Map("content" -> toJson(Map("ymList" -> result)))))
+            sendMessage("testUser", "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> result)))))
         } catch {
             case ex: Exception => sendError("testUser", "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
@@ -75,12 +75,12 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
                 case _ => ???
             }).asInstanceOf[StringArgs].get*/
 
-            // TODO 暂时先放这，肯定不好
-            phSparkDriver().ss.stop
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
             println("生成panel完成, result = " + result)
 
             responseJob(toJson(result))(jv)
-            sendMessage("testUser", "panel", "done", toJson(Map("content" -> toJson(Map("panel" -> toJson(result))))))
+            sendMessage("testUser", "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(result))))))
         } catch {
             case ex: Exception => sendError("testUser", "panel", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
@@ -99,12 +99,12 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
 
             val result = "calc"// phMaxJob("b87579dd-1cb7-4c17-aa34-685fae0d3541", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
 
-            // TODO 暂时先放这，肯定不好
-            phSparkDriver().ss.stop
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
             println("计算完成, result = " + result)
 
             responseJob(toJson(result))(jv)
-            sendMessage("testUser", "calc", "done", toJson(Map("content" -> toJson(Map("calc" -> toJson(result))))))
+            sendMessage("testUser", "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(result))))))
         } catch {
             case ex: Exception => sendError("testUser", "calc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
