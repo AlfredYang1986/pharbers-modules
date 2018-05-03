@@ -14,7 +14,7 @@ object phPfizerPanelCommonAction {
     def apply(args: MapArgs): pActionTrait = new phPfizerPanelCommonAction(args)
 }
 
-class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait with phPfizerPanelCommonTrait {
+class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
@@ -29,7 +29,8 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
         //通用名市场定义 =>表b0
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
-            .filter(s"Market like '${getFatherMarket(mkt)}%'")
+            .filter(s"Market like '${mkt}'")
+
         //待匹配min1_标准的min1表
         val splitMktResultDF = args.asInstanceOf[MapArgs].get("SplitMarketAction").asInstanceOf[DFArgs].get
         val not_arrival_hosp_file = args.asInstanceOf[MapArgs].get("not_arrival_hosp_file").asInstanceOf[DFArgs].get    //1-xx月未到医院名单
@@ -42,15 +43,15 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
 
         def getPanelFile: pActionArgs = {
 
-            val full_cpa_gyc = fullCPAandGYCX(cpa, ym)
+            val full_cpa_gyc = fullCPAandGYCX
             val filter_cpa_gyc = full_cpa_gyc.join(markets_match, full_cpa_gyc("MOLE_NAME") === markets_match("通用名_原始"))
-            val universe = trimUniverse(universe_file)
+            val universe = trimUniverse
             val filted_panel = filter_cpa_gyc.join(universe, filter_cpa_gyc("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, splitMktResultDF)
             DFArgs(panelDF)
         }
 
-        def fullCPAandGYCX(cpa: DataFrame, ym: String): DataFrame = {
+        def fullCPAandGYCX = {
 
             val filter_month = ym.takeRight(2).toInt
             val primal_cpa = cpa.filter(s"YM like '$ym'")
@@ -68,14 +69,7 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
             reduced_cpa.union(full_hosp).union(gyc.filter(s"YM like '$ym'").select(reduced_cpa.columns.head, reduced_cpa.columns.tail:_*)).withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
         }
 
-        def trimProductMatch(product_match_file: DataFrame): DataFrame = {
-            product_match_file
-                .select("min1", "min1_标准", "通用名")
-                .distinct()
-        }
-
-        def trimUniverse(universe_file: DataFrame): DataFrame = {
-
+        def trimUniverse = {
             import sparkDriver.ss.implicits._
             universe_file.withColumnRenamed("样本医院编码", "ID")
                 .withColumnRenamed("PHA医院名称", "HOSP_NAME")
