@@ -12,7 +12,9 @@ object phNhwaPanelConcretJob {
 
 class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
+        println("progress" + progress)
+    }
 
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
@@ -30,7 +32,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
         def getPanelFile(ym: String, mkt: String) : pActionArgs = {
-
             val full_cpa = fullCPA(cpa, ym)
             val product_match = trimProductMatch(product_match_file)
             val universe = trimUniverse(universe_file, mkt)
@@ -42,7 +43,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         }
 
         def fullCPA(cpa: DataFrame, ym: String): DataFrame = {
-
             val filter_month = ym.takeRight(2).toInt.toString
             val primal_cpa = cpa.filter(s"YM like '$ym'")
             val not_arrival_hosp = not_arrival_hosp_file
@@ -62,7 +62,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         }
 
         def trimProductMatch(product_match_file: DataFrame): DataFrame = {
-
             product_match_file
                 .withColumnRenamed("药品名称", "NAME")
                 .withColumnRenamed("商品名", "PRODUCT_NAME")
@@ -85,7 +84,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
         }
 
         def trimUniverse(universe_file: DataFrame, mkt: String): DataFrame = {
-
             import sparkDriver.ss.implicits._
             universe_file.withColumnRenamed("样本医院编码", "ID")
                 .withColumnRenamed("PHA医院名称", "HOSP_NAME")

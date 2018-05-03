@@ -14,7 +14,7 @@ class NhwaPanelSuit extends FunSuite {
         println(s"筛选月份开始时间" + dateformat.format(new Date()))
         println()
 
-        val result = phNhwaCalcYMJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx").perform().get
+        val result = phNhwaCalcYMJob("/mnt/config/Client/180212恩华17年1-12月检索.xlsx").perform().get
 
         println("result = " + result)
         println()
