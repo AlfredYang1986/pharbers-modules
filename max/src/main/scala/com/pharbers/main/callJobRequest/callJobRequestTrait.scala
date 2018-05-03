@@ -5,6 +5,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.channel.responsePusher
 import com.pharbers.bmmessages.CommonModules
+import com.pharbers.main.callJobRequest.doJobActor._
 
 /**
   * Created by spark on 18-4-26.
@@ -12,13 +13,11 @@ import com.pharbers.bmmessages.CommonModules
 trait callJobRequestTrait {
 
     //TODO 不会写了，先和`executeJob`写到一起
-    def choiceJob(jv: JsValue)
-                 (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) =
-        (Some(Map[String, JsValue]().empty), None)
+    def choiceJob(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =
+        (Some(Map().empty), None)
 
     def executeJob(jv: JsValue)
                   (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
-        import com.pharbers.main.callJobRequest.doJobActor._
 
         val as = cm.modules.get.get("as").map(x => x.asInstanceOf[ActorSystem]).getOrElse(throw new Exception("actor is not impl"))
         val doJob = as.actorOf(doJobActor.props)
@@ -31,19 +30,12 @@ trait callJobRequestTrait {
             case _ => ???
         }
 
-        (Some(Map[String, JsValue]().empty), None)
+        (Some(Map().empty), None)
     }
 
-    def responseJob(jv: JsValue)
-                   (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
-
-        val pp: responsePusher = responsePusher()
-        import pp._
-
-        val result = toJson("call job -> success")
-
-        callJobResponse(result)(jv)
-        (Some(Map[String, JsValue]().empty), None)
+    def responseJob(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
+        responsePusher().callJobResponse(toJson("call job -> success"), "start")(jv)
+        (Some(Map().empty), None)
     }
 
 }

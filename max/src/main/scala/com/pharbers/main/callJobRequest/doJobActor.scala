@@ -1,13 +1,15 @@
 package com.pharbers.main.callJobRequest
 
+import com.pharbers.ErrorCode._
 import play.api.libs.json.JsValue
 import com.pharbers.calc.phMaxJob
 import play.api.libs.json.Json.toJson
 import com.pharbers.spark.phSparkDriver
+import com.pharbers.channel.responsePusher
 import akka.actor.{Actor, ActorLogging, Props}
-import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 import com.pharbers.main.callJobRequest.doJobActor._
 import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
+import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 
 /**
   * Created by spark on 18-4-26.
@@ -33,61 +35,85 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
     }
 
     def doYmCalc(jv: JsValue): Unit = {
+        try{
+            sendMessage("testUser", "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
 
-        val args = (jv \ "args").asOpt[String].get
-                    .tail.init
-                    .split(",").map(_.split("="))
-                    .map(x => x.head.trim -> x.last.trim)
-                    .toMap
-        val result = (args("company") match {
-            case "nhwa" => phNhwaCalcYMJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx").perform()
-            case _ => ???
-        }).asInstanceOf[JVArgs].get
+            val args = (jv \ "args").asOpt[String].get
+                        .tail.init
+                        .split(",").map(_.split("="))
+                        .map(x => x.head.trim -> x.last.trim)
+                        .toMap
+            val result = "201711,201712" /*(args("company") match {
+                case "nhwa" => phNhwaCalcYMJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx").perform()
+                case _ => ???
+            }).asInstanceOf[JVArgs].get*/
 
-        // TODO 暂时先放这，肯定不好
-        phSparkDriver().ss.stop
-        println("计算月份完成, result = " + result)
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
+            println("计算月份完成, result = " + result)
 
-        sendMessage("testUser", "ymCalc", "done", toJson(Map("content" -> toJson(Map("ymList" -> result)))))
+            responseJob(toJson(result))(jv) // send Kafka message
+            sendMessage("testUser", "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> result)))))
+        } catch {
+            case ex: Exception => sendError("testUser", "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+        }
     }
 
     def doPanel(jv: JsValue): Unit = {
-        val args =
-            (jv \ "args").asOpt[String].get
-                    .tail.init
-                    .split(",").map(_.split("="))
-                    .map(x => x.head -> x.last)
-                    .toMap
+        try{
+            sendMessage("testUser", "panel", "start", toJson(Map("progress" -> toJson("0"))))
 
-        val result = (args("company") match {
-            case "nhwa" => phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob")
-            case _ => ???
-        }).asInstanceOf[StringArgs].get
+            val args =
+                (jv \ "args").asOpt[String].get
+                        .tail.init
+                        .split(",").map(_.split("="))
+                        .map(x => x.head -> x.last)
+                        .toMap
 
-        // TODO 暂时先放这，肯定不好
-        phSparkDriver().ss.stop
-        println("生成panel完成, result = " + result)
+            val result = "panle" /*(args("company") match {
+                case "nhwa" => phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob")
+                case _ => ???
+            }).asInstanceOf[StringArgs].get*/
 
-        sendMessage("testUser", "panel", "done", toJson(Map("content" -> toJson(Map("panel" -> toJson(result))))))
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
+            println("生成panel完成, result = " + result)
+
+            responseJob(toJson(result))(jv)
+            sendMessage("testUser", "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(result))))))
+        } catch {
+            case ex: Exception => sendError("testUser", "panel", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+        }
     }
 
     def doCalc(jv: JsValue): Unit = {
-        val args =
-            (jv \ "args").asOpt[String].get
-                    .tail.init
-                    .split(",").map(_.split("="))
-                    .map(x => x.head -> x.last)
-                    .toMap
+        try {
+            sendMessage("testUser", "calc", "start", toJson(Map("progress" -> toJson("0"))))
 
-        val result = phMaxJob("b87579dd-1cb7-4c17-aa34-685fae0d3541", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
+            val args =
+                (jv \ "args").asOpt[String].get
+                        .tail.init
+                        .split(",").map(_.split("="))
+                        .map(x => x.head -> x.last)
+                        .toMap
 
-        // TODO 暂时先放这，肯定不好
-        phSparkDriver().ss.stop
-        println("计算完成, result = " + result)
+            val result = "calc"// phMaxJob("b87579dd-1cb7-4c17-aa34-685fae0d3541", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
 
-        sendMessage("testUser", "calc", "done", toJson(Map("content" -> toJson(Map("calc" -> toJson(result))))))
+//            // TODO 暂时先放这，肯定不好
+//            phSparkDriver().ss.stop
+            println("计算完成, result = " + result)
 
+            responseJob(toJson(result))(jv)
+            sendMessage("testUser", "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(result))))))
+        } catch {
+            case ex: Exception => sendError("testUser", "calc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+        }
     }
 
     def doKill(jv: JsValue): Unit = ???
+
+    def responseJob(result: JsValue)(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
+        responsePusher().callJobResponse(result, "done")(jv)
+        (Some(Map().empty), None)
+    }
 }

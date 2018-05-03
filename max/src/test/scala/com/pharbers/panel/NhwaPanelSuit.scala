@@ -32,4 +32,5 @@ class NhwaPanelSuit extends FunSuite {
         println()
         println(s"生成panel测试结束时间" + dateformat.format(new Date()))
     }
+
 }
