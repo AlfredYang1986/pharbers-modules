@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pharbers</groupId>
-    <artifactId>spark-driver</artifactId>
-    <version>0.2</version>
+    <artifactId>pharbers-spark</artifactId>
+    <version>0.1</version>
 
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
@@ -46,8 +46,8 @@
                 <!-- pharbers-modules -->
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-modules</artifactId>
-                    <version>0.2</version>
+                    <artifactId>pharbers-module</artifactId>
+                    <version>0.1</version>
                 </dependency>
                 <!-- scala test -->
                 <dependency>
@@ -59,11 +59,11 @@
 
 
                 <!-- spark -->
-                <!--<dependency>-->
-                    <!--<groupId>org.apache.spark</groupId>-->
-                    <!--<artifactId>spark-core_2.11</artifactId>-->
-                    <!--<version>2.0.0</version>-->
-                <!--</dependency>-->
+                <dependency>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-core_2.11</artifactId>
+                    <version>2.0.0</version>
+                </dependency>
                 <dependency>
                     <groupId>org.apache.spark</groupId>
                     <artifactId>spark-sql_2.11</artifactId>

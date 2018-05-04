@@ -1,0 +1,7 @@
+<pharbers-modules>
+    <oss-config>
+        <endpoint value="*" />
+        <accessKeyId value="*" />
+        <accessKeySecret value="*" />
+    </oss-config>
+</pharbers-modules>

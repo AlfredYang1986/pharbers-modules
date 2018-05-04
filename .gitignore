@@ -2,9 +2,11 @@
 */.idea/
 *.iml
 *.cache
+*.jar
 
 */target/
 /target/
+*/resource/*/
 */pom.xml.tag
 */pom.xml.releaseBackup
 */pom.xml.versionsBackup
@@ -14,13 +16,11 @@
 */buildNumber.properties
 */.mvn/timing.properties
 
-/pharbers-panel/config/
-/pharbers-panel/files/
-/pharbers-data-parse/config/
-/pharbers-data-parse/files/
-/pharbers-max-panel/config/
-/pharbers-max-panel/files/
-/pharbers-page-memory/files/
+/max/config/
+/third/upload/
+/third/pharbers_config/
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 */.mvn/wrapper/maven-wrapper.jar
+
+*.rdb
