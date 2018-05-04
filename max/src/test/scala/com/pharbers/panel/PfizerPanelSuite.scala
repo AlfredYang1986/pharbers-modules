@@ -13,14 +13,12 @@
 //class PfizerPanelSuite extends FunSuite {
 //
 //    /**
-//      * 出错市场:"HTN"
-//      *
 //      * 两个特殊市场:
 //      * "DVP","CNS_R"(Max算法有改动!!)
 //      */
 //
 //    test("pfizer generate panel"){
-//        val mkt = "HTN"
+//        val mkt = "CNS_R"
 //
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
 //        println(s"生成panel测试开始时间" + dateformat.format(new Date()))

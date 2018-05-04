@@ -1,8 +1,7 @@
 package com.pharbers.pactions.generalactions
 
-import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
-import org.apache.spark.ui.jobs.JobProgressListener
+import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
 object jarPreloadAction {
     def apply(arg_name: String = "jarPreloadJob") : pActionTrait =
@@ -23,7 +22,7 @@ class jarPreloadAction(override val name: String) extends pActionTrait { //this 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
         sc.setLogLevel("ERROR")
-        sc.addSparkListener(new JobProgressListener)
+        sc.addSparkListener(new MaxSparkListener())
         lst.foreach { iter =>
             if (!sc.listJars().exists(x => x.contains(iter._1))) sc.addJar(iter._2)
         }

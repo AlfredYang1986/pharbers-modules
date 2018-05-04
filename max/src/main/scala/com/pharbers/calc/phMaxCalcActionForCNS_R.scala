@@ -1,24 +1,24 @@
 package com.pharbers.calc
 
-import org.apache.spark.sql.functions._
-import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase._
-import org.apache.spark.sql.functions.col
+import com.pharbers.spark.phSparkDriver
+import org.apache.spark.sql.functions.{col, when}
 
-object phMaxCalcAction {
-    def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxCalcAction(args)
+/**
+  * Created by jeorch on 18-5-3.
+  */
+object phMaxCalcActionForCNS_R {
+    def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxCalcActionForCNS_R(args)
 }
 
-class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrait {
+class phMaxCalcActionForCNS_R(override val defaultArgs: pActionArgs) extends pActionTrait {
     override val name: String = "max_calc_action"
-
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
+    override implicit def progressFunc(progress: Double, flag: String) : Unit = {}
 
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
-
     import sparkDriver.ss.implicits._
 
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
 
         val panelDF = {
             pr.asInstanceOf[MapArgs].get("panel_data").asInstanceOf[DFArgs].get
@@ -35,7 +35,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumnRenamed("If Panel_To Use", "NEED_MAX_HOSP")
                 .withColumnRenamed("Segment", "SEGMENT")
                 .withColumnRenamed("西药收入", "westMedicineIncome")
-                .selectExpr("PHA_ID", "Factor", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Province", "Prefecture", "westMedicineIncome")
+                .selectExpr("PHA_ID", "Factor1", "Factor2", "IS_PANEL_HOSP", "NEED_MAX_HOSP", "SEGMENT", "Province", "Prefecture", "westMedicineIncome")
         }
 
         val panelSummed = {
@@ -86,6 +86,9 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                         && joinData("min1") === segmentDF("s_min1")
                         && joinData("YM") === segmentDF("s_YM"))
                 .drop("s_SEGMENT", "s_min1", "s_YM")
+                .withColumn("Factor", when($"min1" like "%粉针剂%",$"Factor1")
+                    .otherwise(when($"min1" like "%注射剂%",$"Factor1")
+                        .otherwise($"Factor2")))
                 .withColumn("f_sales",
                     when($"IS_PANEL_HOSP" === 1, $"sumSales").otherwise(
                         when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
@@ -97,8 +100,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                             .otherwise($"Factor" * $"avg_Units" * $"westMedicineIncome")
                     ))
                 .drop("s_sumSales", "s_sumUnits", "s_westMedicineIncome")
-                .withColumn("flag", when($"f_units" === 0 and $"f_sales" === 0, 0).otherwise(1))
-                .filter($"flag" === 1)
+                .filter(col("f_units") =!= 0 && col("f_sales") =!= 0)
                 .withColumnRenamed("PHA_ID", "Panel_ID")
                 .withColumnRenamed("YM", "Date")
                 .withColumnRenamed("Prefecture", "City")
