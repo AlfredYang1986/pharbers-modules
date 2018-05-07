@@ -73,8 +73,8 @@ trait phMaxJobForPfizerDVP extends sequenceJobWithMap {
 
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-//        loadPanelData ::
-        loadPanelDataOfExcel ::
+        loadPanelData ::
+//        loadPanelDataOfExcel ::
         readUniverseFile ::
         readCoefFile ::
         phMaxSplitAction() ::

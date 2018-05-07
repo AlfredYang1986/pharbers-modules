@@ -29,52 +29,37 @@
 //
 //    test("pfizer calc test") {
 //
-//        val mkt = "INF"
-//
-//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
-//        println()
+//        val mkt = "AI_W"
 //
 //        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 //        println("panelResult = " + panelResult)
 //
-//        println()
-//        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
-//
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
-//
 //        val result = phMaxJob(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+////        val result = phMaxJob(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
 //
 //        println("result = " + result)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
 //    }
 //
 //    test("SpecialMarket DVP calc test") {
 //        val mkt = "DVP"
-//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
 //
-//        val result = phMaxJobForPfizerDVP(s"CPA_GYCX_panel_201802${mkt}.xlsx", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+////        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+////        println("panelResult = " + panelResult)
+////        val result = phMaxJobForPfizerDVP(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val result = phMaxJobForPfizerDVP(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
 //
 //        println("result = " + result)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
 //    }
 //
 //    test("SpecialMarket CNS_R calc test") {
 //        val mkt = "CNS_R"
-//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
 //
-//        val result = phMaxJobForPfizerCNS_R(s"${mkt}_panel", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+//        println("panelResult = " + panelResult)
+//
+//        val result = phMaxJobForPfizerCNS_R(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
 //
 //        println("result = " + result)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
 //    }
 //
 //}
