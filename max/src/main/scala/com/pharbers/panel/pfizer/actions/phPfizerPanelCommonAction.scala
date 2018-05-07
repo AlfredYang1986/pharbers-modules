@@ -27,6 +27,9 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
+
+        val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
+
         //通用名市场定义 =>表b0
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
             .filter(s"Market like '${mkt}'")
@@ -39,7 +42,6 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
                 .otherwise(concat(col("MONTH").*(0).cast("int"), col("MONTH"))))
             .withColumn("YM", concat(col("YEAR"), col("MONTH")))
             .withColumn("min1", concat(col("PRODUCT_NAME"),col("APP2_COD"),col("PACK_DES"),col("PACK_NUMBER"),col("CORP_NAME")))
-        val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
         def getPanelFile: pActionArgs = {
 
