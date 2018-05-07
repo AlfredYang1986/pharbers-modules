@@ -1,6 +1,6 @@
 <pharbers-modules>
     <spark-config>
-        <host value="192.168.100.176" />
+        <host value="192.168.100.112" />
         <!--<host value="localhost" />-->
         <port value="9999" />
         <name value="QI-TEST" />

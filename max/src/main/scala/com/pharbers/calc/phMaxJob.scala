@@ -1,11 +1,13 @@
 package com.pharbers.calc
 
 import java.util.UUID
+
 import com.pharbers.pactions.jobs._
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import org.apache.spark.addListenerAction
 
 object phMaxJob {
     def apply(arg_panel_name: String, universe_file_name: String) : phMaxJob = {
@@ -34,7 +36,9 @@ trait phMaxJob extends sequenceJobWithMap {
     // 1. load panel data
     val loadPanelData = new sequenceJob {
         override val name: String = "panel_data"
-        override val actions: List[pActionTrait] = csv2DFAction(panel_file) :: Nil
+        override val actions: List[pActionTrait] =
+            addListenerAction(MaxSparkListener("testUser", "panel")(0, 5)) ::
+                csv2DFAction(panel_file) :: Nil
     }
 
     /// 留做测试
@@ -59,12 +63,14 @@ trait phMaxJob extends sequenceJobWithMap {
 
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
+            setLogLevelAction("ERROR") ::
             loadPanelData ::
 //            loadPanelDataOfExcel ::
             readUniverseFile ::
             phMaxSplitAction() ::
             phMaxGroupAction() ::
             phMaxCalcAction() ::
+            addListenerAction(MaxSparkListener("testUser", "panel")(6, 99)) ::
             phMaxBsonAction() ::
             Nil
 }

@@ -1,12 +1,14 @@
 package com.pharbers.panel.nhwa
 
 import java.util.UUID
+
 import com.pharbers.pactions.jobs._
 import com.pharbers.panel.nhwa.format._
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phSavePanelJob
+import org.apache.spark.addListenerAction
 
 object phNhwaPanelJob {
 
@@ -64,11 +66,15 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
         )
     )
 
-    override val actions: List[pActionTrait] = jarPreloadAction() ::
-            phNhwaPreActions(temp_name).actions :::
-            readCpa ::
-            readNotArrivalHosp ::
-            phNhwaPanelConcretJob(df) ::
-            phSavePanelJob(df) ::
-            Nil
+    override val actions: List[pActionTrait] = { jarPreloadAction() ::
+                setLogLevelAction("ERROR") ::
+                addListenerAction(MaxSparkListener("testUser", "panel")(0, 10)) ::
+                phNhwaPreActions(temp_name).actions :::
+                readCpa ::
+                readNotArrivalHosp ::
+                addListenerAction(MaxSparkListener("testUser", "panel")(10, 100)) ::
+                phNhwaPanelConcretJob(df) ::
+                phSavePanelJob(df) ::
+                Nil
+    }
 }

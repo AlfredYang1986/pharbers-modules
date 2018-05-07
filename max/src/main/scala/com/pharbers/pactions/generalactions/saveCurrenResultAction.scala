@@ -5,7 +5,7 @@ import com.pharbers.pactions.actionbase.{RDDArgs, StringArgs, pActionArgs, pActi
 
 object saveCurrenResultAction {
     def apply[T : ClassTag](arg_path: String,
-                            arg_name: String = "saveCurrenResultJob") : pActionTrait =
+                            arg_name: String = "saveCurrenResultJob"): pActionTrait =
         new saveCurrenResultAction[T](StringArgs(arg_path), arg_name)
 }
 

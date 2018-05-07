@@ -17,12 +17,12 @@ object xlsxReadingAction {
 class xlsxReadingAction[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs,
                                                                                         override val name: String) extends pActionTrait { //this : pFileSystem =>
 
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
         val sc = phSparkDriver().sc
 
         RDDArgs(sc.newAPIHadoopFile[NullWritable, PhExcelWritable, T](
             defaultArgs.get.toString).map (x => x._2))
     }
+
+    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 }
