@@ -1,7 +1,8 @@
 package com.pharbers.panel.pfizer
 
 import java.util.UUID
-import com.pharbers.panel.panel_path_obj
+
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.panel.pfizer.actions._
 import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.common.excel.input.PhXlsxSecondSheetFormat
@@ -40,7 +41,7 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
     val cpa_file: String
     val gyc_file: String
     val temp_name: String
-    val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
+    val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
 
     /**
       * 1. read CPA文件第一页

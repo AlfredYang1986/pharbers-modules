@@ -1,8 +1,9 @@
 package com.pharbers.panel.astellas
 
 import java.util.UUID
+
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.panel.common._
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
@@ -14,7 +15,7 @@ object phAstellasCalcYMJob {
         new phAstellasCalcYMJob {
             override lazy val cpa_file: String = cpa_path
             override lazy val gyc_file: String = gyc_path
-            override lazy val cache_location: String = panel_path_obj.p_cachePath + UUID.randomUUID().toString + "/"
+            override lazy val cache_location: String = max_path_obj.p_cachePath + UUID.randomUUID().toString + "/"
         }
     }
 }

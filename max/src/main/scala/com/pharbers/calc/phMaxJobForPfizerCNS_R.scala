@@ -2,11 +2,11 @@ package com.pharbers.calc
 
 import java.util.UUID
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
-import com.pharbers.panel.panel_path_obj
 
 /**
   * Created by jeorch on 18-5-3.
@@ -26,9 +26,9 @@ trait phMaxJobForPfizerCNS_R extends sequenceJobWithMap {
     val panel_name: String
     val universe_name: String
 
-    val panel_file: String = panel_path_obj.p_resultPath + panel_name
-    val universe_file: String = panel_path_obj.p_matchFilePath + universe_name
-    val temp_dir: String = panel_path_obj.p_cachePath + panel_name + "/"
+    val panel_file: String = max_path_obj.p_resultPath + panel_name
+    val universe_file: String = max_path_obj.p_matchFilePath + universe_name
+    val temp_dir: String = max_path_obj.p_cachePath + panel_name + "/"
     val temp_universe_name: String = UUID.randomUUID().toString
 
     /// 留做测试

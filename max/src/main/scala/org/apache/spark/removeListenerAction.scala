@@ -10,13 +10,10 @@ object removeListenerAction {
 }
 
 class removeListenerAction(listener: SparkListener, override val name: String) extends pActionTrait {
+    override val defaultArgs: pActionArgs = NULLArgs
 
-    override def perform(args: pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args: pActionArgs): pActionArgs = {
         phSparkDriver().sc.listenerBus.removeListener(listener)
         args
     }
-
-    override val defaultArgs: pActionArgs = NULLArgs
-    override val progressFactor: Int = 0
-    override implicit def progressFunc(progress: Double, flag : String) : Unit = {}
 }

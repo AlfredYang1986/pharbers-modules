@@ -2,9 +2,9 @@ package com.pharbers.panel.astellas
 
 import java.util.UUID
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.jobs._
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phSavePanelJob
@@ -37,8 +37,8 @@ trait phAstellasPanelJob extends sequenceJobWithMap {
     val temp_name: String
 
     val mkt_cn: String = getMktCN(mkt)
-    val match_dir: String = panel_path_obj.p_matchFilePath
-    val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
+    val match_dir: String = max_path_obj.p_matchFilePath
+    val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
     val product_match_file: String = match_dir + "astellas/20171018药品最小单位IMS packid匹配表.xlsx"
     val markets_match_file: String = match_dir + "astellas/20170203药品名称匹配市场.xlsx"
     val universe_file: String = match_dir + s"astellas/UNIVERSE_${mkt}_online.xlsx"

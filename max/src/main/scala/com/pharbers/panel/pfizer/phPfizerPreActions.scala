@@ -1,11 +1,11 @@
 package com.pharbers.panel.pfizer
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.jobs.{choiceJob, sequenceJob}
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.panel.pfizer.actions.phPfizerFillHospitalRdd2DfAction
 
 /**
@@ -13,8 +13,8 @@ import com.pharbers.panel.pfizer.actions.phPfizerFillHospitalRdd2DfAction
   */
 case class phPfizerPreActions(mkt: String, temp_name: String) {
     implicit val companyArgs: phMemoryArgs = phMemoryArgs("Pfizer")
-    val match_dir: String = panel_path_obj.p_matchFilePath
-    val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
+    val match_dir: String = max_path_obj.p_matchFilePath
+    val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
 
     val universe_file: String = match_dir + s"pfizer/universe_${mkt}_online.xlsx"
     /**

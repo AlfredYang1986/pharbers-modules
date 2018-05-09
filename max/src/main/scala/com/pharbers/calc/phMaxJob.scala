@@ -2,8 +2,8 @@ package com.pharbers.calc
 
 import java.util.UUID
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.jobs._
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
@@ -25,9 +25,9 @@ trait phMaxJob extends sequenceJobWithMap {
     val panel_name: String
     val universe_name: String
 
-    val panel_file: String = panel_path_obj.p_resultPath + panel_name
-    val universe_file: String = panel_path_obj.p_matchFilePath + universe_name
-    val temp_dir: String = panel_path_obj.p_cachePath + panel_name + "/"
+    val panel_file: String = max_path_obj.p_resultPath + panel_name
+    val universe_file: String = max_path_obj.p_matchFilePath + universe_name
+    val temp_dir: String = max_path_obj.p_cachePath + panel_name + "/"
     val temp_universe_name: String = UUID.randomUUID().toString
 
     /// 留做测试
@@ -37,7 +37,7 @@ trait phMaxJob extends sequenceJobWithMap {
     val loadPanelData = new sequenceJob {
         override val name: String = "panel_data"
         override val actions: List[pActionTrait] =
-            addListenerAction(MaxSparkListener("testUser", "panel")(0, 5)) ::
+            addListenerAction(MaxSparkListener("testUser", "calc")(0, 5)) ::
                 csv2DFAction(panel_file) :: Nil
     }
 
@@ -70,7 +70,7 @@ trait phMaxJob extends sequenceJobWithMap {
             phMaxSplitAction() ::
             phMaxGroupAction() ::
             phMaxCalcAction() ::
-            addListenerAction(MaxSparkListener("testUser", "panel")(6, 99)) ::
+            addListenerAction(MaxSparkListener("testUser", "calc")(6, 99)) ::
             phMaxBsonAction() ::
             Nil
 }

@@ -3,17 +3,11 @@ package com.pharbers.pactions.jobs
 import com.pharbers.pactions.actionbase.{MapArgs, NULLArgs, pActionArgs, pActionTrait}
 
 trait sequenceJobWithMap extends pActionTrait {
-
     val actions : List[pActionTrait]
 
     override val name: String
     override val defaultArgs: pActionArgs = NULLArgs
-
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr : pActionArgs = MapArgs(Map().empty))
-                        (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
-
+    override def perform(pr: pActionArgs = MapArgs(Map().empty)): pActionArgs = {
         if (actions.isEmpty) pr
         else {
             val tmp = pr match {
@@ -22,14 +16,9 @@ trait sequenceJobWithMap extends pActionTrait {
                     case _ => pr
                 }
 
-            midMapContainer(actions.tail, f, name).perform(tmp)
+            midMapContainer(actions.tail, name).perform(tmp)
         }
     }
 }
 
-case class midMapContainer(override val actions : List[pActionTrait],
-                           f : (Double, String) => Unit,
-                           override val name: String) extends sequenceJobWithMap {
-
-    override implicit def progressFunc(progress: Double, flag: String) : Unit = f
-}
+case class midMapContainer(override val actions : List[pActionTrait], override val name: String) extends sequenceJobWithMap

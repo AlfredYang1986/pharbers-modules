@@ -12,13 +12,11 @@ object phMaxCalcAction {
 class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrait {
     override val name: String = "max_calc_action"
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
     import sparkDriver.ss.implicits._
 
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs): pActionArgs = {
 
         val panelDF = {
             pr.asInstanceOf[MapArgs].get("panel_data").asInstanceOf[DFArgs].get

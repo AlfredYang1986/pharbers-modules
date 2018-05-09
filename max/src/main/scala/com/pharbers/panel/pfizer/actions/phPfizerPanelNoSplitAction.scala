@@ -12,13 +12,11 @@ object phPfizerPanelNoSplitAction {
 
 class phPfizerPanelNoSplitAction (override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "SplitMarketAction"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
     import sparkDriver.ss.implicits._
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 

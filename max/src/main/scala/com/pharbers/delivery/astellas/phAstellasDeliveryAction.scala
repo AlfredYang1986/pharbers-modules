@@ -17,9 +17,7 @@ class phAstellasDeliveryAction(override val name:String) extends pActionTrait {
 
     override val defaultArgs: pActionArgs = NULLArgs
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs): pActionArgs = {
 
         val dataMap = pr.asInstanceOf[MapArgs].get
         val history_rdd = dataMap("history_rdd_key").asInstanceOf[RDDArgs[String]].get

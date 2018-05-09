@@ -1,7 +1,7 @@
 package com.pharbers.panel.nhwa
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.jobs._
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
@@ -17,8 +17,8 @@ import com.pharbers.pactions.generalactions.memory.phMemoryArgs
   */
 case class phNhwaPreActions(temp_name: String) {
     implicit val companyArgs: phMemoryArgs = phMemoryArgs("Nhwa")
-    val match_dir: String = panel_path_obj.p_matchFilePath
-    val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
+    val match_dir: String = max_path_obj.p_matchFilePath
+    val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
 
     val product_match_file: String = match_dir + "nhwa/nhwa匹配表.xlsx"
     val markets_match_file: String = match_dir + "nhwa/通用名市场定义.xlsx"

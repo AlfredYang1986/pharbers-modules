@@ -12,13 +12,9 @@ object phNhwaPanelConcretJob {
 
 class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
-        println("progress" + progress)
-    }
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get

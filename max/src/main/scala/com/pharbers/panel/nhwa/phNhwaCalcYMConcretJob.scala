@@ -13,9 +13,7 @@ object phNhwaCalcYMConcretJob {
 class phNhwaCalcYMConcretJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "calcYM"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(pr : pActionArgs): pActionArgs = {
         val cpaRDD = pr.asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
             iter.getRowKey("YM") + iter.getRowKey("HOSPITAL_CODE") -> 1
         }

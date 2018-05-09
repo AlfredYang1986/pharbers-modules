@@ -1,15 +1,15 @@
 package com.pharbers.pactions.generalactions
 
-import com.pharbers.main.callJobRequest.sendEmTrait
-import org.apache.spark.scheduler._
-import org.apache.spark.removeListenerAction
+import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.actionbase.NULLArgs
+import org.apache.spark.removeListenerAction
+import org.apache.spark.scheduler._
 import play.api.libs.json.Json.toJson
 
 /**
   * Created by spark on 18-5-2.
   *
-  * Spark 的 DeveloperApi 提供针对app, job, task的执行监听。
+  * Spark 的 SparkListener 提供针对 application, job, task的状态监听。
   * 通过该监听，可以实现：
   * 1.任务执行进度的粗略计算。
   * 2.执行异常失败时，获取异常信息。

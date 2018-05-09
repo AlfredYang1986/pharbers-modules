@@ -2,10 +2,10 @@ package com.pharbers.panel.nhwa
 
 import java.util.UUID
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.jobs._
 import com.pharbers.panel.nhwa.format._
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.panel_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phSavePanelJob
 import org.apache.spark.addListenerAction
@@ -34,7 +34,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
     val mkt: String
     val cpa_file: String
     val temp_name: String
-    val temp_dir: String = panel_path_obj.p_cachePath + temp_name + "/"
+    val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
 
     /**
       * 6. read CPA文件第一页

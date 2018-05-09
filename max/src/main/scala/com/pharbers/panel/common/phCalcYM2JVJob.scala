@@ -13,9 +13,7 @@ object phCalcYM2JVJob  {
 class phCalcYM2JVJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "result"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(pr : pActionArgs): pActionArgs = {
 
         val rdd = pr.asInstanceOf[RDDArgs[(String, Int)]].get.collect()
         val maxYm = rdd.map(_._2).max

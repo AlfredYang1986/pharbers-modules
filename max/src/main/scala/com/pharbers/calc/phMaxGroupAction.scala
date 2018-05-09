@@ -8,10 +8,5 @@ object phMaxGroupAction {
 
 class phMaxGroupAction(override val defaultArgs: pActionArgs) extends pActionTrait {
     override val name: String = "max_group_action"
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
-        NULLArgs
-    }
-
+    override def perform(pr : pActionArgs): pActionArgs = NULLArgs
 }
