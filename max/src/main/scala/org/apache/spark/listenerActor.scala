@@ -20,6 +20,7 @@ object listenerActor {
 
 class listenerActor(start_progress: Int, end_progress: Int)
                    (implicit send: ((sendEmTrait, Double) => Unit)) extends Actor with ActorLogging with sendEmTrait {
+
     // 当前进度
     private var current: Double = start_progress
     // 剩余任务数

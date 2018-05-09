@@ -1,26 +1,24 @@
 package com.pharbers.common.xmpp.kafka
 
 import java.io.File
-import java.util.Properties
-
-import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
-import com.pharbers.bmmessages.{MessageRoutes, excute}
-import com.pharbers.bmpattern.RoutesActor
-import com.pharbers.common.algorithm.alTempLog
+import java.util.Properties
 import org.apache.avro.Schema
-import org.apache.avro.generic.GenericRecord
-import org.apache.avro.io.DecoderFactory
-import org.apache.avro.specific.SpecificDatumReader
-import org.apache.kafka.clients.consumer.KafkaConsumer
+import scala.concurrent.Await
+import scala.language.postfixOps
+import scala.concurrent.duration._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-
+import akka.actor.{ActorSystem, Props}
 import scala.collection.JavaConverters._
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.language.postfixOps
+import org.apache.avro.io.DecoderFactory
+import com.pharbers.bmpattern.RoutesActor
+import org.apache.avro.generic.GenericRecord
+import com.pharbers.common.algorithm.alTempLog
+import org.apache.avro.specific.SpecificDatumReader
+import com.pharbers.bmmessages.{MessageRoutes, excute}
+import org.apache.kafka.clients.consumer.KafkaConsumer
 
 trait kafkaConsumer extends Runnable { this : kafkaBasicConf =>
     val group_id : String

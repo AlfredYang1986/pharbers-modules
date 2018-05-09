@@ -25,7 +25,7 @@ trait EmTrait {
     def userQuitChatgroup(userName: String, groupName: String): JsValue
 
     // send Message
-    def sendMessage2User(userName: String, msg: JsValue): JsValue
-    def sendMessage2Group(groupName: String, msg: JsValue): JsValue
+    def sendMessage2User(userName: String, msg: JsValue): Unit
+    def sendMessage2Group(groupName: String, msg: JsValue): Unit
 
 }

@@ -8,15 +8,15 @@ import com.pharbers.channel.doJobActor._
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.channel.chanelImpl.responsePusher
 import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
-import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
+import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 
 /**
   * Created by spark on 18-4-26.
   */
 object doJobActor {
     def name = "doJob"
-    def props(company: String) = Props(new doJobActor(company))
+    def props = Props[doJobActor]
 
     case class msg_doYmCalc(js: JsValue)
     case class msg_doPanel(js: JsValue)
@@ -24,7 +24,8 @@ object doJobActor {
     case class msg_doKill(js: JsValue)
 }
 
-class doJobActor(override val company: String) extends Actor with ActorLogging with sendEmTrait {
+class doJobActor extends Actor with ActorLogging with sendEmTrait {
+    implicit val acc: Actor = this
 
     override def receive = {
         case msg_doYmCalc(jv) => doYmCalc(jv)
@@ -36,6 +37,7 @@ class doJobActor(override val company: String) extends Actor with ActorLogging w
 
     def doYmCalc(jv: JsValue): Unit = {
         try{
+            val companyId = (jv \ "company_id").asOpt[String].get
             val userId = (jv \ "user_id").asOpt[String].get
             val args = (jv \ "args").asOpt[String].get
                         .tail.init
@@ -43,21 +45,17 @@ class doJobActor(override val company: String) extends Actor with ActorLogging w
                         .map(x => x.head.trim -> x.last.trim)
                         .toMap
 
-            alTempLog("doYmCalc, userId is = " + userId)
+            alTempLog(s"doYmCalc, companyId is = $companyId, userId is = $userId")
             // TODO 写死的testUser去掉
-            sendMessage("testUser", "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
-
-//            val act = context.actorOf(Props[RoutesActor])
-//            val r = act ? excute(msr)
-//            Await.result(r.mapTo[JsValue], t.duration)
+            sendMessage("testGroup", "testUser", "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
 
             // TODO 写成Builder形式
-            val result = phNhwaCalcYMJob(max_path_obj.p_clientPath + args("cpa"))(this).perform().asInstanceOf[JVArgs].get
+            val result = phNhwaCalcYMJob(max_path_obj.p_clientPath + args("cpa")).perform().asInstanceOf[JVArgs].get
 
             alTempLog("计算月份完成, result = " + result)
 
             responsePusher().callJobResponse(result, "done")(jv)// send Kafka message
-            sendMessage("testUser", "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> result)))))
+            sendMessage("testGroup", "testUser", "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> result)))))
         } catch {
             case ex: Exception => sendError("testUser", "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }

@@ -1,7 +1,6 @@
-package com.pharbers.channel.chanelImpl
+package com.pharbers.channel
 
 import com.pharbers.bmmessages.CommonMessage
-import com.pharbers.channel.callJobRequestModule
 import play.api.libs.json.JsValue
 
 /**

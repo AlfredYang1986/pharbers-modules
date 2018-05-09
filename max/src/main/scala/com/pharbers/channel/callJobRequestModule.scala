@@ -1,14 +1,13 @@
 package com.pharbers.channel
 
 import akka.actor.ActorSystem
+import com.pharbers.bmmessages.{CommonModules, MessageDefines}
+import com.pharbers.bmpattern.ModuleTrait
+import com.pharbers.channel.callJobRequestMessage._
+import com.pharbers.channel.chanelImpl.responsePusher
+import com.pharbers.channel.doJobActor._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-import com.pharbers.channel.doJobActor._
-import com.pharbers.bmpattern.ModuleTrait
-import com.pharbers.channel.chanelImpl.responsePusher
-import com.pharbers.channel.chanelImpl.callJobRequestMessage._
-import com.pharbers.bmmessages.{CommonModules, MessageDefines}
-import com.pharbers.common.algorithm.alTempLog
 
 object callJobRequestModule extends ModuleTrait with callJobRequestTrait {
 
@@ -35,16 +34,14 @@ trait callJobRequestTrait {
                   (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
 
         val as: ActorSystem = cm.modules.get.get("as").map(x => x.asInstanceOf[ActorSystem]).getOrElse(throw new Exception("actor is not impl"))
-        val company_id = (jv \ "company_id").as[String]
-        alTempLog("executeJob, company_id is = " + company_id)
         // TODO 写死的testGroup去掉
-        val doJob = as.actorOf(doJobActor.props("testGroup"))
+        val jobActor = as.actorOf(doJobActor.props)
 
         (jv \ "call").asOpt[String].get match {
-            case "ymCalc" => doJob ! msg_doYmCalc(jv)
-            case "panel" => doJob ! msg_doPanel(jv)
-            case "calc" => doJob ! msg_doCalc(jv)
-            case "kill" => doJob ! msg_doKill(jv)
+            case "ymCalc" => jobActor ! msg_doYmCalc(jv)
+            case "panel" => jobActor ! msg_doPanel(jv)
+            case "calc" => jobActor ! msg_doCalc(jv)
+            case "kill" => jobActor ! msg_doKill(jv)
             case _ => ???
         }
 

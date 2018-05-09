@@ -103,7 +103,7 @@ trait EmImpl extends EmTrait with EmInstance { this: EmBase =>
         }
     }
 
-    override def sendMessage2User(userName: String, msg: JsValue): JsValue = {
+    override def sendMessage2User(userName: String, msg: JsValue): Unit = {
         val args = toJson(
             Map(
                 "target_type" -> toJson("users"),
@@ -115,10 +115,10 @@ trait EmImpl extends EmTrait with EmInstance { this: EmBase =>
             )
         )
 
-        proxy("messages").post(args)
+//        proxy("messages").post(args)
     }
 
-    override def sendMessage2Group(groupName: String, msg: JsValue): JsValue = {
+    override def sendMessage2Group(groupName: String, msg: JsValue): Unit = {
         val groupId = queryGroupIdByName(groupName) match {
             case Some(id) => id
             case None => throw new Exception("group not exist for EM")
@@ -135,7 +135,7 @@ trait EmImpl extends EmTrait with EmInstance { this: EmBase =>
             )
         )
 
-        proxy("messages").post(args)
+//        proxy("messages").post(args)
     }
 
 }

@@ -1,6 +1,6 @@
 package com.pharbers.channel.chanelImpl
 
-import callJobRequestMessage._
+import com.pharbers.channel.callJobRequestMessage._
 import akka.actor.ActorSystem
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
