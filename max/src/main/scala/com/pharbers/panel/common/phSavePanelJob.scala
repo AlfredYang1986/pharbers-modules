@@ -1,7 +1,9 @@
 package com.pharbers.panel.common
 
+import com.pharbers.driver.PhRedisDriver
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.actionbase._
+import com.pharbers.sercuity.Sercurity
 
 object phSavePanelJob  {
     def apply(args: MapArgs) : pActionTrait = new phSavePanelJob(args)
@@ -12,8 +14,19 @@ class phSavePanelJob(override val defaultArgs: pActionArgs) extends pActionTrait
     override def perform(pr : pActionArgs): pActionArgs = {
 
         val panel = pr.asInstanceOf[MapArgs].get("panel").asInstanceOf[DFArgs].get
+        val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
+        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
-        val panel_location = max_path_obj.p_resultPath + panel_name
+        val panel_location = max_path_obj.p_resultPath + "panel/" + panel_name
+
+        val redisDriver = new PhRedisDriver()
+        //TODO : uid暂时写死,供测试
+        val company = redisDriver.getMapValue("uid", "company")
+        val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
+
+        redisDriver.addMap(panel_name, "ym", ym)
+        redisDriver.addMap(panel_name, "mkt", mkt)
+        redisDriver.addMap(singleJobKey, "panel_path", panel_location)
 
         panel.coalesce(1).write
                 .format("csv")

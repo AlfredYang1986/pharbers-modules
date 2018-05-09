@@ -11,6 +11,6 @@ trait ConfigMongo extends PharbersInjectModule {
     override val md =
         "host" :: "port" :: Nil
 
-    val mongoHost: String = config.mc.find(p => p._1 == "host").get._2.toString
-    val mongoPort: String = config.mc.find(p => p._1 == "port").get._2.toString
+    val mongodbHost: String = config.mc.find(p => p._1 == "host").get._2.toString
+    val mongodbPort: String = config.mc.find(p => p._1 == "port").get._2.toString
 }

@@ -47,7 +47,7 @@
 //        s2"""
 //    This is a specification to check the max result correctness
 //    The max result should
-//        successfully pass max calc                                               ${doLoopJobs(300)}
+//        successfully pass max calc                                               ${doLoopJobs(100)}
 //                                                                 """
 //
 ////    /**
@@ -59,8 +59,8 @@
 //
 //    def doLoopJobs(count: Int): Boolean = {
 //        val bool = if(count <= 1 ) true else doLoopJobs(count - 1)
-//        doMaxJob(count)
-////        doAI_R_Job(count)
+////        doMaxJob(count)
+//        doAI_R_Job(count)
 //        bool
 //    }
 //
@@ -99,7 +99,7 @@
 //        println()
 //
 //        val panelResult1 = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt1}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-//        println("panelResult2 = " + panelResult1)
+//        println("panelResult1 = " + panelResult1)
 //
 //        println()
 //        println(s"生成panel测试结束时间" + dateformat.format(new Date()))

@@ -1,0 +1,29 @@
+package com.pharbers.search
+
+import com.pharbers.driver.PhRedisDriver
+import com.pharbers.pactions.actionbase._
+import com.pharbers.sercuity.Sercurity
+import com.pharbers.spark.phSparkDriver
+
+/**
+  * Created by jeorch on 18-5-9.
+  */
+object phMaxSearchAction{
+    def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxSearchAction(args)
+}
+
+class phMaxSearchAction(override val defaultArgs: pActionArgs) extends pActionTrait {
+    override val name: String = "max_search_action"
+
+    override def perform(pr: pActionArgs): pActionArgs = {
+        val uid = defaultArgs.asInstanceOf[MapArgs].get("uid").asInstanceOf[StringArgs].get
+        val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
+        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
+
+        val redisDriver = new PhRedisDriver()
+        val company = redisDriver.getMapValue(uid, "company")
+        val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
+        val max_path = redisDriver.getMapValue(singleJobKey, "max_path")
+        DFArgs(phSparkDriver().csv2RDD(max_path, 31.toChar.toString))
+    }
+}

@@ -18,7 +18,7 @@ class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[Strin
 
     override def perform(pr: pActionArgs): pActionArgs = {
         val spark = phSparkDriver()
-        val lstRdd = lstColl.map(tempColl =>spark.mongo2RDD(mongo_config_obj.mongoHost, mongo_config_obj.mongoPort, dbName, tempColl.split("##").head).map(doc => doc.append("Market",s"${tempColl.split("##").last}")))
+        val lstRdd = lstColl.map(tempColl =>spark.mongo2RDD(mongo_config_obj.mongodbHost, mongo_config_obj.mongodbPort, dbName, tempColl.split("##").head).map(doc => doc.append("Market",s"${tempColl.split("##").last}")))
         RDDArgs(unionRDDList(lstRdd))
     }
 

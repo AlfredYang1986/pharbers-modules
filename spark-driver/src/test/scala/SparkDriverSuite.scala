@@ -1,3 +1,5 @@
+//import com.mongodb.spark.MongoSpark
+//import com.mongodb.spark.config.ReadConfig
 //import com.pharbers.spark.phSparkDriver
 //import org.scalatest.FunSuite
 //
@@ -31,7 +33,21 @@
 //        val mongoRDD = sd.mongo2RDD("127.0.0.1","27017","Max_Test","Allelock_Factorized_Units&Sales_WITH_OT1712")
 //        val mongoDF = mongoRDD.toDF()
 //        mongoDF.show(10)
+//    }
 //
+//    test("spark read mongo all collections"){
+//        /**
+//          * Wrong function!To be corrected!
+//          */
+//        val databaseName = "Max_Test"
+//        val sd = phSparkDriver()
+//        val sc = sd.sc
+//        val readConfig = ReadConfig(Map(
+//            "spark.mongodb.input.uri" -> s"mongodb://$mongodbHost:$mongodbPort/$databaseName.*",
+//            "readPreference.name" -> "secondaryPreferred")
+//        )
+//        val test = MongoSpark.load(sc, readConfig = readConfig)
+//        println(test.count())
 //    }
 //
 //    test("spark write mongo"){
