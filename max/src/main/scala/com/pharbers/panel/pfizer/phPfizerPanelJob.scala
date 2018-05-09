@@ -1,15 +1,14 @@
 package com.pharbers.panel.pfizer
 
 import java.util.UUID
-
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat}
-import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
-import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
-import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
-import com.pharbers.panel.common.phSavePanelJob
 import com.pharbers.panel.panel_path_obj
 import com.pharbers.panel.pfizer.actions._
-import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerCpaSecondSheetFormat, phPfizerGycxFormat}
+import com.pharbers.panel.common.phSavePanelJob
+import com.pharbers.common.excel.input.PhXlsxSecondSheetFormat
+import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
+import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
+import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerGycxFormat}
+import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
 
 /**
   * Created by jeorch on 18-4-18.

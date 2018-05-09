@@ -1,12 +1,11 @@
 package com.pharbers.calc
 
 import java.util.UUID
-
-import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
-import com.pharbers.pactions.actionbase.pActionTrait
-import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
-import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.panel_path_obj
+import com.pharbers.pactions.generalactions._
+import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 
 /**
   * Created by jeorch on 18-5-3.
@@ -73,8 +72,8 @@ trait phMaxJobForPfizerDVP extends sequenceJobWithMap {
 
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-//        loadPanelData ::
-        loadPanelDataOfExcel ::
+        loadPanelData ::
+//        loadPanelDataOfExcel ::
         readUniverseFile ::
         readCoefFile ::
         phMaxSplitAction() ::

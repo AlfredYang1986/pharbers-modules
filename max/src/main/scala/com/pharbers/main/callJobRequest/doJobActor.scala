@@ -1,15 +1,15 @@
 package com.pharbers.main.callJobRequest
 
-import com.pharbers.ErrorCode._
-import play.api.libs.json.JsValue
-import com.pharbers.calc.phMaxJob
-import play.api.libs.json.Json.toJson
-import com.pharbers.spark.phSparkDriver
-import com.pharbers.channel.responsePusher
 import akka.actor.{Actor, ActorLogging, Props}
+import com.pharbers.ErrorCode._
+import com.pharbers.calc.phMaxJob
+import com.pharbers.channel.responsePusher
 import com.pharbers.main.callJobRequest.doJobActor._
-import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
 import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
+import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
+import com.pharbers.spark.phSparkDriver
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json.toJson
 
 /**
   * Created by spark on 18-4-26.
@@ -43,13 +43,13 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
                         .split(",").map(_.split("="))
                         .map(x => x.head.trim -> x.last.trim)
                         .toMap
-            val result = "201711,201712" /*(args("company") match {
+            val result = (args("company") match {
                 case "nhwa" => phNhwaCalcYMJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx").perform()
                 case _ => ???
-            }).asInstanceOf[JVArgs].get*/
+            }).asInstanceOf[JVArgs].get
 
-//            // TODO 暂时先放这，肯定不好
-//            phSparkDriver().ss.stop
+            // TODO 暂时先放这，肯定不好
+            phSparkDriver().ss.stop
             println("计算月份完成, result = " + result)
 
             responseJob(toJson(result))(jv) // send Kafka message
@@ -70,13 +70,13 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
                         .map(x => x.head -> x.last)
                         .toMap
 
-            val result = "panle" /*(args("company") match {
+            val result = (args("company") match {
                 case "nhwa" => phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob")
                 case _ => ???
-            }).asInstanceOf[StringArgs].get*/
+            }).asInstanceOf[StringArgs].get
 
-//            // TODO 暂时先放这，肯定不好
-//            phSparkDriver().ss.stop
+            // TODO 暂时先放这，肯定不好
+            phSparkDriver().ss.stop
             println("生成panel完成, result = " + result)
 
             responseJob(toJson(result))(jv)
@@ -97,10 +97,10 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
                         .map(x => x.head -> x.last)
                         .toMap
 
-            val result = "calc"// phMaxJob("b87579dd-1cb7-4c17-aa34-685fae0d3541", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
+            val result = phMaxJob("1bd61350-9d4d-47af-a50c-450c77bcdb67", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
 
-//            // TODO 暂时先放这，肯定不好
-//            phSparkDriver().ss.stop
+            // TODO 暂时先放这，肯定不好
+            phSparkDriver().ss.stop
             println("计算完成, result = " + result)
 
             responseJob(toJson(result))(jv)

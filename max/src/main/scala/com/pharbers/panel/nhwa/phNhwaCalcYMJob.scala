@@ -2,12 +2,13 @@ package com.pharbers.panel.nhwa
 
 import java.util.UUID
 
-import com.pharbers.panel.panel_path_obj
+import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.jobs.sequenceJob
 import com.pharbers.panel.common.phCalcYM2JVJob
-import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
+import com.pharbers.panel.panel_path_obj
+import org.apache.spark.addListenerAction
 
 object phNhwaCalcYMJob {
 
@@ -24,8 +25,10 @@ trait phNhwaCalcYMJob extends sequenceJob {
     val cpa_file: String
     val cache_location: String
 
-    override val actions: List[pActionTrait] = jarPreloadAction() ::
+    override val actions: List[pActionTrait] = { jarPreloadAction() ::
+                setLogLevelAction("ERROR") ::
                 xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
+                addListenerAction(MaxSparkListener("testUser", "ymCalc")(0, 100)) ::
                 phNhwaCalcYMConcretJob() ::
                 saveCurrenResultAction(cache_location) ::
                 phCalcYM2JVJob() ::

@@ -2,6 +2,7 @@ package com.pharbers.panel.pfizer
 
 import com.pharbers.pactions.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
 import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable
+import com.pharbers.panel.format.input.writable.pfizer.phPfizerCpaWritable
 
 import scala.reflect.ClassTag
 
@@ -20,7 +21,7 @@ class phPfizerCalcYMAction[T : ClassTag](override val defaultArgs: pActionArgs) 
     override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
     override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        val cpaRDD = pr.asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
+        val cpaRDD = pr.asInstanceOf[RDDArgs[phPfizerCpaWritable]].get.map { iter =>
             iter.getRowKey("YM") + iter.getRowKey("HOSPITAL_CODE") -> 1
         }
 

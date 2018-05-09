@@ -5,7 +5,7 @@ import play.api.libs.json.Json.toJson
 import com.pharbers.pactions.actionbase._
 
 object phCalcYM2JVJob  {
-    def apply[T : ClassTag](args: pActionArgs = NULLArgs) : pActionTrait = {
+    def apply[T : ClassTag](args: pActionArgs = NULLArgs): pActionTrait = {
         new phCalcYM2JVJob[T](args)
     }
 }

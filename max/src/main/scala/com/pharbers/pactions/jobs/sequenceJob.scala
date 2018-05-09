@@ -8,6 +8,7 @@ trait sequenceJob extends pActionTrait {
 
     override val name: String
     override val defaultArgs: pActionArgs = NULLArgs
+
     override implicit def progressFunc(progress: Double, flag: String) : Unit = Unit
 
     override def perform(pr : pActionArgs = NULLArgs)

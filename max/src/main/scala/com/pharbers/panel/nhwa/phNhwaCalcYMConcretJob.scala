@@ -4,8 +4,8 @@ import scala.reflect.ClassTag
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable
 
-object phNhwaCalcYMConcretJob  {
-    def apply[T : ClassTag](args: pActionArgs = NULLArgs) : pActionTrait = {
+object phNhwaCalcYMConcretJob {
+    def apply[T : ClassTag](args: pActionArgs = NULLArgs): pActionTrait = {
         new phNhwaCalcYMConcretJob[T](args)
     }
 }

@@ -8,9 +8,8 @@ trait sequenceJobWithMap extends pActionTrait {
 
     override val name: String
     override val defaultArgs: pActionArgs = NULLArgs
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {
-        println("progress" + progress)
-    }
+
+    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
 
     override def perform(pr : pActionArgs = MapArgs(Map().empty))
                         (implicit f : (Double, String) => Unit = (_, _) => Unit) : pActionArgs = {
