@@ -17,7 +17,7 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
 
         val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val panelName = defaultArgs.asInstanceOf[StringArgs].get
-        val result_location = max_path_obj.p_resultPath + "max/" + panelName
+        val result_location = max_path_obj.p_maxPath + panelName
         val redisDriver = new PhRedisDriver()
         //TODO : uid暂时写死,供测试
         val company = redisDriver.getMapValue("uid", "company")

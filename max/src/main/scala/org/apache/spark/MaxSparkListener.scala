@@ -1,9 +1,9 @@
 package org.apache.spark
 
-import org.apache.spark.scheduler._
+import akka.actor.{Actor, ActorRef}
 import com.pharbers.channel.sendEmTrait
-import akka.actor.{Actor, ActorRef, PoisonPill}
 import org.apache.spark.listenerActor.{jobEnd, jobStart, taskEnd}
+import org.apache.spark.scheduler._
 
 /**
   * Created by spark on 18-5-2.
@@ -34,7 +34,6 @@ case class MaxSparkListener(start_progress: Int, end_progress: Int)
 
     override def onJobEnd(job: SparkListenerJobEnd): Unit = {
         lactor ! jobEnd(this)
-        lactor ! PoisonPill
     }
 }
 

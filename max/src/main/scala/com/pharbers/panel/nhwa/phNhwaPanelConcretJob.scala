@@ -34,7 +34,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
             val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
             val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, markets_product_match)
-//            sparkDriver.sc.stop()
             DFArgs(panelDF)
         }
 

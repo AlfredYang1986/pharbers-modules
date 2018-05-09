@@ -26,7 +26,7 @@ trait phMaxJobForPfizerCNS_R extends sequenceJobWithMap {
     val panel_name: String
     val universe_name: String
 
-    val panel_file: String = max_path_obj.p_resultPath + panel_name
+    val panel_file: String = max_path_obj.p_panelPath + panel_name
     val universe_file: String = max_path_obj.p_matchFilePath + universe_name
     val temp_dir: String = max_path_obj.p_cachePath + panel_name + "/"
     val temp_universe_name: String = UUID.randomUUID().toString

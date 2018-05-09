@@ -1,15 +1,15 @@
 package com.pharbers.channel
 
+import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.ErrorCode._
 import com.pharbers.calc.phMaxJob
+import com.pharbers.channel.chanelImpl.responsePusher
+import com.pharbers.channel.doJobActor._
+import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
+import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
+import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-import com.pharbers.channel.doJobActor._
-import akka.actor.{Actor, ActorLogging, Props}
-import com.pharbers.channel.chanelImpl.responsePusher
-import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
-import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
-import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 
 /**
   * Created by spark on 18-4-26.

@@ -26,7 +26,7 @@ trait phMaxJobForPfizerDVP extends sequenceJobWithMap {
     val panel_name: String
     val universe_name: String
 
-    val panel_file: String = max_path_obj.p_resultPath + panel_name
+    val panel_file: String = max_path_obj.p_panelPath + panel_name
     val universe_file: String = max_path_obj.p_matchFilePath + universe_name
     val coef_file: String = max_path_obj.p_matchFilePath + "pfizer/coef_DVP2.xlsx"
     val temp_dir: String = max_path_obj.p_cachePath + panel_name + "/"
