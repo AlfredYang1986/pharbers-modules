@@ -1,11 +1,10 @@
-package org.apache.spark
+package org.apache.spark.listener
 
-import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.channel.sendEmTrait
-import com.pharbers.common.algorithm.alTempLog
-import com.pharbers.pactions.actionbase.NULLArgs
-import org.apache.spark.listenerActor.{jobEnd, jobStart, taskEnd}
+import akka.actor.{Actor, ActorLogging, Props}
+import org.apache.spark.listener.listenerActor._
 import org.apache.spark.scheduler.SparkListener
+import com.pharbers.pactions.actionbase.NULLArgs
 
 object listenerActor {
     def name = "listenerActor"
@@ -34,8 +33,8 @@ class listenerActor(start_progress: Int, end_progress: Int)
         case jobStart(taskSum) => {
             remainTask += taskSum
             stride = (end_progress - current) / remainTask
-            alTempLog("Job Start, new tesk sum = " + taskSum)
-            alTempLog("remain task sum = " + remainTask)
+//            alTempLog("Job Start, new tesk sum = " + taskSum)
+//            alTempLog("remain task sum = " + remainTask)
         }
 
         case taskEnd() => {
@@ -45,14 +44,13 @@ class listenerActor(start_progress: Int, end_progress: Int)
             if(progress < current.toInt){
                 progress = current.toInt
                 send(this, progress)
-                alTempLog("current progress = " + progress)
             }
         }
 
         case jobEnd(listener) =>
             if(remainTask < 1)
                 removeListenerAction(listener).perform(NULLArgs)
-            alTempLog("Job Over")
+//            alTempLog("Job Over")
 
         case _ => ???
     }

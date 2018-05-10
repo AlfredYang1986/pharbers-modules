@@ -1,8 +1,8 @@
-package org.apache.spark
+package org.apache.spark.listener
 
+import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 import org.apache.spark.scheduler.SparkListener
-import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
 object addListenerAction {
     def apply(listener: SparkListener, arg_name: String = "addListenerAction"): pActionTrait =

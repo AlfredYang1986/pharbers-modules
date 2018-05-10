@@ -3,34 +3,42 @@ package com.pharbers.panel.nhwa
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.pactions.jobs._
-import play.api.libs.json.Json.toJson
-import com.pharbers.panel.nhwa.format._
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.common.algorithm.max_path_obj
+import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.pactions.actionbase._
 import com.pharbers.pactions.generalactions._
-import com.pharbers.panel.common.phSavePanelJob
-import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
-import org.apache.spark
-import org.apache.spark.{MaxSparkListener, addListenerAction}
+import com.pharbers.pactions.jobs._
+import com.pharbers.panel.common.{phPanelId2Redis, phSavePanelJob}
+import com.pharbers.panel.nhwa.format._
+import org.apache.spark.listener
+import org.apache.spark.listener.addListenerAction
+import org.apache.spark.listener.progress.multiProgressTrait
 
 object phNhwaPanelJob {
 
-    def apply(arg_cpa: String, arg_ym: String, arg_mkt: String)(implicit _actor: Actor): phNhwaPanelJob = {
+    def apply(_company: String, _user: String)
+             (_ym: String, _mkt: String, _cpa: String, _p_current: Int, _p_total: Int)
+             (_not_published_hosp_file: String,
+              _universe_file: String,
+              _product_match_file: String,
+              _fill_hos_data_file: String,
+              _markets_match_file: String)(implicit _actor: Actor): phNhwaPanelJob = {
         new phNhwaPanelJob {
-            override lazy val not_published_hosp_file: String = match_dir + "nhwa/2017年未出版医院名单.xlsx"
-            override lazy val universe_file: String = match_dir + "nhwa/universe_麻醉市场_online.xlsx"
-            override lazy val product_match_file: String = match_dir + "nhwa/nhwa匹配表.xlsx"
-            override lazy val fill_hos_data_file: String = match_dir + "nhwa/补充医院.xlsx"
-            override lazy val markets_match_file: String = match_dir + "nhwa/通用名市场定义.xlsx"
-            override lazy val cpa_file: String = arg_cpa
+            override lazy val not_published_hosp_file: String = match_dir + _not_published_hosp_file
+            override lazy val universe_file: String = match_dir + _universe_file
+            override lazy val product_match_file: String = match_dir + _product_match_file
+            override lazy val fill_hos_data_file: String = match_dir + _fill_hos_data_file
+            override lazy val markets_match_file: String = match_dir + _markets_match_file
+            override lazy val cpa_file: String = _cpa
 
-            override lazy val ym: String = arg_ym
-            override lazy val mkt: String = arg_mkt
-            override lazy val uid: String = "testUser"
+            override lazy val ym: String = _ym
+            override lazy val mkt: String = _mkt
+            override lazy val user: String = _user
+            override lazy val company: String = _company
             override lazy val actor: Actor = _actor
+            override lazy val p_total: Double = _p_total
+            override lazy val p_current: Double = _p_current
         }
     }
 }
@@ -44,9 +52,8 @@ object phNhwaPanelJob {
 * 6. read CPA文件第一页
 * 7. read CPA文件第二页
 **/
-trait phNhwaPanelJob extends sequenceJobWithMap {
+trait phNhwaPanelJob extends sequenceJobWithMap with multiProgressTrait {
     override val name: String = "phNhwaPanelJob"
-    implicit val companyArgs: phMemoryArgs = phMemoryArgs("Nhwa")
 
     val temp_name: String = UUID.randomUUID().toString
     val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
@@ -61,7 +68,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
 
     val ym: String
     val mkt: String
-    val uid: String
+    implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
 
     /**
       * 1. read 未出版医院文件
@@ -169,35 +176,31 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
         Map(
             "ym" -> StringArgs(ym),
             "mkt" -> StringArgs(mkt),
-            "name" -> StringArgs(temp_name)
+            "user" -> StringArgs(user),
+            "name" -> StringArgs(temp_name),
+            "company" -> StringArgs(company)
         )
     )
 
-
-
-    implicit val actor: Actor
-    implicit val sendProgress: (sendEmTrait, Double) => Unit = { (em, progress) =>
-        em.sendMessage(uid, "panel", "ing", toJson(Map("progress" -> toJson(progress))))
-    }
-
     override val actions: List[pActionTrait] = { jarPreloadAction() ::
                 setLogLevelAction("ERROR") ::
-                spark.addListenerAction(MaxSparkListener(0, 5)) ::
+                addListenerAction(listener.MaxSparkListener(0, 10)) ::
                 loadNotPublishedHosp ::
-                spark.addListenerAction(MaxSparkListener(6, 10)) ::
+                addListenerAction(listener.MaxSparkListener(11, 20)) ::
                 loadUniverseFile ::
-                spark.addListenerAction(MaxSparkListener(11, 15)) ::
+                addListenerAction(listener.MaxSparkListener(21, 30)) ::
                 loadProductMatchFile ::
-                addListenerAction(MaxSparkListener(16, 20)) ::
+                addListenerAction(listener.MaxSparkListener(31, 40)) ::
                 loadFullHospFile ::
-                spark.addListenerAction(MaxSparkListener(21, 25)) ::
+                addListenerAction(listener.MaxSparkListener(41, 50)) ::
                 loadMarketMatchFile ::
-                addListenerAction(MaxSparkListener(26, 30)) ::
+                addListenerAction(listener.MaxSparkListener(51, 60)) ::
                 readCpa ::
                 readNotArrivalHosp ::
-                addListenerAction(MaxSparkListener(31, 90)) ::
+                addListenerAction(listener.MaxSparkListener(61, 99)) ::
                 phNhwaPanelConcretJob(df) ::
                 phSavePanelJob(df) ::
+                phPanelId2Redis(df) ::
                 Nil
     }
 

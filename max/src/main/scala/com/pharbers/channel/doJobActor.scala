@@ -2,12 +2,12 @@ package com.pharbers.channel
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.ErrorCode._
+import com.pharbers.builder.phBuilder
 import com.pharbers.calc.phMaxJob
 import com.pharbers.channel.chanelImpl.responsePusher
 import com.pharbers.channel.doJobActor._
-import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
-import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
-import com.pharbers.panel.nhwa.{phNhwaCalcYMJob, phNhwaPanelJob}
+import com.pharbers.common.algorithm.alTempLog
+import com.pharbers.pactions.actionbase.{MapArgs, StringArgs}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
@@ -37,56 +37,59 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
 
     def doYmCalc(jv: JsValue): Unit = {
         try{
-            val companyId = (jv \ "company_id").asOpt[String].get
-            val userId = (jv \ "user_id").asOpt[String].get
+            // TODO 写死的testUser去掉
+            val company = "testGroup"//(jv \ "company_id").asOpt[String].get
+            val user = "testUser"//(jv \ "user_id").asOpt[String].get
             val args = (jv \ "args").asOpt[String].get
                         .tail.init
                         .split(",").map(_.split("="))
                         .map(x => x.head.trim -> x.last.trim)
                         .toMap
 
-            alTempLog(s"doYmCalc, companyId is = $companyId, userId is = $userId")
-            // TODO 写死的testUser去掉
-            sendMessage("testGroup", "testUser", "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
+            alTempLog(s"doYmCalc, company is = $company, user is = $user")
+            sendMessage(company, user, "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
 
-            // TODO 写成Builder形式
-            val result = phNhwaCalcYMJob(max_path_obj.p_clientPath + args("cpa")).perform().asInstanceOf[JVArgs].get
+            val ymLst = phBuilder(company, user).set(args).doCalcYM
 
-            alTempLog("计算月份完成, result = " + result)
-
-            responsePusher().callJobResponse(result, "done")(jv)// send Kafka message
-            sendMessage("testGroup", "testUser", "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> result)))))
+            alTempLog("计算月份完成, result = " + ymLst)
+            sendMessage(company, user, "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> ymLst)))))
+            responsePusher().callJobResponse(ymLst, "done")(jv)// send Kafka message
         } catch {
-            case ex: Exception => sendError("testUser", "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+            case ex: Exception => sendError("testGroup", "testUser", "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
     }
 
     def doPanel(jv: JsValue): Unit = {
         try{
-            sendMessage("testUser", "panel", "start", toJson(Map("progress" -> toJson("0"))))
-
-            val args =
-                (jv \ "args").asOpt[String].get
+            // TODO 写死的testUser去掉
+            val company = "testGroup"//(jv \ "company_id").asOpt[String].get
+            val user = "testUser"//(jv \ "user_id").asOpt[String].get
+            val args = (jv \ "args").asOpt[String].get
                         .tail.init
                         .split(",").map(_.split("="))
                         .map(x => x.head -> x.last)
                         .toMap
 
-            val result = phNhwaPanelJob("/mnt/config/Client/180211恩华17年1-12月检索.xlsx", "201712", "麻醉市场").perform().asInstanceOf[MapArgs].get("phSavePanelJob")
-                .asInstanceOf[StringArgs].get
+            alTempLog(s"doPanel, company is = $company, user is = $user")
+            sendMessage(company, user, "panel", "start", toJson(Map("progress" -> toJson("0"))))
 
-            println("生成panel完成, result = " + result)
 
-            responsePusher().callJobResponse(toJson(result), "done")(jv)// send Kafka message
-            sendMessage("testUser", "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(result))))))
+            val panel = phBuilder(company, user).set(args)
+                    .set("yms", "201711#201712")
+                    .doPanel
+
+
+            alTempLog("生成panel完成, result = " + panel)
+            sendMessage(company, user, "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> panel)))))
+            responsePusher().callJobResponse(panel, "done")(jv)// send Kafka message
         } catch {
-            case ex: Exception => sendError("testUser", "panel", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+            case ex: Exception => sendError("testGroup", "testUser", "panel", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
     }
 
     def doCalc(jv: JsValue): Unit = {
         try {
-            sendMessage("testUser", "calc", "start", toJson(Map("progress" -> toJson("0"))))
+            sendMessage("testGroup", "testUser", "calc", "start", toJson(Map("progress" -> toJson("0"))))
 
             val args =
                 (jv \ "args").asOpt[String].get
@@ -100,9 +103,9 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait {
             println("计算完成, result = " + result)
 
             responsePusher().callJobResponse(toJson(result), "done")(jv)// send Kafka message
-            sendMessage("testUser", "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(result))))))
+            sendMessage("testGroup", "testUser", "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(result))))))
         } catch {
-            case ex: Exception => sendError("testUser", "calc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
+            case ex: Exception => sendError("testGroup", "testUser", "calc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
     }
 

@@ -2,7 +2,7 @@ package com.pharbers.pactions.generalactions
 
 import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.actionbase.NULLArgs
-import org.apache.spark.removeListenerAction
+import org.apache.spark.listener.removeListenerAction
 import org.apache.spark.scheduler._
 import play.api.libs.json.Json.toJson
 

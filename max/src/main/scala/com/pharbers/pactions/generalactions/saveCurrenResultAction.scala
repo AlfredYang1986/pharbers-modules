@@ -1,6 +1,7 @@
 package com.pharbers.pactions.generalactions
 
 import scala.reflect.ClassTag
+import org.apache.hadoop.io.compress.GzipCodec
 import com.pharbers.pactions.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
 
 object saveCurrenResultAction {
@@ -14,7 +15,7 @@ class saveCurrenResultAction[T: ClassTag](override val defaultArgs: pActionArgs,
 
     override def perform(args: pActionArgs): pActionArgs = {
         val rdd = args.asInstanceOf[RDDArgs[T]].get
-        rdd.coalesce(1).saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get)
+        rdd.saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get, classOf[GzipCodec])
         args
     }
 }

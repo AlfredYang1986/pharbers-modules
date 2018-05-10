@@ -1,6 +1,7 @@
 package com.pharbers.pactions.generalactions
 
 import com.pharbers.pactions.actionbase._
+import org.apache.hadoop.io.compress.GzipCodec
 
 /**
   * Created by spark on 18-3-30.
@@ -20,7 +21,8 @@ class saveMapResultAction[T](key: String, path: String) extends pActionTrait {
             case None => throw new Exception(s"not found key=$key in saveMapResultAction.class")
         }
 
-        rdd.coalesce(1).saveAsTextFile(path)
+//        rdd.coalesce(1).saveAsTextFile(path) // 测试版
+        rdd.saveAsTextFile(path, classOf[GzipCodec]) // 上线压缩版
         prMap
     }
 

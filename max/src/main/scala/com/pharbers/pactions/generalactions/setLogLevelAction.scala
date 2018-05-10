@@ -13,7 +13,6 @@ class setLogLevelAction(level: String, override val name: String) extends pActio
 
     override def perform(args : pActionArgs): pActionArgs = {
         phSparkDriver().sc.setLogLevel(level)
-
         NULLArgs
     }
 }
