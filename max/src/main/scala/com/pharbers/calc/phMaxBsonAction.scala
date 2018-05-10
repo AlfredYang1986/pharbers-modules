@@ -25,7 +25,9 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
         val mkt = redisDriver.getMapValue(panelName,"mkt")
         val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
         redisDriver.addMap(singleJobKey, "max_path", result_location)
-        max_result.coalesce(1).write
+        val max_count = max_result.count()
+        redisDriver.addMap(singleJobKey, "max_count", max_count)
+        max_result.write
                 .format("csv")
                 .option("header", value = true)
                 .option("delimiter", 31.toChar.toString)
