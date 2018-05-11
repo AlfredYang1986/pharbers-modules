@@ -14,6 +14,11 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
+        val panelDF = pr.asInstanceOf[MapArgs].get("panel").asInstanceOf[DFArgs].get
+
+        val panel_hosp_count = panelDF.select("HOSP_ID").distinct().count()
+        val panel_prod_count = panelDF.select("Prod_Name").distinct().count()
+        val panel_sales = panelDF.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
 
         val redisDriver = new PhRedisDriver()
         //TODO : uid暂时写死,供测试
