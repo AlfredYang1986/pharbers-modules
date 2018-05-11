@@ -10,7 +10,7 @@ import com.pharbers.pactions.actionbase._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 import com.pharbers.pactions.jobs._
-import com.pharbers.panel.common.{phPanelId2Redis, phSavePanelJob}
+import com.pharbers.panel.common.{phPanelInfo2Redis, phSavePanelJob}
 import com.pharbers.panel.nhwa.format._
 import org.apache.spark.listener
 import org.apache.spark.listener.addListenerAction
@@ -205,7 +205,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
                 addListenerAction(listener.MaxSparkListener(61, 99)) ::
                 phNhwaPanelConcretJob(df) ::
                 phSavePanelJob(df) ::
-                phPanelId2Redis(df) ::
+                phPanelInfo2Redis(df) ::
                 Nil
     }
 

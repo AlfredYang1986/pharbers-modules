@@ -1,4 +1,4 @@
-package com.pharbers.calc
+package com.pharbers.calc.actions
 
 import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver

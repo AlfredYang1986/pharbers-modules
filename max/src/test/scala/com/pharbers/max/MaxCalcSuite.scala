@@ -21,7 +21,7 @@
 //        println(s"MAX计算开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result = phMaxJob("1fab79bf-935e-4253-9fa8-567230e5f94c", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val result = phMaxJob("1fab79bf-935e-4253-9fa8-567230e5f94c", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
 //
 //        println("result = " + result)
 //        println()
@@ -38,8 +38,8 @@
 //        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 //        println("panelResult = " + panelResult)
 //
-//        val result = phMaxJob(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
-////        val result = phMaxJob(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val result = phMaxJob(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
+////        val result = phMaxJob(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
 //
 //        println("result = " + result)
 //    }
@@ -49,8 +49,8 @@
 //
 ////        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 ////        println("panelResult = " + panelResult)
-////        val result = phMaxJobForPfizerDVP(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
-//        val result = phMaxJobForPfizerDVP(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+////        val result = phMaxJobForPfizerDVP(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
+//        val result = phMaxJobForPfizerDVP(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
 //
 //        println("result = " + result)
 //    }
@@ -61,7 +61,7 @@
 //        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
 //        println("panelResult = " + panelResult)
 //
-//        val result = phMaxJobForPfizerCNS_R(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get
+//        val result = phMaxJobForPfizerCNS_R(panelResult.toString, s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
 //
 //        println("result = " + result)
 //    }

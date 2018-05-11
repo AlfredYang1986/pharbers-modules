@@ -1,9 +1,8 @@
-package com.pharbers.calc
+package com.pharbers.calc.actions
 
-import org.apache.spark.sql.functions._
-import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase._
-import org.apache.spark.sql.functions.col
+import com.pharbers.spark.phSparkDriver
+import org.apache.spark.sql.functions.{col, _}
 
 object phMaxCalcAction {
     def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxCalcAction(args)

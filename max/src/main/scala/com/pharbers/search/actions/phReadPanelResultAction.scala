@@ -1,5 +1,6 @@
 package com.pharbers.search.actions
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -24,7 +25,7 @@ class phReadPanelResultAction(override val defaultArgs: pActionArgs) extends pAc
         val redisDriver = new PhRedisDriver()
         val company = redisDriver.getMapValue(uid, "company")
         val singleJobKey = Sercurity.md5Hash(s"$uid$company$ym$mkt")
-        val panel_path = redisDriver.getMapValue(singleJobKey, "panel_path")
+        val panel_path = max_path_obj.p_panelPath + redisDriver.getMapValue(singleJobKey, "panel_name")
         val panel_df = sparkDriver.csv2RDD(panel_path, 31.toChar.toString)
 
         DFArgs(panel_df)

@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.panel.pfizer.actions._
-import com.pharbers.panel.common.phSavePanelJob
+import com.pharbers.panel.common.{phPanelInfo2Redis, phSavePanelJob}
 import com.pharbers.common.excel.input.PhXlsxSecondSheetFormat
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
@@ -121,5 +121,6 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         splitMktJobsMap.get(mkt).getOrElse(throw new Exception(s"undefined market=${mkt}")) ::
         phPfizerPanelCommonAction(df) ::
         phSavePanelJob(df) ::
+        phPanelInfo2Redis(df) ::
         Nil
 }

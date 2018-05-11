@@ -1,5 +1,6 @@
 package com.pharbers.search.actions
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -24,7 +25,7 @@ class phReadMaxResultAction(override val defaultArgs: pActionArgs) extends pActi
         val redisDriver = new PhRedisDriver()
         val company = redisDriver.getMapValue(uid, "company")
         val singleJobKey = Sercurity.md5Hash(s"$uid$company$ym$mkt")
-        val max_path = redisDriver.getMapValue(singleJobKey, "max_path")
+        val max_path = max_path_obj.p_maxPath + redisDriver.getMapValue(singleJobKey, "max_result_name")
         val max_df = sparkDriver.csv2RDD(max_path, 31.toChar.toString)
 
         DFArgs(max_df)

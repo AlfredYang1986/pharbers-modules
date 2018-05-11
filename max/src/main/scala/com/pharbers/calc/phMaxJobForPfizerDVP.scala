@@ -2,6 +2,7 @@ package com.pharbers.calc
 
 import java.util.UUID
 
+import com.pharbers.calc.actions.{phMaxCalcActionForDVP, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.pActionTrait
@@ -77,9 +78,9 @@ trait phMaxJobForPfizerDVP extends sequenceJobWithMap {
 //        loadPanelDataOfExcel ::
         readUniverseFile ::
         readCoefFile ::
-        phMaxSplitAction() ::
-        phMaxGroupAction() ::
+        phMaxInfo2RedisAction() ::
+        phMaxResult2MongoAction() ::
         phMaxCalcActionForDVP() ::
-        phMaxBsonAction() ::
+        phMaxPersistentAction() ::
         Nil
 }

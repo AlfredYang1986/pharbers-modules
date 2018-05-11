@@ -2,6 +2,7 @@ package com.pharbers.calc
 
 import java.util.UUID
 
+import com.pharbers.calc.actions.{phMaxCalcAction, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.jobs._
 import com.pharbers.pactions.generalactions._
@@ -10,7 +11,7 @@ import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import org.apache.spark.listener.addListenerAction
 
 object phMaxJob {
-    def apply(arg_panel_name: String, universe_file_name: String) : phMaxJob = {
+    def apply(arg_panel_name: String, universe_file_name: String): phMaxJob = {
         new phMaxJob {
             override lazy val panel_name: String = arg_panel_name
             override lazy val universe_name: String = universe_file_name
@@ -47,8 +48,8 @@ trait phMaxJob extends sequenceJobWithMap {
         override val name = "panel_data"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[PhExcelXLSXCommonFormat](panel_file, temp_panel_name) ::
-                    saveCurrenResultAction(temp_dir + temp_panel_name) ::
-                    csv2DFAction(temp_dir + temp_panel_name) :: Nil
+                saveCurrenResultAction(temp_dir + temp_panel_name) ::
+                csv2DFAction(temp_dir + temp_panel_name) :: Nil
     }
 
 
@@ -57,20 +58,20 @@ trait phMaxJob extends sequenceJobWithMap {
         override val name = "universe_data"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, temp_universe_name) ::
-                    saveCurrenResultAction(temp_dir + temp_universe_name) ::
-                    csv2DFAction(temp_dir + temp_universe_name) :: Nil
+                saveCurrenResultAction(temp_dir + temp_universe_name) ::
+                csv2DFAction(temp_dir + temp_universe_name) :: Nil
     }
 
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-            setLogLevelAction("ERROR") ::
-            loadPanelData ::
-//            loadPanelDataOfExcel ::
-            readUniverseFile ::
-            phMaxSplitAction() ::
-            phMaxGroupAction() ::
-            phMaxCalcAction() ::
-            addListenerAction(MaxSparkListener("testUser", "calc")(6, 99)) ::
-            phMaxBsonAction(StringArgs(panel_name)) ::
-            Nil
+        setLogLevelAction("ERROR") ::
+        loadPanelData ::
+//        loadPanelDataOfExcel ::
+        readUniverseFile ::
+        phMaxCalcAction() ::
+        addListenerAction(MaxSparkListener("testUser", "calc")(6, 99)) ::
+        phMaxPersistentAction(StringArgs(panel_name)) ::
+        phMaxInfo2RedisAction(StringArgs(panel_name)) ::
+        phMaxResult2MongoAction() ::
+        Nil
 }

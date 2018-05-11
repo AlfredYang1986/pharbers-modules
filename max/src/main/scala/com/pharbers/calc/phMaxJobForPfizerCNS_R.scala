@@ -2,6 +2,7 @@ package com.pharbers.calc
 
 import java.util.UUID
 
+import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.pActionTrait
@@ -65,9 +66,9 @@ trait phMaxJobForPfizerCNS_R extends sequenceJobWithMap {
         loadPanelData ::
 //            loadPanelDataOfExcel ::
         readUniverseFile ::
-        phMaxSplitAction() ::
-        phMaxGroupAction() ::
+        phMaxInfo2RedisAction() ::
+        phMaxResult2MongoAction() ::
         phMaxCalcActionForCNS_R() ::
-        phMaxBsonAction() ::
+        phMaxPersistentAction() ::
         Nil
 }
