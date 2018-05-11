@@ -7,6 +7,7 @@ import com.pharbers.panel.nhwa.phNhwaPanelJob
 
 case class NhwaPanelBuilder(override val company: String, override val user: String)
                            (implicit override val actor: Actor) extends PanelBuilder(company, user) {
+
     override def instance: pActionTrait = {
         args("mkt") match {
 
