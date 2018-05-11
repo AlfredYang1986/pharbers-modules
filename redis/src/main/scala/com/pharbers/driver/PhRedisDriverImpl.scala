@@ -11,11 +11,11 @@ trait PhRedisDriverImpl extends PhRedisTrait {
     override def addString(key: Any, value: String): Unit =
         conn_instance.getConnection(c => c.set(key, value))
 
-    override def addListLeft(key: Any, value: Any, values: Any*): Unit =
-        conn_instance.getConnection(c => c.lpush(key, value, values))
+    override def addListLeft(key: Any, values: Any*): Unit =
+        conn_instance.getConnection(c => values.foreach(c.lpush(key, _)))
 
-    override def addListRight(key: Any, value: Any, values: Any*): Unit =
-        conn_instance.getConnection(c => c.rpush(key, value, values))
+    override def addListRight(key: Any, values: Any*): Unit =
+        conn_instance.getConnection(c => values.foreach(c.rpush(key, _)))
 
     override def addMap(key: Any, values: Map[Any, Any]): Unit =
         conn_instance.getConnection(c => c.hmset(key, values))
@@ -26,8 +26,8 @@ trait PhRedisDriverImpl extends PhRedisTrait {
     override def addSet(key: Any, values: Set[Any]): Unit =
         conn_instance.getConnection(c => values.foreach(c.sadd(key, _)))
 
-    override def addSet(key: Any, value: Any, values: Any*): Unit =
-        conn_instance.getConnection(c => c.sadd(key, value, values))
+    override def addSet(key: Any, values: Any*): Unit =
+        conn_instance.getConnection(c => values.foreach(c.sadd(key, _)))
 
     override def delete(key: Any, keys: Any*) : Long = {
         conn_instance.getConnection(c => c.del(key, keys) match {

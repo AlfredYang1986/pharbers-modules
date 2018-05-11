@@ -1,12 +1,13 @@
 package com.pharbers.delivery.nhwa
 
-import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
+import com.pharbers.delivery.util.mongo_config_obj
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
   * Created by jeorch on 18-3-7.
   */
-trait ModuleNHWA extends CommonTrait {
+trait ModuleNHWA extends phSparkCommonFuncTrait {
 
     def generateDeliveryFileFromMongo(dbName: String, collection: String): DataFrame = {
 

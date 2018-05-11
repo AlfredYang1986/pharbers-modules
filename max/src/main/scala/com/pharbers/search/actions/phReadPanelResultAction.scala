@@ -23,7 +23,7 @@ class phReadPanelResultAction(override val defaultArgs: pActionArgs) extends pAc
         val sparkDriver = phSparkDriver()
         val redisDriver = new PhRedisDriver()
         val company = redisDriver.getMapValue(uid, "company")
-        val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
+        val singleJobKey = Sercurity.md5Hash(s"$uid$company$ym$mkt")
         val panel_path = redisDriver.getMapValue(singleJobKey, "panel_path")
         val panel_df = sparkDriver.csv2RDD(panel_path, 31.toChar.toString)
 

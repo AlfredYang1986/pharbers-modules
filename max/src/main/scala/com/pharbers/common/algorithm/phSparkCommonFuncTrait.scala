@@ -1,4 +1,4 @@
-package com.pharbers.delivery.util
+package com.pharbers.common.algorithm
 
 import java.io.File
 
@@ -10,7 +10,7 @@ import org.apache.spark.sql.DataFrame
 /**
   * Created by jeorch on 18-3-7.
   */
-trait CommonTrait {
+trait phSparkCommonFuncTrait {
 
     lazy val driver =  phSparkDriver()
 

@@ -1,6 +1,7 @@
 package com.pharbers.delivery.astellas
 
-import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
+import com.pharbers.delivery.util.mongo_config_obj
 import com.pharbers.pactions.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 
@@ -12,7 +13,7 @@ object phReadMongo2RDDAction {
         new phReadMongo2RDDAction(company, dbName, lstColl, name)
 }
 
-class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String], override val name: String) extends pActionTrait with CommonTrait {
+class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String], override val name: String) extends pActionTrait with phSparkCommonFuncTrait {
 
     override val defaultArgs: pActionArgs = NULLArgs
 

@@ -23,7 +23,7 @@ class phReadMaxResultAction(override val defaultArgs: pActionArgs) extends pActi
         val sparkDriver = phSparkDriver()
         val redisDriver = new PhRedisDriver()
         val company = redisDriver.getMapValue(uid, "company")
-        val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
+        val singleJobKey = Sercurity.md5Hash(s"$uid$company$ym$mkt")
         val max_path = redisDriver.getMapValue(singleJobKey, "max_path")
         val max_df = sparkDriver.csv2RDD(max_path, 31.toChar.toString)
 

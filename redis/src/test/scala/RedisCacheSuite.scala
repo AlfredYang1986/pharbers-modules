@@ -56,4 +56,12 @@
 //            redis_driver.addString(s"key${x}", s"${x}")
 //        }
 //    }
+//
+//    test("New Redis Interface addSet") {
+//        val redis_driver = new PhRedisDriver()
+//        1 to 10 foreach { x =>
+//            redis_driver.addSet("ts",x)
+//        }
+//    }
+//
 //}
