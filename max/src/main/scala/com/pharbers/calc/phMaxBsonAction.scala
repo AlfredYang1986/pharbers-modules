@@ -20,10 +20,13 @@ class phMaxBsonAction[T](override val defaultArgs: pActionArgs) extends pActionT
         val result_location = max_path_obj.p_maxPath + panelName
         val redisDriver = new PhRedisDriver()
         //TODO : uid暂时写死,供测试
-        val company = redisDriver.getMapValue("uid", "company")
+        val uid = "uid"
+        val company = redisDriver.getMapValue(uid, "company")
         val ym = redisDriver.getMapValue(panelName,"ym")
         val mkt = redisDriver.getMapValue(panelName,"mkt")
-        val singleJobKey = Sercurity.md5Hash(s"$company$ym$mkt")
+        val userJobsKey = Sercurity.md5Hash(s"$uid$company")
+        val singleJobKey = Sercurity.md5Hash(s"$uid$company$ym$mkt")
+        redisDriver.addSet(userJobsKey,singleJobKey)
         redisDriver.addMap(singleJobKey, "max_path", result_location)
         val max_count = max_result.count()
         redisDriver.addMap(singleJobKey, "max_count", max_count)

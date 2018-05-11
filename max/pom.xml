@@ -246,6 +246,13 @@
                     <version>1.7.6</version>
                 </dependency>
 
+                <!-- https://mvnrepository.com/artifact/amplab/spark-indexedrdd -->
+                <dependency>
+                    <groupId>amplab</groupId>
+                    <artifactId>spark-indexedrdd</artifactId>
+                    <version>0.4.0</version>
+                </dependency>
+
                 <!-- test lib -->
                 <!--<dependency>
                     <groupId>com.mmakowski</groupId>
