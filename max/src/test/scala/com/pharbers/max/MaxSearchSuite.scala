@@ -1,7 +1,7 @@
 //package com.pharbers.max
 //
 //import com.pharbers.driver.PhRedisDriver
-//import com.pharbers.pactions.actionbase.{DFArgs, MapArgs}
+//import com.pharbers.pactions.actionbase._
 //import com.pharbers.search.phSearchMaxJob
 //import org.scalatest.FunSuite
 //
@@ -15,8 +15,11 @@
 //        val redisDriver = new PhRedisDriver()
 //        // TODO:测试预设
 //        redisDriver.addMap(uid, "company", "Pfizer")
-//        val searchResult =  phSearchMaxJob(uid, "201802", "INF").perform().asInstanceOf[MapArgs].get("max_search_action").asInstanceOf[DFArgs].get
-//        println(s"searchResult.count = ${searchResult.count()}")
+//        val searchResult =  phSearchMaxJob(uid, "201802", "INF").perform().asInstanceOf[MapArgs].get("max_search_action").asInstanceOf[ListArgs].get
+//
+//        println(s"### => END")
+//        println(s"### => ${searchResult.length}")
+//        println(s"### => ${searchResult}")
 //    }
 //
 //}

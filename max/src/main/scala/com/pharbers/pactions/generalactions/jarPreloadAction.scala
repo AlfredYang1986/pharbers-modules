@@ -18,6 +18,8 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
                     ("poi-ooxml-3.13.jar", "./jar/poi-ooxml-3.13.jar") ::
                     ("poi-ooxml-schemas-3.13.jar", "./jar/poi-ooxml-schemas-3.13.jar") ::
                     ("xlsx-streamer-1.0.2.jar", "./jar/xlsx-streamer-1.0.2.jar") ::
+                    ("spark-indexedrdd-0.4.0.jar", "./jar/spark-indexedrdd-0.4.0.jar") ::
+                    ("part_2.10-0.1.jar", "./jar/part_2.10-0.1.jar") ::
                     ("pharbers-max-0.1.jar", "./target/pharbers-max-0.1.jar") :: Nil
 
     override def perform(args : pActionArgs): pActionArgs = {
