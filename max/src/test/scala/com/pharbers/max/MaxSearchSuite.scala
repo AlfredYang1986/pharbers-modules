@@ -15,7 +15,7 @@
 //        val redisDriver = new PhRedisDriver()
 //        // TODO:测试预设
 //        redisDriver.addMap(uid, "company", "Pfizer")
-//        val searchResult =  phSearchMaxJob(uid, "201802", "INF").perform().asInstanceOf[MapArgs].get("max_search_action").asInstanceOf[ListArgs].get
+//        val searchResult =  phSearchMaxJob(uid, "201802", "INF", 0, 20).perform().asInstanceOf[MapArgs].get("max_search_action").asInstanceOf[ListArgs].get
 //
 //        println(s"### => END")
 //        println(s"### => ${searchResult.length}")
