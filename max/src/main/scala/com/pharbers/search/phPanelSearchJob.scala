@@ -3,13 +3,14 @@ package com.pharbers.search
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 import com.pharbers.pactions.jobs.sequenceJobWithMap
+import com.pharbers.search.actions.{phPageSearchAction, phReadPanelResultAction}
 
 /**
-  * Created by jeorch on 18-5-9.
+  * Created by jeorch on 18-5-11.
   */
-object phSearchMaxJob{
-    def apply(uid_arg: String, ym_arg: String, mkt_arg: String, page_index_arg: Int, page_count_arg: Int) : phSearchMaxJob = {
-        new phSearchMaxJob {
+object phPanelSearchJob {
+    def apply(uid_arg: String, ym_arg: String, mkt_arg: String, page_index_arg: Int, page_count_arg: Int) : phPanelSearchJob = {
+        new phPanelSearchJob {
             override lazy val uid: String = uid_arg
             override lazy val ym: String = ym_arg
             override lazy val mkt: String = mkt_arg
@@ -19,8 +20,8 @@ object phSearchMaxJob{
     }
 }
 
-trait phSearchMaxJob extends sequenceJobWithMap {
-    override val name: String = "phMaxCalcJob"
+trait phPanelSearchJob extends sequenceJobWithMap {
+    override val name: String = "phPanelSearchJob"
 
     val uid: String
     val ym: String
@@ -40,6 +41,7 @@ trait phSearchMaxJob extends sequenceJobWithMap {
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
         setLogLevelAction("ERROR") ::
-        phMaxSearchAction(searchArgs) ::
+        phReadPanelResultAction(searchArgs) ::
+        phPageSearchAction(searchArgs) ::
         Nil
 }

@@ -14,7 +14,6 @@ class phSavePanelJob(override val defaultArgs: pActionArgs) extends pActionTrait
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
         val panel_location = max_path_obj.p_panelPath + panel_name
 
-//        panel.coalesce(1).write
         panel.write
                 .format("csv")
                 .option("header", value = true)
