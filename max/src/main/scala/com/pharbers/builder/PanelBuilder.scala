@@ -11,7 +11,7 @@ object PanelBuilder {
 }
 
 class PanelBuilder(override val company: String, override val user: String)
-                       (implicit override val actor: Actor) extends phBuilder {
+                  (implicit override val actor: Actor) extends phBuilder {
 
     val ck_cpa: Map[String, String] => Boolean = m => m.contains("cpa")
     val ck_gycx: Map[String, String] => Boolean = m => m.contains("gycx")

@@ -50,7 +50,7 @@ case class MaxSparkListener(targetUser: String, stage: String)
 
         if(progress < current.toInt){
             progress = current.toInt
-            em.sendMessage(targetUser, stage, "ing", toJson(Map("progress" -> toJson(progress))))
+            em.sendMessage("", targetUser, stage, "ing", toJson(Map("progress" -> toJson(progress))))
             println("aaa" + progress)
         }
     }

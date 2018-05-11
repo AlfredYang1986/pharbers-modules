@@ -3,6 +3,7 @@ package com.pharbers.panel.nhwa
 import java.util.UUID
 
 import akka.actor.Actor
+import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.pactions.actionbase._
@@ -13,7 +14,7 @@ import com.pharbers.panel.common.{phPanelId2Redis, phSavePanelJob}
 import com.pharbers.panel.nhwa.format._
 import org.apache.spark.listener
 import org.apache.spark.listener.addListenerAction
-import org.apache.spark.listener.progress.multiProgressTrait
+import org.apache.spark.listener.progress.sendMultiProgress
 
 object phNhwaPanelJob {
 
@@ -52,7 +53,7 @@ object phNhwaPanelJob {
 * 6. read CPA文件第一页
 * 7. read CPA文件第二页
 **/
-trait phNhwaPanelJob extends sequenceJobWithMap with multiProgressTrait {
+trait phNhwaPanelJob extends sequenceJobWithMap {
     override val name: String = "phNhwaPanelJob"
 
     val temp_name: String = UUID.randomUUID().toString
@@ -68,7 +69,11 @@ trait phNhwaPanelJob extends sequenceJobWithMap with multiProgressTrait {
 
     val ym: String
     val mkt: String
+    val user,company: String
+    val p_current, p_total: Double
+    implicit val actor: Actor
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
+    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user)(p_current, p_total).multiProgress
 
     /**
       * 1. read 未出版医院文件

@@ -1,16 +1,18 @@
 package com.pharbers.panel.nhwa
 
 import java.util.UUID
+
 import akka.actor.Actor
-import org.apache.spark.listener
+import com.pharbers.channel.sendEmTrait
+import com.pharbers.common.algorithm.max_path_obj
+import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.jobs.sequenceJob
 import com.pharbers.panel.common.phCalcYM2JVJob
-import com.pharbers.common.algorithm.max_path_obj
-import org.apache.spark.listener.addListenerAction
-import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
-import org.apache.spark.listener.progress.singleProgressTrait
+import org.apache.spark.listener
+import org.apache.spark.listener.addListenerAction
+import org.apache.spark.listener.progress.sendSingleProgress
 
 object phNhwaCalcYMJob {
     def apply(_company: String, _user: String)
@@ -25,10 +27,14 @@ object phNhwaCalcYMJob {
     }
 }
 
-trait phNhwaCalcYMJob extends sequenceJob with singleProgressTrait {
+trait phNhwaCalcYMJob extends sequenceJob {
     override val name: String = "phNhwaCalcYMJob"
     val cache_location: String = max_path_obj.p_cachePath + UUID.randomUUID().toString
     val cpa_file: String
+    val user,company: String
+
+    implicit val actor: Actor
+    implicit val sp: (sendEmTrait, Double) => Unit = sendSingleProgress(company, user).singleProgress
 
     override val actions: List[pActionTrait] = { jarPreloadAction() ::
                 setLogLevelAction("ERROR") ::

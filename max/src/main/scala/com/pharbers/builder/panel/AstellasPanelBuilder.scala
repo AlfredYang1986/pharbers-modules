@@ -7,6 +7,7 @@ import com.pharbers.pactions.actionbase.pActionTrait
 
 case class AstellasPanelBuilder(override val company: String, override val user: String)
                                (implicit override val actor: Actor) extends PanelBuilder(company, user) {
+
     override def instance: pActionTrait = {
         args("mkt") match {
             case "麻醉市场1" => phNhwaPanelJob(company, user)(args("ym"), args("mkt"),
