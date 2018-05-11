@@ -12,12 +12,10 @@
 //import play.api.libs.json.JsValue
 //
 //import com.pharbers.builder.phBuilder
-//import com.typesafe.config.ConfigFactory
 //import akka.actor.{Actor, ActorSystem, Props}
 //
 //class NhwaPanelSuit extends FunSuite {
-//    val config = ConfigFactory.load("split-new-master")
-//    val system = ActorSystem("maxActor", config)
+//    val system = ActorSystem("maxActor")
 //    val testActor = system.actorOf(NhwaPanelTestImpl.props)
 //
 //    test("nhwa calc ym") {

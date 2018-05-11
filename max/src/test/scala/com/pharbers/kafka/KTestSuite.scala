@@ -1,11 +1,10 @@
 //package com.pharbers.kafka
 //
+//import akka.actor.ActorSystem
+//import org.scalatest.FunSuite
 //import java.util.concurrent.Executors
 //
-//import akka.actor.ActorSystem
-//import com.pharbers.channel.chanelImpl.{kafkaConsumer, kafkaLstTopics, kafkaPushRecord}
-//import com.pharbers.channel.clacProgressChannel
-//import org.scalatest.FunSuite
+//import com.pharbers.channel.chanelImpl.callJobConsumer
 //
 //class KTestSuite extends FunSuite{
 //
@@ -19,19 +18,23 @@
 ////        lstTopic().lstTopics.foreach(println(_))
 ////    }
 //
-//    implicit val asys = ActorSystem("test")
-//    val ch = clacProgressChannel("abcde")(asys)
+////    test("kafka push record to topic alfredyang") {
+////        import ch.precord
+////        ch.pushRecord(Map("id" -> "abcde",
+////                          "name" -> "abcde",
+////                          "stages" -> "alfred",
+////                          "progress" -> 90.asInstanceOf[Number]))
+////
+////        Thread.sleep(5000)
+////    }
 //
-//    test("kafka push record to topic alfredyang") {
-//        import ch.precord
-//        ch.pushRecord(Map("id" -> "abcde",
-//                          "name" -> "abcde",
-//                          "stages" -> "alfred",
-//                          "progress" -> 90.asInstanceOf[Number]))
+//    test("kafka Consumer for topic max_callJob") {
 //
-//        Thread.sleep(5000)
+//        val asys = ActorSystem("test")
+//        val ch = callJobConsumer("abcde")(asys)
+//
+//        val tmp = Executors.newFixedThreadPool(1).submit(ch)
+//
+//        Thread.sleep(50000)
 //    }
-//
-//    val tmp = Executors.newFixedThreadPool(1)
-//    tmp.submit(ch)
 //}
