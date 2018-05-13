@@ -18,7 +18,7 @@ import org.apache.spark.listener.progress.sendMultiProgress
 
 object phNhwaPanelJob {
 
-    def apply(_company: String, _user: String)
+    def apply(_company: String, _user: String, _job_id: String)
              (_ym: String, _mkt: String, _cpa: String, _p_current: Int, _p_total: Int)
              (_not_published_hosp_file: String,
               _universe_file: String,
@@ -36,6 +36,7 @@ object phNhwaPanelJob {
             override lazy val ym: String = _ym
             override lazy val mkt: String = _mkt
             override lazy val user: String = _user
+            override lazy val job_id: String = _job_id
             override lazy val company: String = _company
             override lazy val actor: Actor = _actor
             override lazy val p_total: Double = _p_total
@@ -69,7 +70,7 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
 
     val ym: String
     val mkt: String
-    val user,company: String
+    val user, company, job_id: String
     val p_current, p_total: Double
     implicit val actor: Actor
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
@@ -183,7 +184,8 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
             "mkt" -> StringArgs(mkt),
             "user" -> StringArgs(user),
             "name" -> StringArgs(temp_name),
-            "company" -> StringArgs(company)
+            "company" -> StringArgs(company),
+            "job_id" -> StringArgs(job_id)
         )
     )
 

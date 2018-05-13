@@ -7,10 +7,11 @@ import com.pharbers.pactions.jobs.NULLJob
 import com.pharbers.pactions.actionbase.pActionTrait
 
 object phBuilder {
-    def apply(_user: String, _company: String)
+    def apply(_user: String, _company: String, _job_id: String)
              (implicit _actor: Actor): phBuilder = {
         new phBuilder {
             override val user: String = _user
+            override val job_id: String = _job_id
             override val company: String = _company
             override implicit val actor: Actor = _actor
 
@@ -22,6 +23,7 @@ object phBuilder {
 
 trait phBuilder {
     val user: String
+    val job_id: String
     val company: String
     implicit val actor: Actor
 
@@ -39,9 +41,9 @@ trait phBuilder {
         this
     }
 
-    def doCalcYM: JsValue = YmCalcBuilder(user, company).set(args).result
+    def doCalcYM: JsValue = YmCalcBuilder(company, user, job_id).set(args).result
 
-    def doPanel: JsValue = PanelBuilder(user, company).set(args).result
+    def doPanel: JsValue = PanelBuilder(company, user, job_id).set(args).result
 
-    def doMax: JsValue = MaxBuilder(user, company).set(args).result
+    def doMax: JsValue = MaxBuilder(company, user, job_id).set(args).result
 }

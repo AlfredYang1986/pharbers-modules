@@ -115,7 +115,7 @@ trait EmImpl extends EmTrait with EmInstance { this: EmBase =>
             )
         )
 
-//        proxy("messages").post(args)
+        proxy("messages").post(args)
     }
 
     override def sendMessage2Group(groupName: String, msg: JsValue): Unit = {
@@ -135,7 +135,7 @@ trait EmImpl extends EmTrait with EmInstance { this: EmBase =>
             )
         )
 
-//        proxy("messages").post(args)
+        proxy("messages").post(args)
     }
 
 }

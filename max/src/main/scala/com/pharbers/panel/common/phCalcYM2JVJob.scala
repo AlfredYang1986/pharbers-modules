@@ -20,7 +20,7 @@ class phCalcYM2JVJob[T : ClassTag](override val defaultArgs: pActionArgs) extend
         val result = rdd.filter(_._2 > maxYm/2).map(_._1).sorted
 
         JVArgs(
-            toJson(result.mkString(","))
+            toJson(result.mkString("#"))
         )
     }
 }

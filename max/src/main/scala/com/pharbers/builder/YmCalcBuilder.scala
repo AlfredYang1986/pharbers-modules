@@ -5,7 +5,7 @@ import com.pharbers.pactions.actionbase.{JVArgs, NULLArgs, pActionTrait}
 import com.pharbers.panel.nhwa.phNhwaCalcYMJob
 import play.api.libs.json.JsValue
 
-case class YmCalcBuilder(override val company: String, override val user: String)
+case class YmCalcBuilder(override val company: String, override val user: String, override val job_id: String)
                         (implicit override val actor: Actor) extends phBuilder {
 
     val ck_cpa: Map[String, String] => Boolean = m => m.contains("cpa")

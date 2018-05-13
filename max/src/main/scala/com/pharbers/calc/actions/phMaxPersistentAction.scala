@@ -13,7 +13,7 @@ class phMaxPersistentAction[T](override val defaultArgs: pActionArgs) extends pA
     override def perform(prMap: pActionArgs): pActionArgs = {
 
         val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-        val panelName = defaultArgs.asInstanceOf[StringArgs].get
+        val panelName = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
         val result_location = max_path_obj.p_maxPath + panelName
 
         max_result.write

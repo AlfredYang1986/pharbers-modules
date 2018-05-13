@@ -45,7 +45,7 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                     val resultLst = (index*pageSize to index*pageSize+pageSize-1).map(x => {
                         StringArgs(phIndexRdd.get(x).get.toString())
                     }).toList
-                    redisDriver.addListRight(pageCacheTempKey,resultLst:_*)
+                    redisDriver.addListRight(pageCacheTempKey, resultLst:_*)
                 })
                 ListArgs(redisDriver.getListAllValue(pageCacheKey).map(StringArgs(_)))
             }
