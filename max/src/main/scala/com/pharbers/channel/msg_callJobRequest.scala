@@ -9,7 +9,6 @@ import play.api.libs.json.JsValue
 class msg_callJobRequest extends CommonMessage("callJobRequest", callJobRequestModule)
 
 object callJobRequestMessage {
-    case class msg_choiceJob(jv: JsValue) extends msg_callJobRequest
     case class msg_executeJob(jv: JsValue) extends msg_callJobRequest
     case class msg_responseJob(jv: JsValue) extends msg_callJobRequest
 }

@@ -43,7 +43,7 @@ case class MaxBuilder(override val company: String, override val user: String, o
             instance.perform(MapArgs(Map().empty)).asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         }
 
-        toJson("panel result")
+        toJson("max result")
     }
 
 }

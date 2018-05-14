@@ -13,7 +13,6 @@ trait kafkaPushTopic { this : kafkaBasicConf =>
 
     def pushTopic(name : String) : Unit = {
         val config = new Properties
-//        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
         config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, endpoints)
         val admin = AdminClient.create(config)
 

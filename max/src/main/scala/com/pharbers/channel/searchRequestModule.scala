@@ -9,7 +9,7 @@ import com.pharbers.channel.doJobActor._
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
-object callJobRequestModule extends ModuleTrait with callJobRequestTrait {
+object searchRequestModule extends ModuleTrait with searchRequestTrait {
 
     override def dispatchMsg(msg: MessageDefines)
                             (pr: Option[Map[String, JsValue]])
@@ -23,12 +23,17 @@ object callJobRequestModule extends ModuleTrait with callJobRequestTrait {
 
 }
 
-trait callJobRequestTrait extends getJV2Map {
+trait searchRequestTrait {
+
+    //TODO 不会写了，先和`executeJob`写到一起
+    def choiceJob(jv: JsValue)
+                 (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = (Some(Map().empty), None)
 
     def executeJob(jv: JsValue)
                   (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
 
         val as: ActorSystem = cm.modules.get.get("as").map(x => x.asInstanceOf[ActorSystem]).getOrElse(throw new Exception("actor is not impl"))
+        // TODO 写死的testGroup去掉
         val jobActor = as.actorOf(doJobActor.props)
 
         (jv \ "call").asOpt[String].get match {
@@ -44,8 +49,7 @@ trait callJobRequestTrait extends getJV2Map {
 
     def responseJob(jv: JsValue)
                    (implicit cm: CommonModules): (Option[Map[String, JsValue]], Option[JsValue]) = {
-
-        responsePusher().callJobResponse(Map("job_id" -> getArgs2Map(jv)("job_id")), "start")(jv)
+        responsePusher().callJobResponse(Map("call job" -> "success"), "start")(jv)
         (Some(Map().empty), None)
     }
 

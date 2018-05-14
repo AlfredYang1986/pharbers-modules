@@ -16,7 +16,6 @@
 */buildNumber.properties
 */.mvn/timing.properties
 
-# Mac OSX specific
 .DS_Store
 
 /max/config/

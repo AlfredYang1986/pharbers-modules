@@ -1,17 +1,17 @@
 package com.pharbers.channel.chanelImpl
 
-import com.pharbers.channel.callJobRequestMessage._
 import akka.actor.ActorSystem
 import play.api.libs.json.JsValue
-import play.api.libs.json.Json.toJson
 import java.util.concurrent.Executors
+import play.api.libs.json.Json.toJson
 import com.pharbers.common.xmpp.kafka._
-import com.pharbers.bmpattern.LogMessage.msg_log
 import com.pharbers.bmmessages.{CommonModules, MessageRoutes}
+import com.pharbers.bmpattern.LogMessage.msg_log
 import com.pharbers.bmpattern.ResultMessage.msg_CommonResultMessage
+import com.pharbers.channel.searchRequestMessage.{msg_search, msg_searchResponse}
 
-case class callJobConsumer(override val group_id: String)
-                          (override implicit val dispatch: ActorSystem)
+case class serachConsumer(override val group_id: String)
+                         (override implicit val dispatch: ActorSystem)
         extends kafkaBasicConf with kafkaConsumer {
 
     override lazy val endpoints: String = kafka_config_obj.endpoints
@@ -21,9 +21,9 @@ case class callJobConsumer(override val group_id: String)
     override val consumeHandler: JsValue => MessageRoutes = { jv =>
         import com.pharbers.bmpattern.LogMessage.common_log
         import com.pharbers.bmpattern.ResultMessage.common_result
-        MessageRoutes(msg_log(toJson(Map("method" -> toJson("call job request"))), jv)
-                :: msg_executeJob(jv)
-                :: msg_responseJob(jv)
+        MessageRoutes(msg_log(toJson(Map("method" -> toJson("search request"))), jv)
+                :: msg_search(jv)
+                :: msg_searchResponse(jv)
                 :: msg_CommonResultMessage() :: Nil, None)(CommonModules(Some(Map("as" -> dispatch))))
     }
 
