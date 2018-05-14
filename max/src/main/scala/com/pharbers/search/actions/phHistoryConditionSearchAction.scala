@@ -1,10 +1,7 @@
 package com.pharbers.search.actions
 
-import com.pharbers.common.algorithm.{max_path_obj, phSparkCommonFuncTrait}
-import com.pharbers.driver.PhRedisDriver
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
 import com.pharbers.pactions.actionbase._
-import com.pharbers.sercuity.Sercurity
-import com.pharbers.spark.phSparkDriver
 
 /**
   * Created by jeorch on 18-5-14.

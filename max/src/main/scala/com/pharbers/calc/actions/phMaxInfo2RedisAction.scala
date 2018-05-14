@@ -36,7 +36,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
             .collect().map(x => x.toString())
         val max_sales_prov_lst = maxDF.groupBy("Province").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
-        val company_sales = maxDF_filter_company.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
+        val max_company_sales = maxDF_filter_company.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val company_sales_city_lst = maxDF_filter_company.groupBy("City").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
         val company_sales_prov_lst = maxDF_filter_company.groupBy("Province").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
@@ -44,7 +44,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
 
         rd.addMap(singleJobKey, "max_count", max_count)
         rd.addMap(singleJobKey, "max_sales", max_sales)
-        rd.addMap(singleJobKey, "company_sales", company_sales)
+        rd.addMap(singleJobKey, "max_company_sales", max_company_sales)
         rd.addListLeft(max_sales_city_lst_key, max_sales_city_lst:_*)
         rd.addListLeft(max_sales_prov_lst_key, max_sales_prov_lst:_*)
         rd.addListLeft(company_sales_city_lst_key, company_sales_city_lst:_*)

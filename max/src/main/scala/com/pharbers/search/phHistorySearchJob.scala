@@ -11,7 +11,8 @@ import com.pharbers.search.actions.{phHistoryConditionSearchAction, phPageCacheA
 object phHistorySearchJob {
     def apply(args: Map[String, String]) : phHistorySearchJob = {
         new phHistorySearchJob {
-            override lazy val uid: String = args.get("uid").getOrElse(throw new Exception("Illegal user"))
+            override lazy val user: String = args.get("user").getOrElse(throw new Exception("Illegal user"))
+            override lazy val company: String = args.get("company").getOrElse(throw new Exception("Illegal company"))
             override lazy val pageIndex: String = args.get("pageIndex").getOrElse("0")
             override lazy val singlePageSize: String = args.get("singlePageSize").getOrElse("20")
             override lazy val ym_condition: String = args.get("ym_condition").getOrElse("")
@@ -23,7 +24,8 @@ object phHistorySearchJob {
 trait phHistorySearchJob extends sequenceJobWithMap {
     override val name: String = "phHistorySearchJob"
 
-    val uid: String
+    val user: String
+    val company: String
     val pageIndex: String
     val singlePageSize: String
     val ym_condition: String
@@ -31,7 +33,8 @@ trait phHistorySearchJob extends sequenceJobWithMap {
 
     val searchArgs = MapArgs(
         Map(
-            "uid" -> StringArgs(uid),
+            "user" -> StringArgs(user),
+            "company" -> StringArgs(company),
             "pi" -> StringArgs(pageIndex),
             "ps" -> StringArgs(singlePageSize),
             "ym_condition" -> StringArgs(ym_condition),

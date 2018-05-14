@@ -19,12 +19,12 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
     private val defaultCachePageCount: Int = 5
 
     override def perform(pr: pActionArgs): pActionArgs = {
-        val uid = defaultArgs.asInstanceOf[MapArgs].get("uid").asInstanceOf[StringArgs].get
+        val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
         val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
         val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
         val redisDriver = new PhRedisDriver()
-        val company = redisDriver.getMapValue(uid, "company")
-        val pageCacheKey = Sercurity.md5Hash(s"$uid$company$pageIndex$pageSize")
+        val company = redisDriver.getMapValue(user, "company")
+        val pageCacheKey = Sercurity.md5Hash(s"$user$company$pageIndex$pageSize")
         val cachedPageData = redisDriver.getListAllValue(pageCacheKey)
 
         cachedPageData match {
@@ -38,9 +38,9 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                 })
                 val phIndexRdd = IndexedRDD(initIndexRdd)
                 0 to defaultCachePageCount-1 foreach(index =>{
-                    val pageCacheTempKey = Sercurity.md5Hash(s"$uid$company$index$pageSize")
+                    val pageCacheTempKey = Sercurity.md5Hash(s"$user$company$index$pageSize")
                     val resultLst = (index*pageSize to index*pageSize+pageSize-1).map(x => {
-                        StringArgs(phIndexRdd.get(x).get.toString())
+                        phIndexRdd.get(x).get.toString()
                     }).toList
                     redisDriver.addListRight(pageCacheTempKey, resultLst:_*)
                 })
