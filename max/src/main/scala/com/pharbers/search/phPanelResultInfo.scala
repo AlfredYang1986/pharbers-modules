@@ -17,7 +17,11 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     def getHospCount = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
     def getProdCount = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
     def getPanelSales = rd.getMapValue(singleJobKey, "panel_sales").toDouble
-    def getPanelCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
-    def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key)
+    def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
+    def getCurrCompanyShare = getCurrCompanySales/getPanelSales
+    def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key).map(x => {
+        val temp = x.replace("[","").replace("]","").split(",")
+        Map("HospID" -> temp(0), "HospName" -> temp(1))
+    })
 
 }

@@ -14,7 +14,8 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panelDF = pr.asInstanceOf[MapArgs].get("panel").asInstanceOf[DFArgs].get
         val universe_file = pr.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
             .withColumnRenamed("PHA ID", "u_HOSP_ID")
-            .select("u_HOSP_ID")
+            .withColumnRenamed("PHA医院名称", "HOSP_NAME")
+            .select("u_HOSP_ID", "HOSP_NAME")
 
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
@@ -30,7 +31,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panel_company_sales = panelDF_filter_company.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val not_panel_hosp_lst = universe_file
             .join(panel_hosp_distinct, universe_file("u_HOSP_ID") === panel_hosp_distinct("p_HOSP_ID"), "left")
-            .filter("p_HOSP_ID is null").select("u_HOSP_ID").collect().map(x => x.toString())
+            .filter("p_HOSP_ID is null").select("u_HOSP_ID", "HOSP_NAME").collect().map(x => x.toString())
 
         val rd = new PhRedisDriver()
         val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)

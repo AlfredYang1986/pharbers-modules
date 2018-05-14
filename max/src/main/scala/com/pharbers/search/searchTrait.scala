@@ -1,6 +1,5 @@
 package com.pharbers.search
 
-import com.pharbers.bmmessages.CommonModules
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 

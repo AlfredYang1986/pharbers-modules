@@ -1,7 +1,7 @@
 //package com.pharbers.max
 //
 //import com.pharbers.pactions.actionbase._
-//import com.pharbers.search.phHistorySearchJob
+//import com.pharbers.search.{phHistorySearchJob, phMaxResultInfo, phPanelResultInfo}
 //import org.scalatest.FunSuite
 //
 ///**
@@ -9,9 +9,10 @@
 //  */
 //class MaxSearchSuite extends FunSuite {
 //
+//    val company: String = "恩华"
+//    val user: String = "testUser"
+//
 //    test("history search"){
-//        val company: String = "恩华"
-//        val user: String = "testUser"
 //
 //        val args: Map[String, String] = Map(
 //            "company" -> company,
@@ -23,6 +24,28 @@
 //
 //        println(s"### => ${searchResult.length}")
 //        println(s"### => ${searchResult}")
+//    }
+//
+//    test("get panel info"){
+//        val ym = "201712"
+//        val mkt = "麻醉市场"
+//        val panelInfo = phPanelResultInfo(user, company, ym, mkt)
+//        println(panelInfo.getHospCount)
+//        println(panelInfo.getProdCount)
+//        println(panelInfo.getPanelSales)
+//        println(panelInfo.getCurrCompanySales)
+//        println(panelInfo.getCurrCompanyShare)
+//        println(panelInfo.getNotPanelHospLst.length)
+//        println(panelInfo.getNotPanelHospLst.take(10))
+//    }
+//    test("get max info"){
+//        val ym = "201712"
+//        val mkt = "麻醉市场"
+//        val maxResultInfo = phMaxResultInfo(user, company, ym, mkt)
+//        println(maxResultInfo.getMaxResultSales)
+//        println(maxResultInfo.getCurrCompanySales)
+//        println(maxResultInfo.getCityLstMap.take(10))
+//        println(maxResultInfo.getProvLstMap.take(10))
 //    }
 //
 //}
