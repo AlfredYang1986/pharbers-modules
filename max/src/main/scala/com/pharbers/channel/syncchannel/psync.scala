@@ -29,13 +29,13 @@ trait psync extends kafkaBasicConf with kafkaConsumer with kafkaPushRecord {
 
     class syncActor(t : psync) extends Actor with ActorLogging {
         override def receive: Receive = {
-            case mmp : Map[String, AnyRef] => t.pushRecord(mmp)
-//            case rrp : JsValue =>
+            case mmp : Map[String, AnyRef] => t.pushRecord(mmp)(precord)
+            case _ => ???
         }
     }
 
     def syncCall(m : Map[String, AnyRef]) : JsValue = {
-        val actor = dispatch.actorOf(Props[syncActor])
+        val actor = dispatch.actorOf(syncActor.props(this))
         val r = actor ? m
         val result = Await.result(r.mapTo[JsValue], time_out.duration)
         result

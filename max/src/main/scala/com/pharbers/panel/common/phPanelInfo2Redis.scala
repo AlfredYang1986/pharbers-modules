@@ -27,7 +27,8 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
         val job_id = defaultArgs.asInstanceOf[MapArgs].get("job_id").asInstanceOf[StringArgs].get
 
-        val panelDF_filter_company = panelDF.filter(s"Prod_Name like '%${company}%'")
+        // TODO: company 暂时写死
+        val panelDF_filter_company = panelDF.filter(s"Prod_Name like '%恩华%'")
         val panel_hosp_distinct = panelDF.withColumnRenamed("HOSP_ID", "p_HOSP_ID").select("p_HOSP_ID").distinct()
         val panel_prod_count = panelDF.select("Prod_Name").distinct().count()
         val panel_sales = panelDF.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
@@ -43,6 +44,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
         rd.addSet(job_id, panel_name)
+        rd.addSet(job_id + "ym", ym)
 
         rd.addMap(panel_name, "ym", ym)
         rd.addMap(panel_name, "mkt", mkt)

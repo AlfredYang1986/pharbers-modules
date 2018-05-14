@@ -1,5 +1,7 @@
 package com.pharbers.channel.syncchannel.syncHelper
 
+import java.util.Date
+
 import akka.actor.{Actor, ActorRef}
 import com.pharbers.ErrorCode
 import com.pharbers.bmmessages.{CommonModules, MessageDefines}
@@ -18,7 +20,18 @@ case class syncModule(t : ActorRef) extends ModuleTrait {
     def pSyncCallback(data : JsValue)
                      (implicit cm : CommonModules) : (Option[Map[String, JsValue]], Option[JsValue]) = {
         try {
-            t ! data
+            val mapResult = Map("key" -> toJson("value"))
+
+            val msg = Map(
+                "user_id" -> toJson("user_id"),
+                "company_id" -> toJson("company_id"),
+                "date" -> toJson(new Date().getTime.toString),
+                "call" -> toJson("call"),
+                "stage" -> toJson("stage"),
+                "result" -> toJson(mapResult)
+            )
+
+            t ! toJson(msg)
             (Some(Map("status" -> toJson("ok"))), None)
 
         } catch {
