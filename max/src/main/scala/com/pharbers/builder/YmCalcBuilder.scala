@@ -14,7 +14,7 @@ case class YmCalcBuilder(override val company: String, override val user: String
 
     override def instance: pActionTrait = {
         company match {
-            case "testGroup" if ck_cpa(args) => phNhwaCalcYMJob(company, user)(args("cpa"))
+            case "恩华" if ck_cpa(args) => phNhwaCalcYMJob(company, user)(args("cpa"))
             case _ => throw new Exception("input wrong")
         }
     }

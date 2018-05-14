@@ -69,7 +69,7 @@ trait phMaxJob extends sequenceJobWithMap {
     // 2. read universe file
     val universe_cache: String = UUID.randomUUID().toString
     val readUniverseFile: sequenceJob = new sequenceJob {
-        override val name = "read_universe_file_job"
+        override val name = "universe_data"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, universe_cache) ::
                     saveCurrenResultAction(temp_dir + universe_cache) ::

@@ -61,12 +61,13 @@
 //    implicit val actor: Actor = this
 //    val company: String = "testGroup"
 //    val user: String = "testUser"
+//    val jobId: String = "testJobId"
 //
 //    override def receive: Receive = {
 //        case "calcYM" =>
-//            sender ! phBuilder(company, user).set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx").doCalcYM
+//            sender ! phBuilder(company, user, jobId).set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx").doCalcYM
 //        case "panel" =>
-//            sender ! phBuilder(company, user)
+//            sender ! phBuilder(company, user, jobId)
 //                    .set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx")
 //                    .set("yms", "201711#201712")
 //                    .doPanel

@@ -30,7 +30,7 @@ class PanelBuilder(override val company: String, override val user: String, over
 
     override def instance: pActionTrait = {
         (company, args("mkt")) match {
-            case ("testGroup", _) if ck_nhwa(args) => phNhwaPanelJob(company, user, job_id)(args("ym"), args("mkt"), args("cpa"), args("currentJob").toInt, args("jobTotal").toInt)("nhwa/2017年未出版医院名单.xlsx", args("universe"), "nhwa/nhwa匹配表.xlsx",  "nhwa/补充医院.xlsx", "nhwa/通用名市场定义.xlsx")
+            case ("恩华", _) if ck_nhwa(args) => phNhwaPanelJob(company, user, job_id)(args("ym"), args("mkt"), args("cpa"), args("currentJob").toInt, args("jobTotal").toInt)("nhwa/2017年未出版医院名单.xlsx", args("universe"), "nhwa/nhwa匹配表.xlsx",  "nhwa/补充医院.xlsx", "nhwa/通用名市场定义.xlsx")
             case (_, _) if ck_nhwa(args) => phNhwaPanelJob(company, user, job_id)(args("ym"), args("mkt"), args("cpa"), args("currentJob").toInt, args("jobTotal").toInt)("nhwa/2017年未出版医院名单.xlsx", args("universe"), "nhwa/nhwa匹配表.xlsx",  "nhwa/补充医院.xlsx", "nhwa/通用名市场定义.xlsx")
             case _ => throw new Exception("input wrong")
         }

@@ -31,7 +31,7 @@ case class MaxBuilder(override val company: String, override val user: String, o
     override def result: JsValue = {
         val rd = new PhRedisDriver()
         val panelLst = rd.getSetAllValue(job_id)
-        args += "jobTotal" -> panelLst.toString
+        args += "jobTotal" -> panelLst.size.toString
 
         panelLst.map { panel =>
             val mkt = rd.getMapValue(panel, "mkt")
@@ -40,7 +40,7 @@ case class MaxBuilder(override val company: String, override val user: String, o
             args += "ym" -> rd.getMapValue(panel, "ym")
             args += "universe" -> getUniverse(company, mkt)
             args += "currentJob" -> (args.getOrElse("currentJob", "0").toInt + 1).toString
-            instance.perform(MapArgs(Map().empty)).asInstanceOf[MapArgs].get("max_bson_action").asInstanceOf[StringArgs].get
+            instance.perform(MapArgs(Map().empty)).asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         }
 
         toJson("panel result")

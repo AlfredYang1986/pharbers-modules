@@ -22,7 +22,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumnRenamed("Date", "YM")
                 .withColumnRenamed("Strength", "min1")
                 .withColumnRenamed("DOI", "MARKET")
-                .selectExpr("YM", "min1", "HOSP_ID", "Sales", "Units")
+                .selectExpr("YM", "min1", "HOSP_ID", "Sales", "Units", "MARKET")
         }
 
         val universeDF = {
@@ -45,7 +45,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumnRenamed("sum(Units)", "sumUnits")
         }
 
-        val joinDataWithEmptyValue = panelDF.select("YM", "min1").distinct() join universeDF
+        val joinDataWithEmptyValue = panelDF.select("YM", "min1", "MARKET").distinct() join universeDF
 
         val joinData = {
             joinDataWithEmptyValue
@@ -100,7 +100,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumnRenamed("YM", "Date")
                 .withColumnRenamed("Prefecture", "City")
                 .withColumnRenamed("min1", "Product")
-                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units")
+                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
         }
 
         DFArgs(resultDF)

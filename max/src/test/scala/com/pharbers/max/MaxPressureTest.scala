@@ -107,7 +107,7 @@
 //        println(s"MAX计算开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result1 = phMaxJob(panelResult1.toString, s"pfizer/universe_${mkt1}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get.toString
+//        val result1 = phMaxJob(panelResult1.toString, s"pfizer/universe_${mkt1}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get.toString
 //
 //        println("result1 = " + result1)
 //        println()
@@ -128,7 +128,7 @@
 //        println(s"MAX计算开始时间" + dateformat.format(new Date()))
 //        println()
 //
-//        val result2 = phMaxJob(panelResult2.toString, s"pfizer/universe_${mkt2}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_bson_action").get.toString
+//        val result2 = phMaxJob(panelResult2.toString, s"pfizer/universe_${mkt2}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get.toString
 //
 //        println("result2 = " + result2)
 //        println()

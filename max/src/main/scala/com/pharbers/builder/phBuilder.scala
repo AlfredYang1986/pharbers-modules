@@ -7,7 +7,7 @@ import com.pharbers.pactions.jobs.NULLJob
 import com.pharbers.pactions.actionbase.pActionTrait
 
 object phBuilder {
-    def apply(_user: String, _company: String, _job_id: String)
+    def apply(_company: String, _user: String, _job_id: String)
              (implicit _actor: Actor): phBuilder = {
         new phBuilder {
             override val user: String = _user
