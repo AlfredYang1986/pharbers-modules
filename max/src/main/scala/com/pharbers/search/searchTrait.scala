@@ -1,5 +1,6 @@
 package com.pharbers.search
 
+import com.pharbers.pactions.actionbase.{DFArgs, ListArgs, MapArgs, StringArgs}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
@@ -21,54 +22,55 @@ trait searchTrait {
     }
 
     def searchHistory(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
-        val user_id = (jv \ "condition" \ "user_id").asOpt[String].get
-        val market = (jv \ "condition" \ "market").asOpt[String].get
-        val startTime = (jv \ "condition" \ "startTime").asOpt[String].get
-        val endTime = (jv \ "condition" \ "endTime").asOpt[String].get
-        val currentPage = (jv \ "condition" \ "currentPage").asOpt[String].get
-        val pageSize = (jv \ "condition" \ "pageSize").asOpt[String].get
+        val user = (jv \ "condition" \ "user_id").asOpt[String].getOrElse(throw new Exception("Illegal user"))
+        val company = (jv \ "condition" \ "company").asOpt[String].getOrElse(throw new Exception("Illegal company"))
+        val market = (jv \ "condition" \ "market").asOpt[String].getOrElse("")
+        val startTime = (jv \ "condition" \ "startTime").asOpt[String].getOrElse("")
+        val endTime = (jv \ "condition" \ "endTime").asOpt[String].getOrElse("")
+        val currentPage = (jv \ "condition" \ "currentPage").asOpt[String].getOrElse("0")
+        val pageSize = (jv \ "condition" \ "pageSize").asOpt[String].getOrElse("20")
 
-        val data1 = toJson(
-            Map(
-                "id" -> toJson("1"),
-                "type" -> toJson("dataCenter"),
-                "attributes" -> toJson(
-                    Map(
-                        "date" -> toJson("2018-10"),
-                        "province" -> toJson("北京"),
-                        "market" -> toJson("降压药"),
-                        "product" -> toJson("巴拉巴拉巴拉"),
-                        "sales" -> toJson("100"),
-                        "units" -> toJson("20")
+        val args: Map[String, String] = Map(
+            "company" -> company,
+            "user" -> user,
+            "pageIndex" -> currentPage,
+            "singlePageSize" -> pageSize,
+            "ym_condition" -> s"${startTime}-${endTime}",
+            "mkt" -> market
+        )
+
+        val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
+
+        val itemsCount = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
+        val pagesCount = itemsCount/pageSize.toLong
+
+        val singlePageData = searchResult.get("page_search_action").asInstanceOf[ListArgs].get.zipWithIndex.map(x => {
+            val item = x._1.asInstanceOf[StringArgs].get.replace("[","").replace("]","").split(",")
+            toJson(
+                Map(
+                    "id" -> toJson(x._2),
+                    "type" -> toJson("dataCenter"),
+                    "attributes" -> toJson(
+                        Map(
+                            "date" -> toJson(item(0)),
+                            "province" -> toJson(item(2)),
+                            "market" -> toJson(item(8)),
+                            "product" -> toJson(item(4)),
+                            "sales" -> toJson(item(7)),
+                            "units" -> toJson(item(6))
+                        )
                     )
                 )
             )
-        )
-        val data2 = toJson(
-            Map(
-                "id" -> toJson("2"),
-                "type" -> toJson("dataCenter"),
-                "attributes" -> toJson(
-                    Map(
-                        "date" -> toJson("2018-11"),
-                        "province" -> toJson("天津"),
-                        "market" -> toJson("退烧药"),
-                        "product" -> toJson("小魔仙变身"),
-                        "sales" -> toJson("100"),
-                        "units" -> toJson("20")
-                    )
-                )
-            )
-        )
-        val data = toJson( data1 :: data2 :: Nil)
+        })
 
         val temp = Some(
             Map(
-                "data" -> data,
+                "data" -> toJson(singlePageData),
                 "page" -> toJson(
                     Map(
-                        "itemsCount" -> toJson("100"),
-                        "pagesCount" -> toJson("10")
+                        "itemsCount" -> toJson(itemsCount),
+                        "pagesCount" -> toJson(pagesCount)
                     )
                 )
             )
@@ -77,6 +79,7 @@ trait searchTrait {
         (temp, None)
     }
 
+    //TODO: get singleJob's calcYM from redis
     def searchSimpleCheckSelect(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val job_id = (jv \ "condition" \ "job_id").asOpt[String].get
         val user_id = (jv \ "user" \ "user_id").asOpt[String].get
@@ -95,10 +98,14 @@ trait searchTrait {
 
     def searchSimpleCheck(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val job_id = (jv \ "condition" \ "job_id").asOpt[String].get
-//        val market = (jv \ "condition" \ "market").asOpt[String].get
+        val market = (jv \ "condition" \ "market").asOpt[String].get
         val years = (jv \ "condition" \ "years").asOpt[String].get
         val user_id = (jv \ "user" \ "user_id").asOpt[String].get
         val company_id = (jv \ "user" \ "company" \ "company_id").asOpt[String].get
+
+        //TODO:get ym from jv
+        val ym = (jv \ "condition" \ "ym").asOpt[String].get
+        val panelInfo = phPanelResultInfo(user_id, company_id, ym, market)
 
         val temp = Some(
             Map(
@@ -106,7 +113,7 @@ trait searchTrait {
                     Map(
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson("123"),
+                        "currentNumber" -> toJson(panelInfo.getHospCount),
                         "lastYearNumber" -> toJson("234")
                     )
                 ),
@@ -114,7 +121,7 @@ trait searchTrait {
                     Map(
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson("123"),
+                        "currentNumber" -> toJson(panelInfo.getProdCount),
                         "lastYearNumber" -> toJson("234")
                     )
                 ),
@@ -122,40 +129,27 @@ trait searchTrait {
                     Map(
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson("123"),
+                        "currentNumber" -> toJson(panelInfo.getPanelSales),
                         "lastYearNumber" -> toJson("234")
                     )
                 ),
-                "notfindhospital" -> toJson(
-                    Map(
-                        "date" -> toJson("2018-01"),
-                        "province" -> toJson("北京"),
-                        "market" -> toJson("mkt1"),
-                        "product" -> toJson("巴拉巴拉巴拉"),
-                        "sales" -> toJson("100"),
-                        "units" -> toJson("20")
-                    ) ::  Map(
-                        "date" -> toJson("2018-01"),
-                        "province" -> toJson("北京"),
-                        "market" -> toJson("mkt2"),
-                        "product" -> toJson("巴拉巴拉巴拉"),
-                        "sales" -> toJson("100"),
-                        "units" -> toJson("20")
-                    ) :: Map(
-                        "date" -> toJson("2018-01"),
-                        "province" -> toJson("北京"),
-                        "market" -> toJson("mkt3"),
-                        "product" -> toJson("巴拉巴拉巴拉"),
-                        "sales" -> toJson("100"),
-                        "units" -> toJson("20")
-                    ) :: Nil
-                )
+                "notfindhospital" -> toJson(panelInfo.getNotPanelHospLst.zipWithIndex.map(x => {
+                    val temp = x._1.replace("[", "").replace("]", "").split(",")
+                    toJson(Map(
+                        "index" -> toJson(x._2),
+                        "hospitalName" -> toJson(temp(0)),
+                        "province" -> toJson(temp(1)),
+                        "city" -> toJson(temp(2)),
+                        "cityLevel" -> toJson(temp(3))
+                    ))
+                }))
             )
         )
 
         (temp, None)
     }
 
+    //TODO:0515 do this
     def searchResultCheck(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val job_id = (jv \ "condition" \ "job_id").asOpt[String].get
         val market = (jv \ "condition" \ "market").asOpt[String].get

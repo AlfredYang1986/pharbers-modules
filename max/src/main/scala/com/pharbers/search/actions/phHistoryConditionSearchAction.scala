@@ -28,7 +28,7 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         }
 
         val filteredYM = ym_condition match {
-            case "" => filteredMktDF
+            case "-" => filteredMktDF
             case _ => {
                 val ym_start = ym_condition.split("-")(0)
                 val ym_end = ym_condition.split("-")(1)

@@ -15,7 +15,7 @@ object phHistorySearchJob {
             override lazy val company: String = args.get("company").getOrElse(throw new Exception("Illegal company"))
             override lazy val pageIndex: String = args.get("pageIndex").getOrElse("0")
             override lazy val singlePageSize: String = args.get("singlePageSize").getOrElse("20")
-            override lazy val ym_condition: String = args.get("ym_condition").getOrElse("")
+            override lazy val ym_condition: String = args.get("ym_condition").getOrElse("-")
             override lazy val mkt: String = args.get("mkt").getOrElse("")
         }
     }
