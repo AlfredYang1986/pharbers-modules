@@ -42,6 +42,7 @@
 //        val ym = "201712"
 //        val mkt = "麻醉市场"
 //        val maxResultInfo = phMaxResultInfo(user, company, ym, mkt)
+//        println(maxResultInfo.getLastSeveralMonthResultSalesLst(12))
 //        println(maxResultInfo.getMaxResultSales)
 //        println(maxResultInfo.getLastYearResultSales)
 //        println(maxResultInfo.getCurrCompanySales)

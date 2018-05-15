@@ -23,102 +23,73 @@ trait SearchResultCheck {
                         "marketSumSales" -> toJson(
                             Map(
                                 "currentNumber" -> toJson(max.getMaxResultSales),
-                                "lastYearPercentage" -> toJson(
-                                    (max.getMaxResultSales - max.getLastYearResultSales) / max.getLastYearResultSales
-                                )
+                                "lastYearPercentage" -> toJson(max.getLastYearResultSalesPercentage)
                             )
                         ),
                         "productSales" -> toJson(
                             Map(
                                 "currentNumber" -> toJson(max.getCurrCompanySales),
-                                "lastYearPercentage" -> toJson(
-                                    (max.getCurrCompanySales - max.getLastYearCurrCompanySales) / max.getLastYearCurrCompanySales
-                                )
+                                "lastYearPercentage" -> toJson(max.getLastYearCurrCompanySalesPercentage)
                             )
                         )
                     )
                 ),
-                "trend" -> toJson(
-                    Map(
-                        "date" -> toJson(years),
-                        "percentage" -> toJson("12.1"),
-                        "marketSales" -> toJson("1000")
-                    )
-                        :: Map(
-                        "date" -> toJson("201612"),
-                        "percentage" -> toJson("13.1"),
-                        "marketSales" -> toJson("100")
-                    ) :: Nil
-                ),
+                "trend" -> toJson(max.getLastSeveralMonthResultSalesLst(12).map(item => {
+                    item.map(x => toJson(x._2))
+                })),
                 "region" -> toJson(
-                    Map(
-                        "name" -> toJson("北京"),
-                        "value" -> toJson("111"),
-                        "prodcutSales" -> toJson("12"),
-                        "percentage" -> toJson("1.1")
-                    ) :: Map(
-                        "name" -> toJson("天津"),
-                        "value" -> toJson("111"),
-                        "prodcutSales" -> toJson("12"),
-                        "percentage" -> toJson("1.1")
-                    ) :: Map(
-                        "name" -> toJson("上海"),
-                        "value" -> toJson("111"),
-                        "prodcutSales" -> toJson("12"),
-                        "percentage" -> toJson("1.1")
-                    ) :: Nil
+                    max.getProvLstMap.map(item => {
+                        Map(
+                            "name" -> toJson(item("City")),
+                            "value" -> toJson(item("TotalSales")),
+                            "prodcutSales" -> toJson(item("CompanySales")),
+                            "percentage" -> toJson(item("Share"))
+                        )
+                    })
                 ),
                 "mirror" -> toJson(
                     Map(
                         "provinces" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    Map(
-                                        "area" -> toJson("北京市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Map(
-                                        "area" -> toJson("天津市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Nil
+                                    max.getProvLstMap.take(10).map(item => {
+                                        Map(
+                                            "province" -> toJson(item("Province")),
+                                            "marketSales" -> toJson(item("TotalSales")),
+                                            "percentage" -> toJson(item("Share"))
+                                        )
+                                    })
                                 ),
                                 "lastyear" -> toJson(
-                                    Map(
-                                        "area" -> toJson("北京市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Map(
-                                        "area" -> toJson("天津市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Nil
+                                    max.getProvLstMap.take(10).map(item => {
+                                        Map(
+                                            "province" -> toJson(item("Province")),
+                                            "marketSales" -> toJson(item("lastYearYMTotalSales")),
+                                            "percentage" -> toJson(item("lastYearYMShare"))
+                                        )
+                                    })
                                 )
                             )
                         ),
                         "city" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    Map(
-                                        "area" -> toJson("北京市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Map(
-                                        "area" -> toJson("天津市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Nil
+                                    max.getCityLstMap.take(10).map(item => {
+                                        Map(
+                                            "City" -> toJson(item("City")),
+                                            "marketSales" -> toJson(item("TotalSales")),
+                                            "percentage" -> toJson(item("Share"))
+                                        )
+                                    })
                                 ),
                                 "lastyear" -> toJson(
-                                    Map(
-                                        "area" -> toJson("北京市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Map(
-                                        "area" -> toJson("天津市"),
-                                        "marketSales" -> toJson("1111"),
-                                        "percentage" -> toJson("1.1")
-                                    ) :: Nil
+                                    max.getCityLstMap.take(10).map(item => {
+                                        Map(
+                                            "City" -> toJson(item("City")),
+                                            "marketSales" -> toJson(item("lastYearYMTotalSales")),
+                                            "percentage" -> toJson(item("lastYearYMShare"))
+                                        )
+                                    })
                                 )
                             )
                         )
