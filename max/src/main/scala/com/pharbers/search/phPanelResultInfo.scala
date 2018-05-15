@@ -19,10 +19,6 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     def getPanelSales = rd.getMapValue(singleJobKey, "panel_sales").toDouble
     def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
     def getCurrCompanyShare = getCurrCompanySales/getPanelSales
-    def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key).map(x => {
-        x
-//        val temp = x.replace("[","").replace("]","").split(",")
-//        Map("HospID" -> temp(0), "HospName" -> temp(1))
-    })
+    def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key)
 
 }

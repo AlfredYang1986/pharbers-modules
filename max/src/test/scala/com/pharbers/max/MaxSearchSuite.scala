@@ -43,7 +43,9 @@
 //        val mkt = "麻醉市场"
 //        val maxResultInfo = phMaxResultInfo(user, company, ym, mkt)
 //        println(maxResultInfo.getMaxResultSales)
+//        println(maxResultInfo.getLastYearResultSales)
 //        println(maxResultInfo.getCurrCompanySales)
+//        println(maxResultInfo.getLastYearCurrCompanySales)
 //        println(maxResultInfo.getCityLstMap.take(10))
 //        println(maxResultInfo.getProvLstMap.take(10))
 //    }

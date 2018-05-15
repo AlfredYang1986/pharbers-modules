@@ -19,8 +19,10 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val maxName = pr.asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-        val maxDF_filter_company = maxDF.filter(s"Product like '%${company}%'")
+        // TODO: company 暂时写死
+        val maxDF_filter_company = maxDF.filter(s"Product like '%恩华%'")
 
+        val maxJobsKey = Sercurity.md5Hash("Pharbers")
         val userJobsKey = Sercurity.md5Hash(user + company)
         val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
         val max_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_city_lst_key")
@@ -28,6 +30,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val company_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_city_lst_key")
         val company_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_prov_lst_key")
 
+        rd.addSet(maxJobsKey, singleJobKey)
         rd.addSet(userJobsKey, singleJobKey)
         rd.addMap(singleJobKey, "max_result_name", maxName)
         val max_sales = maxDF.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble

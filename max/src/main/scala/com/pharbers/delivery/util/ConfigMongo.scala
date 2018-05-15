@@ -12,4 +12,5 @@ trait ConfigMongo extends PharbersInjectModule {
 
     val mongodbHost: String = config.mc.find(p => p._1 == "server_host").get._2.toString
     val mongodbPort: String = config.mc.find(p => p._1 == "server_port").get._2.toString
+    val databaseName: String = config.mc.find(p => p._1 == "conn_name").get._2.toString
 }

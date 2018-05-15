@@ -1,5 +1,6 @@
 package com.pharbers.builder.search
 
+import com.pharbers.search.phMaxResultInfo
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
@@ -13,31 +14,37 @@ trait SearchResultCheck {
         val user_id = (jv \ "user" \ "user_id").asOpt[String].get
         val company_id = (jv \ "user" \ "company" \ "company_id").asOpt[String].get
 
+        val max = phMaxResultInfo(user_id, company_id, years, market)
+
         val temp = Some(
             Map(
                 "indicators" -> toJson(
                     Map(
                         "marketSumSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson("123.11"),
-                                "lastYearPercentage" -> toJson("3.12")
+                                "currentNumber" -> toJson(max.getMaxResultSales),
+                                "lastYearPercentage" -> toJson(
+                                    (max.getMaxResultSales - max.getLastYearResultSales) / max.getLastYearResultSales
+                                )
                             )
                         ),
                         "productSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson("123.11"),
-                                "lastYearPercentage" -> toJson("3.12")
+                                "currentNumber" -> toJson(max.getCurrCompanySales),
+                                "lastYearPercentage" -> toJson(
+                                    (max.getCurrCompanySales - max.getLastYearCurrCompanySales) / max.getLastYearCurrCompanySales
+                                )
                             )
                         )
                     )
                 ),
                 "trend" -> toJson(
                     Map(
-                        "date" -> toJson("201701"),
+                        "date" -> toJson(years),
                         "percentage" -> toJson("12.1"),
                         "marketSales" -> toJson("1000")
                     )
-                            :: Map(
+                        :: Map(
                         "date" -> toJson("201612"),
                         "percentage" -> toJson("13.1"),
                         "marketSales" -> toJson("100")

@@ -16,16 +16,16 @@ class phMaxPersistentAction[T](override val defaultArgs: pActionArgs) extends pA
 
         val max_result = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val panelName = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
-        val max_name = panelName + UUID.randomUUID().toString
-        val result_location = max_path_obj.p_maxPath + max_name
+        val maxName = panelName + UUID.randomUUID().toString
+        val resultLocation = max_path_obj.p_maxPath + maxName
 
         max_result.write
                 .format("csv")
                 .option("header", value = true)
                 .option("delimiter", 31.toChar.toString)
                 .option("codec", "org.apache.hadoop.io.compress.GzipCodec")
-                .save(result_location)
+                .save(resultLocation)
 
-        StringArgs(max_name)
+        StringArgs(maxName)
     }
 }
