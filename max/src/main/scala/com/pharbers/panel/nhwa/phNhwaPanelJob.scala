@@ -16,35 +16,6 @@ import org.apache.spark.listener
 import org.apache.spark.listener.addListenerAction
 import org.apache.spark.listener.progress.sendMultiProgress
 
-object phNhwaPanelJob {
-
-    def apply(_company: String, _user: String, _job_id: String)
-             (_ym: String, _mkt: String, _cpa: String, _p_current: Int, _p_total: Int)
-             (_not_published_hosp_file: String,
-              _universe_file: String,
-              _product_match_file: String,
-              _fill_hos_data_file: String,
-              _markets_match_file: String)(implicit _actor: Actor): phNhwaPanelJob = {
-        new phNhwaPanelJob {
-            override lazy val not_published_hosp_file: String = match_dir + _not_published_hosp_file
-            override lazy val universe_file: String = match_dir + _universe_file
-            override lazy val product_match_file: String = match_dir + _product_match_file
-            override lazy val fill_hos_data_file: String = match_dir + _fill_hos_data_file
-            override lazy val markets_match_file: String = match_dir + _markets_match_file
-            override lazy val cpa_file: String = _cpa
-
-            override lazy val ym: String = _ym
-            override lazy val mkt: String = _mkt
-            override lazy val user: String = _user
-            override lazy val job_id: String = _job_id
-            override lazy val company: String = _company
-            override lazy val actor: Actor = _actor
-            override lazy val p_total: Double = _p_total
-            override lazy val p_current: Double = _p_current
-        }
-    }
-}
-
 /**
 * 1. read 2017年未出版医院名单.xlsx
 * 2. read universe_麻醉市场_online.xlsx
@@ -54,27 +25,31 @@ object phNhwaPanelJob {
 * 6. read CPA文件第一页
 * 7. read CPA文件第二页
 **/
-trait phNhwaPanelJob extends sequenceJobWithMap {
+case class phNhwaPanelJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
     override val name: String = "phNhwaPanelJob"
 
     val temp_name: String = UUID.randomUUID().toString
     val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
     val match_dir: String = max_path_obj.p_matchFilePath
+    val source_dir: String = max_path_obj.p_clientPath
 
-    val not_published_hosp_file: String
-    val universe_file: String
-    val product_match_file: String
-    val fill_hos_data_file: String
-    val markets_match_file: String
-    val cpa_file: String
+    val not_published_hosp_file: String = match_dir + args("not_published_hosp_file")
+    val universe_file: String = match_dir + args("universe_file")
+    val product_match_file: String = match_dir + args("product_match_file")
+    val fill_hos_data_file: String = match_dir + args("fill_hos_data_file")
+    val markets_match_file: String = match_dir + args("markets_match_file")
+    val cpa_file: String = source_dir + args("cpa")
 
-    val ym: String
-    val mkt: String
-    val user, company, job_id: String
-    val p_current, p_total: Double
-    implicit val actor: Actor
+    lazy val ym: String = args("ym")
+    lazy val mkt: String = args("mkt")
+    lazy val user: String = args("user_id")
+    lazy val job_id: String = args("job_id")
+    lazy val company: String = args("company_id")
+    lazy val p_total: Double = args("p_total").toDouble
+    lazy val p_current: Double = args("p_current").toDouble
+
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user)(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
 
     /**
       * 1. read 未出版医院文件
@@ -204,9 +179,10 @@ trait phNhwaPanelJob extends sequenceJobWithMap {
                 addListenerAction(listener.MaxSparkListener(51, 60)) ::
                 readCpa ::
                 readNotArrivalHosp ::
-                addListenerAction(listener.MaxSparkListener(61, 99)) ::
+                addListenerAction(listener.MaxSparkListener(61, 90)) ::
                 phNhwaPanelConcretJob(df) ::
                 phSavePanelJob(df) ::
+                addListenerAction(listener.MaxSparkListener(91, 99)) ::
                 phPanelInfo2Redis(df) ::
                 Nil
     }

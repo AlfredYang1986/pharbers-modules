@@ -18,12 +18,16 @@ case class sendSingleProgress(company: String, user: String) extends sendProgres
 }
 
 
-case class sendMultiProgress(company: String, user: String)
+case class sendMultiProgress(company: String, user: String, stage: String)
                             (p_current: Double, p_total: Double) {
 
+    var previousProgress = 0
     implicit val multiProgress: (sendEmTrait, Double) => Unit = { (em, progress) =>
-        val p = (p_current - 1) / p_total * 100 + progress / p_total
-        em.sendMessage(company, user, "panel", "ing", toJson(Map("progress" -> toJson(p.toInt))))
-        alTempLog(s"$company $user current progress = " + p.toInt)
+        val currentprogress = ((p_current - 1) / p_total * 100 + progress / p_total).toInt
+        if(currentprogress > previousProgress){
+            em.sendMessage(company, user, stage, "ing", toJson(Map("progress" -> toJson(currentprogress))))
+            alTempLog(s"$company $user current progress = " + currentprogress)
+            previousProgress = currentprogress
+        }
     }
 }

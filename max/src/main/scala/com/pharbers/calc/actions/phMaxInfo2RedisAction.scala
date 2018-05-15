@@ -19,7 +19,6 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val maxName = pr.asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-        // TODO: company 暂时写死
         val maxDF_filter_company = maxDF.filter(s"Product like '%恩华%'")
 
         val maxJobsKey = Sercurity.md5Hash("Pharbers")

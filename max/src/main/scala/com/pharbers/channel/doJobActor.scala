@@ -2,9 +2,10 @@ package com.pharbers.channel
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.ErrorCode._
+import com.pharbers.builder.phBuilder
 import com.pharbers.channel.chanelImpl.responsePusher
 import com.pharbers.channel.doJobActor._
-import com.pharbers.common.algorithm.alTempLog
+import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
@@ -33,66 +34,53 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait with getJV2Map
     }
 
     def doYmCalc(jv: JsValue): Unit = {
-        // TODO 写死的testUser去掉
-        val company = "testGroup"//(jv \ "company_id").asOpt[String].get
-        val user = "testUser"//(jv \ "user_id").asOpt[String].get
-        val job_id = "testJobId"//(jv \ "args \ "job_id").asOpt[String].get
+        val company = (jv \ "company_id").asOpt[String].get
+        val user = (jv \ "user_id").asOpt[String].get
         val args = getArgs2Map(jv)
 
         try{
             alTempLog(s"doYmCalc, company is = $company, user is = $user")
             sendMessage(company, user, "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
 
-//            val ymLst = phBuilder(company, user, job_id)
-//                    .set(args)
-//                    .set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx")
-//                    .doCalcYM
-
-            val ymLst = toJson("201711#201712")
+            val ymLst = phBuilder(company, user, args("job_id")).set(args).doCalcYM
 
             alTempLog("计算月份完成, result = " + ymLst)
             sendMessage(company, user, "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> ymLst)))))
-            responsePusher().callJobResponse(Map("job_id" -> job_id), "done")(jv)// send Kafka message
+            responsePusher().callJobResponse(Map("job_id" -> args("job_id")), "done")(jv)// send Kafka message
         } catch {
             case ex: Exception => sendError(company, user, "ymCalc", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
     }
 
     def doPanel(jv: JsValue): Unit = {
-        // TODO 写死的testUser去掉
-        val company = "testGroup"//(jv \ "company_id").asOpt[String].get
-        val user = "testUser"//(jv \ "user_id").asOpt[String].get
-        val job_id = "testJobId"//(jv \ "args \ "job_id").asOpt[String].get
+        val company = (jv \ "company_id").asOpt[String].get
+        val user = (jv \ "user_id").asOpt[String].get
         val args = getArgs2Map(jv)
 
         try{
             alTempLog(s"doPanel, company is = $company, user is = $user")
             sendMessage(company, user, "panel", "start", toJson(Map("progress" -> toJson("0"))))
 
-//            phBuilder(company, user, job_id).set(args)
-//                    .set("yms", "201711#201712")
-//                    .doPanel
+            phBuilder(company, user, args("job_id")).set(args).doPanel
 
             alTempLog("生成panel完成")
-            sendMessage(company, user, "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(job_id))))))
-            responsePusher().callJobResponse(Map("job_id" -> job_id), "done")(jv)// send Kafka message
+            sendMessage(company, user, "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(args("job_id")))))))
+            responsePusher().callJobResponse(Map("job_id" -> args("job_id")), "done")(jv)// send Kafka message
         } catch {
             case ex: Exception => sendError(company, user, "panel", toJson(Map("code" -> toJson(getErrorCodeByName(ex.getMessage)), "message" -> toJson(ex.getMessage))))
         }
     }
 
     def doCalc(jv: JsValue): Unit = {
-        // TODO 写死的testUser去掉
-        val company = "testGroup"//(jv \ "company_id").asOpt[String].get
-        val user = "testUser"//(jv \ "user_id").asOpt[String].get
-        val job_id = "testJobId"//(jv \ "args \ "job_id").asOpt[String].get
-        val args = getArgs2Map(jv)
+        val company = (jv \ "company_id").asOpt[String].get
+        val user = (jv \ "user_id").asOpt[String].get
+        val job_id = getArgs2Map(jv)("job_id")
 
         try {
             alTempLog(s"doCalc, company is = $company, user is = $user")
             sendMessage(company, user, "calc", "start", toJson(Map("progress" -> toJson("0"))))
 
-//            phBuilder(company, user, job_id).doMax
+            phBuilder(company, user, job_id).doMax
 
             alTempLog("计算完成")
             sendMessage(company, user, "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(job_id))))))

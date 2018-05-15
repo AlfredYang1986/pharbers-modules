@@ -12,43 +12,24 @@ import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
 import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 
-object phMaxJob {
-    def apply(_company: String, _user: String, _job_id: String)
-             (_ym: String, _mkt: String, panel: String, universe: String, _p_current: Int, _p_total: Int)
-             (implicit _actor: Actor): phMaxJob = {
-        new phMaxJob {
-            override lazy val ym: String = _ym
-            override lazy val mkt: String = _mkt
-            override lazy val panel_name: String = panel
-            override lazy val universe_name: String = universe
-
-            override lazy val user: String = _user
-            override lazy val company: String = _company
-            override lazy val job_id: String = _job_id
-            override lazy val actor: Actor = _actor
-            override lazy val p_total: Double = _p_total
-            override lazy val p_current: Double = _p_current
-        }
-    }
-}
-
-
-trait phMaxJob extends sequenceJobWithMap {
+case class phMaxJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
     override val name: String = "phMaxCalcJob"
 
-    val ym: String
-    val mkt: String
-    val panel_name: String
-    val universe_name: String
-
-    val user, company, job_id: String
-    val p_current, p_total: Double
-    implicit val actor: Actor
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user)(p_current, p_total).multiProgress
+    val panel_name = args("panel_name")
 
     val panel_file: String = max_path_obj.p_panelPath + panel_name
-    val universe_file: String = max_path_obj.p_matchFilePath + universe_name
+    val universe_file: String = max_path_obj.p_matchFilePath + args("universe_file")
     val temp_dir: String = max_path_obj.p_cachePath + panel_name + "/"
+
+    lazy val ym: String = args("ym")
+    lazy val mkt: String = args("mkt")
+    lazy val user: String = args("user_id")
+    lazy val job_id: String = args("job_id")
+    lazy val company: String = args("company_id")
+    lazy val p_total: Double = args("p_total").toDouble
+    lazy val p_current: Double = args("p_current").toDouble
+
+    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
 
     // 1. load panel data
     val loadPanelData: sequenceJob = new sequenceJob {
@@ -67,7 +48,7 @@ trait phMaxJob extends sequenceJobWithMap {
     }
 
     // 2. read universe file
-    val universe_cache: String = UUID.randomUUID().toString
+    val universe_cache: String = panel_name + UUID.randomUUID().toString
     val readUniverseFile: sequenceJob = new sequenceJob {
         override val name = "universe_data"
         override val actions: List[pActionTrait] =
@@ -92,15 +73,14 @@ trait phMaxJob extends sequenceJobWithMap {
                 addListenerAction(MaxSparkListener(0, 5)) ::
                 loadPanelData ::
 //                loadPanelDataOfExcel ::
-                addListenerAction(MaxSparkListener(6, 10)) ::
                 readUniverseFile ::
-                addListenerAction(MaxSparkListener(11, 80)) ::
                 phMaxCalcAction() ::
-                addListenerAction(MaxSparkListener(81, 90)) ::
+                addListenerAction(MaxSparkListener(6, 40)) ::
                 phMaxPersistentAction(df) ::
+                addListenerAction(MaxSparkListener(41, 90)) ::
                 phMaxInfo2RedisAction(df) ::
-                addListenerAction(MaxSparkListener(91, 99)) ::
                 phMaxResult2MongoAction() ::
                 Nil
     }
+
 }

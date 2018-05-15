@@ -9,10 +9,10 @@
 //import scala.concurrent.Await
 //import scala.concurrent.duration._
 //import java.text.SimpleDateFormat
-//import play.api.libs.json.JsValue
 //
-//import com.pharbers.builder.phBuilder
+//import play.api.libs.json.JsValue
 //import akka.actor.{Actor, ActorSystem, Props}
+//import com.pharbers.builder.phBuilder
 //
 //class NhwaPanelSuit extends FunSuite {
 //    val system = ActorSystem("maxActor")
@@ -59,17 +59,19 @@
 //
 //class NhwaPanelTestImpl extends Actor {
 //    implicit val actor: Actor = this
-//    val company: String = "testGroup"
-//    val user: String = "testUser"
+//    val company: String = "5afa53bded925c05c6f69c54"
+//    val user: String = "5afa57a1ed925c05c6f69c68"
 //    val jobId: String = "testJobId"
 //
 //    override def receive: Receive = {
 //        case "calcYM" =>
-//            sender ! phBuilder(company, user, jobId).set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx").doCalcYM
+//            sender ! phBuilder(company, user, jobId)
+//                    .set("cpa", "180211恩华17年1-12月检索.xlsx")
+//                    .doCalcYM
 //        case "panel" =>
 //            sender ! phBuilder(company, user, jobId)
-//                    .set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx")
-//                    .set("yms", "201711#201712")
+//                    .set("cpa", "180211恩华17年1-12月检索.xlsx")
+//                    .set("yms", "201711")
 //                    .doPanel
 //        case _ => ???
 //    }

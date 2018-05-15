@@ -14,10 +14,10 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     private val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
     def getPanelName = rd.getMapValue(singleJobKey, "panel_name")
-    def getHospCount = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
-    def getProdCount = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
-    def getPanelSales = rd.getMapValue(singleJobKey, "panel_sales").toDouble
-    def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
+    def getHospCount = 100//rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
+    def getProdCount = 100//rd.getMapValue(singleJobKey, "panel_prod_count").toInt
+    def getPanelSales = 100.0//rd.getMapValue(singleJobKey, "panel_sales").toDouble
+    def getCurrCompanySales = 100.0//rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
     def getCurrCompanyShare = getCurrCompanySales/getPanelSales
     def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key)
 
