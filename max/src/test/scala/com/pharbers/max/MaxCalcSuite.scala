@@ -41,12 +41,12 @@
 //
 //
 //        implicit val t: Timeout = 20 minutes
-////        val r = testActor ? "calcYM"
-////        val result = Await.result(r.mapTo[JsValue], t.duration)
-////        println("result = " + result)
-////        val r2 = testActor ? "panel"
-////        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-////        println("result2 = " + result2)
+//        val r = testActor ? "calcYM"
+//        val result = Await.result(r.mapTo[JsValue], t.duration)
+//        println("result = " + result)
+//        val r2 = testActor ? "panel"
+//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+//        println("result2 = " + result2)
 //        val r3 = testActor ? "max"
 //        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
 //        println("result3 = " + result3)
@@ -118,10 +118,10 @@
 //
 //    override def receive: Receive = {
 //        case "calcYM" =>
-//            sender ! phBuilder(company, user, jobId).set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx").doCalcYM
+//            sender ! phBuilder(company, user, jobId).set("cpa", "180211恩华17年1-12月检索.xlsx").doCalcYM
 //        case "panel" =>
 //            sender ! phBuilder(company, user, jobId)
-//                .set("cpa", "/mnt/config/Client/180211恩华17年1-12月检索.xlsx")
+//                .set("cpa", "180211恩华17年1-12月检索.xlsx")
 //                .set("yms", "201712")
 //                .doPanel
 //        case "max" =>

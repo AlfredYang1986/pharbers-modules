@@ -20,7 +20,7 @@ trait SearchSimpleCheck {
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "currentNumber" -> toJson(panelInfo.getHospCount),
-                        "lastYearNumber" -> toJson("234")
+                        "lastYearNumber" -> toJson(panelInfo.getLastYearHospCount)
                     )
                 ),
                 "product" -> toJson(
@@ -28,7 +28,7 @@ trait SearchSimpleCheck {
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "currentNumber" -> toJson(panelInfo.getProdCount),
-                        "lastYearNumber" -> toJson("234")
+                        "lastYearNumber" -> toJson(panelInfo.getLastYearProdCount)
                     )
                 ),
                 "sales" -> toJson(
@@ -36,13 +36,13 @@ trait SearchSimpleCheck {
                         "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
                         "currentNumber" -> toJson(panelInfo.getPanelSales),
-                        "lastYearNumber" -> toJson("234")
+                        "lastYearNumber" -> toJson(panelInfo.getLastYearPanelSales)
                     )
                 ),
                 "notfindhospital" -> toJson(panelInfo.getNotPanelHospLst.zipWithIndex.map(x => {
                     val temp = x._1.replace("[", "").replace("]", "").split(",")
                     toJson(Map(
-                        "index" -> toJson(x._2),
+                        "index" -> toJson(x._2 + 1),
                         "hospitalName" -> toJson(temp(0)),
                         "province" -> toJson(temp(1)),
                         "city" -> toJson(temp(2)),

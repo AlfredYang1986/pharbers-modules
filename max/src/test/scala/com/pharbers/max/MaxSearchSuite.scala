@@ -9,8 +9,8 @@
 //  */
 //class MaxSearchSuite extends FunSuite {
 //
-//    val company: String = "恩华"
-//    val user: String = "testUser"
+//    val company: String = "5afa53bded925c05c6f69c54"
+//    val user: String = "5afa57a1ed925c05c6f69c68"
 //
 //    test("history search"){
 //

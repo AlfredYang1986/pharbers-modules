@@ -1,10 +1,10 @@
 package com.pharbers.builder.search
 
-import com.pharbers.search.phMaxResultInfo
+import com.pharbers.search.{phMaxResultInfo, phMaxSearchTrait}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
-trait SearchResultCheck {
+trait SearchResultCheck extends phMaxSearchTrait {
 
     //TODO:0515 do this
     def searchResultCheck(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
@@ -22,13 +22,13 @@ trait SearchResultCheck {
                     Map(
                         "marketSumSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson(max.getMaxResultSales),
+                                "currentNumber" -> toJson(getFormatValue(max.getMaxResultSales)),
                                 "lastYearPercentage" -> toJson(max.getLastYearResultSalesPercentage)
                             )
                         ),
                         "productSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson(max.getCurrCompanySales),
+                                "currentNumber" -> toJson(getFormatValue(max.getCurrCompanySales)),
                                 "lastYearPercentage" -> toJson(max.getLastYearCurrCompanySalesPercentage)
                             )
                         )
@@ -36,58 +36,50 @@ trait SearchResultCheck {
                 ),
                 "trend" -> toJson(max.getLastSeveralMonthResultSalesLst(12)),
                 "region" -> toJson(
-                    max.getProvLstMap.map(item => toJson{
+                    max.getProvLstMap.map(item =>
                         Map(
-                            "name" -> toJson(item("Province")),
-                            "value" -> toJson(item("TotalSales")),
-                            "prodcutSales" -> toJson(item("CompanySales")),
-                            "percentage" -> toJson(item("Share"))
+                            "name" -> item("Province"),
+                            "value" -> item("TotalSales"),
+                            "prodcutSales" -> item("CompanySales"),
+                            "percentage" -> item("Share")
                         )
-                    })
+                    )
                 ),
                 "mirror" -> toJson(
                     Map(
                         "provinces" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    max.getProvLstMap.take(10).map(item => toJson{
-                                        Map(
-                                            "area" -> toJson(item("Province")),
-                                            "marketSales" -> toJson(item("TotalSales")),
-                                            "percentage" -> toJson(item("Share"))
-                                        )
-                                    })
+                                    max.getProvLstMap.take(10).map(item => Map(
+                                        "area" -> item("Province"),
+                                        "marketSales" -> item("TotalSales"),
+                                        "percentage" -> item("Share")
+                                    ))
                                 ),
                                 "lastyear" -> toJson(
-                                    max.getProvLstMap.take(10).map(item => toJson{
-                                        Map(
-                                            "area" -> toJson(item("Province")),
-                                            "marketSales" -> toJson(item("lastYearYMTotalSales")),
-                                            "percentage" -> toJson(item("lastYearYMShare"))
-                                        )
-                                    })
+                                    max.getProvLstMap.take(10).map(item => Map(
+                                        "area" -> item("Province"),
+                                        "marketSales" -> item("lastYearYMTotalSales"),
+                                        "percentage" -> item("lastYearYMShare")
+                                    ))
                                 )
                             )
                         ),
                         "city" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    max.getCityLstMap.take(10).map(item => toJson{
-                                        Map(
-                                            "area" -> toJson(item("City")),
-                                            "marketSales" -> toJson(item("TotalSales")),
-                                            "percentage" -> toJson(item("Share"))
-                                        )
-                                    })
+                                    max.getCityLstMap.take(10).map(item => Map(
+                                        "area" -> item("City"),
+                                        "marketSales" -> item("TotalSales"),
+                                        "percentage" -> item("Share")
+                                    ))
                                 ),
                                 "lastyear" -> toJson(
-                                    max.getCityLstMap.take(10).map(item => toJson{
-                                        Map(
-                                            "area" -> toJson(item("City")),
-                                            "marketSales" -> toJson(item("lastYearYMTotalSales")),
-                                            "percentage" -> toJson(item("lastYearYMShare"))
-                                        )
-                                    })
+                                    max.getCityLstMap.take(10).map(item => Map(
+                                        "area" -> item("City"),
+                                        "marketSales" -> item("lastYearYMTotalSales"),
+                                        "percentage" -> item("lastYearYMShare")
+                                    ))
                                 )
                             )
                         )
