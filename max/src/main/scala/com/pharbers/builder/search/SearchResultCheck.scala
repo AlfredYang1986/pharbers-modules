@@ -34,9 +34,7 @@ trait SearchResultCheck {
                         )
                     )
                 ),
-                "trend" -> toJson(max.getLastSeveralMonthResultSalesLst(12).map(item => {
-                    item.map(x => toJson(x._2))
-                })),
+                "trend" -> toJson(max.getLastSeveralMonthResultSalesLst(12)),
                 "region" -> toJson(
                     max.getProvLstMap.map(item => toJson{
                         Map(
