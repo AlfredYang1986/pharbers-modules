@@ -38,9 +38,9 @@ trait SearchResultCheck {
                     item.map(x => toJson(x._2))
                 })),
                 "region" -> toJson(
-                    max.getProvLstMap.map(item => {
+                    max.getProvLstMap.map(item => toJson{
                         Map(
-                            "name" -> toJson(item("City")),
+                            "name" -> toJson(item("Province")),
                             "value" -> toJson(item("TotalSales")),
                             "prodcutSales" -> toJson(item("CompanySales")),
                             "percentage" -> toJson(item("Share"))
@@ -52,18 +52,18 @@ trait SearchResultCheck {
                         "provinces" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    max.getProvLstMap.take(10).map(item => {
+                                    max.getProvLstMap.take(10).map(item => toJson{
                                         Map(
-                                            "province" -> toJson(item("Province")),
+                                            "area" -> toJson(item("Province")),
                                             "marketSales" -> toJson(item("TotalSales")),
                                             "percentage" -> toJson(item("Share"))
                                         )
                                     })
                                 ),
                                 "lastyear" -> toJson(
-                                    max.getProvLstMap.take(10).map(item => {
+                                    max.getProvLstMap.take(10).map(item => toJson{
                                         Map(
-                                            "province" -> toJson(item("Province")),
+                                            "area" -> toJson(item("Province")),
                                             "marketSales" -> toJson(item("lastYearYMTotalSales")),
                                             "percentage" -> toJson(item("lastYearYMShare"))
                                         )
@@ -74,18 +74,18 @@ trait SearchResultCheck {
                         "city" -> toJson(
                             Map(
                                 "current" -> toJson(
-                                    max.getCityLstMap.take(10).map(item => {
+                                    max.getCityLstMap.take(10).map(item => toJson{
                                         Map(
-                                            "City" -> toJson(item("City")),
+                                            "area" -> toJson(item("City")),
                                             "marketSales" -> toJson(item("TotalSales")),
                                             "percentage" -> toJson(item("Share"))
                                         )
                                     })
                                 ),
                                 "lastyear" -> toJson(
-                                    max.getCityLstMap.take(10).map(item => {
+                                    max.getCityLstMap.take(10).map(item => toJson{
                                         Map(
-                                            "City" -> toJson(item("City")),
+                                            "area" -> toJson(item("City")),
                                             "marketSales" -> toJson(item("lastYearYMTotalSales")),
                                             "percentage" -> toJson(item("lastYearYMShare"))
                                         )
