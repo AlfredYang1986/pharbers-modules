@@ -21,6 +21,8 @@ trait phMaxSearchTrait {
 
     def getLastYearYM(yearMonth: String): String = (yearMonth.take(4).toInt - 1) + yearMonth.takeRight(2)
 
-    def getFormatValue(originValue: Double): String = f"${originValue/1.0E6}%.2f"
+    def getFormatSales(originValue: Double): String = f"${originValue/1.0E6}%.2f"
+
+    def getFormatShare(originValue: Double): Double = f"$originValue%.4f".toDouble
 
 }

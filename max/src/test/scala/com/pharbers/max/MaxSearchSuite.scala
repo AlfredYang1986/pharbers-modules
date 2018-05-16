@@ -17,13 +17,15 @@
 //        val args: Map[String, String] = Map(
 //            "company" -> company,
 //            "user" -> user,
+//            "ym_condition" -> "201711-201712",
+//            "mkt" -> "麻醉市场1",
 //            "pageIndex" -> "0"
 //        )
 //
 //        val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs].get("page_search_action").asInstanceOf[ListArgs].get
 //
 //        println(s"### => ${searchResult.length}")
-//        println(s"### => ${searchResult}")
+//        searchResult.foreach(x => println(s"### => ${x}"))
 //    }
 //
 //    test("get panel info"){

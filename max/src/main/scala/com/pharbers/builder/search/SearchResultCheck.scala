@@ -22,13 +22,13 @@ trait SearchResultCheck extends phMaxSearchTrait {
                     Map(
                         "marketSumSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson(getFormatValue(max.getMaxResultSales)),
+                                "currentNumber" -> toJson(getFormatSales(max.getMaxResultSales)),
                                 "lastYearPercentage" -> toJson(max.getLastYearResultSalesPercentage)
                             )
                         ),
                         "productSales" -> toJson(
                             Map(
-                                "currentNumber" -> toJson(getFormatValue(max.getCurrCompanySales)),
+                                "currentNumber" -> toJson(getFormatSales(max.getCurrCompanySales)),
                                 "lastYearPercentage" -> toJson(max.getLastYearCurrCompanySalesPercentage)
                             )
                         )

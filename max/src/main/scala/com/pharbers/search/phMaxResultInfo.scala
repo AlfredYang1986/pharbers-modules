@@ -64,7 +64,7 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
             case 0.0 => 0.0
             case _ => tempCompanySales/tempMaxSales
         }
-        Map("date" -> toJson(singleYM), "percentage" -> toJson(tempPercentage), "marketSales" -> toJson(getFormatValue(tempMaxSales)))
+        Map("date" -> toJson(singleYM), "percentage" -> toJson(getFormatShare(tempPercentage)), "marketSales" -> toJson(getFormatSales(tempMaxSales)))
     })
 
     def getCityLstMap: List[Map[String, JsValue]] = {
@@ -95,11 +95,11 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
             val tempLastYearShare: Double = if (tempLastYearMaxSalesMap("Sales").toDouble == 0.0) 0.0 else tempLastYearCompanySalesMap("Sales").toDouble / tempLastYearMaxSalesMap("Sales").toDouble
             Map(
                 "City" -> toJson(temp(0)),
-                "CompanySales" -> toJson(getFormatValue(companyCityMap("Sales").toDouble)),
-                "TotalSales" -> toJson(getFormatValue(temp(1).toDouble)),
+                "CompanySales" -> toJson(getFormatSales(companyCityMap("Sales").toDouble)),
+                "TotalSales" -> toJson(getFormatSales(temp(1).toDouble)),
                 "Share" -> toJson(tempShare),
-                "lastYearYMCompanySales" -> toJson(getFormatValue(tempLastYearCompanySalesMap("Sales").toDouble)),
-                "lastYearYMTotalSales" -> toJson(getFormatValue(tempLastYearMaxSalesMap("Sales").toDouble)),
+                "lastYearYMCompanySales" -> toJson(getFormatSales(tempLastYearCompanySalesMap("Sales").toDouble)),
+                "lastYearYMTotalSales" -> toJson(getFormatSales(tempLastYearMaxSalesMap("Sales").toDouble)),
                 "lastYearYMShare" -> toJson(tempLastYearShare)
             )
         })
@@ -136,11 +136,11 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
 
             Map(
                 "Province" -> toJson(temp(0)),
-                "CompanySales" -> toJson(getFormatValue(companyProvMap("Sales").toDouble)),
-                "TotalSales" -> toJson(getFormatValue(temp(1).toDouble)),
+                "CompanySales" -> toJson(getFormatSales(companyProvMap("Sales").toDouble)),
+                "TotalSales" -> toJson(getFormatSales(temp(1).toDouble)),
                 "Share" -> toJson(tempShare),
-                "lastYearYMCompanySales" -> toJson(getFormatValue(tempLastYearCompanySalesMap("Sales").toDouble)),
-                "lastYearYMTotalSales" -> toJson(getFormatValue(tempLastYearMaxSalesMap("Sales").toDouble)),
+                "lastYearYMCompanySales" -> toJson(getFormatSales(tempLastYearCompanySalesMap("Sales").toDouble)),
+                "lastYearYMTotalSales" -> toJson(getFormatSales(tempLastYearMaxSalesMap("Sales").toDouble)),
                 "lastYearYMShare" -> toJson(tempLastYearShare)
             )
         }
