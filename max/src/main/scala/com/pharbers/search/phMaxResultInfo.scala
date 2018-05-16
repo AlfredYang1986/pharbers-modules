@@ -97,10 +97,10 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
                 "City" -> toJson(temp(0)),
                 "CompanySales" -> toJson(getFormatSales(companyCityMap("Sales").toDouble)),
                 "TotalSales" -> toJson(getFormatSales(temp(1).toDouble)),
-                "Share" -> toJson(tempShare),
+                "Share" -> toJson(getFormatShare(tempShare)),
                 "lastYearYMCompanySales" -> toJson(getFormatSales(tempLastYearCompanySalesMap("Sales").toDouble)),
                 "lastYearYMTotalSales" -> toJson(getFormatSales(tempLastYearMaxSalesMap("Sales").toDouble)),
-                "lastYearYMShare" -> toJson(tempLastYearShare)
+                "lastYearYMShare" -> toJson(getFormatShare(tempLastYearShare))
             )
         })
     }
@@ -138,10 +138,10 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
                 "Province" -> toJson(temp(0)),
                 "CompanySales" -> toJson(getFormatSales(companyProvMap("Sales").toDouble)),
                 "TotalSales" -> toJson(getFormatSales(temp(1).toDouble)),
-                "Share" -> toJson(tempShare),
+                "Share" -> toJson(getFormatShare(tempShare)),
                 "lastYearYMCompanySales" -> toJson(getFormatSales(tempLastYearCompanySalesMap("Sales").toDouble)),
                 "lastYearYMTotalSales" -> toJson(getFormatSales(tempLastYearMaxSalesMap("Sales").toDouble)),
-                "lastYearYMShare" -> toJson(tempLastYearShare)
+                "lastYearYMShare" -> toJson(getFormatShare(tempLastYearShare))
             )
         }
     }

@@ -12,7 +12,14 @@
 //
 //import play.api.libs.json.JsValue
 //import akka.actor.{Actor, ActorSystem, Props}
+//import com.mongodb.casbah.Imports.DBObject
 //import com.pharbers.builder.phBuilder
+//import com.pharbers.dbManagerTrait.dbInstanceManager
+//import org.bson.types.ObjectId
+//import play.api.libs.json.Json.toJson
+//import com.mongodb.casbah.Imports._
+//import com.pharbers.mongodbConnect.connection_instance
+//import com.pharbers.mongodbDriver.MongoDB.MongoDBImpl
 //
 //class NhwaPanelSuit extends FunSuite {
 //    val system = ActorSystem("maxActor")
@@ -60,7 +67,7 @@
 //class NhwaPanelTestImpl extends Actor {
 //    implicit val actor: Actor = this
 //    val company: String = "5afa53bded925c05c6f69c54"
-//    val user: String = "5afa57a1ed925c05c6f69c68"
+//    val user: String = "5afaa333ed925c30f8c066d1"
 //    val jobId: String = "testJobId"
 //
 //    override def receive: Receive = {

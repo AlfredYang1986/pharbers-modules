@@ -6,7 +6,6 @@ import play.api.libs.json.Json.toJson
 
 trait SearchResultCheck extends phMaxSearchTrait {
 
-    //TODO:0515 do this
     def searchResultCheck(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val job_id = (jv \ "condition" \ "job_id").asOpt[String].get
         val market = (jv \ "condition" \ "market").asOpt[String].get

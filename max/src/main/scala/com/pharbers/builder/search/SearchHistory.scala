@@ -4,11 +4,12 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.search.phHistorySearchJob
 import com.pharbers.pactions.actionbase.{DFArgs, ListArgs, MapArgs, StringArgs}
+import com.pharbers.spark.phSparkDriver
 
 trait SearchHistory {
     def searchHistory(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val user = (jv \ "condition" \ "user_id").asOpt[String].getOrElse(throw new Exception("Illegal user"))
-        val company = (jv \ "condition" \ "company").asOpt[String].getOrElse(throw new Exception("Illegal company"))
+        val company = (jv \ "user" \ "company" \ "company_id").asOpt[String].getOrElse(throw new Exception("Illegal company"))
         val market = (jv \ "condition" \ "market").asOpt[String].getOrElse("")
         val startTime = (jv \ "condition" \ "startTime").asOpt[String].getOrElse("")
         val endTime = (jv \ "condition" \ "endTime").asOpt[String].getOrElse("")
@@ -61,6 +62,7 @@ trait SearchHistory {
             )
         )
 
+        phSparkDriver().sc.stop
         (temp, None)
     }
 }

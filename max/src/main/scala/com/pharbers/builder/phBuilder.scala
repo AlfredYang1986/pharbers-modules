@@ -5,6 +5,7 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, NULLArgs, StringArgs}
+import com.pharbers.spark.phSparkDriver
 
 object phBuilder {
     def apply(_company: String, _user: String, _job_id: String)
@@ -51,7 +52,9 @@ trait phBuilder {
             throw new Exception("input wrong")
 
         val clazz: String = getClazz(mapping("company_id"), defaultMkt)(ymInst)
-        impl(clazz, mapping).perform(NULLArgs).asInstanceOf[JVArgs].get
+        val result = impl(clazz, mapping).perform(NULLArgs).asInstanceOf[JVArgs].get
+        phSparkDriver().sc.stop()
+        result
     }
 
     def doPanel(): JsValue = {
@@ -71,10 +74,12 @@ trait phBuilder {
                 throw new Exception("input wrong")
 
             val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
-            impl(clazz, mapping).perform(MapArgs(Map().empty))
+            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                     .asInstanceOf[MapArgs]
                     .get("phSavePanelJob")
                     .asInstanceOf[StringArgs].get
+            phSparkDriver().sc.stop()
+            result
         }
 
         toJson(mapping("job_id"))
@@ -97,10 +102,12 @@ trait phBuilder {
                 throw new Exception("input wrong")
 
             val clazz: String = getClazz(mapping("company_id"), mkt)(maxInst)
-            impl(clazz, mapping).perform(MapArgs(Map().empty))
+            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                     .asInstanceOf[MapArgs]
                     .get("max_persistent_action")
                     .asInstanceOf[StringArgs].get
+            phSparkDriver().sc.stop()
+            result
         }
 
         toJson("max result")

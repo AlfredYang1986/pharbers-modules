@@ -1,7 +1,12 @@
 package com.pharbers.search
 
-import com.pharbers.driver.PhRedisDriver
+import com.mongodb.casbah.Imports.DBObject
 import com.pharbers.sercuity.Sercurity
+import com.pharbers.driver.PhRedisDriver
+import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.mongodb.casbah.Imports._
+import play.api.libs.json.{JsString, JsValue}
+import play.api.libs.json.Json.toJson
 
 /**
   * Created by jeorch on 18-5-14.
@@ -10,35 +15,55 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
 
     private val rd = new PhRedisDriver()
     private val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
-    //TODO:SinglePanelSpecialKey for example -> not_panel_hosp_key it depends on (user + company + ym + mkt) but had same key
     private val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
     val lastYearYM = getLastYearYM(ym)
     val lastYearSingleJobKey = Sercurity.md5Hash(user + company + lastYearYM + mkt)
 
+    def getPanelName: String = rd.getMapValue(singleJobKey, "panel_name")
+    def getHospCount: Int = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
+    def getProdCount: Int = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
+    def getPanelSales: Double = rd.getMapValue(singleJobKey, "panel_sales").toDouble
+
+    val baseLine: Map[String, List[String]] = {
+        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+
+        val query: DBObject = {
+            DBObject("Company" -> company)
+            DBObject("Market" -> mkt)
+        }
+
+        val output: DBObject => Map[String, JsValue] = { obj =>
+            Map(
+                "Sales" -> toJson(getFormatSales(obj.as[Double]("Sales")).toString),
+                "HOSP_ID" -> toJson(obj.as[Double]("HOSP_ID").toInt.toString),
+                "Prod_Name" -> toJson(obj.as[Double]("Prod_Name").toInt.toString)
+            )
+        }
 
 
-    def getPanelName = rd.getMapValue(singleJobKey, "panel_name")
-    def getHospCount = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
-    def getProdCount = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
-    def getPanelSales = rd.getMapValue(singleJobKey, "panel_sales").toDouble
+        val tmp = db.queryMultipleObject(query, "BaseLine", "Month")(output)
 
-    def getLastYearHospCount = rd.getMapValue(lastYearSingleJobKey, "panel_hosp_count") match {
-        case null => 0
-        case sale => sale.toInt
+        Map(
+            "Sales" -> tmp.map(_("Sales").as[JsString].value),
+            "HOSP_ID" -> tmp.map(_("HOSP_ID").as[JsString].value),
+            "Prod_Name" -> tmp.map(_("Prod_Name").as[JsString].value)
+        )
     }
-    def getLastYearProdCount = rd.getMapValue(lastYearSingleJobKey, "panel_prod_count") match {
-        case null => 0
-        case sale => sale.toInt
-    }
-    def getLastYearPanelSales = rd.getMapValue(lastYearSingleJobKey, "panel_sales") match {
-        case null => 0
-        case sale => sale.toInt
-    }
+
+    def getLastYearHospCount(month: Int) = baseLine("HOSP_ID")(month - 1)
+    def getLastYearProdCount(month: Int) = baseLine("Prod_Name")(month - 1)
+    def getLastYearPanelSales(month: Int) = baseLine("Sales")(month - 1)
 
     def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key)
 
     def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
     def getCurrCompanyShare = getCurrCompanySales/getPanelSales
+
+    def setValue2Array(index: Int, value: String): Array[String] = {
+        val a = Array.fill(12)("0")
+        a(index) = value
+        a
+    }
 
 }

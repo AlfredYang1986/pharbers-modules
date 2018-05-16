@@ -8,35 +8,37 @@ trait SearchSimpleCheck {
     def searchSimpleCheck(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val market = (jv \ "condition" \ "market").asOpt[String].get
         val ym = (jv \ "condition" \ "years").asOpt[String].get
+        val month = ym.takeRight(2).toInt
         val user_id = (jv \ "user" \ "user_id").asOpt[String].get
         val company_id = (jv \ "user" \ "company" \ "company_id").asOpt[String].get
 
         val panelInfo = phPanelResultInfo(user_id, company_id, ym, market)
+        import panelInfo._
 
         val temp = Some(
             Map(
                 "hospital" -> toJson(
                     Map(
-                        "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson(panelInfo.getHospCount),
-                        "lastYearNumber" -> toJson(panelInfo.getLastYearHospCount)
+                        "baselines" -> toJson(baseLine("HOSP_ID")),
+                        "samplenumbers" -> toJson(setValue2Array(month - 1, getHospCount.toString)),
+                        "currentNumber" -> toJson(getHospCount),
+                        "lastYearNumber" -> toJson(getLastYearHospCount(month))
                     )
                 ),
                 "product" -> toJson(
                     Map(
-                        "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson(panelInfo.getProdCount),
-                        "lastYearNumber" -> toJson(panelInfo.getLastYearProdCount)
+                        "baselines" -> toJson(baseLine("Prod_Name")),
+                        "samplenumbers" -> toJson(setValue2Array(month - 1, getProdCount.toString)),
+                        "currentNumber" -> toJson(getProdCount),
+                        "lastYearNumber" -> toJson(getLastYearProdCount(month))
                     )
                 ),
                 "sales" -> toJson(
                     Map(
-                        "baselines" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "samplenumbers" -> toJson("100" :: "200" :: "300" :: "400" :: "500" :: "600" :: "700" :: "800" :: "900" :: "1000" :: "1100" :: "1200" :: Nil),
-                        "currentNumber" -> toJson(panelInfo.getPanelSales),
-                        "lastYearNumber" -> toJson(panelInfo.getLastYearPanelSales)
+                        "baselines" -> toJson(baseLine("Sales")),
+                        "samplenumbers" -> toJson(setValue2Array(month - 1, getFormatSales(getPanelSales).toString)),
+                        "currentNumber" -> toJson(getFormatSales(getPanelSales)),
+                        "lastYearNumber" -> toJson(getLastYearPanelSales(month))
                     )
                 ),
                 "notfindhospital" -> toJson(panelInfo.getNotPanelHospLst.zipWithIndex.map(x => {
