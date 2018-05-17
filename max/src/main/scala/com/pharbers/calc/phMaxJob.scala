@@ -79,7 +79,7 @@ case class phMaxJob(args: Map[String, String])(implicit _actor: Actor) extends s
                 phMaxPersistentAction(df) ::
                 addListenerAction(MaxSparkListener(41, 90)) ::
                 phMaxInfo2RedisAction(df) ::
-                phMaxResult2MongoAction() ::
+//                phMaxResult2MongoAction() ::
                 Nil
     }
 

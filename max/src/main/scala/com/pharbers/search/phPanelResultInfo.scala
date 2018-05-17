@@ -54,7 +54,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     def getLastYearProdCount(month: Int) = baseLine("Prod_Name")(month - 1)
     def getLastYearPanelSales(month: Int) = baseLine("Sales")(month - 1)
 
-    def getNotPanelHospLst = rd.getSetAllValue(not_panel_hosp_key)
+    def getNotPanelHospLst = rd.getSetAllValue(not_panel_hosp_key).toList
 
     def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
     def getCurrCompanyShare = getCurrCompanySales/getPanelSales
