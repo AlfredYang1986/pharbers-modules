@@ -23,9 +23,7 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         val historyDF = pr.asInstanceOf[MapArgs].get("read_result_action").asInstanceOf[DFArgs].get
         val filteredMktDF = mkt match {
             case "" => historyDF
-            case _ => {
-                historyDF.filter(s"MARKET like '${mkt}'")
-            }
+            case _ => historyDF.filter(s"MARKET like '${mkt}'")
         }
 
         val filteredYMDF = ym_condition match {

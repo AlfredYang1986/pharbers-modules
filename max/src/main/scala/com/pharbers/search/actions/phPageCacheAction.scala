@@ -42,7 +42,7 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                     })
                     val phIndexRdd = IndexedRDD(initIndexRdd)
                     0 until defaultCachePageCount foreach(index =>{
-                        val pageCacheTempKey = Sercurity.md5Hash(s"$user$company$index$pageSize")
+                        val pageCacheTempKey = Sercurity.md5Hash(user + company + ym_condition + mkt + index + pageSize)
                         val resultLst = (index*pageSize until index*pageSize+pageSize).map(x => {
                             phIndexRdd.get(x).get.toString()
                         }).toList

@@ -20,7 +20,6 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     val lastYearYM = getLastYearYM(ym)
     val lastYearSingleJobKey = Sercurity.md5Hash(user + company + lastYearYM + mkt)
 
-    def getPanelName: String = rd.getMapValue(singleJobKey, "panel_name")
     def getHospCount: Int = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
     def getProdCount: Int = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
     def getPanelSales: Double = rd.getMapValue(singleJobKey, "panel_sales").toDouble
@@ -55,7 +54,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     def getLastYearProdCount(month: Int) = baseLine("Prod_Name")(month - 1)
     def getLastYearPanelSales(month: Int) = baseLine("Sales")(month - 1)
 
-    def getNotPanelHospLst = rd.getListAllValue(not_panel_hosp_key)
+    def getNotPanelHospLst = rd.getSetAllValue(not_panel_hosp_key)
 
     def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
     def getCurrCompanyShare = getCurrCompanySales/getPanelSales

@@ -30,7 +30,7 @@ trait PhRedisDriverImpl extends PhRedisTrait {
         conn_instance.getConnection(c => values.foreach(c.sadd(key, _)))
 
     override def delete(key: Any, keys: Any*) : Long = {
-        conn_instance.getConnection(c => c.del(key, keys) match {
+        conn_instance.getConnection(c => c.del(key, keys:_*) match {
             case None => throw new Exception("cannot get this value from redis")
             case value: Option[Long] => value.get
         })

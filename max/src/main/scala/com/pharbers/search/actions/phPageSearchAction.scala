@@ -22,9 +22,9 @@ class phPageSearchAction(override val defaultArgs: pActionArgs) extends pActionT
                 val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
                 val pageStartIndex = pageIndex*pageSize
 
-                val pageEndIndex = pageStartIndex + pageSize - 1
+                val pageEndIndex = pageStartIndex + pageSize
                 val result_df = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get
-                val result_rdd_limited = result_df.limit(pageEndIndex + 1).rdd
+                val result_rdd_limited = result_df.limit(pageEndIndex).rdd
 
                 if (result_rdd_limited.isEmpty()) ListArgs(List.empty)
                 else {
@@ -34,7 +34,7 @@ class phPageSearchAction(override val defaultArgs: pActionArgs) extends pActionT
                         (phIndex, x)
                     })
                     val phIndexRdd = IndexedRDD(initIndexRdd)
-                    val resultLst = (pageStartIndex to pageEndIndex).map(x => {
+                    val resultLst = (pageStartIndex until pageEndIndex).map(x => {
                         StringArgs(phIndexRdd.get(x).get.toString())
                     }).toList
 

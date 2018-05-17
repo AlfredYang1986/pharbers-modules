@@ -1,8 +1,12 @@
 //package com.pharbers.max
 //
+//import com.pharbers.builder.SearchFacade
+//import com.pharbers.driver.PhRedisDriver
 //import com.pharbers.pactions.actionbase._
 //import com.pharbers.search.{phHistorySearchJob, phMaxResultInfo, phPanelResultInfo}
 //import org.scalatest.FunSuite
+//import play.api.libs.json.JsValue
+//import play.api.libs.json.Json.toJson
 //
 ///**
 //  * Created by jeorch on 18-5-9.
@@ -11,6 +15,8 @@
 //
 //    val company: String = "5afa53bded925c05c6f69c54"
 //    val user: String = "5afa57a1ed925c05c6f69c68"
+//    val ym = "201712"
+//    val mkt = "麻醉市场"
 //
 //    test("history search"){
 //
@@ -19,34 +25,30 @@
 //            "user" -> user,
 //            "ym_condition" -> "201711-201712",
 ////            "ym_condition" -> "201801-201802",
-//            "mkt" -> "麻醉市场1",
-//            "pageIndex" -> "0"
+//            "mkt" -> "麻醉市场",
+//            "pageIndex" -> "6",
+//            "singlePageSize" -> "10"
 //        )
 //
 //        val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
-//        val itemsCount = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
-//
+////        val itemsCount = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
+////        println(s"### => ${itemsCount}")
 //        val searchResult1 =  searchResult.get("page_search_action").asInstanceOf[ListArgs].get
-//
-//        println(s"### => ${itemsCount}")
+//        println(searchResult1.length)
 //        searchResult1.foreach(x => println(s"### => ${x}"))
 //    }
 //
 //    test("get panel info"){
-//        val ym = "201712"
-//        val mkt = "麻醉市场"
 //        val panelInfo = phPanelResultInfo(user, company, ym, mkt)
 //        println(panelInfo.getHospCount)
 //        println(panelInfo.getProdCount)
 //        println(panelInfo.getPanelSales)
 //        println(panelInfo.getCurrCompanySales)
 //        println(panelInfo.getCurrCompanyShare)
-//        println(panelInfo.getNotPanelHospLst.length)
+//        println(panelInfo.getNotPanelHospLst)
 //        println(panelInfo.getNotPanelHospLst.take(10))
 //    }
 //    test("get max info"){
-//        val ym = "201712"
-//        val mkt = "麻醉市场"
 //        val maxResultInfo = phMaxResultInfo(user, company, ym, mkt)
 //        println(maxResultInfo.getLastSeveralMonthResultSalesLst(12))
 //        println(maxResultInfo.getMaxResultSales)
@@ -54,7 +56,24 @@
 //        println(maxResultInfo.getCurrCompanySales)
 //        println(maxResultInfo.getLastYearCurrCompanySales)
 //        println(maxResultInfo.getCityLstMap.take(10))
-//        println(maxResultInfo.getProvLstMap.take(10))
+//        println(maxResultInfo.getProvLstMap.length)
+//    }
+//
+//    test("history search of Facade") {
+//        val condition = toJson {
+//            Map(
+//                "condition" -> toJson(Map(
+//                    "user_id" -> toJson(user),
+//                    "currentPage" -> toJson("2"),
+//                    "pageSize" -> toJson("4"),
+//                    "market" -> toJson(mkt)
+//                )),
+//                "user" -> toJson(Map("company" -> toJson(Map("company_id" -> toJson(company)))))
+//            )
+//        }
+//
+//        val search = new SearchFacade
+//        search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].foreach(println)
 //    }
 //
 //}
