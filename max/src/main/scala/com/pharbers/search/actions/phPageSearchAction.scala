@@ -17,30 +17,29 @@ class phPageSearchAction(override val defaultArgs: pActionArgs) extends pActionT
     override def perform(pr: pActionArgs): pActionArgs = {
         val cachedPageData = pr.asInstanceOf[MapArgs].get("page_cache_action").asInstanceOf[ListArgs].get
         cachedPageData match {
-            case Nil => {
+            case Nil =>
                 val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
                 val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
                 val pageStartIndex = pageIndex*pageSize
 
                 val pageEndIndex = pageStartIndex + pageSize - 1
-                val result_df = pr.asInstanceOf[MapArgs].get("read_result_action").asInstanceOf[DFArgs].get
-
+                val result_df = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get
                 val result_rdd_limited = result_df.limit(pageEndIndex + 1).rdd
 
-                var phIndex = -1
-                val initIndexRdd = result_rdd_limited.map(x => {
-                    phIndex += 1
-                    (phIndex, x)
-                })
-                val phIndexRdd = IndexedRDD(initIndexRdd)
+                if (result_rdd_limited.isEmpty()) ListArgs(List.empty)
+                else {
+                    var phIndex = -1
+                    val initIndexRdd = result_rdd_limited.map(x => {
+                        phIndex += 1
+                        (phIndex, x)
+                    })
+                    val phIndexRdd = IndexedRDD(initIndexRdd)
+                    val resultLst = (pageStartIndex to pageEndIndex).map(x => {
+                        StringArgs(phIndexRdd.get(x).get.toString())
+                    }).toList
 
-
-                val resultLst = (pageStartIndex to pageEndIndex).map(x => {
-                    StringArgs(phIndexRdd.get(x).get.toString())
-                }).toList
-
-                ListArgs(resultLst)
-            }
+                    ListArgs(resultLst)
+                }
             case _ => ListArgs(cachedPageData)
         }
     }

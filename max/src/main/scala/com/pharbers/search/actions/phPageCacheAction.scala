@@ -20,33 +20,38 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
     override def perform(pr: pActionArgs): pActionArgs = {
         val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
+        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
+        val ym_condition = defaultArgs.asInstanceOf[MapArgs].get("ym_condition").asInstanceOf[StringArgs].get
+        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
         val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
         val redisDriver = new PhRedisDriver()
-        val company = redisDriver.getMapValue(user, "company")
-        val pageCacheKey = Sercurity.md5Hash(s"$user$company$pageIndex$pageSize")
+        val pageCacheKey = Sercurity.md5Hash(user + company + ym_condition + mkt + pageIndex + pageSize)
         val cachedPageData = redisDriver.getListAllValue(pageCacheKey)
 
         cachedPageData match {
-            case Nil => {
+            case Nil =>
                 val result_df = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get
                 val result_rdd_limited = result_df.limit(pageSize*defaultCachePageCount).rdd
-                var phIndex = -1
-                val initIndexRdd = result_rdd_limited.map(x => {
-                    phIndex += 1
-                    (phIndex, x)
-                })
-                val phIndexRdd = IndexedRDD(initIndexRdd)
-                0 to defaultCachePageCount-1 foreach(index =>{
-                    val pageCacheTempKey = Sercurity.md5Hash(s"$user$company$index$pageSize")
-                    val resultLst = (index*pageSize to index*pageSize+pageSize-1).map(x => {
-                        phIndexRdd.get(x).get.toString()
-                    }).toList
-                    redisDriver.addListRight(pageCacheTempKey, resultLst:_*)
-                })
-                ListArgs(redisDriver.getListAllValue(pageCacheKey).map(StringArgs(_)))
-            }
-            case _ => ListArgs(cachedPageData.map(StringArgs(_)))
+                if (result_rdd_limited.isEmpty()) ListArgs(List.empty)
+                else {
+                    var phIndex = -1
+                    val initIndexRdd = result_rdd_limited.map(x => {
+                        phIndex += 1
+                        (phIndex, x)
+                    })
+                    val phIndexRdd = IndexedRDD(initIndexRdd)
+                    0 until defaultCachePageCount foreach(index =>{
+                        val pageCacheTempKey = Sercurity.md5Hash(s"$user$company$index$pageSize")
+                        val resultLst = (index*pageSize until index*pageSize+pageSize).map(x => {
+                            phIndexRdd.get(x).get.toString()
+                        }).toList
+                        redisDriver.addListRight(pageCacheTempKey, resultLst:_*)
+                    })
+                    ListArgs(redisDriver.getListAllValue(pageCacheKey).map(StringArgs))
+                }
+
+            case _ => ListArgs(cachedPageData.map(StringArgs))
         }
     }
 }
