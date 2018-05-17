@@ -15,19 +15,19 @@ trait SearchHistory {
         val market = (jv \ "condition" \ "market").asOpt[String].getOrElse("")
         val startTime = (jv \ "condition" \ "startTime").asOpt[String].getOrElse("")
         val endTime = (jv \ "condition" \ "endTime").asOpt[String].getOrElse("")
-        val currentPage = (jv \ "condition" \ "currentPage").asOpt[String].getOrElse("1").toInt match{
+        val currentPage = (jv \ "condition" \ "currentPage").asOpt[Int].getOrElse(1) match{
             case i: Int if i < 1 => "0"
             case i => (i - 1).toString
         }
-        val pageSize = (jv \ "condition" \ "pageSize").asOpt[String].getOrElse("20")
+        val pageSize = (jv \ "condition" \ "pageSize").asOpt[Int].getOrElse(20)
         val mode = (jv \ "condition" \ "mode").asOpt[String].getOrElse("search")
         val singleSearchKey = Sercurity.md5Hash(user + company + startTime + endTime + market + pageSize)
 
         val args: Map[String, String] = Map(
             "company" -> company,
             "user" -> user,
-            "pageIndex" -> currentPage,
-            "singlePageSize" -> pageSize,
+            "pageIndex" -> currentPage.toString,
+            "singlePageSize" -> pageSize.toString,
             "ym_condition" -> s"${startTime}-${endTime}",
             "mkt" -> market
         )
