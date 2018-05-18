@@ -68,7 +68,7 @@
 //    implicit val actor: Actor = this
 //    val company: String = "5afa53bded925c05c6f69c54"
 //    val user: String = "5afaa333ed925c30f8c066d1"
-//    val jobId: String = "testJobId"
+//    val jobId: String = "20180518test001"
 //
 //    override def receive: Receive = {
 //        case "calcYM" =>

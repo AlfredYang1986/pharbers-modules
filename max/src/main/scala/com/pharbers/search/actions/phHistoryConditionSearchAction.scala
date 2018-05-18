@@ -39,7 +39,7 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
             case _ =>
                 val ym_start = ym_condition.split("-")(0).toInt
                 val ym_end = ym_condition.split("-")(1).toInt
-                allSingleJobKeyLst.filter(x => x._2.toInt>=ym_start).filter(x => x._2.toInt<=ym_end)
+                allSingleJobKeyLst.filter(x => x._2.toInt >= ym_start).filter(x => x._2.toInt <= ym_end)
         }
 
         val filteredMktKeyLst = mkt match {

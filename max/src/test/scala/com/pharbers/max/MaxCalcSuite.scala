@@ -40,12 +40,12 @@
 //        println()
 //
 //        implicit val t: Timeout = 20 minutes
-//        val r = testActor ? "calcYM"
-//        val result = Await.result(r.mapTo[JsValue], t.duration)
-//        println("result = " + result)
-//        val r2 = testActor ? "panel"
-//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-//        println("result2 = " + result2)
+////        val r = testActor ? "calcYM"
+////        val result = Await.result(r.mapTo[JsValue], t.duration)
+////        println("result = " + result)
+////        val r2 = testActor ? "panel"
+////        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+////        println("result2 = " + result2)
 //        val r3 = testActor ? "max"
 //        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
 //        println("result3 = " + result3)
@@ -112,8 +112,8 @@
 //class MaxTestImpl extends Actor {
 //    implicit val actor: Actor = this
 //    val company: String = "5afa53bded925c05c6f69c54"
-//    val user: String = "5afa57a1ed925c05c6f69c68"
-//    val jobId: String = "testJobId"
+//    val user: String = "5afaa333ed925c30f8c066d1"
+//    val jobId: String = "20180518test001"
 //
 //    override def receive: Receive = {
 //        case "calcYM" =>
