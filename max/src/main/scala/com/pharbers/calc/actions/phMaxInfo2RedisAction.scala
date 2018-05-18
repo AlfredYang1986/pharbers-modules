@@ -20,7 +20,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val maxName = pr.asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
-        val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Prod_Name like '%$x%'").mkString(" OR ") //获得所有子公司
+        val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
         val maxDF_filter_company = maxDF.filter(condition)
 
         val maxJobsKey = Sercurity.md5Hash("Pharbers")  //为了同步mongo数据到本地rdd

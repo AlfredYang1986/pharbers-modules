@@ -1,5 +1,6 @@
 package com.pharbers.builder.search
 
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.driver.PhRedisDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
@@ -32,38 +33,47 @@ trait SearchHistory {
             "mkt" -> market
         )
 
-        val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
         val redisDriver = new PhRedisDriver()
+        val userJobsKey = Sercurity.md5Hash(user + company)
+        val history_df_lst = redisDriver.getSetAllValue(userJobsKey)
+        val (singlePageData, itemsCount, pagesCount) = if(history_df_lst.nonEmpty) {
+            val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
 
-        val itemsCount = mode match {
-            case "search" =>
-                val count = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
-                redisDriver.addString(singleSearchKey, count.toString)
-                count
-            case "page" => redisDriver.getString(singleSearchKey).toLong
-        }
-        val pagesCount = itemsCount/pageSize.toLong
+            val itemsCount = mode match {
+                case "page" => redisDriver.getString(singleSearchKey).toLong
+                case _ =>
+                    val count = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
+                    redisDriver.addString(singleSearchKey, count.toString)
+                    count
+            }
+            val pagesCount = itemsCount/pageSize.toLong
 
-        val singlePageData = searchResult.get("page_search_action").asInstanceOf[ListArgs].get.zipWithIndex.map(x => {
-            val item = x._1.asInstanceOf[StringArgs].get.replace("[","").replace("]","").split(",")
-            toJson(
-                Map(
-                    "id" -> toJson(x._2 + 1),
-                    "type" -> toJson("dataCenter"),
-                    "attributes" -> toJson(
-                        Map(
-                            "date" -> toJson(item(0)),
-                            "province" -> toJson(item(1)),
-                            "City" -> toJson(item(2)),
-                            "market" -> toJson(item(8)),
-                            "product" -> toJson(item(4)),
-                            "sales" -> toJson(item(7)),
-                            "units" -> toJson(item(6))
+            val singlePageData = searchResult.get("page_search_action").asInstanceOf[ListArgs].get.zipWithIndex.map(x => {
+                val item = x._1.asInstanceOf[StringArgs].get.replace("[","").replace("]","").split(",")
+                toJson(
+                    Map(
+                        "id" -> toJson(x._2 + 1),
+                        "type" -> toJson("dataCenter"),
+                        "attributes" -> toJson(
+                            Map(
+                                "date" -> toJson(item(0)),
+                                "province" -> toJson(item(1)),
+                                "City" -> toJson(item(2)),
+                                "market" -> toJson(item(8)),
+                                "product" -> toJson(item(4)),
+                                "sales" -> toJson(item(7)),
+                                "units" -> toJson(item(6))
+                            )
                         )
                     )
                 )
-            )
-        })
+            })
+
+            phSparkDriver().sc.stop
+            (singlePageData, itemsCount, pagesCount)
+        } else {
+            (Nil, 0L, 0L)
+        }
 
         val temp = Some(
             Map(
@@ -77,7 +87,6 @@ trait SearchHistory {
             )
         )
 
-        phSparkDriver().sc.stop
         (temp, None)
     }
 }
