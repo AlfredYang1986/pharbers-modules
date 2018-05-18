@@ -14,7 +14,7 @@ import play.api.libs.json.Json.toJson
 class MaxSearchSuite extends FunSuite {
 
     val company: String = "5afa53bded925c05c6f69c54"
-    val user: String = "5afa57a1ed925c05c6f69c68"
+    val user: String = "5afaa333ed925c30f8c066d1"
     val ym = "201712"
     val mkt = "麻醉市场"
 
@@ -66,7 +66,7 @@ class MaxSearchSuite extends FunSuite {
                     "user_id" -> toJson(user),
                     "startTime" -> toJson("201701"),
                     "endTime" -> toJson("201712"),
-                    "currentPage" -> toJson(1),
+                    "currentPage" -> toJson(5),
                     "pageSize" -> toJson(10),
                     "market" -> toJson(mkt)
                 )),

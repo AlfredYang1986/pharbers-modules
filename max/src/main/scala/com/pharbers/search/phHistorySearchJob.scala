@@ -2,8 +2,8 @@ package com.pharbers.search
 
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
-import com.pharbers.pactions.jobs.{choiceCacheJob, choiceJob, sequenceJob, sequenceJobWithMap}
-import com.pharbers.search.actions._
+import com.pharbers.pactions.jobs.sequenceJobWithMap
+import com.pharbers.search.actions.{phHistoryConditionSearchAction, phPageCacheAction, phPageSearchAction, phReadHistoryResultAction}
 
 /**
   * Created by jeorch on 18-5-11.
@@ -21,7 +21,7 @@ object phHistorySearchJob {
     }
 }
 
-trait phHistorySearchJob extends choiceCacheJob {
+trait phHistorySearchJob extends sequenceJobWithMap {
     override val name: String = "phHistorySearchJob"
 
     val user: String
@@ -42,27 +42,11 @@ trait phHistorySearchJob extends choiceCacheJob {
         )
     )
 
-    val ckeckPageCache: choiceCacheJob = new choiceCacheJob {
-        override val name = "checkPageCache"
-        val actions: List[pActionTrait] = phCheckPageCacheAction(searchArgs) ::
-            phReturnPageCacheAction(searchArgs) ::
-            new sequenceJob {
-                override val name: String = "cache_data_job"
-                override val actions: List[pActionTrait] =
-                    phHistoryConditionSearchAction(searchArgs) ::
-                    phReadHistoryResultAction(searchArgs) :: Nil
-
-            } :: Nil
-    }
-
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-            setLogLevelAction("ERROR") :: ckeckPageCache :: Nil
-
-
-
-//
-
-//        phPageCacheAction(searchArgs) ::
-//        phPageSearchAction(searchArgs) ::
-//        Nil
+        setLogLevelAction("ERROR") ::
+        phReadHistoryResultAction(searchArgs) ::
+        phHistoryConditionSearchAction(searchArgs) ::
+        phPageCacheAction(searchArgs) ::
+        phPageSearchAction(searchArgs) ::
+        Nil
 }

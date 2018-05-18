@@ -55,7 +55,9 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         rd.addMap(singleJobKey, "panel_sales", panel_sales)
         rd.addMap(singleJobKey, "panel_company_sales", panel_company_sales)
 
+        rd.delete(not_panel_hosp_key)
         rd.addSet(not_panel_hosp_key, not_panel_hosp_lst:_*)
+        rd.expire(not_panel_hosp_key, 60*30)
 
         StringArgs(singleJobKey)
     }

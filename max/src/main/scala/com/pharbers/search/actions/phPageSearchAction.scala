@@ -27,12 +27,12 @@ class phPageSearchAction(override val defaultArgs: pActionArgs) extends pActionT
                 val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
                 val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
 
-                val pageStartIndex = pageIndex*pageSize
-                val pageEndIndex = pageStartIndex + pageSize
+                val itemStartIndex = pageIndex*pageSize
+                val itemEndIndex = itemStartIndex + pageSize
 
                 val redisDriver = new PhRedisDriver()
                 val result_df = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get
-                val result_rdd_limited = result_df.limit(pageEndIndex).rdd
+                val result_rdd_limited = result_df.limit(itemEndIndex).rdd
 
                 val (startTime, endTime) = ym_condition match {
                     case "" => ("", "")
@@ -53,7 +53,7 @@ class phPageSearchAction(override val defaultArgs: pActionArgs) extends pActionT
                         (phIndex, x)
                     })
                     val phIndexRdd = IndexedRDD(initIndexRdd)
-                    val resultLst = (pageStartIndex until pageEndIndex).map(x => {
+                    val resultLst = (itemStartIndex until itemEndIndex).map(x => {
                         if(x > totalIndex) StringArgs(null) else StringArgs(phIndexRdd.get(x).get.toString())
                     }).toList.filter(_!=StringArgs(null))
 

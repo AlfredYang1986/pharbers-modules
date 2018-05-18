@@ -17,8 +17,6 @@ class phReadHistoryResultAction (override val defaultArgs: pActionArgs) extends 
     override val name: String = "read_result_action"
 
     override def perform(pr: pActionArgs): pActionArgs = {
-        val lst = pr.asInstanceOf[]
-
         val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val sparkDriver = phSparkDriver()
