@@ -31,7 +31,7 @@ trait phSparkCommonFuncTrait {
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {
         listDF match {
-            case Nil => throw new Exception("Empty DataFrameList! unionDataFrameList Error!")
+            case Nil => phSparkDriver().ss.emptyDataFrame
             case head::Nil => head
             case head::tail => head.union(unionDataFrameList(tail))
         }

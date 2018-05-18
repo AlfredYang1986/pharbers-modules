@@ -27,20 +27,19 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
 
         val allSingleJobKeyLst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
             (
-                singleJobKey,
-                redisDriver.getMapValue(singleJobKey, "ym"),
-                redisDriver.getMapValue(singleJobKey, "mkt"),
+                    singleJobKey,
+                    redisDriver.getMapValue(singleJobKey, "ym"),
+                    redisDriver.getMapValue(singleJobKey, "mkt")
             )
         ).toList
 
         val filteredYMKeyLst = ym_condition match {
             case "" => allSingleJobKeyLst
             case "-" => allSingleJobKeyLst
-            case _ => {
+            case _ =>
                 val ym_start = ym_condition.split("-")(0).toInt
                 val ym_end = ym_condition.split("-")(1).toInt
                 allSingleJobKeyLst.filter(x => x._2.toInt>=ym_start).filter(x => x._2.toInt<=ym_end)
-            }
         }
 
         val filteredMktKeyLst = mkt match {
@@ -51,5 +50,4 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
 
         ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
     }
-
 }

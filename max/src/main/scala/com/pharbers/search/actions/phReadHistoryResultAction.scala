@@ -17,16 +17,16 @@ class phReadHistoryResultAction (override val defaultArgs: pActionArgs) extends 
     override val name: String = "read_result_action"
 
     override def perform(pr: pActionArgs): pActionArgs = {
-        val lst = pr.asInstanceOf[]
+        val maxLst = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[ListArgs].get
+                .map(x => x.asInstanceOf[StringArgs].get)
 
-        val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
-        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val sparkDriver = phSparkDriver()
         val redisDriver = new PhRedisDriver()
-        val userJobsKey = Sercurity.md5Hash(user + company)
-        val history_df_lst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
+
+        val history_df_lst = maxLst.map(singleJobKey =>
             sparkDriver.csv2RDD(max_path_obj.p_maxPath + redisDriver.getMapValue(singleJobKey, "max_result_name"), 31.toChar.toString)
-        ).toList
+        )
+
         DFArgs(unionDataFrameList(history_df_lst))
     }
 }

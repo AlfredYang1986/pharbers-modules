@@ -15,7 +15,7 @@ object phReturnPageCacheAction {
 }
 
 class phReturnPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTrait {
-    override val name: String = "check_page_cache_action"
+    override val name: String = "return_page_cache_action"
 
     override def perform(pr: pActionArgs): pActionArgs = {
 
