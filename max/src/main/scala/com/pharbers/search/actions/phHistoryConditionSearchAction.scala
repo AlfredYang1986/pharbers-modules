@@ -1,6 +1,5 @@
 package com.pharbers.search.actions
 
-import com.pharbers.common.algorithm.phSparkCommonFuncTrait
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -12,32 +11,45 @@ object phHistoryConditionSearchAction {
     def apply(args: pActionArgs = NULLArgs): pActionTrait = new phHistoryConditionSearchAction(args)
 }
 
-class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) extends pActionTrait with phSparkCommonFuncTrait {
+class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "phHistoryConditionSearchAction"
 
     override def perform(pr: pActionArgs): pActionArgs = {
+        val redisDriver = new PhRedisDriver()
 
-        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
+        val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
+        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val ym_condition = defaultArgs.asInstanceOf[MapArgs].get("ym_condition").asInstanceOf[StringArgs].get
-        val historyDF = pr.asInstanceOf[MapArgs].get("read_result_action").asInstanceOf[DFArgs].get
-        val filteredMktDF = mkt match {
-            case "" => historyDF
-            case "All" => historyDF
-            case _ => historyDF.filter(s"MARKET like '${mkt}'")
-        }
+        val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
-        val filteredYMDF = ym_condition match {
-            case "" => filteredMktDF
-            case "-" => filteredMktDF
+        val userJobsKey = Sercurity.md5Hash(user + company)
+
+        val allSingleJobKeyLst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
+            (
+                singleJobKey,
+                redisDriver.getMapValue(singleJobKey, "ym"),
+                redisDriver.getMapValue(singleJobKey, "mkt"),
+            )
+        ).toList
+
+        val filteredYMKeyLst = ym_condition match {
+            case "" => allSingleJobKeyLst
+            case "-" => allSingleJobKeyLst
             case _ => {
                 val ym_start = ym_condition.split("-")(0).toInt
                 val ym_end = ym_condition.split("-")(1).toInt
-                filteredMktDF.filter(filteredMktDF("Date").gt(ym_start-1)).filter(filteredMktDF("Date").lt(ym_end+1))
+                allSingleJobKeyLst.filter(x => x._2.toInt>=ym_start).filter(x => x._2.toInt<=ym_end)
             }
         }
 
-        DFArgs(filteredYMDF)
+        val filteredMktKeyLst = mkt match {
+            case "" => filteredYMKeyLst
+            case "All" => filteredYMKeyLst
+            case _ => filteredYMKeyLst.filter(x => x._3 == mkt)
+        }
+
+        ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
     }
 
 }

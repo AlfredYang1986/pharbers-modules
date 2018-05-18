@@ -2,8 +2,8 @@ package com.pharbers.search
 
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
-import com.pharbers.pactions.jobs.sequenceJobWithMap
-import com.pharbers.search.actions.{phHistoryConditionSearchAction, phPageCacheAction, phPageSearchAction, phReadHistoryResultAction}
+import com.pharbers.pactions.jobs.{choiceCacheJob, choiceJob, sequenceJob, sequenceJobWithMap}
+import com.pharbers.search.actions._
 
 /**
   * Created by jeorch on 18-5-11.
@@ -21,7 +21,7 @@ object phHistorySearchJob {
     }
 }
 
-trait phHistorySearchJob extends sequenceJobWithMap {
+trait phHistorySearchJob extends choiceCacheJob {
     override val name: String = "phHistorySearchJob"
 
     val user: String
@@ -31,7 +31,7 @@ trait phHistorySearchJob extends sequenceJobWithMap {
     val ym_condition: String
     val mkt: String
 
-    val searchArgs = MapArgs(
+    lazy val searchArgs = MapArgs(
         Map(
             "user" -> StringArgs(user),
             "company" -> StringArgs(company),
@@ -42,11 +42,27 @@ trait phHistorySearchJob extends sequenceJobWithMap {
         )
     )
 
+    val ckeckPageCache: choiceCacheJob = new choiceCacheJob {
+        override val name = "checkPageCache"
+        val actions: List[pActionTrait] = phCheckPageCacheAction(searchArgs) ::
+            phReturnPageCacheAction(searchArgs) ::
+            new sequenceJob {
+                override val name: String = "cache_data_job"
+                override val actions: List[pActionTrait] =
+                    phHistoryConditionSearchAction(searchArgs) ::
+                    phReadHistoryResultAction(searchArgs) :: Nil
+
+            } :: Nil
+    }
+
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-        setLogLevelAction("ERROR") ::
-        phReadHistoryResultAction(searchArgs) ::
-        phHistoryConditionSearchAction(searchArgs) ::
-        phPageCacheAction(searchArgs) ::
-        phPageSearchAction(searchArgs) ::
-        Nil
+            setLogLevelAction("ERROR") :: ckeckPageCache :: Nil
+
+
+
+//
+
+//        phPageCacheAction(searchArgs) ::
+//        phPageSearchAction(searchArgs) ::
+//        Nil
 }

@@ -29,10 +29,11 @@
 //    }
 //
 //    test("max schedule job"){
-//        //TODO:(标记人:Jeorch,标记时间:20180515,预计完成时间:上线时预设管理员信息在Redis中)
+//        //TODO:(标记人:Jeorch,标记时间:20180515,预计完成时间:上线时预设管理员信息在数据库中,暂时以redis做测试)
 //        val rd = new PhRedisDriver()
 //        val user = "jeorch"
 //        rd.addString("MaxAdmin", user)
+//        rd.expire("MaxAdmin",60*30) //过期时间30min
 //        val result = phMaxScheduleJob(user).start
 //        println(result)
 //    }

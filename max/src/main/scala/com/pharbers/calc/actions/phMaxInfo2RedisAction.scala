@@ -41,6 +41,12 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         rd.addSet(maxJobsKey, singleJobKey)
         rd.addSet(userJobsKey, singleJobKey)
         rd.addMap(singleJobKey, "max_result_name", maxName)
+
+        rd.addMap(singleJobKey, "user", user)
+        rd.addMap(singleJobKey, "company", company)
+        rd.addMap(singleJobKey, "ym", ym)
+        rd.addMap(singleJobKey, "mkt", mkt)
+
         val max_sales = maxDF.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val max_sales_city_lst = maxDF.groupBy("City").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())

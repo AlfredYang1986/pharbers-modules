@@ -3,16 +3,18 @@
 //import java.text.SimpleDateFormat
 //import java.util.Date
 //
+//import com.pharbers.builder.SearchFacade
 //import com.pharbers.calc.{phMaxJob, phMaxJobForPfizerCNS_R}
 //import com.pharbers.pactions.actionbase.{DFArgs, MapArgs}
 //import com.pharbers.panel.astellas.phAstellasPanelJob
 //import com.pharbers.panel.nhwa.phNhwaPanelJob
-//import com.pharbers.panel.panel_path_obj
 //import com.pharbers.panel.pfizer.phPfizerPanelJob
 //import com.pharbers.spark.phSparkDriver
 //import org.specs2.mutable.{Before, Specification}
 //import org.specs2.specification.BeforeAll
 //import org.specs2.specification.core.{Fragment, Fragments}
+//import play.api.libs.json.JsValue
+//import play.api.libs.json.Json.toJson
 //
 ///**
 //  * Created by jeorch on 18-4-13.
@@ -47,7 +49,7 @@
 //        s2"""
 //    This is a specification to check the max result correctness
 //    The max result should
-//        successfully pass max calc                                               ${doLoopJobs(100)}
+//        successfully pass max calc                                               ${doLoopJobs(1000)}
 //                                                                 """
 //
 ////    /**
@@ -60,7 +62,7 @@
 //    def doLoopJobs(count: Int): Boolean = {
 //        val bool = if(count <= 1 ) true else doLoopJobs(count - 1)
 ////        doMaxJob(count)
-//        doAI_R_Job(count)
+//        doSearchJob(count)
 //        bool
 //    }
 //
@@ -91,50 +93,26 @@
 //        //        ~=(f_units, compareResultUnits, 1.0E-3) mustEqual true
 //    }
 //
-//    def doAI_R_Job(index: Int) = {
-//        println(s"Do MaxJob-${index}")
+//    def doSearchJob(index: Int) = {
+//        println(s"doSearchJob-${index}")
+//        val company: String = "5afa53bded925c05c6f69c54"
+//        val user: String = "5afa57a1ed925c05c6f69c68"
+//        val ym = "201712"
+//        val mkt = "麻醉市场"
+//        val condition = toJson {
+//            Map(
+//                "condition" -> toJson(Map(
+//                    "user_id" -> toJson(user),
+//                    "currentPage" -> toJson(index),
+//                    "pageSize" -> toJson(20),
+//                    "market" -> toJson(mkt)
+//                )),
+//                "user" -> toJson(Map("company" -> toJson(Map("company_id" -> toJson(company)))))
+//            )
+//        }
 //
-//        val mkt1 = "AI_R_other"
-//        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
-//        println()
-//
-//        val panelResult1 = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt1}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-//        println("panelResult1 = " + panelResult1)
-//
-//        println()
-//        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
-//
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
-//
-//        val result1 = phMaxJob(panelResult1.toString, s"pfizer/universe_${mkt1}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get.toString
-//
-//        println("result1 = " + result1)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
-//
-//        result1 mustNotEqual ""
-//
-//        val mkt2 = "AI_R_zith"
-//        println(s"生成panel测试开始时间" + dateformat.format(new Date()))
-//        println()
-//
-//        val panelResult2 = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", "201802", s"${mkt2}").perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-//        println("panelResult2 = " + panelResult2)
-//
-//        println()
-//        println(s"生成panel测试结束时间" + dateformat.format(new Date()))
-//
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
-//
-//        val result2 = phMaxJob(panelResult2.toString, s"pfizer/universe_${mkt2}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get.toString
-//
-//        println("result2 = " + result2)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
-//
-//        result2 mustNotEqual ""
+//        val search = new SearchFacade
+//        search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].foreach(println)
 //    }
 //
 //    def ~=(x: Any, y: Any, precision: Double) = {
