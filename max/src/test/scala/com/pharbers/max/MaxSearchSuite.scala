@@ -14,7 +14,8 @@ import play.api.libs.json.Json.toJson
 class MaxSearchSuite extends FunSuite {
 
     val company: String = "5afa53bded925c05c6f69c54"
-    val user: String = "5afa57a1ed925c05c6f69c68"
+    val user: String = "5afaa333ed925c30f8c066d1"
+    val jobId: String = "20180518test001"
     val ym = "201712"
     val mkt = "麻醉市场"
 
@@ -48,6 +49,7 @@ class MaxSearchSuite extends FunSuite {
         println(panelInfo.getNotPanelHospLst)
         println(panelInfo.getNotPanelHospLst.take(10))
     }
+
     test("get max info"){
         val maxResultInfo = phMaxResultInfo(user, company, ym, mkt)
         println(maxResultInfo.getLastSeveralMonthResultSalesLst(12))
