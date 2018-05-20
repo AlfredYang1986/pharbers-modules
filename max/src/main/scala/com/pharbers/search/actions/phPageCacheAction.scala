@@ -62,12 +62,14 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
                     cacheStartPage until cacheEndPage foreach(index =>{
                         val pageCacheTempKey = Sercurity.md5Hash(user + company + ym_condition + mkt + index + pageSize)
-                        val resultLst = (itemStartIndex until itemEndIndex).map(x => {
+                        val itemStartIndexTemp = index*pageSize
+                        val itemEndIndexTemp = index + pageSize
+                        val resultLstTemp = (itemStartIndexTemp until itemEndIndexTemp).map(x => {
                             if(x > totalItemIndex) StringArgs(null) else StringArgs(phIndexRdd.get(x).get.toString())
                         }).toList.filter(_!=StringArgs(null))
                         if (!redisDriver.exsits(pageCacheTempKey)) {
-                            redisDriver.addListRight(pageCacheTempKey, resultLst:_*)
-                            redisDriver.expire(pageCacheTempKey, 10*60)
+                            redisDriver.addListRight(pageCacheTempKey, resultLstTemp:_*)
+                            redisDriver.expire(pageCacheTempKey, 10*60) //过期时间10min
                         }
                     })
                     ListArgs(redisDriver.getListAllValue(pageCacheKey).map(StringArgs))
