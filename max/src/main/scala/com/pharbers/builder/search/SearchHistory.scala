@@ -41,7 +41,7 @@ trait SearchHistory {
         val pagesCount = redisDriver.getMapValue(pageCacheInfo, "page")
 
 
-        val singlePageData = searchResult.get("checkPageCache").asInstanceOf[ListArgs].get.zipWithIndex.map { x =>
+        val singlePageData = searchResult.get("return_page_cache_action").asInstanceOf[ListArgs].get.zipWithIndex.map { x =>
             val item = x._1.asInstanceOf[StringArgs].get.replace("[", "").replace("]", "").split(",")
             toJson(
                 Map(
