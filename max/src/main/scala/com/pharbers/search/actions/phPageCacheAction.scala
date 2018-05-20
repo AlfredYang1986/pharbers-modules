@@ -34,7 +34,7 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                 val result_df = pr.asInstanceOf[MapArgs].get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get
                 if (result_df.rdd.isEmpty()) ListArgs(List.empty)
                 else {
-                    val result_rdd_limited = result_df.limit(itemEndIndex).rdd
+                    val result_rdd_limited = result_df.limit(itemEndIndex+5*pageSize).rdd
                     val (startTime, endTime) = ym_condition match {
                         case "" => ("", "")
                         case "-" => ("", "")

@@ -48,7 +48,7 @@ trait SearchHistory {
             }
             val pagesCount = itemsCount/pageSize.toLong
 
-            val singlePageData = searchResult.get("page_search_action").asInstanceOf[ListArgs].get.zipWithIndex.map(x => {
+            val singlePageData = searchResult.get("page_cache_action").asInstanceOf[ListArgs].get.zipWithIndex.map(x => {
                 val item = x._1.asInstanceOf[StringArgs].get.replace("[","").replace("]","").split(",")
                 toJson(
                     Map(

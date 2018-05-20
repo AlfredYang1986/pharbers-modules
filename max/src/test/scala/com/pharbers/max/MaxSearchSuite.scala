@@ -64,11 +64,12 @@ class MaxSearchSuite extends FunSuite {
             Map(
                 "condition" -> toJson(Map(
                     "user_id" -> toJson(user),
-                    "startTime" -> toJson("201701"),
+                    "startTime" -> toJson("201706"),
                     "endTime" -> toJson("201712"),
-                    "currentPage" -> toJson(5),
+                    "currentPage" -> toJson(1),
                     "pageSize" -> toJson(10),
-                    "market" -> toJson(mkt)
+                    "mode" -> toJson("search"),
+                    "market" -> toJson("All")
                 )),
                 "user" -> toJson(Map("company" -> toJson(Map("company_id" -> toJson(company)))))
             )
