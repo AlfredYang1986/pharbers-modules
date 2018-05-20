@@ -3,7 +3,7 @@ package com.pharbers.search
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 import com.pharbers.pactions.jobs.sequenceJobWithMap
-import com.pharbers.search.actions.{phHistoryConditionSearchAction, phPageCacheAction, phPageSearchAction, phReadHistoryResultAction}
+import com.pharbers.search.actions.{phHistoryConditionSearchAction, phPageCacheAction, phReadHistoryResultAction}
 
 /**
   * Created by jeorch on 18-5-11.
@@ -47,6 +47,5 @@ trait phHistorySearchJob extends sequenceJobWithMap {
         phReadHistoryResultAction(searchArgs) ::
         phHistoryConditionSearchAction(searchArgs) ::
         phPageCacheAction(searchArgs) ::
-        phPageSearchAction(searchArgs) ::
         Nil
 }

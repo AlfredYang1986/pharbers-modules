@@ -16,8 +16,6 @@ object phPageCacheAction{
 class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTrait with java.io.Serializable {
     override val name: String = "page_cache_action"
 
-    private val defaultCachePageCount: Int = 5
-
     override def perform(pr: pActionArgs): pActionArgs = {
         val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
@@ -56,8 +54,8 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
                     val (cacheStartPage, cacheEndPage) = pageIndex match {
                         case i if (i < 5) => (0, 5)
-                        case i if (i > (totalItemIndex/pageSize)) => (totalItemIndex/pageSize - 2, totalItemIndex/pageSize + 2)
-                        case i => (i - 2, i + 2)
+                        case i if (i > (totalItemIndex/pageSize)) => (totalItemIndex/pageSize - 3, totalItemIndex/pageSize + 2)
+                        case i => (i - 2, i + 3)
                     }
 
                     cacheStartPage until cacheEndPage foreach(index =>{
