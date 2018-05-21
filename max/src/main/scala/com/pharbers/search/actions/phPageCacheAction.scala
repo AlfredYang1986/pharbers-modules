@@ -54,8 +54,8 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
             cacheIndex foreach { i =>
                 val pageCacheTempKey = Sercurity.md5Hash(user + company + ym_condition + mkt + i + pageSize)
                 val resultLst = ((i * pageSize) until (i * pageSize + pageSize)).map { x =>
-                    phIndexRdd.get(x).get.toString()
-                }.toList
+                    if(x >= totalCount) null else phIndexRdd.get(x).get.toString()
+                }.toList.filter(_ != null)
                 if(!redisDriver.exsits(pageCacheTempKey)){
                     redisDriver.addListRight(pageCacheTempKey, resultLst: _*)
                     redisDriver.expire(pageCacheTempKey, 5 * 60)

@@ -66,9 +66,9 @@ class MaxSearchSuite extends FunSuite {
             Map(
                 "condition" -> toJson(Map(
                     "user_id" -> toJson(user),
-                    "startTime" -> toJson("201701"),
+                    "startTime" -> toJson("201712"),
                     "endTime" -> toJson("201712"),
-                    "currentPage" -> toJson(1),
+                    "currentPage" -> toJson(72506),
                     "pageSize" -> toJson(10),
                     "market" -> toJson(mkt)
                 )),
@@ -77,6 +77,7 @@ class MaxSearchSuite extends FunSuite {
         }
 
         val search = new SearchFacade
+        println(search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].length)
         search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].foreach(println)
     }
 
