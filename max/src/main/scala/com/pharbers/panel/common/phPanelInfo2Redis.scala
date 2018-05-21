@@ -33,7 +33,8 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panel_hosp_distinct = panelDF.withColumnRenamed("HOSP_ID", "p_HOSP_ID").select("p_HOSP_ID").distinct()
         val panel_prod_count = panelDF.select("Prod_Name").distinct().count()
         val panel_sales = panelDF.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
-        val panel_company_sales = panelDF_filter_company.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
+        val panel_company_sales = if (panelDF_filter_company.count() == 0) 0.0
+                                else panelDF_filter_company.agg(Map("Sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val not_panel_hosp_lst = universe_file
             .join(panel_hosp_distinct, universe_file("u_HOSP_ID") === panel_hosp_distinct("p_HOSP_ID"), "left")
             .filter("p_HOSP_ID is null").select("HOSP_NAME", "Province", "Prefecture", "CityLevel").collect().map(x => x.toString())
