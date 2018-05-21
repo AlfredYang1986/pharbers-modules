@@ -5,8 +5,5 @@
         <cache_dir value="/mnt/config/Cache/" />
         <panel_dir value="/mnt/config/Panel/" />
         <max_dir value="/mnt/config/Max/" />
-        <!--<cache_dir value="/run/media/jeorch/82d99361-1346-4602-ae90-7a0a54c16e3f/jeorch/jeorch/test/max_test/_20180427/Cache/" />-->
-        <!--<panel_dir value="/run/media/jeorch/82d99361-1346-4602-ae90-7a0a54c16e3f/jeorch/jeorch/test/max_test/_20180427/Result/Panel/" />-->
-        <!--<max_dir value="/run/media/jeorch/82d99361-1346-4602-ae90-7a0a54c16e3f/jeorch/jeorch/test/max_test/_20180427/Result/Max/" />-->
     </max_path_config>
 </pharbers-modules>

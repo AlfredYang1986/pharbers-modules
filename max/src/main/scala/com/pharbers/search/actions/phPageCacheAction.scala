@@ -56,8 +56,11 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                 val resultLst = ((i * pageSize) until (i * pageSize + pageSize)).map { x =>
                     phIndexRdd.get(x).get.toString()
                 }.toList
-                redisDriver.addListRight(pageCacheTempKey, resultLst: _*)
-                redisDriver.expire(pageCacheTempKey, 30 * 60)
+                if(!redisDriver.exsits(pageCacheTempKey)){
+                    redisDriver.addListRight(pageCacheTempKey, resultLst: _*)
+                    redisDriver.expire(pageCacheTempKey, 5 * 60)
+                }
+
             }
 
             NULLArgs
