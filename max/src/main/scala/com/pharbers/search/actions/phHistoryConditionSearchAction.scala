@@ -23,8 +23,13 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         val ym_condition = defaultArgs.asInstanceOf[MapArgs].get("ym_condition").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
-        val userJobsKey = Sercurity.md5Hash(user + company)
+        //TODO:临时解决大数据量最后一页的方案
+        val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
+        val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
+        val pageCacheInfo = Sercurity.md5Hash(user + company + ym_condition + mkt)
+        val totalCount = redisDriver.getMapValue(pageCacheInfo, "count")
 
+        val userJobsKey = Sercurity.md5Hash(user + company)
         val allSingleJobKeyLst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
             (
                     singleJobKey,
@@ -48,6 +53,9 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
             case _ => filteredYMKeyLst.filter(x => x._3 == mkt)
         }
 
-        ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
+        //TODO:临时解决大数据量最后一页的方案
+        if(totalCount != null && pageIndex == (totalCount.toDouble.toInt/pageSize)){
+            ListArgs((filteredMktKeyLst.last::Nil).map(x => StringArgs(x._1)))
+        } else ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
     }
 }
