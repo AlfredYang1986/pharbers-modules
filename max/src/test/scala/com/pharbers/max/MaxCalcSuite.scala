@@ -121,7 +121,7 @@ class MaxTestImpl extends Actor {
         case "panel" =>
             sender ! phBuilder(company, user, jobId)
                 .set("cpa", "180211恩华17年1-12月检索.xlsx")
-                .set("yms", "201712")
+                .set("yms", "201701#201702#201703#201704#201705#201706#201707#201708#201709#201710#201711#201712#")
                 .doPanel
         case "max" =>
             sender ! phBuilder(company, user, jobId).doMax
