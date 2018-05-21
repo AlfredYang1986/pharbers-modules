@@ -63,16 +63,18 @@ class MaxCalcSuite extends FunSuite{
         val cpa = "/mnt/config/Client/pfizer/1802 CPA.xlsx"
         val gyc = "/mnt/config/Client/pfizer/1802 GYC.xlsx"
 
-        var args:Map[String, String] = Map(
-                "cpa" -> cpa,
-                "gyc" -> gyc,
-                "ym" -> ym,
-                "mkt" -> mkt,
-                "user" -> user_id,
-                "company" -> company,
-                "universe_file" -> s"pfizer/universe_${mkt}_online.xlsx",
-                "job_id" -> job_id
-            )
+        var args: Map[String, String] = Map(
+            "cpa" -> cpa,
+            "gyc" -> gyc,
+            "ym" -> ym,
+            "mkt" -> mkt,
+            "universe_file" -> s"pfizer/universe_${mkt}_online.xlsx",
+            "p_current" -> "0.0",
+            "p_total" -> "0.0",
+            "user_id" -> user_id,
+            "company_id" -> company,
+            "job_id" -> job_id
+        )
 
         val panelResult = phPfizerPanelJob(args).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
         println("panelResult = " + panelResult)

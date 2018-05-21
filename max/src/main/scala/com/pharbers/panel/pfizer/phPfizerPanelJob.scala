@@ -19,8 +19,8 @@ object phPfizerPanelJob {
     def apply(args: Map[String, String]) : phPfizerPanelJob = {
         new phPfizerPanelJob {
             override lazy val job_id: String = args("job_id")
-            override lazy val company: String = args("company")
-            override lazy val user: String = args("user")
+            override lazy val company: String = args("company_id")
+            override lazy val user: String = args("user_id")
             override lazy val ym: String = args("ym")
             override lazy val mkt: String = args("mkt")
             override lazy val cpa_file: String = args("cpa")
