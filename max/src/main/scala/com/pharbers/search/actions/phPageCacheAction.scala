@@ -61,7 +61,7 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                     cacheStartPage until cacheEndPage foreach(index =>{
                         val pageCacheTempKey = Sercurity.md5Hash(user + company + ym_condition + mkt + index + pageSize)
                         val itemStartIndexTemp = index*pageSize
-                        val itemEndIndexTemp = index + pageSize
+                        val itemEndIndexTemp = index*pageSize + pageSize
                         val resultLstTemp = (itemStartIndexTemp until itemEndIndexTemp).map(x => {
                             if(x > totalItemIndex) StringArgs(null) else StringArgs(phIndexRdd.get(x).get.toString())
                         }).toList.filter(_!=StringArgs(null))
