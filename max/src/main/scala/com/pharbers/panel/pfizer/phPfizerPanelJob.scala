@@ -16,12 +16,16 @@ import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, sav
   */
 object phPfizerPanelJob {
 
-    def apply(arg_cpa: String, arg_gyc: String, arg_ym: String, arg_mkt: String) : phPfizerPanelJob = {
+    def apply(args: Map[String, String]) : phPfizerPanelJob = {
         new phPfizerPanelJob {
-            override lazy val cpa_file: String = arg_cpa
-            override lazy val gyc_file: String = arg_gyc
-            override lazy val ym: String = arg_ym
-            override lazy val mkt: String = arg_mkt
+            override lazy val job_id: String = args("job_id")
+            override lazy val company: String = args("company")
+            override lazy val user: String = args("user")
+            override lazy val ym: String = args("ym")
+            override lazy val mkt: String = args("mkt")
+            override lazy val cpa_file: String = args("cpa")
+            override lazy val gyc_file: String = args("gyc")
+            override lazy val universe_file: String = args("universe_file")
 
             override lazy val temp_name: String = UUID.randomUUID().toString
         }
@@ -36,11 +40,15 @@ object phPfizerPanelJob {
 trait phPfizerPanelJob extends sequenceJobWithMap {
     override val name: String = "phPfizerPanelJob"
 
+    val job_id: String
+    val user: String
+    val company: String
     val ym: String
     val mkt: String
     val cpa_file: String
     val gyc_file: String
     val temp_name: String
+    val universe_file: String
     val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
 
     /**
@@ -80,7 +88,10 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         Map(
             "ym" -> StringArgs(ym),
             "mkt" -> StringArgs(mkt),
-            "name" -> StringArgs(temp_name)
+            "user" -> StringArgs(user),
+            "name" -> StringArgs(temp_name),
+            "company" -> StringArgs(company),
+            "job_id" -> StringArgs(job_id)
         )
     )
 
@@ -114,7 +125,7 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
     )
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-        phPfizerPreActions(mkt, temp_name).actions :::
+        phPfizerPreActions(universe_file, temp_name).actions :::
         readCpa ::
         readNotArrivalHosp ::
         readGyc ::

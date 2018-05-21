@@ -10,6 +10,9 @@ import java.text.SimpleDateFormat
 import akka.actor.{Actor, ActorSystem, Props}
 import akka.util.Timeout
 import com.pharbers.builder.phBuilder
+import com.pharbers.calc.phMaxJob
+import com.pharbers.pactions.actionbase.{MapArgs, StringArgs}
+import com.pharbers.panel.pfizer.phPfizerPanelJob
 import play.api.libs.json.JsValue
 
 import scala.concurrent.Await
@@ -19,20 +22,15 @@ import scala.concurrent.Await
   */
 class MaxCalcSuite extends FunSuite{
     val system = ActorSystem("maxActor")
-    val testActor = system.actorOf(MaxTestImpl.props)
 
-//    test("nhwa calc test") {
-//        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
-//        println(s"MAX计算开始时间" + dateformat.format(new Date()))
-//        println()
-//
-//        val result = phMaxJob("1fab79bf-935e-4253-9fa8-567230e5f94c", "nhwa/universe_麻醉市场_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
-//
-//        println("result = " + result)
-//        println()
-//        println(s"MAX计算结束时间" + dateformat.format(new Date()))
-//    }
+    val company1: String = "5afa53bded925c05c6f69c54"
+    val user1: String = "5afaa333ed925c30f8c066d1"
 
+    val company2: String = "5afa53bded925c05c6f69c54"
+    val user2: String = "5afaa333ed925c30f8c066d1"
+
+    lazy val NhwaActor = system.actorOf(MaxTestImpl.props(company1, user1))
+    lazy val PfizerActor = system.actorOf(MaxTestImpl.props(company2, user2))
 
     test("nhwa calc test") {
         val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
@@ -40,13 +38,13 @@ class MaxCalcSuite extends FunSuite{
         println()
 
         implicit val t: Timeout = 20 minutes
-//        val r = testActor ? "calcYM"
-//        val result = Await.result(r.mapTo[JsValue], t.duration)
-//        println("result = " + result)
-        val r2 = testActor ? "panel"
+        val r = NhwaActor ? "calcYM"
+        val result = Await.result(r.mapTo[JsValue], t.duration)
+        println("result = " + result)
+        val r2 = NhwaActor ? "panel"
         val result2 = Await.result(r2.mapTo[JsValue], t.duration)
         println("result2 = " + result2)
-        val r3 = testActor ? "max"
+        val r3 = NhwaActor ? "max"
         val result3 = Await.result(r3.mapTo[JsValue], t.duration)
         println("result3 = " + result3)
 
@@ -55,31 +53,37 @@ class MaxCalcSuite extends FunSuite{
         println(s"筛选月份结束时间" + dateformat.format(new Date()))
     }
 
-//    test("pfizer calc test") {
-//
-//        val ym = "201802"
-//        val mkt = "INF"
-////        val redisDriver = new PhRedisDriver()
-////        redisDriver.addMap("uid", "company", "Pfizer")
-//
-//        val panelResult = phPfizerPanelJob("/mnt/config/Client/pfizer/1802 CPA.xlsx", "/mnt/config/Client/pfizer/1802 GYC.xlsx", ym, mkt).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
-//        println("panelResult = " + panelResult)
-//
-//        val args: Map[String, String] = Map(
-//            "ym" -> ym,
-//            "mkt" -> mkt,
-//            "panel" -> panelResult.toString,
-//            "universe_name" -> s"pfizer/universe_${mkt}_online.xlsx",
-//            "user" -> "user_id",
-//            "company" -> "辉瑞",
-//            "job_id" -> "job_id"
-//        )
-//
-//        val result = phMaxJob(args).perform().asInstanceOf[MapArgs].get("max_persistent_action").get
-////        val result = phMaxJob(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
-//
-//        println("result = " + result)
-//    }
+    test("pfizer calc test") {
+
+        val job_id = "5b029006ed925c2c705b85bd"
+        val user_id = "5b028feced925c2c705b85bb"
+        val company = "5b028f95ed925c2c705b85ba"
+        val ym = "201802"
+        val mkt = "INF"
+        val cpa = "/mnt/config/Client/pfizer/1802 CPA.xlsx"
+        val gyc = "/mnt/config/Client/pfizer/1802 GYC.xlsx"
+
+        var args:Map[String, String] = Map(
+                "cpa" -> cpa,
+                "gyc" -> gyc,
+                "ym" -> ym,
+                "mkt" -> mkt,
+                "user" -> user_id,
+                "company" -> company,
+                "universe_file" -> s"pfizer/universe_${mkt}_online.xlsx",
+                "job_id" -> job_id
+            )
+
+        val panelResult = phPfizerPanelJob(args).perform().asInstanceOf[MapArgs].get("phSavePanelJob").get
+        println("panelResult = " + panelResult)
+
+        args += "panel_name" -> panelResult.toString
+
+        val result = phMaxJob(args).perform().asInstanceOf[MapArgs].get("max_persistent_action").get
+//        val result = phMaxJob(s"${mkt}_panel_1802.csv", s"pfizer/universe_${mkt}_online.xlsx").perform().asInstanceOf[MapArgs].get("max_persistent_action").get
+
+        println("result = " + result)
+    }
 
 //    test("SpecialMarket DVP calc test") {
 //        val mkt = "DVP"
@@ -106,13 +110,13 @@ class MaxCalcSuite extends FunSuite{
 }
 
 object MaxTestImpl {
-    def props = Props[MaxTestImpl]
+    def props(company_arg: String, user_arg: String) = Props(new MaxTestImpl(company_arg, user_arg))
 }
 
-class MaxTestImpl extends Actor {
+class MaxTestImpl(company_arg: String, user_arg: String) extends Actor {
     implicit val actor: Actor = this
-    val company: String = "5afa53bded925c05c6f69c54"
-    val user: String = "5afaa333ed925c30f8c066d1"
+    val company: String = company_arg
+    val user: String = user_arg
     val jobId: String = "20180518test001"
 
     override def receive: Receive = {

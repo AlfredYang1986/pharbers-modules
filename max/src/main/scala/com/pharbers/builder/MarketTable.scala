@@ -141,8 +141,26 @@ trait MarketTable {
         "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
     )
 
+    val pfizer_INF = Map(
+        "company" -> "5b028f95ed925c2c705b85ba",
+        "subsidiary" -> "辉瑞",
+        "market" -> "INF",
+        "ymInstance" -> "com.pharbers.panel.pfizer.phPfizerCalcYMJob",
+        "panelInstance" -> "com.pharbers.panel.pfizer.phPfizerPanelJob",
+        "maxInstance" -> "com.pharbers.calc.phMaxJob",
+
+        "source" -> "cpa#gycx",
+        "panelArgs" -> "universe_file#product_match_file#markets_match_file#fill_hos_data_file#pfc_match_file",
+        "universe_file" -> "pfizer/universe_INF_online.xlsx",
+        "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
+        "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
+        "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+    )
+
     val marketTable: List[Map[String, String]] = nhwa_mz ::         // 恩华公司
             astellas_alk :: astellas_mkm :: astellas_tf :: astellas_Grafalon ::
             astellas_hl :: astellas_pe :: astellas_plkf :: astellas_wxk ::      // 安斯泰来公司
+            pfizer_INF ::
             Nil
 }
