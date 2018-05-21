@@ -14,7 +14,7 @@ trait CheckTrait { this: MarketTable =>
 
     val ck_max: Map[String, String] => Boolean = m => m.contains("panel_name") && m("panel_name").nonEmpty
 
-    def getAllMkt(company: String): Option[Array[String]] = marketTable.find(company == _("company")).map(_("market").split("#"))
+    def getAllMkt(company: String): List[String] = marketTable.filter(company == _("company")).map(_("market"))
 
     def getSubsidiary(company: String): Option[Array[String]] = marketTable.find(company == _("company")).head.get("subsidiary").map(_.split("#"))
 

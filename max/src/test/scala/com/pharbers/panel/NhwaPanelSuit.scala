@@ -11,19 +11,12 @@
 //import java.text.SimpleDateFormat
 //
 //import play.api.libs.json.JsValue
-//import akka.actor.{Actor, ActorSystem, Props}
-//import com.mongodb.casbah.Imports.DBObject
 //import com.pharbers.builder.phBuilder
-//import com.pharbers.dbManagerTrait.dbInstanceManager
-//import org.bson.types.ObjectId
-//import play.api.libs.json.Json.toJson
-//import com.mongodb.casbah.Imports._
-//import com.pharbers.mongodbConnect.connection_instance
-//import com.pharbers.mongodbDriver.MongoDB.MongoDBImpl
+//import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 //
 //class NhwaPanelSuit extends FunSuite {
 //    val system = ActorSystem("maxActor")
-//    val testActor = system.actorOf(NhwaPanelTestImpl.props)
+//    val testActor: ActorRef = system.actorOf(NhwaPanelTestImpl.props)
 //
 //    test("nhwa calc ym") {
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
@@ -61,7 +54,7 @@
 //}
 //
 //object NhwaPanelTestImpl {
-//    def props = Props[NhwaPanelTestImpl]
+//    def props: Props = Props[NhwaPanelTestImpl]
 //}
 //
 //class NhwaPanelTestImpl extends Actor {

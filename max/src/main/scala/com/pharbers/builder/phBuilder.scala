@@ -45,21 +45,23 @@ trait phBuilder {
     import builderimpl._
 
     def doCalcYM(): JsValue = {
-        val defaultMkt = getAllMkt(mapping("company_id")).get.head
+        val defaultMkt = getAllMkt(mapping("company_id")).head
         val ckArgLst = getSourceLst(mapping("company_id"), defaultMkt)
 
         if(!parametCheck(ckArgLst, mapping)(ck_base))
             throw new Exception("input wrong")
 
         val clazz: String = getClazz(mapping("company_id"), defaultMkt)(ymInst)
-        val result = impl(clazz, mapping).perform(NULLArgs).asInstanceOf[JVArgs].get
+        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+                .asInstanceOf[MapArgs].get("result").asInstanceOf[JVArgs].get
+
         phSparkDriver().sc.stop()
         result
     }
 
     def doPanel(): JsValue = {
         val ymLst = mapping("yms").split("#")
-        val mktLst = getAllMkt(mapping("company_id")).get
+        val mktLst = getAllMkt(mapping("company_id"))
         val jobSum = ymLst.length * mktLst.length
         mapping += "p_total" -> jobSum.toString
 
