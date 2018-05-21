@@ -23,7 +23,7 @@ class phCalcYM2JVJobWithCpaAndGyc(override val defaultArgs: pActionArgs) extends
         val result = cpaLst.join(gycx).map(_._1).collect().sorted
 
         JVArgs(
-            toJson(result.mkString(","))
+            toJson(result.mkString("#"))
         )
     }
 }
