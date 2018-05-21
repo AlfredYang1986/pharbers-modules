@@ -119,8 +119,8 @@ case class phAstellasPanelJob(args: Map[String, String])(implicit _actor: Actor)
     lazy val df = MapArgs(
         Map(
             "ym" -> StringArgs(ym),
-            "mkt" -> StringArgs(getMktEN(mkt)),
-            "mkt_cn" -> StringArgs(mkt),
+            "mkt" -> StringArgs(mkt),
+            "mkt_en" -> StringArgs(getMktEN(mkt)),
             "user" -> StringArgs(user),
             "name" -> StringArgs(temp_name),
             "company" -> StringArgs(company),

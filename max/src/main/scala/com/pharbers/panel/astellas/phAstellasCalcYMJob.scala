@@ -13,7 +13,7 @@ import org.apache.spark.listener.progress.sendSingleProgress
 import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
 
 case class phAstellasCalcYMJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
-    override val name: String = "phNhwaCalcYMJob"
+    override val name: String = "phAstellasCalcYMJob"
     lazy val cpa_file: String = max_path_obj.p_clientPath + args("cpa")
     lazy val gyc_file: String = max_path_obj.p_clientPath + args("gycx")
     lazy val cache_location: String = max_path_obj.p_cachePath + UUID.randomUUID().toString
