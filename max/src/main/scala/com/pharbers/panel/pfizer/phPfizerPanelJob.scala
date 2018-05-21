@@ -2,59 +2,128 @@ package com.pharbers.panel.pfizer
 
 import java.util.UUID
 
-import com.pharbers.common.algorithm.max_path_obj
+import akka.actor.Actor
+import com.pharbers.channel.sendEmTrait
 import com.pharbers.panel.pfizer.actions._
+import com.pharbers.pactions.generalactions._
+import com.pharbers.common.algorithm.max_path_obj
+import org.apache.spark.listener.progress.sendMultiProgress
+import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 import com.pharbers.panel.common.{phPanelInfo2Redis, phSavePanelJob}
-import com.pharbers.common.excel.input.PhXlsxSecondSheetFormat
-import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
+import com.pharbers.pactions.jobs.{choiceJob, sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerGycxFormat}
-import com.pharbers.pactions.generalactions.{csv2DFAction, jarPreloadAction, saveCurrenResultAction, xlsxReadingAction}
+import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat}
+import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
 
 /**
   * Created by jeorch on 18-4-18.
+  *     Modify by clock on 18-5-21
   */
-object phPfizerPanelJob {
-
-    def apply(args: Map[String, String]) : phPfizerPanelJob = {
-        new phPfizerPanelJob {
-            override lazy val job_id: String = args("job_id")
-            override lazy val company: String = args("company_id")
-            override lazy val user: String = args("user_id")
-            override lazy val ym: String = args("ym")
-            override lazy val mkt: String = args("mkt")
-            override lazy val cpa_file: String = args("cpa")
-            override lazy val gyc_file: String = args("gyc")
-            override lazy val universe_file: String = args("universe_file")
-
-            override lazy val temp_name: String = UUID.randomUUID().toString
-        }
-    }
-}
-
-/**
-  * 1. read CPA文件第一页
-  * 2. read CPA文件第二页
-  * 3. read GYCX文件
-  */
-trait phPfizerPanelJob extends sequenceJobWithMap {
+case class phPfizerPanelJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
     override val name: String = "phPfizerPanelJob"
 
-    val job_id: String
-    val user: String
-    val company: String
-    val ym: String
-    val mkt: String
-    val cpa_file: String
-    val gyc_file: String
-    val temp_name: String
-    val universe_file: String
+    val temp_name: String = UUID.randomUUID().toString
     val temp_dir: String = max_path_obj.p_cachePath + temp_name + "/"
+    val match_dir: String = max_path_obj.p_matchFilePath
+    val source_dir: String = max_path_obj.p_clientPath
 
+    val universe_file: String = match_dir + args("universe_file")
+    val product_match_file: String = match_dir + args("product_match_file")
+    val markets_match_file: String = match_dir + args("markets_match_file")
     /**
-      * 1. read CPA文件第一页
+      * 不同年份有不同的补充文件,是否需要进行历史补充医院的合并?
+      * ToDo:为了满足用户不仅仅可以计算当月,还可以计算历史月份
       */
-    val readCpa = new sequenceJob {
+    val fill_hos_data_file: String = match_dir + args("fill_hos_data_file")
+    val pfc_match_file: String = match_dir + args("pfc_match_file")
+    val cpa_file: String = source_dir + args("cpa")
+    val gyc_file: String = source_dir + args("gycx")
+
+    lazy val ym: String = args("ym")
+    lazy val mkt: String = args("mkt")
+    lazy val user: String = args("user_id")
+    lazy val job_id: String = args("job_id")
+    lazy val company: String = args("company_id")
+    lazy val p_total: Double = args("p_total").toDouble
+    lazy val p_current: Double = args("p_current").toDouble
+
+    implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
+    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
+
+
+    //1. read universe_file
+    val load_universe_file: choiceJob = new choiceJob {
+        override val name = "universe_file"
+        val actions: List[pActionTrait] = existenceRdd("universe_file") ::
+                csv2DFAction(temp_dir + "universe_file") ::
+                new sequenceJob {
+                    override val name: String = "read_universe_file_job"
+                    override val actions: List[pActionTrait] =
+                        xlsxReadingAction[PhExcelXLSXCommonFormat](universe_file, "universe_file") ::
+                                saveCurrenResultAction(temp_dir + "universe_file") ::
+                                csv2DFAction(temp_dir + "universe_file") :: Nil
+                } :: Nil
+    }
+
+    //2. read product_match_file
+    val load_product_match_file: choiceJob = new choiceJob {
+        override val name = "product_match_file"
+        val actions: List[pActionTrait] = existenceRdd("product_match_file") ::
+                csv2DFAction(temp_dir + "product_match_file") ::
+                new sequenceJob {
+                    override val name: String = "read_product_match_file_job"
+                    override val actions: List[pActionTrait] =
+                        xlsxReadingAction[PhExcelXLSXCommonFormat](product_match_file, "product_match_file") ::
+                                saveCurrenResultAction(temp_dir + "product_match_file") ::
+                                csv2DFAction(temp_dir + "product_match_file") :: Nil
+                } :: Nil
+    }
+
+    //3. read markets_match_file
+    val load_markets_match_file: choiceJob = new choiceJob {
+        override val name = "markets_match_file"
+        val actions: List[pActionTrait] = existenceRdd("markets_match_file") ::
+                csv2DFAction(temp_dir + "markets_match_file") ::
+                new sequenceJob {
+                    override val name: String = "read_markets_match_file_job"
+                    override val actions: List[pActionTrait] =
+                        xlsxReadingAction[PhExcelXLSXCommonFormat](markets_match_file, "markets_match_file") ::
+                                saveCurrenResultAction(temp_dir + "markets_match_file") ::
+                                csv2DFAction(temp_dir + "markets_match_file") :: Nil
+                } :: Nil
+    }
+
+    //4. read full_hosp_file
+    val load_full_hosp_file: choiceJob = new choiceJob {
+        override val name = "full_hosp_file"
+        val actions: List[pActionTrait] = existenceRdd("full_hosp_file") ::
+                phPfizerFillHospitalRdd2DfAction(temp_dir + "full_hosp_file") ::
+                new sequenceJob {
+                    override val name: String = "read_full_hosp_file_job"
+                    override val actions: List[pActionTrait] =
+                        txt2RDDAction(fill_hos_data_file) ::
+                                saveCurrenResultAction(temp_dir + "full_hosp_file") ::
+                                phPfizerFillHospitalRdd2DfAction(temp_dir + "full_hosp_file") :: Nil
+                } :: Nil
+    }
+
+    //5. read pfc_match_file
+    val load_pfc_match_file: choiceJob = new choiceJob {
+        override val name = "pfc_match_file"
+        val actions: List[pActionTrait] = existenceRdd("pfc_match_file") ::
+                csv2DFAction(temp_dir + "pfc_match_file") ::
+                new sequenceJob {
+                    override val name: String = "read_pfc_match_file_job"
+                    override val actions: List[pActionTrait] =
+                        xlsxReadingAction[PhExcelXLSXCommonFormat](pfc_match_file, "pfc_match_file") ::
+                                saveCurrenResultAction(temp_dir + "pfc_match_file") ::
+                                csv2DFAction(temp_dir + "pfc_match_file") :: Nil
+                } :: Nil
+    }
+
+    //6. read CPA文件第一页
+    val readCpa: sequenceJob = new sequenceJob {
         override val name = "cpa"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[phPfizerCpaFormat](cpa_file, "cpa") ::
@@ -62,10 +131,8 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
                 csv2DFAction(temp_dir + "cpa") :: Nil
     }
 
-    /**
-      * 2. read CPA文件第二页
-      */
-    val readNotArrivalHosp = new sequenceJob {
+    //7. read CPA文件第二页
+    val readNotArrivalHosp: sequenceJob = new sequenceJob {
         override val name = "not_arrival_hosp_file"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[PhXlsxSecondSheetFormat](cpa_file, "not_arrival_hosp_file") ::
@@ -73,10 +140,8 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
                 csv2DFAction(temp_dir + "not_arrival_hosp_file") :: Nil
     }
 
-    /**
-      * 3. read GYCX文件
-      */
-    val readGyc = new sequenceJob {
+    //8. read GYCX文件
+    val readGyc: sequenceJob = new sequenceJob {
         override val name = "gyc"
         override val actions: List[pActionTrait] =
             xlsxReadingAction[phPfizerGycxFormat](gyc_file, "gyc") ::
@@ -124,14 +189,30 @@ trait phPfizerPanelJob extends sequenceJobWithMap {
         "DVP" -> phPfizerPanelNoSplitAction(df)
     )
 
-    override val actions: List[pActionTrait] = jarPreloadAction() ::
-        phPfizerPreActions(universe_file, temp_name).actions :::
-        readCpa ::
-        readNotArrivalHosp ::
-        readGyc ::
-        splitMktJobsMap.get(mkt).getOrElse(throw new Exception(s"undefined market=${mkt}")) ::
-        phPfizerPanelCommonAction(df) ::
-        phSavePanelJob(df) ::
-        phPanelInfo2Redis(df) ::
-        Nil
+    override val actions: List[pActionTrait] = { jarPreloadAction() ::
+            setLogLevelAction("ERROR") ::
+            addListenerAction(MaxSparkListener(0, 10)) ::
+            load_universe_file ::
+            addListenerAction(MaxSparkListener(11, 20)) ::
+            load_product_match_file ::
+            addListenerAction(MaxSparkListener(21, 30)) ::
+            load_markets_match_file ::
+            addListenerAction(MaxSparkListener(31, 40)) ::
+            load_full_hosp_file ::
+            addListenerAction(MaxSparkListener(41, 50)) ::
+            load_pfc_match_file ::
+            addListenerAction(MaxSparkListener(51, 60)) ::
+            readCpa ::
+            addListenerAction(MaxSparkListener(61, 70)) ::
+            readNotArrivalHosp ::
+            addListenerAction(MaxSparkListener(71, 80)) ::
+            readGyc ::
+            splitMktJobsMap.getOrElse(mkt, throw new Exception(s"undefined market=$mkt")) ::
+            addListenerAction(MaxSparkListener(81, 90)) ::
+            phPfizerPanelCommonAction(df) ::
+            phSavePanelJob(df) ::
+            addListenerAction(MaxSparkListener(91, 99)) ::
+            phPanelInfo2Redis(df) ::
+            Nil
+    }
 }

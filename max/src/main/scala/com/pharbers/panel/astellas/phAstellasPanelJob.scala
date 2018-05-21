@@ -120,7 +120,7 @@ case class phAstellasPanelJob(args: Map[String, String])(implicit _actor: Actor)
         Map(
             "ym" -> StringArgs(ym),
             "mkt" -> StringArgs(mkt),
-            "mkt_en" -> StringArgs(getMktEN(mkt)),
+            "mkt" -> StringArgs(getMktEN(mkt)),
             "user" -> StringArgs(user),
             "name" -> StringArgs(temp_name),
             "company" -> StringArgs(company),
