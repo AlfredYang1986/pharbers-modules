@@ -54,7 +54,7 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         }
 
         //TODO:临时解决大数据量最后一页的方案
-        if(totalCount != null && totalCount != 0 && pageIndex == (totalCount.toDouble.toInt/pageSize)){
+        if(totalCount != null && totalCount.toDouble != 0 && pageIndex == (totalCount.toDouble.toInt/pageSize)){
             ListArgs((filteredMktKeyLst.last::Nil).map(x => StringArgs(x._1)))
         } else ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
     }
