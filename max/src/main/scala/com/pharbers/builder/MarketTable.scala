@@ -158,7 +158,6 @@ trait MarketTable {
         "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
     )
 
-    //TODO: Refactor instance "phMaxJobForPfizerDVP" into class
     val pfizer_DVP = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
         "subsidiary" -> "辉瑞",
@@ -168,12 +167,13 @@ trait MarketTable {
         "maxInstance" -> "com.pharbers.calc.phMaxJobForPfizerDVP",
 
         "source" -> "cpa#gycx",
-        "panelArgs" -> "universe_file#product_match_file#markets_match_file#fill_hos_data_file#pfc_match_file",
+        "panelArgs" -> "universe_file#product_match_file#markets_match_file#fill_hos_data_file#pfc_match_file#coef_file",
         "universe_file" -> "pfizer/universe_DVP_online.xlsx",
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "coef_file" -> "pfizer/coef_DVP2.xlsx"
     )
 
     //TODO: Refactor instance "phMaxJobForPfizerCNS_R" into class
