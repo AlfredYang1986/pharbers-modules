@@ -16,7 +16,8 @@ trait MarketTable {
         "universe_file" -> "nhwa/universe_麻醉市场_online.xlsx",
         "product_match_file" -> "nhwa/nhwa匹配表.xlsx",
         "fill_hos_data_file" -> "nhwa/补充医院.xlsx",
-        "markets_match_file" -> "nhwa/通用名市场定义.xlsx"
+        "markets_match_file" -> "nhwa/通用名市场定义.xlsx",
+        "maxArgs" -> "universe_file"
     )
 
     // 安斯泰来公司
@@ -33,7 +34,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Allelock_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_mkm = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -48,7 +50,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Mycamine_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_plkf = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -63,7 +66,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Prograf_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_pe = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -78,7 +82,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Perdipine_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_hl = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -93,7 +98,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Harnal_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_tf = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -108,7 +114,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Gout_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_wxk = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -123,7 +130,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Vesicare_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val astellas_Grafalon = Map(
         "company" -> "5b023787810c6e0268fe6ff6",
@@ -138,7 +146,8 @@ trait MarketTable {
         "universe_file" -> "astellas/UNIVERSE_Grafalon_online.xlsx",
         "product_match_file" -> "astellas/20171018药品最小单位IMS packid匹配表.xlsx",
         "markets_match_file" -> "astellas/20170203药品名称匹配市场.xlsx",
-        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx"
+        "hospital_file" -> "astellas/医院名称编码等级三源互匹20180314.xlsx",
+        "maxArgs" -> "universe_file"
     )
 
     val pfizer_INF = Map(
@@ -155,9 +164,9 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
-
     val pfizer_DVP = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
         "subsidiary" -> "辉瑞",
@@ -172,9 +181,11 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file#coef_file",
+        "coef_file" -> "pfizer/coef_DVP2.xlsx"
     )
-
+    //TODO: Refactor instance "phMaxJobForPfizerCNS_R" into class
     val pfizer_CNS_R = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
         "subsidiary" -> "辉瑞",
@@ -189,9 +200,9 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
-
     val pfizer_PAIN_other = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
         "subsidiary" -> "辉瑞",
@@ -206,7 +217,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
 
     val pfizer_AI_R_other = Map(
@@ -223,7 +235,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
 
     val pfizer_AI_R_zith = Map(
@@ -240,7 +253,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_AI_S = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -256,7 +270,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_CNS_Z = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -272,7 +287,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_ELIQUIS = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -288,7 +304,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_LD = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -304,7 +321,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_ONC_other = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -320,7 +338,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_ONC_aml = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -336,7 +355,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_PAIN_lyrica = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -352,7 +372,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_Specialty_champix = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -368,7 +389,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_Specialty_other = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -384,7 +406,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_Urology_other = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -400,7 +423,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_Urology_viagra = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -416,7 +440,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_PAIN_C = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -432,7 +457,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_HTN2 = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -448,7 +474,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_HTN = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -464,7 +491,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_AI_W = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -480,7 +508,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_AI_D = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -496,7 +525,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
     val pfizer_ZYVOX = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
@@ -512,7 +542,8 @@ trait MarketTable {
         "product_match_file" -> "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
         "markets_match_file" -> "pfizer/通用名市场定义_0502.xlsx",
         "fill_hos_data_file" -> "pfizer/补充医院utf8_2018.txt",
-        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx"
+        "pfc_match_file" -> "pfizer/PACKID生成panel.xlsx",
+        "maxArgs" -> "universe_file"
     )
 
 

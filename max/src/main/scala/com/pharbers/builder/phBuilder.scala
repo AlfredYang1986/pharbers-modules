@@ -68,7 +68,7 @@ trait phBuilder {
         for (ym <- ymLst; mkt <- mktLst) {
             mapping += "ym" -> ym
             mapping += "mkt" -> mkt
-            val ckArgLst = getArgLst(mapping("company_id"), mkt) ++ getSourceLst(mapping("company_id"), mkt)
+            val ckArgLst = getPanelArgLst(mapping("company_id"), mkt) ++ getSourceLst(mapping("company_id"), mkt)
             mapping ++= getPanelArgs(mapping("company_id"), mkt)
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
 
@@ -99,8 +99,9 @@ trait phBuilder {
             mapping += "ym" -> rd.getMapValue(panel, "ym")
             mapping += "universe_file" -> getPanelArgs(mapping("company_id"), mkt)("universe_file")
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
+            mapping ++= getMaxArgs(mapping("company_id"), mkt)
 
-            if(!parametCheck(Array("universe_file"), mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
+            if(!parametCheck(getMaxArgLst(mapping("company_id"), mkt), mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
                 throw new Exception("input wrong")
 
             val clazz: String = getClazz(mapping("company_id"), mkt)(maxInst)

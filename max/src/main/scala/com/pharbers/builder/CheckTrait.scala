@@ -24,12 +24,20 @@ trait CheckTrait { this: MarketTable =>
     def getSourceLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("source", throw new Exception("input wrong")).split("#")
 
-    def getArgLst(company: String, market: String): Array[String] =
+    def getPanelArgLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("panelArgs", throw new Exception("input wrong")).split("#")
+
+    def getMaxArgLst(company: String, market: String): Array[String] =
+        getTable(company, market).getOrElse("maxArgs", throw new Exception("input wrong")).split("#")
 
     def getPanelArgs(company: String, market: String): Map[String, String] = {
         val table = getTable(company, market)
-        getArgLst(company, market).map(x => x -> table(x)).toMap
+        getPanelArgLst(company, market).map(x => x -> table(x)).toMap
+    }
+
+    def getMaxArgs(company: String, market: String): Map[String, String] = {
+        val table = getTable(company, market)
+        getMaxArgLst(company, market).map(x => x -> table(x)).toMap
     }
 
     def parametCheck(argLst: Array[String], args: Map[String, String])

@@ -39,7 +39,7 @@ case class phMaxJobForPfizerDVP(args: Map[String, String])(implicit _actor: Acto
     val temp_universe_name: String = UUID.randomUUID().toString
     val temp_coef_name: String = UUID.randomUUID().toString
 
-    val coef_file: String = max_path_obj.p_matchFilePath + "pfizer/coef_DVP2.xlsx"
+    val coef_file: String = max_path_obj.p_matchFilePath + args("coef_file")
 
     /// 留做测试
     val temp_panel_name: String = UUID.randomUUID().toString
