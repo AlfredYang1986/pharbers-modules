@@ -1,4 +1,4 @@
-package com.pharbers.max
+package com.pharbers.processSuit
 
 import akka.actor.{Actor, Props}
 import com.pharbers.builder.phBuilder
@@ -14,7 +14,7 @@ object MaxTestHeader {
 
 class MaxTestHeader(company: String, user: String, jobId: String) extends Actor {
     implicit val actor: Actor = this
-    import com.pharbers.max.MaxTestHeader._
+    import com.pharbers.processSuit.MaxTestHeader._
 
     override def receive: Receive = {
         case calcYm(cpa, gycx) =>

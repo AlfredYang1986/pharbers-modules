@@ -11,7 +11,7 @@
 //import java.text.SimpleDateFormat
 //
 //import play.api.libs.json.JsValue
-//import com.pharbers.max.MaxTestHeader
+//import com.pharbers.processSuit.MaxTestHeader
 //import akka.actor.{ActorRef, ActorSystem}
 //
 //class MaxProcess_NhwaSuit extends FunSuite {
@@ -20,7 +20,7 @@
 //    val user: String = "5afaa333ed925c30f8c066d1"
 //    val jobId: String = "20180521nhwa001"
 //    val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
-//    import com.pharbers.max.MaxTestHeader._
+//    import com.pharbers.processSuit.MaxTestHeader._
 //
 //    test("nhwa max process test") {
 //        val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
