@@ -17,7 +17,7 @@
 //    val system = ActorSystem("maxActor")
 //    val company: String = "5b028f95ed925c2c705b85ba"
 //    val user: String = "5b028feced925c2c705b85bb"
-//    val jobId: String = "20180521pfizer001"
+//    val jobId: String = "20180522pfizer003"
 //    val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
 //    import com.pharbers.processSuit.MaxTestHeader._
 //
@@ -39,7 +39,7 @@
 //        val r2 = testActor ? panel(cpa, gycx, yms)
 //        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
 //        println("panel result2 = " + result2)
-////
+//
 //        val r3 = testActor ? max()
 //        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
 //        println("max result3 = " + result3)

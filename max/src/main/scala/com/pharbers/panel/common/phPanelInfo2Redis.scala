@@ -46,18 +46,23 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
         rd.addSet(job_id, panel_name)
+        rd.expire(job_id, 60*60*24)
         rd.addSet(job_id + "ym", ym)
+        rd.expire(job_id + "ym", 60*60*24)
 
         rd.addMap(panel_name, "ym", ym)
         rd.addMap(panel_name, "mkt", mkt)
+        rd.expire(panel_name, 60*60*24)
 
         rd.addMap(singleJobKey, "panel_hosp_count", panel_hosp_distinct.count())
         rd.addMap(singleJobKey, "panel_prod_count", panel_prod_count)
         rd.addMap(singleJobKey, "panel_sales", panel_sales)
         rd.addMap(singleJobKey, "panel_company_sales", panel_company_sales)
+        rd.expire(singleJobKey, 60*60*24)
 
         rd.delete(not_panel_hosp_key)
         rd.addSet(not_panel_hosp_key, not_panel_hosp_lst:_*)
+        rd.expire(not_panel_hosp_key, 60*60*24)
 
         StringArgs(singleJobKey)
     }
