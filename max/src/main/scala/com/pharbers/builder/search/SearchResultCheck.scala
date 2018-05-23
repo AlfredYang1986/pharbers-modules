@@ -52,6 +52,7 @@ trait SearchResultCheck extends phMaxSearchTrait {
                                     max.getProvLstMap.take(10).map(item => Map(
                                         "area" -> item("Province"),
                                         "marketSales" -> item("TotalSales"),
+                                        "prodcutSales" -> item("CompanySales"),
                                         "percentage" -> item("Share")
                                     ))
                                 ),
@@ -59,6 +60,7 @@ trait SearchResultCheck extends phMaxSearchTrait {
                                     max.getProvLstMap.take(10).map(item => Map(
                                         "area" -> item("Province"),
                                         "marketSales" -> item("lastYearYMTotalSales"),
+                                        "prodcutSales" -> item("CompanySales"),
                                         "percentage" -> item("lastYearYMShare")
                                     ))
                                 )
@@ -70,6 +72,7 @@ trait SearchResultCheck extends phMaxSearchTrait {
                                     max.getCityLstMap.take(10).map(item => Map(
                                         "area" -> item("City"),
                                         "marketSales" -> item("TotalSales"),
+                                        "prodcutSales" -> item("CompanySales"),
                                         "percentage" -> item("Share")
                                     ))
                                 ),
@@ -77,6 +80,7 @@ trait SearchResultCheck extends phMaxSearchTrait {
                                     max.getCityLstMap.take(10).map(item => Map(
                                         "area" -> item("City"),
                                         "marketSales" -> item("lastYearYMTotalSales"),
+                                        "prodcutSales" -> item("CompanySales"),
                                         "percentage" -> item("lastYearYMShare")
                                     ))
                                 )
