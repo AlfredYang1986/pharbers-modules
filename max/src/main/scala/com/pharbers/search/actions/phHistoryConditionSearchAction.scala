@@ -27,17 +27,39 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
             case _ => historyDF.filter(s"MARKET like '${mkt}'")
         }
 
-        val filteredYMDF = ym_condition match {
-            case "" => filteredMktDF
-            case "-" => filteredMktDF
-            case _ => {
+        //TODO:临时解决大数据量最后一页的方案
+        val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
+        val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
+        val pageCacheInfo = Sercurity.md5Hash(user + company + ym_condition + mkt)
+        val totalCount = redisDriver.getMapValue(pageCacheInfo, "count")
+
+        val userJobsKey = Sercurity.md5Hash(user + company)
+        val allSingleJobKeyLst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
+            (
+                    singleJobKey,
+                    redisDriver.getMapValue(singleJobKey, "ym"),
+                    redisDriver.getMapValue(singleJobKey, "mkt")
+            )
+        ).toList
+
+        val filteredYMKeyLst = ym_condition match {
+            case "" => allSingleJobKeyLst
+            case "-" => allSingleJobKeyLst
+            case _ =>
                 val ym_start = ym_condition.split("-")(0).toInt
                 val ym_end = ym_condition.split("-")(1).toInt
-                filteredMktDF.filter(filteredMktDF("Date").gt(ym_start-1)).filter(filteredMktDF("Date").lt(ym_end+1))
-            }
+                allSingleJobKeyLst.filter(x => x._2.toInt >= ym_start).filter(x => x._2.toInt <= ym_end)
         }
 
-        DFArgs(filteredYMDF)
-    }
+        val filteredMktKeyLst = mkt match {
+            case "" => filteredYMKeyLst
+            case "All" => filteredYMKeyLst
+            case _ => filteredYMKeyLst.filter(x => x._3 == mkt)
+        }
 
+        //TODO:临时解决大数据量最后一页的方案
+        if(totalCount != null && totalCount.toDouble != 0 && pageIndex == (totalCount.toDouble.toInt/pageSize)){
+            ListArgs((filteredMktKeyLst.last::Nil).map(x => StringArgs(x._1)))
+        } else ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
+    }
 }

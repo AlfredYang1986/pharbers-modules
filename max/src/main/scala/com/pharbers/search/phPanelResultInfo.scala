@@ -42,11 +42,21 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
 
 
         val tmp = db.queryMultipleObject(query, "BaseLine", "Month")(output)
+        // TODO: 对于没有基准线的公司或市场，先使用恩华的代替
+        val baselineResult = if(tmp.size == 12){
+            tmp
+        } else {
+            val query: DBObject = {
+                DBObject("Company" -> "5afa53bded925c05c6f69c54")
+                DBObject("Market" -> "麻醉市场")
+            }
+            db.queryMultipleObject(query, "BaseLine", "Month")(output)
+        }
 
         Map(
-            "Sales" -> tmp.map(_("Sales").as[JsString].value),
-            "HOSP_ID" -> tmp.map(_("HOSP_ID").as[JsString].value),
-            "Prod_Name" -> tmp.map(_("Prod_Name").as[JsString].value)
+            "Sales" -> baselineResult.map(_("Sales").as[JsString].value),
+            "HOSP_ID" -> baselineResult.map(_("HOSP_ID").as[JsString].value),
+            "Prod_Name" -> baselineResult.map(_("Prod_Name").as[JsString].value)
         )
     }
 

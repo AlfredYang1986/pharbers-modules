@@ -14,7 +14,7 @@ class phNhwaCalcYMConcretJob[T : ClassTag](override val defaultArgs: pActionArgs
 
     override val name: String = "calcYM"
     override def perform(pr : pActionArgs): pActionArgs = {
-        val cpaRDD = pr.asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
+        val cpaRDD = pr.asInstanceOf[MapArgs].get("cpa").asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
             iter.getRowKey("YM") + iter.getRowKey("HOSPITAL_CODE") -> 1
         }
 

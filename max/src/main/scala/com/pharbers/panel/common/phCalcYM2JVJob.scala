@@ -14,8 +14,8 @@ class phCalcYM2JVJob[T : ClassTag](override val defaultArgs: pActionArgs) extend
 
     override val name: String = "result"
     override def perform(pr : pActionArgs): pActionArgs = {
-
-        val rdd = pr.asInstanceOf[RDDArgs[(String, Int)]].get.collect()
+        val rdd = pr.asInstanceOf[MapArgs].get("calcYM")
+                .asInstanceOf[RDDArgs[(String, Int)]].get.collect()
         val maxYm = rdd.map(_._2).max
         val result = rdd.filter(_._2 > maxYm/2).map(_._1).sorted
 

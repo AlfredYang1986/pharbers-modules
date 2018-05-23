@@ -1,4 +1,4 @@
-//package com.pharbers.kafka
+//package com.pharbers.common.kafka
 //
 //import akka.actor.ActorSystem
 //import org.scalatest.FunSuite
