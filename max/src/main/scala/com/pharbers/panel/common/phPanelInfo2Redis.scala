@@ -1,5 +1,7 @@
 package com.pharbers.panel.common
 
+import java.util.Base64
+
 import com.pharbers.builder.Builderimpl
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
@@ -41,7 +43,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
 
         val rd = new PhRedisDriver()
         //TODO:singleJobKey的加密改为Base64(company + ym + mkt)，同一公司下的所有用户可以看到彼此的保存历史
-        val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
+        val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
 
         //TODO:SinglePanelSpecialKey for example -> not_panel_hosp_key it depends on (user + company + ym + mkt) but had same key
         val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")

@@ -1,7 +1,7 @@
 <pharbers-modules>
     <spark-config>
-        <host value="127.0.0.1" />
+        <host value="192.168.100.174" />
         <port value="9999" />
-        <name value="Qi-Job" />
+        <name value="Z-Job" />
     </spark-config>
 </pharbers-modules>

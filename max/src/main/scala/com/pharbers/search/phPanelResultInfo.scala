@@ -1,5 +1,7 @@
 package com.pharbers.search
 
+import java.util.Base64
+
 import com.mongodb.casbah.Imports.DBObject
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.driver.PhRedisDriver
@@ -14,7 +16,7 @@ import play.api.libs.json.Json.toJson
 case class phPanelResultInfo(user: String, company: String, ym:String, mkt: String) extends phMaxSearchTrait {
 
     private val rd = new PhRedisDriver()
-    private val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
+    private val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
     private val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
     val lastYearYM = getLastYearYM(ym)

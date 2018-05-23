@@ -1,5 +1,7 @@
 package com.pharbers.search
 
+import java.util.Base64
+
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.sercuity.Sercurity
 import play.api.libs.json.JsValue
@@ -10,19 +12,19 @@ import play.api.libs.json.Json.toJson
   */
 case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String) extends phMaxSearchTrait {
 
-    private val rd = new PhRedisDriver()
-    private val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
-    private val max_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_city_lst_key")
-    private val max_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_prov_lst_key")
-    private val company_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_city_lst_key")
-    private val company_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_prov_lst_key")
+    val rd = new PhRedisDriver()
+    val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
+    val max_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
+    val max_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_prov_lst_key")
+    val company_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_city_lst_key")
+    val company_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_prov_lst_key")
 
     val lastYearYM = getLastYearYM(ym)
-    val lastYearSingleJobKey = Sercurity.md5Hash(user + company + lastYearYM + mkt)
-    val last_year_max_sales_city_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "max_sales_city_lst_key")
-    val last_year_max_sales_prov_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "max_sales_prov_lst_key")
-    val last_year_company_sales_city_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "company_sales_city_lst_key")
-    val last_year_company_sales_prov_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "company_sales_prov_lst_key")
+    val lastYearSingleJobKey = Base64.getEncoder.encodeToString((company +"#"+ lastYearYM +"#"+ mkt).getBytes())
+    val last_year_max_sales_city_lst_key = Sercurity.md5Hash(company + lastYearYM + mkt + "max_sales_city_lst_key")
+    val last_year_max_sales_prov_lst_key = Sercurity.md5Hash(company + lastYearYM + mkt + "max_sales_prov_lst_key")
+    val last_year_company_sales_city_lst_key = Sercurity.md5Hash(company + lastYearYM + mkt + "company_sales_city_lst_key")
+    val last_year_company_sales_prov_lst_key = Sercurity.md5Hash(company + lastYearYM + mkt + "company_sales_prov_lst_key")
 
     def getMaxResultSales = rd.getMapValue(singleJobKey, "max_sales").toDouble
     def getLastYearResultSales = rd.getMapValue(lastYearSingleJobKey, "max_sales") match {
@@ -51,7 +53,7 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
     }
 
     def getLastSeveralMonthResultSalesLst(severalCount: Int): List[Map[String, JsValue]] = getLastSeveralMonthYM(severalCount, ym).reverse.map(singleYM => {
-        val tempSingleJobKey = Sercurity.md5Hash(user + company + singleYM + mkt)
+        val tempSingleJobKey = Base64.getEncoder.encodeToString((company +"#"+ singleYM +"#"+ mkt).getBytes())
         val tempMaxSales = rd.getMapValue(tempSingleJobKey, "max_sales") match {
             case null => 0.toDouble
             case sale => sale.toDouble

@@ -59,7 +59,7 @@ trait MongoDBImpl extends DBTrait {
         }
     }
 
-    override def getOneDBAllCollection: Set[String] = dc.getAllCollectionNames
+    override def getOneDBAllCollectionNames: scala.collection.mutable.Set[String] = dc.getAllCollectionNames
 
     override def querySum(condition : DBObject, db_name : String)
                          (sum : (Map[String, JsValue], Map[String, JsValue]) => Map[String, JsValue])

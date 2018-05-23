@@ -1,5 +1,8 @@
 package com.pharbers.calc.actions
 
+import java.text.SimpleDateFormat
+import java.util.{Base64, Date}
+
 import com.pharbers.builder.Builderimpl
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
@@ -23,17 +26,13 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
         val maxDF_filter_company = maxDF.filter(condition)
 
-        //TODO:maxJobsKey应是用户选择要保存的singleJobKey的集合，有效期为一天，定期同步rdd<=>mongo
-        val maxJobsKey = Sercurity.md5Hash("Pharbers")
-        //TODO:干掉userJobsKey，之后使用Base64解密singleJobKey后filter公司即可
-        val userJobsKey = Sercurity.md5Hash(user + company)
-        //TODO:singleJobKey的加密改为Base64(company + ym + mkt)，同一公司下的所有用户可以看到彼此的保存历史
-        val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
+        val maxSingleDayJobsKey = Sercurity.md5Hash("Pharbers")
+        val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
 
-        val max_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_city_lst_key")
-        val max_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_prov_lst_key")
-        val company_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_city_lst_key")
-        val company_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_prov_lst_key")
+        val max_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
+        val max_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_prov_lst_key")
+        val company_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_city_lst_key")
+        val company_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_prov_lst_key")
 
         rd.delete(
             max_sales_city_lst_key,
@@ -42,8 +41,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
             company_sales_prov_lst_key
         )
 
-        rd.addSet(maxJobsKey, singleJobKey)
-        rd.addSet(userJobsKey, singleJobKey)
+        rd.addSet(maxSingleDayJobsKey, singleJobKey)
         rd.addMap(singleJobKey, "max_result_name", maxName)
         rd.addMap(singleJobKey, "user", user)
         rd.addMap(singleJobKey, "company", company)
@@ -70,6 +68,12 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         rd.addListLeft(max_sales_prov_lst_key, max_sales_prov_lst:_*)
         rd.addListLeft(company_sales_city_lst_key, company_sales_city_lst:_*)
         rd.addListLeft(company_sales_prov_lst_key, company_sales_prov_lst:_*)
+
+        rd.expire(maxSingleDayJobsKey, 60*60*24)
+        rd.expire(max_sales_city_lst_key, 60*60*24)
+        rd.expire(max_sales_prov_lst_key, 60*60*24)
+        rd.expire(company_sales_city_lst_key, 60*60*24)
+        rd.expire(company_sales_prov_lst_key, 60*60*24)
 
         StringArgs(singleJobKey)
     }

@@ -1,6 +1,9 @@
 package com.pharbers.search.actions
 
+import java.util.Base64
+
 import com.pharbers.common.algorithm.phSparkCommonFuncTrait
+import com.pharbers.dbManagerTrait.dbInstanceManager
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -30,14 +33,26 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         val pageCacheInfo = Sercurity.md5Hash(user + company + ym_condition + mkt)
         val totalCount = redisDriver.getMapValue(pageCacheInfo, "count")
 
-        val userJobsKey = Sercurity.md5Hash(user + company)
-        val allSingleJobKeyLst = redisDriver.getSetAllValue(userJobsKey).map(singleJobKey =>
-            (
-                    singleJobKey,
-                    redisDriver.getMapValue(singleJobKey, "ym"),
-                    redisDriver.getMapValue(singleJobKey, "mkt")
-            )
-        ).toList
+        val maxSingleDayJobsKey = Sercurity.md5Hash("Pharbers")
+        val db = new dbInstanceManager{}.queryDBInstance("data").get
+        val historyKeySet = db.getOneDBAllCollectionNames
+
+        val totalSingleJobKeySet = redisDriver.getSetAllValue(maxSingleDayJobsKey) match {
+            case s if(s.isEmpty) => historyKeySet.toSet
+            case s => s.foreach(historyKeySet.add(_)); historyKeySet.toSet
+        }
+
+        val allSingleJobKeyLst = totalSingleJobKeySet
+            .map(singleJobKey => {
+                val singleJobInfoArr = new String(Base64.getDecoder.decode(singleJobKey)).split("#")
+                (
+                    singleJobInfoArr(0),
+                    singleJobInfoArr(1),
+                    singleJobInfoArr(2),
+                    singleJobKey
+                )
+            })
+            .filter(x => x._1 == company).toList
 
         val filteredYMKeyLst = ym_condition match {
             case "" => allSingleJobKeyLst
@@ -56,7 +71,7 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
 
         //TODO:临时解决大数据量最后一页的方案
         if(totalCount != null && totalCount.toDouble != 0 && pageIndex == (totalCount.toDouble.toInt/pageSize)){
-            ListArgs((filteredMktKeyLst.last::Nil).map(x => StringArgs(x._1)))
-        } else ListArgs(filteredMktKeyLst.map(x => StringArgs(x._1)))
+            ListArgs((filteredMktKeyLst.last::Nil).map(x => StringArgs(x._4)))
+        } else ListArgs(filteredMktKeyLst.map(x => StringArgs(x._4)))
     }
 }
