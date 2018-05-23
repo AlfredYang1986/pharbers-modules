@@ -3,7 +3,7 @@ package com.pharbers.calc
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.calc.actions.{phMaxCalcActionForDVP, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
+import com.pharbers.calc.actions.{phMaxCalcActionForDVP, phMaxInfo2RedisAction, phMaxPersistentAction}
 import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.generalactions._
@@ -102,6 +102,5 @@ case class phMaxJobForPfizerDVP(args: Map[String, String])(implicit _actor: Acto
         phMaxPersistentAction(df) ::
         addListenerAction(MaxSparkListener(41, 90)) ::
         phMaxInfo2RedisAction(df) ::
-//        phMaxResult2MongoAction() ::
         Nil
 }

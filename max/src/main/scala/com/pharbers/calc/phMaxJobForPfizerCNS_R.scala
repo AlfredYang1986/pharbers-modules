@@ -3,7 +3,7 @@ package com.pharbers.calc
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
+import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction}
 import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
@@ -87,6 +87,5 @@ case class phMaxJobForPfizerCNS_R(args: Map[String, String])(implicit _actor: Ac
         phMaxPersistentAction(df) ::
         addListenerAction(MaxSparkListener(41, 90)) ::
         phMaxInfo2RedisAction(df) ::
-//        phMaxResult2MongoAction() ::
         Nil
 }

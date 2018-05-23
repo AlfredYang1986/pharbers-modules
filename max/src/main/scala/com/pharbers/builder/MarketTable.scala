@@ -150,6 +150,7 @@ trait MarketTable {
         "maxArgs" -> "universe_file"
     )
 
+    //辉瑞公司
     val pfizer_INF = Map(
         "company" -> "5b028f95ed925c2c705b85ba",
         "subsidiary" -> "辉瑞",

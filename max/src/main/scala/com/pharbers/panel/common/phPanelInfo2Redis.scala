@@ -40,6 +40,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
             .filter("p_HOSP_ID is null").select("HOSP_NAME", "Province", "Prefecture", "CityLevel").collect().map(x => x.toString())
 
         val rd = new PhRedisDriver()
+        //TODO:singleJobKey的加密改为Base64(company + ym + mkt)，同一公司下的所有用户可以看到彼此的保存历史
         val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
 
         //TODO:SinglePanelSpecialKey for example -> not_panel_hosp_key it depends on (user + company + ym + mkt) but had same key

@@ -18,14 +18,11 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
 
     override def perform(pr: pActionArgs): pActionArgs = {
 
+        val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
+        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val ym_condition = defaultArgs.asInstanceOf[MapArgs].get("ym_condition").asInstanceOf[StringArgs].get
-        val historyDF = pr.asInstanceOf[MapArgs].get("read_result_action").asInstanceOf[DFArgs].get
-        val filteredMktDF = mkt match {
-            case "" => historyDF
-            case "All" => historyDF
-            case _ => historyDF.filter(s"MARKET like '${mkt}'")
-        }
+        val redisDriver = new PhRedisDriver()
 
         //TODO:临时解决大数据量最后一页的方案
         val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt

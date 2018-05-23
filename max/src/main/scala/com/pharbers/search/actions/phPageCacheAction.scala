@@ -24,8 +24,6 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val pageIndex = defaultArgs.asInstanceOf[MapArgs].get("pi").asInstanceOf[StringArgs].get.toInt
         val pageSize = defaultArgs.asInstanceOf[MapArgs].get("ps").asInstanceOf[StringArgs].get.toInt
-        val itemStartIndex = pageIndex*pageSize
-        val itemEndIndex = itemStartIndex + pageSize
         val redisDriver = new PhRedisDriver()
 
         val pageCacheInfo = Sercurity.md5Hash(user + company + ym_condition + mkt)

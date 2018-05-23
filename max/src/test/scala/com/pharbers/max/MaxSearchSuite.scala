@@ -1,7 +1,6 @@
 //package com.pharbers.max
 //
 //import com.pharbers.builder.SearchFacade
-//import com.pharbers.driver.PhRedisDriver
 //import com.pharbers.pactions.actionbase._
 //import com.pharbers.search.{phHistorySearchJob, phMaxResultInfo, phPanelResultInfo}
 //import org.scalatest.FunSuite
@@ -13,11 +12,11 @@
 //  */
 //class MaxSearchSuite extends FunSuite {
 //
-//    val company: String = "5afa53bded925c05c6f69c54"
-//    val user: String = "5afaa333ed925c30f8c066d1"
-//    val jobId: String = "20180518test001"
-//    val ym = "201712"
-//    val mkt = "麻醉市场"
+//    val company: String = "5b028f95ed925c2c705b85ba"
+//    val user: String = "5b028feced925c2c705b85bb"
+//    val jobId: String = "20180523test001"
+//    val ym = "201802"
+//    val mkt = "INF"
 //
 //    test("history search"){
 //
@@ -26,7 +25,7 @@
 //            "user" -> user,
 //            "ym_condition" -> "201711-201712",
 ////            "ym_condition" -> "201801-201802",
-//            "mkt" -> "麻醉市场",
+//            "mkt" -> mkt,
 //            "pageIndex" -> "6",
 //            "singlePageSize" -> "10"
 //        )
@@ -66,9 +65,9 @@
 //            Map(
 //                "condition" -> toJson(Map(
 //                    "user_id" -> toJson(user),
-//                    "startTime" -> toJson("201701"),
-//                    "endTime" -> toJson("201712"),
-//                    "currentPage" -> toJson(841737),
+//                    "startTime" -> toJson("201801"),
+//                    "endTime" -> toJson("201802"),
+//                    "currentPage" -> toJson(1),
 //                    "pageSize" -> toJson(10),
 //                    "market" -> toJson(mkt)
 //                )),

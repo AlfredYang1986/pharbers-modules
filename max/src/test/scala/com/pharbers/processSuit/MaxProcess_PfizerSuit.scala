@@ -17,7 +17,7 @@ class MaxProcess_PfizerSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5b028f95ed925c2c705b85ba"
     val user: String = "5b028feced925c2c705b85bb"
-    val jobId: String = "20180521pfizer005"
+    val jobId: String = "20180523pfizer001"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -30,7 +30,7 @@ class MaxProcess_PfizerSuit extends FunSuite {
         val yms = "201802"
 
 
-        implicit val t: Timeout = 20 minutes
+        implicit val t: Timeout = 600 minutes
 
         val r = testActor ? calcYm(cpa, gycx)
         val result = Await.result(r.mapTo[JsValue], t.duration)
