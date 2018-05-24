@@ -38,7 +38,7 @@ case class phMaxScheduleJob(user: String) {
                     .save()
                 rdd2mongoJobsCount += 1
             })
-            rd.delete(maxSingleDayJobsKey)
+            rd.flush
         } else rdd2mongoJobsCount = -1
         rdd2mongoJobsCount
     }

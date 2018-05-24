@@ -4,7 +4,7 @@ import com.pharbers.driver.PhRedisDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.search.phHistorySearchJob
-import com.pharbers.pactions.actionbase.{DFArgs, ListArgs, MapArgs, StringArgs}
+import com.pharbers.pactions.actionbase.{ListArgs, MapArgs, StringArgs}
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.spark.phSparkDriver
 

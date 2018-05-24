@@ -1,6 +1,9 @@
 //package com.pharbers.max
 //
 //import java.util.Base64
+//
+//import com.pharbers.calc.phMaxScheduleJob
+//import com.pharbers.driver.PhRedisDriver
 //import org.scalatest.FunSuite
 //
 ///**
@@ -8,15 +11,19 @@
 //  */
 //class MaxSyncDataSuite extends FunSuite {
 //
-//    val testKey = "company" + "ym" + "mkt"
+//    private val MAX_ADMIN = "jeorch"
 //
-//    test("Base64 from java8"){
-//        val jdkEncoder = Base64.getEncoder
-//        val jdkDecoder = Base64.getDecoder
-//        val testEncodeStr = jdkEncoder.encodeToString(testKey.getBytes)
-//        println(s"加密后的结果$testEncodeStr")
-//        val testDecodeStr = new String(jdkDecoder.decode(testEncodeStr))
-//        println(s"解密后的结果$testDecodeStr")
+//    val rd = new PhRedisDriver()
+//    rd.addString("MaxAdmin", MAX_ADMIN) //临时测试，作为验证是否为管理员
+//
+//    test("数据同步第一步"){
+//        val rdd2mongoCount = phMaxScheduleJob(MAX_ADMIN).rdd2mongo
+//        println(rdd2mongoCount)
+//    }
+//
+//    test("数据同步第二步"){
+//        val mongo2rddCount = phMaxScheduleJob(MAX_ADMIN).mongo2rdd
+//        println(mongo2rddCount)
 //    }
 //
 //}
