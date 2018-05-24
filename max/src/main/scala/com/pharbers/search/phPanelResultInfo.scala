@@ -42,15 +42,17 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
 
 
         val tmp = db.queryMultipleObject(query, "BaseLine", "Month")(output)
-        // TODO: 对于没有基准线的公司或市场，先使用恩华的代替
         val baselineResult = if(tmp.size == 12){
             tmp
         } else {
-            val query: DBObject = {
-                DBObject("Company" -> "5afa53bded925c05c6f69c54")
-                DBObject("Market" -> "麻醉市场")
+            val defaultData = for(i <- 1 to 12) yield {
+                Map(
+                    "Sales" -> toJson("0"),
+                    "HOSP_ID" -> toJson("0"),
+                    "Prod_Name" -> toJson("0")
+                )
             }
-            db.queryMultipleObject(query, "BaseLine", "Month")(output)
+            defaultData.toList
         }
 
         Map(
