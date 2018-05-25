@@ -41,7 +41,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
         }
 
 
-        val tmp = db.queryMultipleObject(query, "BaseLine", "Month")(output)
+        val tmp = db.queryMultipleObject(query, "BaseLine", "Date")(output)
         val baselineResult = if(tmp.size == 12){
             tmp
         } else {
