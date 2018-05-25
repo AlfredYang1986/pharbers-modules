@@ -25,7 +25,8 @@ trait phNhwaCalcYMJob extends sequenceJob {
     val cpa_file: String
     val cache_location: String
 
-    override val actions: List[pActionTrait] = { jarPreloadAction() ::
+    override val actions: List[pActionTrait] = {
+        jarPreloadAction() ::
                 setLogLevelAction("ERROR") ::
                 xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
                 addListenerAction(MaxSparkListener("testUser", "ymCalc")(0, 100)) ::
@@ -33,4 +34,5 @@ trait phNhwaCalcYMJob extends sequenceJob {
                 saveCurrenResultAction(cache_location) ::
                 phCalcYM2JVJob() ::
                 Nil
+    }
 }

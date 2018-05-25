@@ -12,7 +12,7 @@ object addListenerAction {
 class addListenerAction(listener: SparkListener, override val name: String) extends pActionTrait {
 
     override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        phSparkDriver().sc.addSparkListener(listener)
+//        phSparkDriver().sc.addSparkListener(listener)
         args
     }
 
