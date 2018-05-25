@@ -34,6 +34,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
 
         val output: DBObject => Map[String, JsValue] = { obj =>
             Map(
+                "Date" -> toJson(obj.as[Int]("Date").toString),
                 "Sales" -> toJson(getFormatSales(obj.as[Double]("Sales")).toString),
                 "HOSP_ID" -> toJson(obj.as[Double]("HOSP_ID").toInt.toString),
                 "Prod_Name" -> toJson(obj.as[Double]("Prod_Name").toInt.toString)
@@ -41,7 +42,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
         }
 
 
-        val tmp = db.queryMultipleObject(query, "BaseLine", "Date")(output)
+        val tmp = db.queryMultipleObject(query, "BaseLine", "Date")(output).reverse
         val baselineResult = if(tmp.size == 12){
             tmp
         } else {
