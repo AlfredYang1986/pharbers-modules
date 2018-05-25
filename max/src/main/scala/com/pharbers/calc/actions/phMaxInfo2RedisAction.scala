@@ -1,7 +1,6 @@
 package com.pharbers.calc.actions
 
-import java.text.SimpleDateFormat
-import java.util.{Base64, Date}
+import java.util.Base64
 
 import com.pharbers.builder.Builderimpl
 import com.pharbers.driver.PhRedisDriver
@@ -26,7 +25,6 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
         val maxDF_filter_company = maxDF.filter(condition)
 
-        val maxSingleDayJobsKey = Sercurity.md5Hash("Pharbers")
         val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
 
         val max_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
@@ -41,7 +39,11 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
             company_sales_prov_lst_key
         )
 
+        //TODO: Save按钮就下面三句话
+        val maxSingleDayJobsKey = Sercurity.md5Hash("Pharbers")
         rd.addSet(maxSingleDayJobsKey, singleJobKey)
+        rd.expire(maxSingleDayJobsKey, 60*60*24)
+
         rd.addMap(singleJobKey, "max_result_name", maxName)
         rd.addMap(singleJobKey, "user", user)
         rd.addMap(singleJobKey, "company", company)
@@ -69,7 +71,6 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         rd.addListLeft(company_sales_city_lst_key, company_sales_city_lst:_*)
         rd.addListLeft(company_sales_prov_lst_key, company_sales_prov_lst:_*)
 
-        rd.expire(maxSingleDayJobsKey, 60*60*24)
         rd.expire(max_sales_city_lst_key, 60*60*24)
         rd.expire(max_sales_prov_lst_key, 60*60*24)
         rd.expire(company_sales_city_lst_key, 60*60*24)
