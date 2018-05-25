@@ -23,7 +23,11 @@ case class sendMultiProgress(company: String, user: String, stage: String)
 
     var previousProgress = 0
     implicit val multiProgress: (sendEmTrait, Double) => Unit = { (em, progress) =>
-        val currentprogress = ((p_current - 1) / p_total * 100 + progress / p_total).toInt
+        val currentprogress = p_total match {
+            case d: Double if d < 1 => 0
+            case _ => ((p_current - 1) / p_total * 100 + progress / p_total).toInt
+        }
+
         if(currentprogress > previousProgress){
             em.sendMessage(company, user, stage, "ing", toJson(Map("progress" -> toJson(currentprogress))))
             alTempLog(s"$company $user current progress = " + currentprogress)
