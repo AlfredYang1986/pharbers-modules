@@ -29,7 +29,7 @@ class phBaseLine2MongoJob(override val defaultArgs: pActionArgs) extends pAction
             builder += "_id" -> ObjectId.get()      // user_id 唯一标示
             builder += "Company" -> company
             builder += "Market" -> mkt
-            builder += "Month" -> map("DATE").takeRight(2).toInt.toString
+            builder += "Date" -> map("DATE").toInt
             builder += "Sales" -> map("PANEL_SALES").toDouble
             builder += "HOSP_ID" -> map("PANEL_HOSP_COUNT").toDouble
             builder += "Prod_Name" -> map("PANEL_PROD_COUNT").toDouble
