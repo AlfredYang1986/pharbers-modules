@@ -11,9 +11,8 @@ object phPfizerPanelSplitChildMarketAction {
 
 class phPfizerPanelSplitChildMarketAction (override val defaultArgs : pActionArgs) extends pActionTrait{
     override val name: String = "SplitMarketAction"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val childMarkets = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 

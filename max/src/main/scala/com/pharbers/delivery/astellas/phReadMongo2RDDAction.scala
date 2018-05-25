@@ -1,6 +1,7 @@
 package com.pharbers.delivery.astellas
 
-import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
+import com.pharbers.delivery.util.mongo_config_obj
 import com.pharbers.pactions.actionbase.{NULLArgs, RDDArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
 
@@ -12,15 +13,13 @@ object phReadMongo2RDDAction {
         new phReadMongo2RDDAction(company, dbName, lstColl, name)
 }
 
-class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String], override val name: String) extends pActionTrait with CommonTrait {
+class phReadMongo2RDDAction(company: String, dbName: String, lstColl: List[String], override val name: String) extends pActionTrait with phSparkCommonFuncTrait {
 
     override val defaultArgs: pActionArgs = NULLArgs
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs): pActionArgs = {
         val spark = phSparkDriver()
-        val lstRdd = lstColl.map(tempColl =>spark.mongo2RDD(mongo_config_obj.mongoHost, mongo_config_obj.mongoPort, dbName, tempColl.split("##").head).map(doc => doc.append("Market",s"${tempColl.split("##").last}")))
+        val lstRdd = lstColl.map(tempColl =>spark.mongo2RDD(mongo_config_obj.mongodbHost, mongo_config_obj.mongodbPort, dbName, tempColl.split("##").head).map(doc => doc.append("Market",s"${tempColl.split("##").last}")))
         RDDArgs(unionRDDList(lstRdd))
     }
 

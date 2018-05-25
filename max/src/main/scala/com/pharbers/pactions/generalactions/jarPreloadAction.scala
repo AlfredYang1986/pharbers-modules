@@ -1,14 +1,15 @@
 package com.pharbers.pactions.generalactions
 
-import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 import com.pharbers.spark.phSparkDriver
+import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
 object jarPreloadAction {
-    def apply(arg_name: String = "jarPreloadJob") : pActionTrait =
+    def apply(arg_name: String = "jarPreloadJob"): pActionTrait =
         new jarPreloadAction(arg_name)
 }
 
 class jarPreloadAction(override val name: String) extends pActionTrait {
+    override val defaultArgs : pActionArgs = NULLArgs
 
     lazy val lst: List[(String, String)] =  ("commons-codec-1.9.jar", "./jar/commons-codec-1.9.jar") ::
                     ("dom4j-1.1.jar", "./jar/dom4j-1.1.jar") ::
@@ -17,9 +18,13 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
                     ("poi-ooxml-3.13.jar", "./jar/poi-ooxml-3.13.jar") ::
                     ("poi-ooxml-schemas-3.13.jar", "./jar/poi-ooxml-schemas-3.13.jar") ::
                     ("xlsx-streamer-1.0.2.jar", "./jar/xlsx-streamer-1.0.2.jar") ::
-                    ("pharbers-max-0.1.jar", "./jar/pharbers-max-0.1.jar") :: Nil
+                    ("spark-indexedrdd-0.4.0.jar", "./jar/spark-indexedrdd-0.4.0.jar") ::
+                    ("part_2.10-0.1.jar", "./jar/part_2.10-0.1.jar") ::
+                    ("mongo-java-driver-3.2.2.jar", "./jar/mongo-java-driver-3.2.2.jar") ::
+                    ("mongo-spark-connector_2.11-2.0.0.jar", "./jar/mongo-spark-connector_2.11-2.0.0.jar") ::
+                    ("pharbers-max-0.1.jar", "../../pharbers-modules/max/target/pharbers-max-0.1.jar") :: Nil
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
         val sc = phSparkDriver().sc
         lst.foreach { iter =>
             if (!sc.listJars().exists(x => x.contains(iter._1))) sc.addJar(iter._2)
@@ -27,8 +32,4 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
 
         NULLArgs
     }
-
-    override val defaultArgs : pActionArgs = NULLArgs
-    override val progressFactor: Int = 0
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 }

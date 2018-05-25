@@ -14,17 +14,15 @@ object phAstellasPanelConcretJob {
 class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends pActionTrait {
     override val name: String = "panel"
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
     import sparkDriver.ss.implicits._
 
-    override def perform(args: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(args: pActionArgs): pActionArgs = {
 
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
-        val mkt_cn = defaultArgs.asInstanceOf[MapArgs].get("mkt_cn").asInstanceOf[StringArgs].get
+        val mkt_en = defaultArgs.asInstanceOf[MapArgs].get("mkt_en").asInstanceOf[StringArgs].get
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get.filter(col("YM") === ym)
         val gycx = args.asInstanceOf[MapArgs].get("gycx").asInstanceOf[DFArgs].get.filter(col("YM") === ym)
@@ -65,7 +63,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
                 .withColumn("STANDARD_UNIT", 'STANDARD_UNIT.cast(DoubleType))
                 .withColumnRenamed("STANDARD_UNIT", "Units")
                 .withColumn("HOSPITAL_CODE", 'HOSPITAL_CODE.cast(LongType))
-                .filter(col("MARKET") === mkt_cn)
+                .filter(col("MARKET") === mkt)
         }
 
         val product_match = {
@@ -116,7 +114,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
             universe_file.withColumnRenamed("样本医院编码", "PANLE_ID")
                 .withColumnRenamed("PHA医院名称", "HOSP_NAME")
                 .withColumnRenamed("PHA ID", "HOSP_ID")
-                .filter(col("市场") === mkt)
+                .filter(col("市场") === mkt_en)
                 .select("PANLE_ID", "HOSP_ID", "HOSP_NAME")
                 .filter(col("PANLE_ID") =!= "" && col("PANLE_ID") =!= " ")
                 .withColumn("PANLE_ID", 'PANLE_ID.cast(LongType))
@@ -125,7 +123,7 @@ class phAstellasPanelConcretJob(override val defaultArgs: pActionArgs) extends p
         // 根据universeCode，只保留样本医院panel
         val panel = {
             groupedTotal.join(universeCode, groupedTotal("HOSPITAL_CODE") === universeCode("PANLE_ID"))
-                .filter(col("MARKET") === mkt_cn)
+                .filter(col("MARKET") === mkt)
                 .withColumn("ID", col("HOSPITAL_CODE").cast(LongType))
                 .withColumn("Hosp_name", col("HOSP_NAME"))
                 .withColumn("Date", col("YM"))

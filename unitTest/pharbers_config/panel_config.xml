@@ -1,7 +1,0 @@
-<pharbers-modules>
-    <panel_config>
-        <match_file_dir value="/mnt/config/MatchFile/" />
-        <result_dir value="/mnt/config/Result/" />
-        <cache_dir value="/mnt/config/Cache/" />
-    </panel_config>
-</pharbers-modules>

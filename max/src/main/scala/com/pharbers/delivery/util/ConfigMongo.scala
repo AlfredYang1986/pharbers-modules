@@ -6,11 +6,11 @@ import com.pharbers.baseModules.PharbersInjectModule
   * Created by jeorch on 18-3-14.
   */
 trait ConfigMongo extends PharbersInjectModule {
-    override val id: String = "mongo-config"
-    override val configPath: String = "pharbers_config/mongo-config.xml"
-    override val md =
-        "host" :: "port" :: Nil
+    override val id: String = "mongodb-connect"
+    override val configPath: String = "pharbers_config/data_connect.xml"
+    override val md = "server_host" :: "server_port" :: "connect_name" :: "connect_pwd" :: "conn_name" :: Nil
 
-    val mongoHost: String = config.mc.find(p => p._1 == "host").get._2.toString
-    val mongoPort: String = config.mc.find(p => p._1 == "port").get._2.toString
+    val mongodbHost: String = config.mc.find(p => p._1 == "server_host").get._2.toString
+    val mongodbPort: String = config.mc.find(p => p._1 == "server_port").get._2.toString
+    val databaseName: String = config.mc.find(p => p._1 == "conn_name").get._2.toString
 }

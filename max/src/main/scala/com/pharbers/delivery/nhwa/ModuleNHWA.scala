@@ -1,16 +1,17 @@
 package com.pharbers.delivery.nhwa
 
-import com.pharbers.delivery.util.{CommonTrait, mongo_config_obj}
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
+import com.pharbers.delivery.util.mongo_config_obj
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 /**
   * Created by jeorch on 18-3-7.
   */
-trait ModuleNHWA extends CommonTrait {
+trait ModuleNHWA extends phSparkCommonFuncTrait {
 
     def generateDeliveryFileFromMongo(dbName: String, collection: String): DataFrame = {
 
-        val df_max = driver.mongo2RDD(s"${mongo_config_obj.mongoHost}",s"${mongo_config_obj.mongoPort}",s"$dbName",s"$collection").toDF()
+        val df_max = driver.mongo2RDD(s"${mongo_config_obj.mongodbHost}",s"${mongo_config_obj.mongodbPort}",s"$dbName",s"$collection").toDF()
 
         val gb_test = df_max.filter("f_sales <> 0 AND f_units <> 0")
                         .select(df_max("Panel_ID"),df_max("Date").divide(1000).cast("timestamp"),df_max("Provice").as("province"),df_max("City"),df_max("Market"),df_max("Product"),df_max("f_sales").cast("double"),df_max("f_units").cast("double"))

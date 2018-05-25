@@ -13,9 +13,7 @@ object phAstellasCalcYMGycxConcretJob  {
 class phAstellasCalcYMGycxConcretJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "calcYMWithGycx"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(pr : pActionArgs): pActionArgs = {
 
         val gycRDD = pr.asInstanceOf[MapArgs].get("gycx").asInstanceOf[RDDArgs[phAstellasGycxWritable]].get.map { iter =>
             iter.getRowKey("YM") + iter.getRowKey("HOSPITAL_CODE") -> 1

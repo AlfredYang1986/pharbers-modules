@@ -1,22 +1,21 @@
 package com.pharbers.pactions.generalactions
 
 import scala.reflect.ClassTag
+import org.apache.hadoop.io.compress.GzipCodec
 import com.pharbers.pactions.actionbase.{RDDArgs, StringArgs, pActionArgs, pActionTrait}
 
 object saveCurrenResultAction {
-    def apply[T : ClassTag](arg_path: String,
+    def apply[T: ClassTag](arg_path: String,
                             arg_name: String = "saveCurrenResultJob"): pActionTrait =
         new saveCurrenResultAction[T](StringArgs(arg_path), arg_name)
 }
 
-class saveCurrenResultAction[T : ClassTag](override val defaultArgs: pActionArgs,
+class saveCurrenResultAction[T: ClassTag](override val defaultArgs: pActionArgs,
                                            override val name: String) extends pActionTrait {
 
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args: pActionArgs): pActionArgs = {
         val rdd = args.asInstanceOf[RDDArgs[T]].get
-        rdd.coalesce(1).saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get)
+        rdd.saveAsTextFile(defaultArgs.asInstanceOf[StringArgs].get, classOf[GzipCodec])
         args
     }
 }

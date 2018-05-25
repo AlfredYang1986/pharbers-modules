@@ -1,9 +1,7 @@
 <pharbers-modules>
     <spark-config>
-        <!--<host value="192.168.100.176" />-->
         <host value="192.168.100.119" />
         <name value="cui-test" />
-        <!--<port value="9999" />-->
         <port value="7077" />
     </spark-config>
 </pharbers-modules>

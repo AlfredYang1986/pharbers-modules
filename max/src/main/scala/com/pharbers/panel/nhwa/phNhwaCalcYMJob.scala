@@ -2,36 +2,32 @@ package com.pharbers.panel.nhwa
 
 import java.util.UUID
 
-import com.pharbers.pactions.actionbase.pActionTrait
+import akka.actor.Actor
+import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.generalactions._
-import com.pharbers.pactions.jobs.sequenceJob
 import com.pharbers.panel.common.phCalcYM2JVJob
+import com.pharbers.common.algorithm.max_path_obj
+import com.pharbers.pactions.jobs.sequenceJobWithMap
+import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.panel.nhwa.format.phNhwaCpaFormat
-import com.pharbers.panel.panel_path_obj
-import org.apache.spark.addListenerAction
+import org.apache.spark.listener.progress.sendSingleProgress
+import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
 
-object phNhwaCalcYMJob {
-
-    def apply(cpa_path : String) : phNhwaCalcYMJob = {
-        new phNhwaCalcYMJob {
-            override lazy val cpa_file: String = cpa_path
-            override lazy val cache_location: String = panel_path_obj.p_cachePath + UUID.randomUUID().toString
-        }
-    }
-}
-
-trait phNhwaCalcYMJob extends sequenceJob {
+case class phNhwaCalcYMJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
     override val name: String = "phNhwaCalcYMJob"
-    val cpa_file: String
-    val cache_location: String
+    lazy val cache_location: String = max_path_obj.p_cachePath + UUID.randomUUID().toString
+    lazy val cpa_file: String = max_path_obj.p_clientPath + args("cpa")
 
-    override val actions: List[pActionTrait] = {
-        jarPreloadAction() ::
+    lazy val user_id: String = args("user_id")
+    lazy val company_id: String = args("company_id")
+    implicit val sp: (sendEmTrait, Double) => Unit = sendSingleProgress(company_id, user_id).singleProgress
+
+    override val actions: List[pActionTrait] = { jarPreloadAction() ::
                 setLogLevelAction("ERROR") ::
+                addListenerAction(MaxSparkListener(0, 90)) ::
                 xlsxReadingAction[phNhwaCpaFormat](cpa_file, "cpa") ::
-                addListenerAction(MaxSparkListener("testUser", "ymCalc")(0, 100)) ::
                 phNhwaCalcYMConcretJob() ::
-                saveCurrenResultAction(cache_location) ::
+                saveMapResultAction("calcYM", cache_location) ::
                 phCalcYM2JVJob() ::
                 Nil
     }

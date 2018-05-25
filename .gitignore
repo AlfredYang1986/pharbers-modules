@@ -16,6 +16,8 @@
 */buildNumber.properties
 */.mvn/timing.properties
 
+.DS_Store
+
 /max/config/
 /third/upload/
 /third/pharbers_config/

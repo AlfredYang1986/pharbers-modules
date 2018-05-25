@@ -1,7 +1,6 @@
 package com.pharbers.panel.pfizer.actions
 
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.pfizer.phPfizerPanelCommonTrait
 import com.pharbers.spark.phSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, when, _}
@@ -16,11 +15,9 @@ object phPfizerPanelCommonAction {
 
 class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
