@@ -92,7 +92,7 @@ trait phBuilder {
         val panelLst = rd.getSetAllValue(mapping("job_id"))
         mapping += "p_total" -> panelLst.size.toString
 
-        panelLst.foreach { panel =>
+        val maxResult = panelLst.map { panel =>
             val mkt = rd.getMapValue(panel, "mkt")
             mapping += "mkt" -> mkt
             mapping += "panel_name" -> panel
@@ -113,7 +113,7 @@ trait phBuilder {
             result
         }
 
-        toJson("max result")
+        toJson(maxResult)
     }
 
 }
