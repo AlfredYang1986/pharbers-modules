@@ -1,14 +1,12 @@
 package com.pharbers.unitTest.action
 
+import akka.actor.Actor
 import com.pharbers.builder.{Builderimpl, phBuilder}
 import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver
 
-object executeMaxAction {
-    def apply(args: MapArgs): pActionTrait = new executeMaxAction(args)
-}
-
-class executeMaxAction(override val defaultArgs : pActionArgs) extends pActionTrait {
+case class executeMaxAction(override val defaultArgs : pActionArgs)
+                      (implicit _actor: Actor) extends pActionTrait {
     override val name: String = "max_result"
 
     val company: String = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
