@@ -28,22 +28,23 @@
 //        println()
 //        val cpa = "180211恩华17年1-12月检索.xlsx"
 //        val gycx = ""
-//        val yms = "201710"
+////        val yms = "201701#201702#201703#201704#201705#201706#201707#201708#201709#201710#201711#201712"
+//        val yms = "201712"
 //
 //
 //        implicit val t: Timeout = 20 minutes
 //
-//        val r = testActor ? calcYm(cpa, gycx)
-//        val result = Await.result(r.mapTo[JsValue], t.duration)
-//        println("calcYm result = " + result)
+////        val r = testActor ? calcYm(cpa, gycx)
+////        val result = Await.result(r.mapTo[JsValue], t.duration)
+////        println("calcYm result = " + result)
 //
 //        val r2 = testActor ? panel(cpa, gycx, yms)
 //        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
 //        println("panel result2 = " + result2)
 //
-//        val r3 = testActor ? max()
-//        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-//        println("max result3 = " + result3)
+////        val r3 = testActor ? max()
+////        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
+////        println("max result3 = " + result3)
 //
 //
 //        println()

@@ -29,7 +29,8 @@ case class startTest() {
             "job_id" -> UUID.randomUUID().toString,
             "cpa" -> "pfizer/1802 CPA.xlsx",
             "gycx" -> "pfizer/1802 GYC.xlsx",
-            "ym" -> "201802"
+            "ym" -> "201802",
+            "offlineResult" -> "/mnt/config/Client/INF _MAX_Result.xlsx"
         )
 
         val testHeader: ActorRef = system.actorOf(UnitTestHeader.props())

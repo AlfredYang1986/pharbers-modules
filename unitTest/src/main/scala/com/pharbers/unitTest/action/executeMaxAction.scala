@@ -39,9 +39,9 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
         val panel = doPanel(mapping ++ getPanelArgs(company, mkt))
 
         // 执行Max
-        val max = doMax(mapping ++ getMaxArgs(company, mkt) ++ Map("panel_name" -> panel))
+        val maxResult = doMax(mapping ++ getMaxArgs(company, mkt) ++ Map("panel_name" -> panel))
 
-        StringArgs(max)
+        StringArgs(maxResult)
     }
 
     def doPanel(mapping: Map[String, String]): String = {
