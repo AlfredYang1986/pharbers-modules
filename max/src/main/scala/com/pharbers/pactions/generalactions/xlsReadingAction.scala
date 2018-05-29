@@ -8,21 +8,14 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import com.pharbers.panel.format.input.writable.PhExcelWritable
 
 object xlsReadingAction {
-
-    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](arg_path: String,
-                                                                              arg_name: String) : pActionTrait =
+    def apply[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](arg_path: String, arg_name: String): pActionTrait =
         new xlsReadingAction[T](StringArgs(arg_path), arg_name)
 }
 
 class xlsReadingAction[T <: FileInputFormat[NullWritable, PhExcelWritable] : ClassTag](override val defaultArgs: pActionArgs,
                                                                                        override val name: String) extends pActionTrait {
-
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        val sc = phSparkDriver().sc
-
-        RDDArgs(sc.
+    override def perform(args: pActionArgs): pActionArgs = {
+        RDDArgs(phSparkDriver().sc.
             newAPIHadoopFile[NullWritable, PhExcelWritable,
             T](defaultArgs.get.toString).map (x => x._2))
     }

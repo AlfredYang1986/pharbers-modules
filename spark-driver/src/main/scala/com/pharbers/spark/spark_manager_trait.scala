@@ -4,13 +4,14 @@ import com.mongodb.spark.MongoSpark
 import com.mongodb.spark.config.ReadConfig
 import com.mongodb.spark.rdd.MongoRDD
 import com.pharbers.spark.session.spark_conn_instance
+import org.apache.spark.sql.DataFrame
 import org.bson.Document
 
 /**
   * Created by clock on 18-2-27.
   */
 
-trait spark_managers extends mongo2RDD with csv2RDD
+trait spark_managers extends mongo2RDD with csv2RDD with dataFrame2Mongo
 
 sealed trait spark_manager_trait {
     implicit val conn_instance: spark_conn_instance
@@ -43,5 +44,20 @@ trait csv2RDD extends spark_manager_trait {
                 .option("mode", "DROPMALFORMED")
                 .option("delimiter", delimiter)
                 .csv(file_path)
+    }
+}
+
+trait dataFrame2Mongo extends spark_manager_trait {
+    def dataFrame2Mongo(dataFrame: DataFrame,
+                 mongodbHost: String,
+                 mongodbPort: String,
+                 databaseName: String,
+                 collName: String,
+                 saveMode: String = "append"): Unit = {
+        dataFrame.write.format("com.mongodb.spark.sql.DefaultSource").mode(saveMode)
+            .option("uri", s"mongodb://$mongodbHost:$mongodbPort/")
+            .option("database", databaseName)
+            .option("collection", collName)
+            .save()
     }
 }

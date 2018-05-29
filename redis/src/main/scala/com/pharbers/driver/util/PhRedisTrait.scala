@@ -5,12 +5,12 @@ package com.pharbers.driver.util
   */
 trait PhRedisTrait {
     def addString(key: Any, value: String)
-    def addListLeft(key: Any, value: Any, values: Any*)
-    def addListRight(key: Any, value: Any, values: Any*)
+    def addListLeft(key: Any, values: Any*)
+    def addListRight(key: Any, values: Any*)
     def addMap(key: Any, value: Map[Any, Any])
     def addMap(key: Any, mapK: Any, mapV: Any)
     def addSet(key: Any, value: Set[Any])
-    def addSet(key: Any, value: Any, values: Any*)
+    def addSet(key: Any, values: Any*)
     def delete(key: Any, keys: Any*) : Long
     def getString(key: Any) : String
     def getListAllValue(key: Any) : List[String]

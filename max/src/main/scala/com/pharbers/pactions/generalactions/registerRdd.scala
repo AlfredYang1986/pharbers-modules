@@ -11,9 +11,6 @@ object registerRdd {
 
 class registerRdd(override val defaultArgs: pActionArgs,
                    override val name: String)(implicit company: phMemoryArgs) extends pActionTrait {
-
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs =
+    override def perform(args: pActionArgs): pActionArgs =
         BooleanArgs(phMemory.isExist(defaultArgs.asInstanceOf[StringArgs].get))
 }

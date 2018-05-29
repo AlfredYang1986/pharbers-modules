@@ -40,7 +40,6 @@
                     <version>1.0.6</version>
                 </dependency>
 
-
                 <!-- poi -->
                 <dependency>
                     <groupId>org.apache.poi</groupId>
@@ -69,6 +68,11 @@
                     <version>1.0.2</version>
                 </dependency>
 
+                <dependency>
+                    <groupId>com.typesafe.play</groupId>
+                    <artifactId>play-json_2.11</artifactId>
+                    <version>2.5.0-M2</version>
+                </dependency>
 
                 <!-- specs test -->
                 <dependency>
@@ -121,7 +125,11 @@
                     <artifactId>pharbers-third</artifactId>
                     <version>0.1</version>
                 </dependency>
-
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-pattern</artifactId>
+                    <version>0.1</version>
+                </dependency>
 
                 <!-- spark lib -->
                 <dependency>
@@ -225,9 +233,28 @@
                     <artifactId>kafka_2.11</artifactId>
                     <version>1.1.0</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.apache.kafka</groupId>
+                    <artifactId>kafka-streams</artifactId>
+                    <version>1.1.0</version>
+                </dependency>
+
+                <!-- avro -->
+                <dependency>
+                    <groupId>org.apache.avro</groupId>
+                    <artifactId>avro</artifactId>
+                    <version>1.7.6</version>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/amplab/spark-indexedrdd -->
+                <dependency>
+                    <groupId>amplab</groupId>
+                    <artifactId>spark-indexedrdd</artifactId>
+                    <version>0.4.0</version>
+                </dependency>
 
                 <!-- test lib -->
-                <dependency>
+                <!--<dependency>
                     <groupId>com.mmakowski</groupId>
                     <artifactId>maven-specs2-plugin</artifactId>
                     <version>0.4.2</version>
@@ -238,7 +265,7 @@
                     <artifactId>specs2-core_2.11</artifactId>
                     <version>3.7</version>
                     <scope>test</scope>
-                </dependency>
+                </dependency>-->
             </dependencies>
         </profile>
     </profiles>
@@ -298,14 +325,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>1.0</version>
@@ -319,20 +338,6 @@
                         <id>test</id>
                         <goals>
                             <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.mmakowski</groupId>
-                <artifactId>specs2-maven-plugin</artifactId>
-                <version>0.4.4</version>
-                <executions>
-                    <execution>
-                        <id>verify</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>run-specs</goal>
                         </goals>
                     </execution>
                 </executions>

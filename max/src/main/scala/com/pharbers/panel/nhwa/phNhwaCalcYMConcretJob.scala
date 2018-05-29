@@ -4,8 +4,8 @@ import scala.reflect.ClassTag
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable
 
-object phNhwaCalcYMConcretJob  {
-    def apply[T : ClassTag](args: pActionArgs = NULLArgs) : pActionTrait = {
+object phNhwaCalcYMConcretJob {
+    def apply[T : ClassTag](args: pActionArgs = NULLArgs): pActionTrait = {
         new phNhwaCalcYMConcretJob[T](args)
     }
 }
@@ -13,10 +13,8 @@ object phNhwaCalcYMConcretJob  {
 class phNhwaCalcYMConcretJob[T : ClassTag](override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "calcYM"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(pr : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
-        val cpaRDD = pr.asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
+    override def perform(pr : pActionArgs): pActionArgs = {
+        val cpaRDD = pr.asInstanceOf[MapArgs].get("cpa").asInstanceOf[RDDArgs[phNhwaCpaWritable]].get.map { iter =>
             iter.getRowKey("YM") + iter.getRowKey("HOSPITAL_CODE") -> 1
         }
 
