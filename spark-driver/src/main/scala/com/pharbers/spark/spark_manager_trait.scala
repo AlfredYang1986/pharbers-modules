@@ -41,6 +41,7 @@ trait csv2RDD extends spark_manager_trait {
                 delimiter: String = ",", header: Boolean = true) = {
         ss.read.format("csv")
                 .option("header", header)
+                .option("inferSchema", true.toString)
                 .option("mode", "DROPMALFORMED")
                 .option("delimiter", delimiter)
                 .csv(file_path)
