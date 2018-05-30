@@ -16,12 +16,11 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
     override def perform(pr: pActionArgs): pActionArgs = {
         val rd = new PhRedisDriver()
 
-        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
-        val user = defaultArgs.asInstanceOf[MapArgs].get("user").asInstanceOf[StringArgs].get
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val maxName = pr.asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
+        val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
         val maxDF_filter_company = maxDF.filter(condition)
 
@@ -44,12 +43,6 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         rd.addSet(maxSingleDayJobsKey, singleJobKey)
         rd.expire(maxSingleDayJobsKey, 60*60*24)
 
-        rd.addMap(singleJobKey, "max_result_name", maxName)
-        rd.addMap(singleJobKey, "user", user)
-        rd.addMap(singleJobKey, "company", company)
-        rd.addMap(singleJobKey, "ym", ym)
-        rd.addMap(singleJobKey, "mkt", mkt)
-
         val max_sales = maxDF.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val max_sales_city_lst = maxDF.groupBy("City").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
@@ -64,6 +57,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val company_sales_prov_lst = maxDF_filter_company.groupBy("Province").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
 
+        rd.addMap(singleJobKey, "max_result_name", maxName)
         rd.addMap(singleJobKey, "max_sales", max_sales)
         rd.addMap(singleJobKey, "max_company_sales", max_company_sales)
         rd.addListLeft(max_sales_city_lst_key, max_sales_city_lst:_*)

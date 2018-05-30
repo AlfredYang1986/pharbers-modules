@@ -64,7 +64,8 @@ case class phMaxScheduleJob(user: String) {
 
                 //TODO:加载mongo数据到rdd时，做聚合处理，为了渲染结果检查中的历史数据.
                 //TODO:暂时存到redis中，之后直接存到数据库的另一张表中【PS：有了一层缓存了没必要再多一层】
-                aggregationData2Redis(singleJobDF, singleJobKey, maxName)
+//                aggregationData2Redis(singleJobDF, singleJobKey, maxName)
+                rd.addMap(singleJobKey, "max_result_name", maxName)
 
                 mongo2rddJobsCount += 1
             })
@@ -95,12 +96,6 @@ case class phMaxScheduleJob(user: String) {
             company_sales_prov_lst_key
         )
 
-        rd.addMap(singleJobKey, "max_result_name", maxName)
-        rd.addMap(singleJobKey, "user", user)
-        rd.addMap(singleJobKey, "company", company)
-        rd.addMap(singleJobKey, "ym", ym)
-        rd.addMap(singleJobKey, "mkt", mkt)
-
         val max_sales = dataFrame.agg(Map("f_sales" -> "sum")).take(1)(0).toString().split('[').last.split(']').head.toDouble
         val max_sales_city_lst = dataFrame.groupBy("City").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
@@ -115,6 +110,7 @@ case class phMaxScheduleJob(user: String) {
         val company_sales_prov_lst = maxDF_filter_company.groupBy("Province").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
 
+        rd.addMap(singleJobKey, "max_result_name", maxName)
         rd.addMap(singleJobKey, "max_sales", max_sales)
         rd.addMap(singleJobKey, "max_company_sales", max_company_sales)
         rd.addListLeft(max_sales_city_lst_key, max_sales_city_lst:_*)

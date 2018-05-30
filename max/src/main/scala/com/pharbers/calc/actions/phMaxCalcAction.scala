@@ -3,6 +3,7 @@ package com.pharbers.calc.actions
 import com.pharbers.pactions.actionbase._
 import com.pharbers.spark.phSparkDriver
 import org.apache.spark.sql.functions.{col, _}
+import org.apache.spark.sql.types.{DoubleType, IntegerType}
 
 object phMaxCalcAction {
     def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxCalcAction(args)
@@ -87,20 +88,20 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                     when($"IS_PANEL_HOSP" === 1, $"sumSales").otherwise(
                         when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
                             .otherwise($"Factor" * $"avg_Sales" * $"westMedicineIncome")
-                    ))
+                    ).cast(DoubleType))
                 .withColumn("f_units",
                     when($"IS_PANEL_HOSP" === 1, $"sumUnits").otherwise(
                         when($"avg_Sales" < 0.0 or $"avg_Units" < 0.0, 0.0)
                             .otherwise($"Factor" * $"avg_Units" * $"westMedicineIncome")
-                    ))
+                    ).cast(DoubleType))
                 .drop("s_sumSales", "s_sumUnits", "s_westMedicineIncome")
                 .withColumn("flag", when($"f_units" === 0 and $"f_sales" === 0, 0).otherwise(1))
                 .filter($"flag" === 1)
                 .withColumnRenamed("PHA_ID", "Panel_ID")
-                .withColumnRenamed("YM", "Date")
+                .withColumn("Date", 'YM.cast(IntegerType))
                 .withColumnRenamed("Prefecture", "City")
                 .withColumnRenamed("min1", "Product")
-                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
+                .selectExpr("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
         }
 
         DFArgs(resultDF)
