@@ -20,6 +20,7 @@
         <module>security</module>
         <module>max</module>
         <module>client-pattern</module>
+        <module>timer</module>
     </modules>
 
 </project>

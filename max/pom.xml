@@ -130,6 +130,11 @@
                     <artifactId>pharbers-pattern</artifactId>
                     <version>0.1</version>
                 </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-timer</artifactId>
+                    <version>0.1</version>
+                </dependency>
 
                 <!-- spark lib -->
                 <dependency>
