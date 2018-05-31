@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.pharbers</groupId>
-    <artifactId>pharbers-timer</artifactId>
+    <artifactId>pharbers-paction</artifactId>
     <version>0.1</version>
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
@@ -40,48 +40,17 @@
                     <version>1.0.6</version>
                 </dependency>
 
-                <!-- poi -->
                 <dependency>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi</artifactId>
-                    <version>3.8</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi-ooxml</artifactId>
-                    <version>3.8</version>
-                </dependency>
-                <dependency>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                    <version>2.11.0</version>
+                    <groupId>com.typesafe.play</groupId>
+                    <artifactId>play-json_2.11</artifactId>
+                    <version>2.5.0-M2</version>
                 </dependency>
 
+                <!-- spark lib -->
                 <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-paction</artifactId>
-                    <version>0.1</version>
-                </dependency>
-
-                <!-- specs test -->
-                <dependency>
-                    <groupId>org.specs2</groupId>
-                    <artifactId>specs2_2.11</artifactId>
-                    <version>3.7</version>
-                    <type>pom</type>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.scalatest</groupId>
-                    <artifactId>scalatest_2.11</artifactId>
-                    <version>3.0.1</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-third</artifactId>
-                    <version>0.1</version>
+                    <groupId>org.apache.spark</groupId>
+                    <artifactId>spark-sql_2.11</artifactId>
+                    <version>2.0.0</version>
                 </dependency>
 
             </dependencies>
@@ -92,15 +61,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>java-compile-first</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -131,14 +109,6 @@
                         <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
                         <arg>-nobootcp</arg>
                     </args>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
             <plugin>

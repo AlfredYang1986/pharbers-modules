@@ -18,9 +18,10 @@
         <module>message</module>
         <module>redis</module>
         <module>security</module>
+        <module>paction</module>
+        <module>timer</module>
         <module>max</module>
         <module>client-pattern</module>
-        <module>timer</module>
     </modules>
 
 </project>
