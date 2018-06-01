@@ -2,6 +2,7 @@ package com.pharbers.calc
 
 import com.pharbers.common.algorithm.alTempLog
 import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
+import com.pharbers.spark.phSparkDriver
 
 /**
   * Created by jeorch on 18-5-15.
@@ -16,6 +17,7 @@ class phMaxScheduleJob extends pActionTrait with phMaxScheduleTrait {
         alTempLog(s"Today's RDD count = ${hodiernalRddCount}")
         val historyRddCount = mongo2rdd
         alTempLog(s"history RDD count = ${historyRddCount}")
+        phSparkDriver().ss.stop()
         defaultArgs
     }
 
