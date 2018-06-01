@@ -31,15 +31,15 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
         val totalCount = redisDriver.getMapValue(pageCacheInfo, "count") match {
             case null =>
-                val totalCountTemp = result_df.count().toDouble
+                val totalCountTemp = result_df.count()
                 redisDriver.addMap(pageCacheInfo, "count", totalCountTemp)
                 redisDriver.expire(pageCacheInfo, 5 * 60)
                 totalCountTemp
-            case count => count.toDouble
+            case count => count.toLong
         }
         val totalPage = redisDriver.getMapValue(pageCacheInfo, "page") match {
             case null =>
-                val totalPageTemp = Math.ceil(totalCount / pageSize).toInt
+                val totalPageTemp = Math.ceil(totalCount.toDouble / pageSize).toInt
                 redisDriver.addMap(pageCacheInfo, "page", totalPageTemp)
                 redisDriver.expire(pageCacheInfo, 5 * 60)
                 totalPageTemp
@@ -59,11 +59,7 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
             val result_rdd_limited = result_df.limit((cacheIndex.max + 1) * pageSize).rdd
 
-            var phIndex = -1
-            val initIndexRdd = result_rdd_limited.map { x =>
-                phIndex += 1
-                (phIndex, x)
-            }
+            val initIndexRdd = result_rdd_limited.zipWithIndex().map { case(row, index) => (index.toInt, row)}
 
             val phIndexRdd = IndexedRDD(initIndexRdd)
 
@@ -80,7 +76,6 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
                     redisDriver.addListRight(pageCacheTempKey, resultLst: _*)
                     redisDriver.expire(pageCacheTempKey, 5 * 60)
                 }
-
             }
 
             NULLArgs
