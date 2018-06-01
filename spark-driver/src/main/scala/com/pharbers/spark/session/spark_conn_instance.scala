@@ -11,6 +11,7 @@ trait spark_conn_instance extends spark_conn_config {
             .setAppName(sparkMasterName)
             .setMaster(s"spark://$sparkMasterHost:$sparkMasterPort")
             .set("spark.executor.memory", "2g")
+//            .set("spark.executor.cores", "2")
             .set("spark.executor.extraJavaOptions",
                 """
                   | -XX:+UseG1GC -XX:+PrintFlagsFinal

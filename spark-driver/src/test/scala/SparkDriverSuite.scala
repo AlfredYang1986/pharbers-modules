@@ -19,13 +19,9 @@
 //
 //    test("Test read csv"){
 //        val driver =  phSparkDriver()
-//        val file_path = "file:///home/jeorch/jeorch/test/file_test/text.csv"
-//
-//        val rdd = driver.csv2RDD(file_path, delimiter = 31.toChar.toString)
-////        rdd.foreach(x => println(x))
-////        rdd.printSchema()
-//        rdd.show(false)
-////        println(rdd.count())
+//        val file_path = "file:///mnt/config/a.csv"
+//        val df = driver.csv2RDD(file_path)
+//        df.show(false)
 //    }
 //
 //    test("spark read mongo"){
@@ -57,7 +53,7 @@
 //        val mongoRDD = sd.mongo2RDD("127.0.0.1","27017","Max_Test","Allelock_Factorized_Units&Sales_WITH_OT1712")
 //        val mongoDF = mongoRDD.toDF()
 //
-//        sd.dataFrame2Mongo(mongoDF,mongodbHost,mongodbPort,databaseName,"testColl","append")
+//        sd.dataFrame2Mongo(mongoDF, mongodbHost, mongodbPort, databaseName, "testColl", "append")
 //    }
 //
 //}
