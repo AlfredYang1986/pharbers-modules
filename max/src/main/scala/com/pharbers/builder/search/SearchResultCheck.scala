@@ -13,7 +13,7 @@ trait SearchResultCheck extends phMaxSearchTrait {
         val user_id = (jv \ "user" \ "user_id").asOpt[String].get
         val company_id = (jv \ "user" \ "company" \ "company_id").asOpt[String].get
 
-        val max = phMaxResultInfo(user_id, company_id, years, market)
+        val max = phMaxResultInfo(company_id, years, market)
 
         val temp = Some(
             Map(

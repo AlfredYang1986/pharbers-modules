@@ -1,5 +1,10 @@
 package com.pharbers.search
 
+import com.mongodb.casbah.Imports._
+import com.pharbers.dbManagerTrait.dbInstanceManager
+import play.api.libs.json.{JsNumber, JsString, JsValue}
+import play.api.libs.json.Json.toJson
+
 /**
   * Created by jeorch on 18-5-16.
   */
@@ -12,11 +17,10 @@ trait phMaxSearchTrait {
 
     def getLastSeveralMonthYM(severalCount: Int, yearMonth: String): List[String] = {
         var tempYM = yearMonth
-        val lst = (1 until severalCount).map(x => {
+        (1 until severalCount).map(x => {
             tempYM = getLastMonthYM(tempYM)
             tempYM
         }).toList
-        yearMonth :: lst
     }
 
     def getLastYearYM(yearMonth: String): String = (yearMonth.toInt - 100).toString
@@ -24,5 +28,45 @@ trait phMaxSearchTrait {
     def getFormatSales(originValue: Double): String = f"${originValue/1.0E6}%.2f"
 
     def getFormatShare(originValue: Double): Double = f"$originValue%.4f".toDouble
+
+    def getHistorySalesByRange(range: String, tempSingleJobKey: String) : Double = {
+        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+
+        val query: DBObject = DBObject()
+
+        val output: DBObject => Map[String, JsValue] = { obj =>
+            Map(
+                "Sales" -> toJson(obj.as[Double]("value"))
+            )
+        }
+
+        val tmp = db.queryObject(query, s"${tempSingleJobKey}_${range}")(output)
+        tmp match {
+            case None => 0.0
+            case Some(x) => x.get("Sales").getOrElse(0.0).asInstanceOf[JsNumber].value.doubleValue()
+        }
+    }
+
+    def getAreaSalesByRange(range: String, tempSingleJobKey: String) : List[Map[String, String]] = {
+        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+
+        val query: DBObject = DBObject()
+
+        val output: DBObject => Map[String, JsValue] = { obj =>
+            Map(
+                "Area" -> toJson(obj.as[String]("_id")),
+                "Sales" -> toJson(obj.as[Double]("value"))
+            )
+        }
+
+        val tmp = db.queryMultipleObject(query, s"${tempSingleJobKey}_${range}", "value", 0, 1000)(output)
+        tmp match {
+            case Nil => Nil
+            case lst => lst.map(x => Map(
+                "Area" -> x.get("Area").getOrElse("").asInstanceOf[JsString].value,
+                "Sales" -> x.get("Sales").getOrElse(0.0).asInstanceOf[JsNumber].value.doubleValue().toString
+            ))
+        }
+    }
 
 }
