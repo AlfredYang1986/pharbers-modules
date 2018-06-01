@@ -252,20 +252,6 @@
                     <artifactId>spark-indexedrdd</artifactId>
                     <version>0.4.0</version>
                 </dependency>
-
-                <!-- test lib -->
-                <!--<dependency>
-                    <groupId>com.mmakowski</groupId>
-                    <artifactId>maven-specs2-plugin</artifactId>
-                    <version>0.4.2</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.specs2</groupId>
-                    <artifactId>specs2-core_2.11</artifactId>
-                    <version>3.7</version>
-                    <scope>test</scope>
-                </dependency>-->
             </dependencies>
         </profile>
     </profiles>
@@ -319,7 +305,6 @@
                 </executions>
                 <configuration>
                     <args>
-                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
                         <arg>-nobootcp</arg>
                     </args>
                 </configuration>
@@ -338,6 +323,36 @@
                         <id>test</id>
                         <goals>
                             <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.pharbers.main</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <customClasspathLayout>lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}
+                            </customClasspathLayout>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
                         </goals>
                     </execution>
                 </executions>

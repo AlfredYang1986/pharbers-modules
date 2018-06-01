@@ -10,4 +10,5 @@ object main extends App {
     val system = ActorSystem("maxActor")
 
     callJobConsumer("max_calc")(system)
+    println("MAX Driver started:wq")
 }

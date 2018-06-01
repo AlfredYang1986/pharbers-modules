@@ -22,7 +22,7 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
                     ("part_2.10-0.1.jar", "./jar/part_2.10-0.1.jar") ::
                     ("mongo-java-driver-3.2.2.jar", "./jar/mongo-java-driver-3.2.2.jar") ::
                     ("mongo-spark-connector_2.11-2.0.0.jar", "./jar/mongo-spark-connector_2.11-2.0.0.jar") ::
-                    ("pharbers-max-0.1.jar", "../../pharbers-modules/max/target/pharbers-max-0.1.jar") :: Nil
+                    ("pharbers-max-0.1.jar", "./jar/pharbers-max-0.1.jar") :: Nil
 
     override def perform(args : pActionArgs): pActionArgs = {
         val sc = phSparkDriver().sc
