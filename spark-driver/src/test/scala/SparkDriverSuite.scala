@@ -42,7 +42,7 @@
 //        val mongoRDD = sd.mongo2RDD("127.0.0.1","27017","Max_Test","Allelock_Factorized_Units&Sales_WITH_OT1712")
 //        val mongoDF = mongoRDD.toDF()
 //
-//        sd.dataFrame2Mongo(mongoDF,mongodbHost,mongodbPort,databaseName,"testColl","append")
+//        sd.dataFrame2Mongo(mongoDF, mongodbHost, mongodbPort, databaseName, "testColl", "append")
 //    }
 //
 //}
