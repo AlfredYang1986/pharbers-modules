@@ -1,5 +1,6 @@
 package com.pharbers.processSuit
 
+import java.nio.file.{Files, Paths}
 import java.util.Date
 
 import akka.pattern.ask
@@ -31,20 +32,19 @@ class MaxProcess_NhwaSuit extends FunSuite {
 //        val yms = "201707#201708#201709#201710"
 //        val yms = "201710"
 
-
         implicit val t: Timeout = 20 minutes
 
-//        val r = testActor ? calcYm(cpa, gycx)
-//        val result = Await.result(r.mapTo[JsValue], t.duration)
-//        println("calcYm result = " + result)
+        val r = testActor ? calcYm(cpa, gycx)
+        val result = Await.result(r.mapTo[JsValue], t.duration)
+        println("calcYm result = " + result)
 
-        val r2 = testActor ? panel(cpa, gycx, yms)
-        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-        println("panel result2 = " + result2)
-
-        val r3 = testActor ? max()
-        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-        println("max result3 = " + result3)
+//        val r2 = testActor ? panel(cpa, gycx, yms)
+//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+//        println("panel result2 = " + result2)
+//
+//        val r3 = testActor ? max()
+//        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
+//        println("max result3 = " + result3)
 
 
         println()

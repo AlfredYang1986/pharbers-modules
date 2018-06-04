@@ -1,5 +1,7 @@
 package com.pharbers.pactions.generalactions
 
+import java.nio.file.{Files, Paths}
+
 import com.pharbers.spark.phSparkDriver
 import com.pharbers.pactions.actionbase.{NULLArgs, pActionArgs, pActionTrait}
 
@@ -21,14 +23,19 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
                     ("spark-indexedrdd-0.4.0.jar", "./jar/spark-indexedrdd-0.4.0.jar") ::
                     ("part_2.10-0.1.jar", "./jar/part_2.10-0.1.jar") ::
                     ("mongo-java-driver-3.2.2.jar", "./jar/mongo-java-driver-3.2.2.jar") ::
-                    ("mongo-spark-connector_2.11-2.0.0.jar", "./jar/mongo-spark-connector_2.11-2.0.0.jar") ::
-                    ("pharbers-max-0.1.jar", "./jar/pharbers-max-0.1.jar") :: Nil
+                    ("mongo-spark-connector_2.11-2.0.0.jar", "./jar/mongo-spark-connector_2.11-2.0.0.jar") :: Nil
+    lazy val currentJarName = "pharbers-max-0.1"
 
     override def perform(args : pActionArgs): pActionArgs = {
         val sc = phSparkDriver().sc
         lst.foreach { iter =>
             if (!sc.listJars().exists(x => x.contains(iter._1))) sc.addJar(iter._2)
         }
+
+        if(Files.exists(Paths.get(s"./target/$currentJarName.jar")))
+            if (!sc.listJars().exists(x => x.contains(currentJarName))) sc.addJar(s"./target/$currentJarName.jar")
+        else
+            if (!sc.listJars().exists(x => x.contains(currentJarName))) sc.addJar(s"./jar/$currentJarName.jar")
 
         NULLArgs
     }
