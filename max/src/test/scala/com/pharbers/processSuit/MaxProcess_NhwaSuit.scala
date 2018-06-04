@@ -1,6 +1,5 @@
 package com.pharbers.processSuit
 
-import java.nio.file.{Files, Paths}
 import java.util.Date
 
 import akka.pattern.ask
@@ -26,7 +25,7 @@ class MaxProcess_NhwaSuit extends FunSuite {
         val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
         println(s"开始时间" + dateformat.format(new Date()))
         println()
-        val cpa = "180211恩华17年1-12月检索.xlsx"
+        val cpa = "Source/180211恩华17年1-12月检索.xlsx"
         val gycx = ""
         val yms = "201701#201702#201703#201704#201705#201706#201707#201708#201709#201710#201711#201712"
 //        val yms = "201707#201708#201709#201710"
@@ -38,13 +37,13 @@ class MaxProcess_NhwaSuit extends FunSuite {
         val result = Await.result(r.mapTo[JsValue], t.duration)
         println("calcYm result = " + result)
 
-//        val r2 = testActor ? panel(cpa, gycx, yms)
-//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-//        println("panel result2 = " + result2)
-//
-//        val r3 = testActor ? max()
-//        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-//        println("max result3 = " + result3)
+        val r2 = testActor ? panel(cpa, gycx, yms)
+        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+        println("panel result2 = " + result2)
+
+        val r3 = testActor ? max()
+        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
+        println("max result3 = " + result3)
 
 
         println()

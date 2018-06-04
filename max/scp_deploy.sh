@@ -4,6 +4,7 @@ target=$host:$dir
 tmp=target/maxDriver
 name=pharbers-max-0.1
 
+rm -rf $tmp
 mkdir $tmp
 cp -r pharbers_config $tmp
 cp -r jar $tmp

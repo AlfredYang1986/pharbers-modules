@@ -28,14 +28,18 @@ class jarPreloadAction(override val name: String) extends pActionTrait {
 
     override def perform(args : pActionArgs): pActionArgs = {
         val sc = phSparkDriver().sc
+
+        if(Files.exists(Paths.get(s"./target/$currentJarName.jar"))){
+            if (!sc.listJars().exists(x => x.contains(currentJarName)))
+                sc.addJar(s"./target/$currentJarName.jar")
+        } else {
+            if (!sc.listJars().exists(x => x.contains(currentJarName)))
+                sc.addJar(s"./jar/$currentJarName.jar")
+        }
+
         lst.foreach { iter =>
             if (!sc.listJars().exists(x => x.contains(iter._1))) sc.addJar(iter._2)
         }
-
-        if(Files.exists(Paths.get(s"./target/$currentJarName.jar")))
-            if (!sc.listJars().exists(x => x.contains(currentJarName))) sc.addJar(s"./target/$currentJarName.jar")
-        else
-            if (!sc.listJars().exists(x => x.contains(currentJarName))) sc.addJar(s"./jar/$currentJarName.jar")
 
         NULLArgs
     }

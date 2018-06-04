@@ -55,14 +55,14 @@ class PhExcelXLS extends PhExcelXLSInterface {
 
     }.getOrElse(throw new Exception("没有数据了"))
 
-    def isValidataRow(row : Int) = row <= rows_end && row >= 0
+    def isValidataRow(row : Int): Boolean = row <= rows_end && row >= 0
 
-    def hasNextRow = cur_row.map { cr =>
+    def hasNextRow: Boolean = cur_row.exists { cr =>
         val row = cr.queryCurrentRowIndex();
 
         val cur = row + 1
         isValidataRow(cur)
-    }.getOrElse(false)
+    }
 
     def nextRow = cur_row.map { cr =>
         val row = cr.queryCurrentRowIndex();

@@ -15,8 +15,8 @@ object PhExcelXLSX {
 }
 
 class PhExcelXLSX extends PhExcelXLSXInterface {
-    implicit val tmp = this
-    implicit val p2r : javafx.util.Pair[java.lang.Integer, java.lang.Integer] => Range = (p => Range(p.getKey, p.getValue))
+    implicit val tmp: PhExcelXLSX = this
+    implicit val p2r: javafx.util.Pair[java.lang.Integer, java.lang.Integer] => Range = p => Range(p.getKey, p.getValue)
     implicit def toTuple(p : javafx.util.Pair[java.lang.Integer, java.lang.Integer]) : (Int, Int) = (p.getKey, p.getValue)
 
     var cur_row : Option[datarow] = null
@@ -49,11 +49,11 @@ class PhExcelXLSX extends PhExcelXLSXInterface {
 
     def isValidataRow(row : Int) = true
 
-    def hasNextRow : Boolean = cur_row.map { cr =>
+    def hasNextRow : Boolean = cur_row.exists { cr =>
         cr.queryWorksheet().hasNexRow.asInstanceOf[scala.Boolean]
-    }.getOrElse(false)
+    }
 
-    def nextRow = {
+    def nextRow(): Unit = {
         if (this.hasNextRow) {
             cur_row.map { cr =>
                 val tmp = cr.queryWorksheet().queryNextRow()
