@@ -1,16 +1,16 @@
 package com.pharbers.search
 
-import com.pharbers.search.actions._
-import com.pharbers.pactions.jobs.{NULLJob, choice3pJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
+import com.pharbers.pactions.jobs.{NULLJob, choice3pJob, sequenceJobWithMap}
+import com.pharbers.search.actions._
 
 /**
-  * Created by jeorch on 18-5-11.
+  * Created by jeorch on 18-6-4.
   */
-object phHistorySearchJob {
-    def apply(args: Map[String, String]) : phHistorySearchJob = {
-        new phHistorySearchJob {
+object phExportSearchDataJob {
+    def apply(args: Map[String, String]) : phExportSearchDataJob = {
+        new phExportSearchDataJob {
             override lazy val user: String = args.get("user").getOrElse(throw new Exception("Illegal user"))
             override lazy val company: String = args.get("company").getOrElse(throw new Exception("Illegal company"))
             override lazy val pageIndex: String = args.get("pageIndex").getOrElse("0")
@@ -21,8 +21,8 @@ object phHistorySearchJob {
     }
 }
 
-trait phHistorySearchJob extends sequenceJobWithMap {
-    override val name: String = "phHistorySearchJob"
+trait phExportSearchDataJob extends sequenceJobWithMap {
+    override val name: String = "phExportSearchDataJob"
 
     val user: String
     val company: String
@@ -42,24 +42,11 @@ trait phHistorySearchJob extends sequenceJobWithMap {
         )
     )
 
-    val checkPageCache: choice3pJob = new choice3pJob {
-        override val name = "checkPageCache"
-        val actions: List[pActionTrait] = phCheckPageCacheAction(searchArgs) ::
-            NULLJob ::
-            new sequenceJobWithMap {
-                override val name: String = "cache_data_job"
-                override val actions: List[pActionTrait] =
-                    phHistoryConditionSearchAction(searchArgs) ::
-                        phReadHistoryResultAction(searchArgs) ::
-                        phPageCacheAction(searchArgs) ::
-                        Nil
-
-            } :: Nil
-    }
-
     override val actions: List[pActionTrait] = jarPreloadAction() ::
-            setLogLevelAction("ERROR") ::
-            checkPageCache ::
-            phReturnPageCacheAction(searchArgs) ::
-            Nil
+        setLogLevelAction("ERROR") ::
+        phHistoryConditionSearchAction(searchArgs) ::
+        phReadHistoryResultAction(searchArgs) ::
+        phExportSearchDataAction(searchArgs) ::
+        Nil
 }
+

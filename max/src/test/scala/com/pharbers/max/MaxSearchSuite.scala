@@ -23,17 +23,17 @@
 //        val args: Map[String, String] = Map(
 //            "company" -> company,
 //            "user" -> user,
-//            "ym_condition" -> "201711-201712",
+//            "ym_condition" -> "201704-201712",
 ////            "ym_condition" -> "201801-201802",
 //            "mkt" -> mkt,
-//            "pageIndex" -> "6",
+//            "pageIndex" -> "1",
 //            "singlePageSize" -> "10"
 //        )
 //
 //        val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
 ////        val itemsCount = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
 ////        println(s"### => ${itemsCount}")
-//        val searchResult1 =  searchResult.get("page_search_action").asInstanceOf[ListArgs].get
+//        val searchResult1 =  searchResult.get("return_page_cache_action").asInstanceOf[ListArgs].get
 //        println(searchResult1.length)
 //        searchResult1.foreach(x => println(s"### => ${x}"))
 //    }

@@ -40,10 +40,10 @@ trait phMaxSearchTrait {
             )
         }
 
-        val tmp = db.queryObject(query, s"${tempSingleJobKey}_${range}")(output)
+        val tmp = db.queryObject(query, s"${tempSingleJobKey}_$range")(output)
         tmp match {
             case None => 0.0
-            case Some(x) => x.get("Sales").getOrElse(0.0).asInstanceOf[JsNumber].value.doubleValue()
+            case Some(x) => x.getOrElse("Sales", 0.0).asInstanceOf[JsNumber].value.doubleValue()
         }
     }
 
@@ -59,12 +59,12 @@ trait phMaxSearchTrait {
             )
         }
 
-        val tmp = db.queryMultipleObject(query, s"${tempSingleJobKey}_${range}", "value", 0, 1000)(output)
+        val tmp = db.queryMultipleObject(query, s"${tempSingleJobKey}_$range", "value", 0, 1000)(output)
         tmp match {
             case Nil => Nil
             case lst => lst.map(x => Map(
-                "Area" -> x.get("Area").getOrElse("").asInstanceOf[JsString].value,
-                "Sales" -> x.get("Sales").getOrElse(0.0).asInstanceOf[JsNumber].value.doubleValue().toString
+                "Area" -> x.getOrElse("Area", "").asInstanceOf[JsString].value,
+                "Sales" -> x.getOrElse("Sales", 0.0).asInstanceOf[JsNumber].value.doubleValue().toString
             ))
         }
     }

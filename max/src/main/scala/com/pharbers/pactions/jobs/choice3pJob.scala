@@ -2,7 +2,7 @@ package com.pharbers.pactions.jobs
 
 import com.pharbers.pactions.actionbase._
 
-trait choiceCacheJob extends pActionTrait {
+trait choice3pJob extends pActionTrait {
     val actions : List[pActionTrait]
 
     override val name: String
