@@ -40,6 +40,12 @@ trait MongoDBImpl extends DBTrait {
         (from db() in db_name where condition).selectSkipTop(skip)(take)(sort)(x => t(x)).toList
     }
 
+    override def queryMultipleWithOutSort(condition : DBObject, db_name : String, skip : Int = 0, take : Int = 20)
+                                (implicit t : DBObject => Map[String, JsValue]) : List[Map[String, JsValue]] = {
+
+        (from db() in db_name where condition).selectSkipTopWithoutSort(skip)(take)(x => t(x)).toList
+    }
+
     override def queryCount(condition : DBObject, db_name : String)
                            (implicit t : DBObject => Map[String, JsValue]) : Option[Int] = {
         Some((from db() in db_name where condition).count)
