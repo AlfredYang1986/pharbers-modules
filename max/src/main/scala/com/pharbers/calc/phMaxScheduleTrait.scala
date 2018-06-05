@@ -40,19 +40,21 @@ trait phMaxScheduleTrait {
         var mongo2rddJobsCount = 0
         val db = new dbInstanceManager {}.queryDBInstance("data").get
         db.getOneDBAllCollectionNames.foreach(singleJobKey => {
-            val maxName = UUID.randomUUID().toString
-            val resultLocation = max_path_obj.p_maxPath + maxName
+            val maxNameForSearch = UUID.randomUUID().toString
+            val resultLocation = max_path_obj.p_maxPath + maxNameForSearch
             delTempFile(new File(resultLocation))
             val singleJobDF = sd.mongo2RDD(mongo_config_obj.mongodbHost, mongo_config_obj.mongodbPort, mongo_config_obj.databaseName, singleJobKey).toDF()
-            singleJobDF.drop("_id").write
+            singleJobDF.groupBy("Date", "Province", "City", "MARKET", "Product")
+                .agg(Map("f_sales"->"sum", "f_units"->"sum"))
+                .write
                 .format("csv")
                 .option("header", value = true)
                 .option("delimiter", delimiter)
                 .option("codec", "org.apache.hadoop.io.compress.GzipCodec")
                 .save(resultLocation)
 
-            rd.addMap(singleJobKey, "max_result_name", maxName)
-
+            rd.addMap(singleJobKey, "max_result_name_for_search", maxNameForSearch)
+            rd.expire(singleJobKey, 24 * 60 * 60)
             mongo2rddJobsCount += 1
         })
         mongo2rddJobsCount
