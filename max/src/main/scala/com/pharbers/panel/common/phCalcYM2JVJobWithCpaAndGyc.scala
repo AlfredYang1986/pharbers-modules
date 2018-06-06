@@ -10,9 +10,7 @@ object phCalcYM2JVJobWithCpaAndGyc  {
 class phCalcYM2JVJobWithCpaAndGyc(override val defaultArgs: pActionArgs) extends pActionTrait {
 
     override val name: String = "result"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(prMap : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(prMap : pActionArgs): pActionArgs = {
 
         val cpa = prMap.asInstanceOf[MapArgs].get("calcYMWithCpa").asInstanceOf[RDDArgs[(String, Int)]].get
         val cpaMax = cpa.map(_._2).max
@@ -25,7 +23,7 @@ class phCalcYM2JVJobWithCpaAndGyc(override val defaultArgs: pActionArgs) extends
         val result = cpaLst.join(gycx).map(_._1).collect().sorted
 
         JVArgs(
-            toJson(result.mkString(","))
+            toJson(result.mkString("#"))
         )
     }
 }

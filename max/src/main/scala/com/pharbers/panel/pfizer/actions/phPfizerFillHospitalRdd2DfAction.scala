@@ -13,9 +13,7 @@ object phPfizerFillHospitalRdd2DfAction {
 
 class phPfizerFillHospitalRdd2DfAction(override val defaultArgs: pActionArgs, override val name: String) extends pActionTrait {
 
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val sparkDriver = phSparkDriver()
 

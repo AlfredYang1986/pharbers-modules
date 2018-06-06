@@ -12,9 +12,8 @@ object phPfizerPanelSplitFatherMarketAction {
 
 class phPfizerPanelSplitFatherMarketAction(override val defaultArgs : pActionArgs) extends pActionTrait with phPfizerPanelCommonTrait {
     override val name: String = "SplitMarketAction"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         //在通用名市场定义中包含的此市场
         val current_mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get

@@ -12,13 +12,9 @@ object phNhwaPanelConcretJob {
 
 class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {
-        println("progress" + progress)
-    }
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
@@ -38,7 +34,6 @@ class phNhwaPanelConcretJob(override val defaultArgs : pActionArgs) extends pAct
             val markets_product_match = product_match.join(markets_match, markets_match("通用名_原始") === product_match("通用名"))
             val filted_panel = full_cpa.join(universe, full_cpa("HOSPITAL_CODE") === universe("ID"))
             val panelDF = trimPanel(filted_panel, markets_product_match)
-//            sparkDriver.sc.stop()
             DFArgs(panelDF)
         }
 

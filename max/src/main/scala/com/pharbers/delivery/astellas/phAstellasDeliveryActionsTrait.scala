@@ -1,9 +1,9 @@
 package com.pharbers.delivery.astellas
 
-import com.pharbers.delivery.astellas.format.{phAstellasHospitalMatchFormat, phAstellasMedicineMatchFormat}
 import com.pharbers.pactions.jobs.sequenceJobWithMap
 import com.pharbers.pactions.actionbase.pActionTrait
 import com.pharbers.pactions.generalactions.{jarPreloadAction, saveMapResultAction, xlsxReadingAction}
+import com.pharbers.delivery.astellas.format.{phAstellasHospitalMatchFormat, phAstellasMedicineMatchFormat}
 
 /**
   * Created by jeorch on 18-3-28.

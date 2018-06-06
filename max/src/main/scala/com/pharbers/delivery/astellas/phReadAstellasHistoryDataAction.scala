@@ -13,9 +13,7 @@ object phReadAstellasHistoryDataAction {
 class phReadAstellasHistoryDataAction(historyFilePath: String, override val name: String) extends pActionTrait {
     override val defaultArgs: pActionArgs = NULLArgs
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs): pActionArgs = {
         val sc = phSparkDriver().sc
         RDDArgs(sc.textFile(historyFilePath))
     }

@@ -17,9 +17,7 @@ class phNhwaDeliveryAction (company: String, dbName: String, lstColl: List[Strin
     override val defaultArgs: pActionArgs = NULLArgs
     override val name: String = ""
 
-    override implicit def progressFunc(progress: Double, flag: String): Unit = {}
-
-    override def perform(pr: pActionArgs)(implicit f: (Double, String) => Unit): pActionArgs = {
+    override def perform(pr: pActionArgs): pActionArgs = {
 
         val driverNHWA = DriverNHWA()
         val listDF = lstColl.map(temp => driverNHWA.generateDeliveryFileFromMongo(s"$dbName", s"$temp"))

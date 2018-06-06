@@ -1,7 +1,6 @@
 package com.pharbers.panel.pfizer.actions
 
 import com.pharbers.pactions.actionbase._
-import com.pharbers.panel.pfizer.phPfizerPanelCommonTrait
 import com.pharbers.spark.phSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, when, _}
@@ -16,17 +15,18 @@ object phPfizerPanelCommonAction {
 
 class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends pActionTrait {
     override val name: String = "panel"
-    override implicit def progressFunc(progress : Double, flag : String) : Unit = {}
-
     lazy val sparkDriver: phSparkDriver = phSparkDriver()
 
-    override def perform(args : pActionArgs)(implicit f: (Double, String) => Unit) : pActionArgs = {
+    override def perform(args : pActionArgs): pActionArgs = {
 
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
 
         val cpa = args.asInstanceOf[MapArgs].get("cpa").asInstanceOf[DFArgs].get
         val gyc = args.asInstanceOf[MapArgs].get("gyc").asInstanceOf[DFArgs].get
+
+        val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
+
         //通用名市场定义 =>表b0
         val markets_match = args.asInstanceOf[MapArgs].get("markets_match_file").asInstanceOf[DFArgs].get
             .filter(s"Market like '${mkt}'")
@@ -39,7 +39,6 @@ class phPfizerPanelCommonAction(override val defaultArgs : pActionArgs) extends 
                 .otherwise(concat(col("MONTH").*(0).cast("int"), col("MONTH"))))
             .withColumn("YM", concat(col("YEAR"), col("MONTH")))
             .withColumn("min1", concat(col("PRODUCT_NAME"),col("APP2_COD"),col("PACK_DES"),col("PACK_NUMBER"),col("CORP_NAME")))
-        val universe_file = args.asInstanceOf[MapArgs].get("universe_file").asInstanceOf[DFArgs].get
 
         def getPanelFile: pActionArgs = {
 
