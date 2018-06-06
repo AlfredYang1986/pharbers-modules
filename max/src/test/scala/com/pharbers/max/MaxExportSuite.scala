@@ -19,11 +19,8 @@
 //
 //        val args: Map[String, String] = Map(
 //            "company" -> company,
-//            "user" -> user,
 //            "ym_condition" -> "201704-201712",
-//            "mkt" -> mkt,
-//            "pageIndex" -> "1",
-//            "singlePageSize" -> "10"
+//            "mkt" -> mkt
 //        )
 //
 //        val exportResult =  phExportSearchDataJob(args).perform().asInstanceOf[MapArgs].get("export_search_data_action").asInstanceOf[StringArgs].get

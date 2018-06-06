@@ -1,16 +1,17 @@
 package com.pharbers.search
 
+import com.pharbers.builder.Builderimpl
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 import com.pharbers.pactions.jobs.sequenceJobWithMap
-import com.pharbers.search.actions._
+import com.pharbers.search.actions.{phHistoryConditionSearchAction, phReadHistoryResultAction}
 
 /**
-  * Created by jeorch on 18-6-4.
+  * Created by jeorch on 18-6-5.
   */
-object phExportSearchDataJob {
-    def apply(args: Map[String, String]) : phExportSearchDataJob = {
-        new phExportSearchDataJob {
+object phDeliverySearchDataJob {
+    def apply(args: Map[String, String]) : phDeliverySearchDataJob = {
+        new phDeliverySearchDataJob {
             override lazy val company: String = args.getOrElse("company", throw new Exception("Illegal company"))
             override lazy val ym_condition: String = args.getOrElse("ym_condition", "-")
             override lazy val mkt: String = args.getOrElse("mkt", "")
@@ -18,8 +19,8 @@ object phExportSearchDataJob {
     }
 }
 
-trait phExportSearchDataJob extends sequenceJobWithMap {
-    override val name: String = "phExportSearchDataJob"
+trait phDeliverySearchDataJob  extends sequenceJobWithMap {
+    override val name: String = "phDeliverySearchDataJob"
 
     val company: String
     val ym_condition: String
@@ -33,11 +34,16 @@ trait phExportSearchDataJob extends sequenceJobWithMap {
         )
     )
 
+    val builderimpl = Builderimpl()
+    import builderimpl._
+
+    val deliveryAction = implWithoutActor(getClazz(company, mkt)(deliveryInst),
+        Map("company" -> company, "ym_condition" -> ym_condition, "mkt" -> mkt) ++ getDeliveryArgs(company, mkt))
+
     override val actions: List[pActionTrait] = jarPreloadAction() ::
         setLogLevelAction("ERROR") ::
         phHistoryConditionSearchAction(searchArgs) ::
         phReadHistoryResultAction(searchArgs) ::
-        phExportSearchDataAction(searchArgs) ::
+        deliveryAction ::
         Nil
 }
-

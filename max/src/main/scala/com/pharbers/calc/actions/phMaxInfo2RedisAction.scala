@@ -60,7 +60,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
             .collect().map(x => x.toString())
 
         maxDF.groupBy("Date", "Province", "City", "MARKET", "Product")
-            .agg(Map("f_sales"->"sum", "f_units"->"sum"))
+            .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))
             .write
             .format("csv")
             .option("header", value = true)

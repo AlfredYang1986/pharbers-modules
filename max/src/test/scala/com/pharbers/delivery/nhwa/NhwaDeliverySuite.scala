@@ -1,24 +1,32 @@
 //package com.pharbers.delivery.nhwa
 //
+//import com.pharbers.builder.SearchFacade
 //import org.scalatest.FunSuite
+//import play.api.libs.json.Json.toJson
 //
 ///**
 //  * Created by jeorch on 18-3-28.
 //  */
 //class NhwaDeliverySuite extends FunSuite {
-//    val company_name = "8ee0ca24796f9b7f284d931650edbd4b"
-//    val dbName = "Max_Cores"
-//    val coll1 = "8ee0ca24796f9b7f284d931650edbd4ba2c5e077-4231-4e74-9c11-8f17391c0ab0"
-//    val destPath = "/home/jeorch/桌面"
 //
-//    val args: Map[String, List[String]] = Map(
-//        "company" -> List(company_name),
-//        "dbName" -> List(dbName),
-//        "lstColl" -> List(coll1),
-//        "destPath" -> List(destPath)
-//    )
+//    val company: String = "5afa53bded925c05c6f69c54"
+//    val user: String = "5afa57a1ed925c05c6f69c68"
+//    val jobId: String = "20180523test001"
+//    val mkt = "麻醉市场"
 //
 //    test("test nhwa delivery"){
-//        phNhwaDeliveryActions(args).perform()
+//        val condition = toJson {
+//            Map(
+//                "condition" -> toJson(Map(
+//                    "startTime" -> toJson("201701"),
+//                    "endTime" -> toJson("201801"),
+//                    "market" -> toJson(mkt)
+//                )),
+//                "user" -> toJson(Map("company" -> toJson(Map("company_id" -> toJson(company)))))
+//            )
+//        }
+//
+//        val search = new SearchFacade
+//        println(search.exportDelivery(condition)._1.get.get("delivery_file_name").get)
 //    }
 //}

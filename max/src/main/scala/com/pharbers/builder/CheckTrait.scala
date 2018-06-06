@@ -30,6 +30,9 @@ trait CheckTrait { this: MarketTable =>
     def getMaxArgLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("maxArgs", throw new Exception("input wrong")).split("#")
 
+    def getDeliveryArgLst(company: String, market: String): Array[String] =
+        getTable(company, market).getOrElse("deliveryArgs", throw new Exception("input wrong")).split("#")
+
     def getPanelArgs(company: String, market: String): Map[String, String] = {
         val table = getTable(company, market)
         getPanelArgLst(company, market).map(x => x -> table(x)).toMap
@@ -38,6 +41,11 @@ trait CheckTrait { this: MarketTable =>
     def getMaxArgs(company: String, market: String): Map[String, String] = {
         val table = getTable(company, market)
         getMaxArgLst(company, market).map(x => x -> table(x)).toMap
+    }
+
+    def getDeliveryArgs(company: String, market: String): Map[String, String] = {
+        val table = getTable(company, market)
+        getDeliveryArgLst(company, market).map(x => x -> table(x)).toMap
     }
 
     def parametCheck(argLst: Array[String], args: Map[String, String])

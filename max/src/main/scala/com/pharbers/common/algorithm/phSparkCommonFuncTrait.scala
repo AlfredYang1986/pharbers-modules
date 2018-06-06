@@ -16,7 +16,7 @@ trait phSparkCommonFuncTrait {
 
     def getResultFileFullPath(arg: String) : String = {
         val folder = new File(arg)
-        val listFile = folder.listFiles().filter(x => x.getName.endsWith(".csv"))
+        val listFile = folder.listFiles().filterNot(x => x.getName.endsWith(".crc")).filterNot(x => x.getName.endsWith("_SUCCESS"))
         listFile.length match {
             case 1 => listFile.head.getAbsolutePath
             case _ => listFile.sortBy(x => x.lastModified()).last.getAbsolutePath
