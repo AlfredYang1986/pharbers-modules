@@ -4,7 +4,7 @@ import akka.actor.Actor
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.driver.PhRedisDriver
-import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, NULLArgs, StringArgs}
+import com.pharbers.pactions.actionbase.{JVArgs, MapArgs, StringArgs}
 import com.pharbers.spark.phSparkDriver
 
 object phBuilder {

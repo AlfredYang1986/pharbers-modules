@@ -36,17 +36,3 @@ class MaxProcess_NhwaSuit extends FunSuite {
         val r = testActor ? calcYm(cpa, gycx)
         val result = Await.result(r.mapTo[JsValue], t.duration)
         println("calcYm result = " + result)
-
-        val r2 = testActor ? panel(cpa, gycx, yms)
-        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-        println("panel result2 = " + result2)
-
-        val r3 = testActor ? max()
-        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-        println("max result3 = " + result3)
-
-
-        println()
-        println(s"结束时间" + dateformat.format(new Date()))
-    }
-}

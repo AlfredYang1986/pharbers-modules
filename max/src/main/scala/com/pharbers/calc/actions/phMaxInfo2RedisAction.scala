@@ -1,8 +1,9 @@
 package com.pharbers.calc.actions
 
-import java.util.Base64
+import java.util.{Base64, UUID}
 
 import com.pharbers.builder.Builderimpl
+import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -19,6 +20,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val ym = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
         val mkt = defaultArgs.asInstanceOf[MapArgs].get("mkt").asInstanceOf[StringArgs].get
         val maxName = pr.asInstanceOf[MapArgs].get("max_persistent_action").asInstanceOf[StringArgs].get
+        val maxNameForSearch = UUID.randomUUID().toString
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
         val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
@@ -57,7 +59,17 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val company_sales_prov_lst = maxDF_filter_company.groupBy("Province").agg(Map("f_sales" -> "sum")).sort("sum(f_sales)")
             .collect().map(x => x.toString())
 
+        maxDF.groupBy("Date", "Province", "City", "MARKET", "Product")
+            .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))
+            .write
+            .format("csv")
+            .option("header", value = true)
+            .option("delimiter", 31.toChar.toString)
+            .option("codec", "org.apache.hadoop.io.compress.GzipCodec")
+            .save(max_path_obj.p_maxPath + maxNameForSearch)
+
         rd.addMap(singleJobKey, "max_result_name", maxName)
+        rd.addMap(singleJobKey, "max_result_name_for_search", maxNameForSearch)
         rd.addMap(singleJobKey, "max_sales", max_sales)
         rd.addMap(singleJobKey, "max_company_sales", max_company_sales)
         rd.addListLeft(max_sales_city_lst_key, max_sales_city_lst:_*)

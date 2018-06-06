@@ -52,9 +52,9 @@ trait SearchHistory {
                             "date" -> toJson(item(0)),
                             "province" -> toJson(item(1)),
                             "city" -> toJson(item(2)),
-                            "market" -> toJson(item(8)),
+                            "market" -> toJson(item(3)),
                             "product" -> toJson(item(4)),
-                            "sales" -> toJson(item(7)),
+                            "sales" -> toJson(item(5)),
                             "units" -> toJson(item(6))
                         )
                     )

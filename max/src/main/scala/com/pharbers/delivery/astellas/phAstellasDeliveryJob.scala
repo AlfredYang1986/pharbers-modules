@@ -1,48 +1,47 @@
 package com.pharbers.delivery.astellas
 
+import java.util.{Date, UUID}
+
+import com.pharbers.common.algorithm.{max_path_obj, phSparkCommonFuncTrait}
+import com.pharbers.delivery.astellas.format.{phAstellasHospitalMatchFormat, phAstellasMedicineMatchFormat}
 import com.pharbers.pactions.actionbase._
+import com.pharbers.pactions.generalactions.xlsxReadingAction
 import com.pharbers.panel.format.input.writable.astellas.{phAstellasHospitalMatchWritable, phAstellasMedicineMatchWritable}
-import org.bson.Document
+import com.pharbers.spark.phSparkDriver
+import org.apache.spark.rdd.RDD
 
 /**
-  * Created by jeorch on 18-3-29.
+  * Created by jeorch on 18-6-5.
   */
-object phAstellasDeliveryAction {
-    def apply(name: String): pActionTrait = new phAstellasDeliveryAction(name)
-}
-
-class phAstellasDeliveryAction(override val name:String) extends pActionTrait {
-
-    val delimiter = 9.toChar.toString
-
+class phAstellasDeliveryJob(args: Map[String, String]) extends pActionTrait with phSparkCommonFuncTrait {
+    override val name: String = "export_delivery_data_action"
     override val defaultArgs: pActionArgs = NULLArgs
 
     override def perform(pr: pActionArgs): pActionArgs = {
 
-        val dataMap = pr.asInstanceOf[MapArgs].get
-        val history_rdd = dataMap("history_rdd_key").asInstanceOf[RDDArgs[String]].get
-        val mongo_rdd = dataMap("mongo_rdd_key").asInstanceOf[RDDArgs[Document]].get
-        val hospital_match = dataMap("hospital_match_key").asInstanceOf[RDDArgs[phAstellasHospitalMatchWritable]].get
-        val medicine_match = dataMap("medicine_match_key").asInstanceOf[RDDArgs[phAstellasMedicineMatchWritable]].get
+        val delimiter = 9.toChar.toString
 
-        /**
-          * PreStep. Match max results with hospital_match_file, filling provinces and cities.
-          * Attention! Even if the max result contains a province field, use a province field that matches to the hospital_match_file.
-          * Otherwise, there will be an error in the data.
-          */
+        val mkt = args("mkt")
+        val ym_condition = args("ym_condition")
+        val maxSearchDF = pr.asInstanceOf[MapArgs].get("read_result_action").asInstanceOf[DFArgs].get
 
-        val mongoRDDTuple1 = mongo_rdd.map( row => row.get("Panel_ID").toString -> row)
-        val hospitalRDDTuple = hospital_match.map(x => x.getRowKey("PHA_ID") -> x)
-        val joinedHospitalRDD = mongoRDDTuple1.leftOuterJoin(hospitalRDDTuple)
-        val max_result_with_province = joinedHospitalRDD.map(item =>
+        val historyFile: String = max_path_obj.p_matchFilePath + args("history_file")
+        val productMatchFile: String = max_path_obj.p_matchFilePath + args("product_match_file")
+
+        val sc = phSparkDriver().sc
+        val history_rdd = sc.textFile(historyFile)
+        val medicine_match = xlsxReadingAction[phAstellasMedicineMatchFormat](productMatchFile, "medicine_match_key")
+            .perform(NULLArgs).get.asInstanceOf[RDD[phAstellasMedicineMatchWritable]]
+
+        val maxRDD = maxSearchDF.rdd.map(item =>
             (
-                item._2._2.get.getRowKey("Province"),
-                item._2._2.get.getRowKey("City"),
-                item._2._1.get("Date").toString,
-                item._2._1.get("Product").toString,
-                item._2._1.get("f_sales").asInstanceOf[Double],
-                item._2._1.get("f_units").asInstanceOf[Double],
-                item._2._1.get("Market").toString
+                item.getAs[String]("Province"),
+                item.getAs[String]("City").toString,
+                item.getAs[Int]("Date").toString,
+                item.getAs[String]("Product").toString,
+                item.getAs[Double]("sum(f_sales)"),
+                item.getAs[Double]("sum(f_units)"),
+                item.getAs[String]("MARKET").toString
             )
         )
 
@@ -67,7 +66,7 @@ class phAstellasDeliveryAction(override val name:String) extends pActionTrait {
           * Step 3. GroupBy max_result_rdd[Province,City,Date,Product,Market] & sum(f_units),sum(f_sales).
           */
 
-        val max_result_groupBy = max_result_with_province.map(row =>
+        val max_result_groupBy = maxRDD.map(row =>
             (row._1, row._2, row._3, row._4, row._7) ->
                 (row._5, row._6)
         ).reduceByKey((curValue, nextValue) => (curValue._1 + nextValue._1, curValue._2 + nextValue._2)).map(one =>
@@ -114,12 +113,26 @@ class phAstellasDeliveryAction(override val name:String) extends pActionTrait {
             )
 
         /**
-          * Step 9.Union old_delivery_file && save in new_delivery_file.
+          * Step 9.Union old_delivery_file.
           */
 
-//        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
-//        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
-        RDDArgs(max_result_renamed)
+        val title_rdd = history_rdd.context.parallelize(history_rdd.take(1))
+        val union_result = title_rdd.union(max_result_renamed).union(history_rdd.filter(x => !x.contains("Province")))
+
+        /**
+          * Step 10.save in destPath.
+          */
+
+        val maxSearchResultName = UUID.randomUUID().toString
+        val exportDataPath = max_path_obj.p_exportPath + maxSearchResultName
+        val destFileName = s"${new Date().getTime}-${mkt}-${ym_condition}.csv"
+        val destPath = max_path_obj.p_exportPath + destFileName
+
+        union_result.coalesce(1).saveAsTextFile(exportDataPath)
+
+        move2ExportFolder(getResultFileFullPath(exportDataPath), destPath)
+
+        StringArgs(destFileName)
     }
 
 }
