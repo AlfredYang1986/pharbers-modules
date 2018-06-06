@@ -8,7 +8,7 @@ import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
-import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
 import org.apache.spark.listener.progress.sendMultiProgress
 import org.apache.spark.listener.{MaxSparkListener, addListenerAction}

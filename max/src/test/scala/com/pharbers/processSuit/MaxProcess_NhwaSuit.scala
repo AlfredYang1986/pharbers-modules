@@ -27,9 +27,9 @@ class MaxProcess_NhwaSuit extends FunSuite {
         println()
         val cpa = "Source/180211恩华17年1-12月检索.xlsx"
         val gycx = ""
-        val yms = "201701#201702#201703#201704#201705#201706#201707#201708#201709#201710#201711#201712"
+//        val yms = "201701#201702#201703#201704#201705#201706#201707#201708#201709#201710#201711#201712"
 //        val yms = "201707#201708#201709#201710"
-//        val yms = "201710"
+        val yms = "201710"
 
         implicit val t: Timeout = 20 minutes
 
