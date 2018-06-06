@@ -45,7 +45,7 @@ trait phMaxScheduleTrait {
             delTempFile(new File(resultLocation))
             val singleJobDF = sd.mongo2RDD(mongo_config_obj.mongodbHost, mongo_config_obj.mongodbPort, mongo_config_obj.databaseName, singleJobKey).toDF()
             singleJobDF.groupBy("Date", "Province", "City", "MARKET", "Product")
-                .agg(Map("f_sales"->"sum", "f_units"->"sum"))
+                .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))
                 .write
                 .format("csv")
                 .option("header", value = true)

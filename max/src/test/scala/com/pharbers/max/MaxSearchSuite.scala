@@ -89,4 +89,20 @@
 //        search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].foreach(println)
 //    }
 //
+//    test("export data of Facade") {
+//        val condition = toJson {
+//            Map(
+//                "condition" -> toJson(Map(
+//                    "startTime" -> toJson("201701"),
+//                    "endTime" -> toJson("201801"),
+//                    "market" -> toJson(mkt)
+//                )),
+//                "user" -> toJson(Map("company" -> toJson(Map("company_id" -> toJson(company)))))
+//            )
+//        }
+//
+//        val search = new SearchFacade
+//        println(search.exportData(condition)._1.get.get("export_file_name").get)
+//    }
+//
 //}

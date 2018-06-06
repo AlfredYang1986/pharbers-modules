@@ -28,6 +28,7 @@ class phExportSearchDataAction(override val defaultArgs: pActionArgs) extends pA
         maxSearchDF
             .withColumnRenamed("sum(f_sales)", "Sales")
             .withColumnRenamed("sum(f_units)", "Units")
+            .drop("first(Panel_ID)")
             .coalesce(1).write
             .format("csv")
             .option("header", value = true)

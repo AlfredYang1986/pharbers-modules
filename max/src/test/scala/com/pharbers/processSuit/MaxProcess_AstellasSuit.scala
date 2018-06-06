@@ -19,7 +19,7 @@
 //    val system = ActorSystem("maxActor")
 //    val company: String = "5b023787810c6e0268fe6ff6"
 //    val user: String = "5b0237b7810c6e0268fe6ff7"
-//    val jobId: String = "20180522astellas008"
+//    val jobId: String = "20180605astellas001"
 //    val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
 //    import com.pharbers.processSuit.MaxTestHeader._
 //
