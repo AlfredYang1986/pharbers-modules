@@ -23,10 +23,10 @@ trait phSparkCommonFuncTrait {
         }
     }
 
-    def move2ExportFolder(originPath: String, destPath: String) = {
+    def move2ExportFolder(originPath: String, destPath: String, codeType: String = "GB2312") = {
         val originFile = new File(originPath)
         val destFile = new File(destPath)
-        FileUtils.write(destFile, FileUtils.readFileToString(originFile), "GB2312")
+        FileUtils.write(destFile, FileUtils.readFileToString(originFile), codeType)
     }
 
     def unionDataFrameList(listDF: List[DataFrame]): DataFrame = {
