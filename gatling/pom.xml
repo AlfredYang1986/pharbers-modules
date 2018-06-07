@@ -63,7 +63,7 @@
                     <runMultipleSimulations>true</runMultipleSimulations>
                     <simulationsFolder>src/test/scala/com/pharbers/gatling</simulationsFolder>
 
-                    <simulationClass>com.pharbers.gatling.scenario.getHome</simulationClass>
+                    <simulationClass>com.pharbers.gatling.simulation.userLogin</simulationClass>
 
                     <!--    <noReports>false</noReports> -->
                     <!--   <reportsOnly>directoryName</reportsOnly> -->

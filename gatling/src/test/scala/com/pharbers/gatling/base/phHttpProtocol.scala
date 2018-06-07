@@ -5,8 +5,10 @@ import io.gatling.http.Predef._
 import io.gatling.http.config.HttpProtocolBuilder
 
 object phHttpProtocol {
-    implicit val blackList: io.gatling.core.filter.BlackList = BlackList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png""")
-    implicit val whiteList: io.gatling.core.filter.WhiteList = WhiteList()
+    implicit val noneWhiteList: io.gatling.core.filter.WhiteList = WhiteList()
+    implicit val noneBlackList: io.gatling.core.filter.BlackList = BlackList()
+    implicit val staticBlackList: io.gatling.core.filter.BlackList = BlackList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png""")
+    implicit val staticWhiteList: io.gatling.core.filter.WhiteList = WhiteList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.(t|o)tf""", """.*\.png""")
 
     def apply(host: String)
              (implicit blackLst: io.gatling.core.filter.BlackList, whiteLst: io.gatling.core.filter.WhiteList): HttpProtocolBuilder = { http
