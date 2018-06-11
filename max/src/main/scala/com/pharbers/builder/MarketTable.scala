@@ -557,15 +557,15 @@ trait MarketTable {
     )
 
 
-    val marketTable: List[Map[String, String]] = loadData
-//        nhwa_mz :: // 恩华公司
-//            astellas_alk :: astellas_mkm :: astellas_tf :: astellas_Grafalon ::
-//            astellas_hl :: astellas_pe :: astellas_plkf :: astellas_wxk :: // 安斯泰来公司
-//            pfizer_INF :: pfizer_PAIN_other :: pfizer_AI_R_other :: pfizer_AI_R_zith :: pfizer_AI_S ::
-//            pfizer_CNS_Z :: pfizer_ELIQUIS :: pfizer_LD :: pfizer_ONC_other :: pfizer_ONC_aml ::
-//            pfizer_PAIN_C :: pfizer_PAIN_lyrica :: pfizer_Specialty_champix :: pfizer_Specialty_other ::
-//            pfizer_Urology_other :: pfizer_Urology_viagra :: pfizer_HTN2 :: pfizer_HTN ::
-//            pfizer_AI_W :: pfizer_AI_D :: pfizer_ZYVOX ::
-//            pfizer_CNS_R :: pfizer_DVP :: //辉瑞公司
-//            Nil
+    val marketTable: List[Map[String, String]] = //loadData
+        nhwa_mz :: // 恩华公司
+            astellas_alk :: astellas_mkm :: astellas_tf :: astellas_Grafalon ::
+            astellas_hl :: astellas_pe :: astellas_plkf :: astellas_wxk :: // 安斯泰来公司
+            pfizer_INF :: pfizer_PAIN_other :: pfizer_AI_R_other :: pfizer_AI_R_zith :: pfizer_AI_S ::
+            pfizer_CNS_Z :: pfizer_ELIQUIS :: pfizer_LD :: pfizer_ONC_other :: pfizer_ONC_aml ::
+            pfizer_PAIN_C :: pfizer_PAIN_lyrica :: pfizer_Specialty_champix :: pfizer_Specialty_other ::
+            pfizer_Urology_other :: pfizer_Urology_viagra :: pfizer_HTN2 :: pfizer_HTN ::
+            pfizer_AI_W :: pfizer_AI_D :: pfizer_ZYVOX ::
+            pfizer_CNS_R :: pfizer_DVP :: //辉瑞公司
+            Nil
 }

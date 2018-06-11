@@ -12,7 +12,7 @@ import com.pharbers.common.algorithm.max_path_obj
 import org.apache.spark.listener.addListenerAction
 import org.apache.spark.listener.progress.sendMultiProgress
 import com.pharbers.panel.common.{phPanelInfo2Redis, phSavePanelJob}
-import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 
 case class phAstellasPanelJob(args: Map[String, String])(implicit _actor: Actor) extends sequenceJobWithMap {
