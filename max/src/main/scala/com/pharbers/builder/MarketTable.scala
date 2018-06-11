@@ -1,14 +1,22 @@
 package com.pharbers.builder
 
+import com.mongodb.casbah.Imports._
+import com.pharbers.dbManagerTrait.dbInstanceManager
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json.toJson
+
 import scala.io.Source
 import scala.util.parsing.json.JSON
 
 trait MarketTable {
-    val config_path: String = "pharbers_config/market_table.json"
 
+    private val db = new dbInstanceManager{}.queryDBInstance("calc").get
+    private val output: DBObject => Map[String, JsValue] = obj =>
+        obj.map{ x =>
+            x._1 -> toJson(obj.getAs[String](x._1).getOrElse(""))
+        }.toMap - "_id"
     private def loadData: List[Map[String, String]] =
-        JSON.parseFull(Source.fromFile(config_path).mkString)
-                .get.asInstanceOf[List[Map[String, String]]]
+        db.queryMultipleObject(DBObject(), "market_table", "company")(output).map(one => one.map(x => (x._1, x._2.as[String])))
 
     // 恩华公司
     val nhwa_mz = Map(
@@ -557,15 +565,15 @@ trait MarketTable {
     )
 
 
-    val marketTable: List[Map[String, String]] = //loadData
-        nhwa_mz :: // 恩华公司
-            astellas_alk :: astellas_mkm :: astellas_tf :: astellas_Grafalon ::
-            astellas_hl :: astellas_pe :: astellas_plkf :: astellas_wxk :: // 安斯泰来公司
-            pfizer_INF :: pfizer_PAIN_other :: pfizer_AI_R_other :: pfizer_AI_R_zith :: pfizer_AI_S ::
-            pfizer_CNS_Z :: pfizer_ELIQUIS :: pfizer_LD :: pfizer_ONC_other :: pfizer_ONC_aml ::
-            pfizer_PAIN_C :: pfizer_PAIN_lyrica :: pfizer_Specialty_champix :: pfizer_Specialty_other ::
-            pfizer_Urology_other :: pfizer_Urology_viagra :: pfizer_HTN2 :: pfizer_HTN ::
-            pfizer_AI_W :: pfizer_AI_D :: pfizer_ZYVOX ::
-            pfizer_CNS_R :: pfizer_DVP :: //辉瑞公司
-            Nil
+    val marketTable: List[Map[String, String]] = loadData
+//            nhwa_mz :: // 恩华公司
+//            astellas_alk :: astellas_mkm :: astellas_tf :: astellas_Grafalon ::
+//            astellas_hl :: astellas_pe :: astellas_plkf :: astellas_wxk :: // 安斯泰来公司
+//            pfizer_INF :: pfizer_PAIN_other :: pfizer_AI_R_other :: pfizer_AI_R_zith :: pfizer_AI_S ::
+//            pfizer_CNS_Z :: pfizer_ELIQUIS :: pfizer_LD :: pfizer_ONC_other :: pfizer_ONC_aml ::
+//            pfizer_PAIN_C :: pfizer_PAIN_lyrica :: pfizer_Specialty_champix :: pfizer_Specialty_other ::
+//            pfizer_Urology_other :: pfizer_Urology_viagra :: pfizer_HTN2 :: pfizer_HTN ::
+//            pfizer_AI_W :: pfizer_AI_D :: pfizer_ZYVOX ::
+//            pfizer_CNS_R :: pfizer_DVP :: //辉瑞公司
+//            Nil
 }
