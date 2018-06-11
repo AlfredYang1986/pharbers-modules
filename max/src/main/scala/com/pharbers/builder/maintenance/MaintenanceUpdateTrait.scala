@@ -3,39 +3,49 @@ package com.pharbers.builder.maintenance
 import java.io.File
 import java.util.Date
 
+import com.mongodb.casbah.Imports._
 import com.pharbers.builder.{CheckTrait, MarketTable}
 import com.pharbers.common.algorithm.max_path_obj
+import com.pharbers.dbManagerTrait.dbInstanceManager
 import org.apache.commons.io.FileUtils
+import org.bson.types.ObjectId
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
-
-import scala.util.parsing.json.{JSONArray, JSONObject}
 
 /**
   * Created by jeorch on 18-6-6.
   */
 trait MaintenanceUpdateTrait  extends CheckTrait with MarketTable {
 
-    def replaceMatchFile(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
+    def replaceMatchFile(data: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
 
-        val company_id = (jv \ "condition" \ "maintenance" \ "company_id").asOpt[String].get
-        val origin_file_key = (jv \ "condition" \ "origin_file" \ "file_key").asOpt[String].get
-        val origin_file_name = (jv \ "condition" \ "origin_file" \ "file_name").asOpt[String].get
-        val current_file_uuid = (jv \ "condition" \ "current_file" \ "file_uuid").asOpt[String].get                         //上传后服务器上新匹配文件的名字
-        val current_file_name = (jv \ "condition" \ "current_file" \ "file_name").asOpt[String].getOrElse(origin_file_name) //上传的新匹配文件名
+        val company_id = (data \ "condition" \ "maintenance" \ "company_id").asOpt[String].get
+        val origin_file_key = (data \ "condition" \ "origin_file" \ "file_key").asOpt[String].get
+        val origin_file_name = (data \ "condition" \ "origin_file" \ "file_name").asOpt[String].get
+        val current_file_uuid = (data \ "condition" \ "current_file" \ "file_uuid").asOpt[String].get                         //上传后服务器上新匹配文件的名字
+        val current_file_name = (data \ "condition" \ "current_file" \ "file_name").asOpt[String].getOrElse(origin_file_name) //上传的新匹配文件名
 
-        //update market_table
-        val newMarketTable = getCompanyTables(company_id).map(x =>
-            if(x(origin_file_key).contains(origin_file_name)) JSONObject.apply(x ++ Map(origin_file_key -> x(origin_file_key).replaceAll(origin_file_name, current_file_name)))
-            else JSONObject.apply(x)
-        ) ::: getNotCompanyTables(company_id)
+        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val query: DBObject = DBObject("company" -> company_id)
+        val output: DBObject => Map[String, JsValue] = obj =>
+            obj.map{ x =>
+                if(x._1 == "_id") x._1 -> toJson(obj.getAs[ObjectId](x._1).getOrElse(ObjectId.get()).toString)
+                else x._1 -> toJson(obj.getAs[String](x._1).getOrElse(""))
+            }.toMap
 
-        //replace market_table and backup
-        val origin_market_table_file = new File("pharbers_config/market_table.json")
-        val origin_market_table_file_bk = new File(s"pharbers_config/${new Date().getTime}_market_table.json")
-        FileUtils.copyFile(origin_market_table_file, origin_market_table_file_bk)
-        origin_market_table_file.delete()
-        FileUtils.writeStringToFile(new File("pharbers_config/market_table.json"), JSONArray.apply(newMarketTable).toString().replace("\\", ""))
+        def updateFunc(map: Map[String, JsValue]): DBObject = {
+            val builder = MongoDBObject.newBuilder
+            map.foreach(x =>
+                if(x._1 == "_id") builder += x._1 -> new ObjectId(x._2.asOpt[String].get)
+                else if(x._1 == origin_file_key) builder += x._1 -> x._2.asOpt[String].get.replaceAll(origin_file_name, current_file_name)
+                else builder += x._1 -> x._2.asOpt[String].get
+            )
+            builder.result()
+        }
+
+        db.queryMultipleObject(query, "market_table", "company")(output) foreach  {x =>
+            db.updateObject(updateFunc(x),"market_table","_id")
+        }
 
         //replace match_file and backup
         val origin_file_path = getCompanyTables(company_id).find(x => x(origin_file_key).contains(origin_file_name))

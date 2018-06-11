@@ -10,12 +10,14 @@ trait MarketTable {
     private val db = new dbInstanceManager{}.queryDBInstance("calc").get
     private val coll_name = "market_table"
 
-    implicit val dbOutput: DBObject => Map[String, JsValue] = obj =>
-        obj.map{ x =>
-            x._1 -> toJson(obj.getAs[String](x._1).getOrElse(""))
-        }.toMap - "_id"
+    implicit val dbOutput: DBObject => Map[String, JsValue] = { obj =>
+        obj.keySet().toArray.map{ key =>
+            key.toString -> toJson(obj.getAs[String](key.toString).getOrElse(""))
+        }.toMap
+    }
 
-    implicit val jv2str: Map[String, JsValue] => Map[String, String] = jv => jv.map(y => y._1 -> y._2.asInstanceOf[JsString].value)
+    implicit val jv2str: Map[String, JsValue] => Map[String, String] = jv =>
+        jv.map(y => y._1 -> y._2.asInstanceOf[JsString].value)
 
     def insertMarketTable(obj: DBObject): Unit = db.insertObject(obj, coll_name, "_id")
 

@@ -1,7 +1,7 @@
 package com.pharbers.search
 
 import com.pharbers.search.actions._
-import com.pharbers.pactions.jobs.{NULLJob, choiceJob, sequenceJobWithMap}
+import com.pharbers.pactions.jobs.{NULLJob, choice3pJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 
@@ -42,7 +42,7 @@ trait phHistorySearchJob extends sequenceJobWithMap {
         )
     )
 
-    val checkPageCache: choiceJob = new choiceJob {
+    val checkPageCache: choice3pJob = new choice3pJob {
         override val name = "checkPageCache"
         val actions: List[pActionTrait] = phCheckPageCacheAction(searchArgs) ::
             NULLJob ::

@@ -32,11 +32,11 @@ trait MaintenanceSearchTrait extends CheckTrait with MarketTable {
 
         val matchFileLst: List[Map[String, String]] =
             allArgs.reduce((m1, m2) => m1 ++ m2 - "universe_file" - "Market")
-                .map(x => Map("file_key" -> x._1, "file_name" -> x._2.split("/").last)).toList
+                .map(x => Map("file_key" -> x._1, "file_name" -> x._2.split("/").last, "title" -> x._2.split("/").last.split(46.toChar).head)).toList
 
         val universeFileLst: List[Map[String, String]] = allArgs match {
             case lst if lst.reduce((m1, m2) => m1 ++ m2).keys.exists(x => x == "universe_file") =>
-                allArgs.map(x =>Map("file_key" -> "universe_file", "file_name" -> x("universe_file").split("/").last, "Market" -> x("Market")))
+                allArgs.map(x =>Map("file_key" -> "universe_file", "file_name" -> x("universe_file").split("/").last, "title" -> x("universe_file").split("/").last.split(46.toChar).head, "Market" -> x("Market")))
             case _ => List.empty
         }
 
