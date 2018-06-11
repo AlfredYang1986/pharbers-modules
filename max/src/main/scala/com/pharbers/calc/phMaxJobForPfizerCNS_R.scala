@@ -6,7 +6,7 @@ import akka.actor.Actor
 import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction}
 import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
-import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
