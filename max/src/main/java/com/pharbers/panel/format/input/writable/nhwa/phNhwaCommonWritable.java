@@ -1,13 +1,13 @@
 package com.pharbers.panel.format.input.writable.nhwa;
 
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.excel.format.input.writable.phExcelWritable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class phNhwaCommonWritable extends PhExcelWritable {
+public class phNhwaCommonWritable extends phExcelWritable {
     public Map<String, String> titleMap = null;
 
     @Override

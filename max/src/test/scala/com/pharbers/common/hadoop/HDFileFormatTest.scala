@@ -1,7 +1,7 @@
 //package hadoop
 //
 //import com.pharbers.panel.format.input.PhExcelWholeFileInputFormat
-//import com.pharbers.panel.format.input.writable.PhExcelWritable
+//import com.pharbers.excel.format.input.writable.phExcelWritable
 //import org.apache.hadoop.conf.Configured
 //import org.apache.hadoop.fs.Path
 //import org.apache.hadoop.io.SequenceFile.CompressionType
@@ -18,7 +18,7 @@
 //        job.setJarByClass(getClass)
 //
 //        job.setOutputKeyClass(classOf[LongWritable])
-//        job.setOutputValueClass(classOf[PhExcelWritable])
+//        job.setOutputValueClass(classOf[phExcelWritable])
 //
 //        job.setInputFormatClass(classOf[PhExcelWholeFileInputFormat])
 //        // job.setOutputFormatClass(classOf[SequenceFileOutputFormat[DoubleWritable, Text]])
