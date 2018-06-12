@@ -14,15 +14,32 @@ trait CheckTrait { this: MarketTable =>
 
     val ck_max: Map[String, String] => Boolean = m => m.contains("panel_name") && m("panel_name").nonEmpty
 
+    def getMktTableAllCompanies: List[Map[String, String]] = marketTable.map(x =>
+        Map("company_id" -> x("company"), "company_name" -> x("company_name"))
+    ).distinct
+
     def getAllMkt(company: String): List[String] = marketTable.filter(company == _("company")).map(_("market"))
 
     def getSubsidiary(company: String): Option[Array[String]] = marketTable.find(company == _("company")).head.get("subsidiary").map(_.split("#"))
+
+    def getCompanyTables(company: String): List[Map[String, String]] =
+        marketTable.filter(x => company == x("company"))
+
+    def getNotCompanyTables(company: String): List[Map[String, String]] =
+        marketTable.filter(x => company != x("company"))
 
     def getTable(company: String, market: String): Map[String, String] =
         marketTable.find(x => company == x("company") && market == x("market")).getOrElse(throw new Exception("input wrong"))
 
     def getSourceLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("source", throw new Exception("input wrong")).split("#")
+
+    def getDataCleanArgLst(company: String, market: String): Array[String] =
+        getTable(company, market).getOrElse("dataCleanArgs", throw new Exception("input wrong")) match {
+            case "" => Array.empty[String]
+            case s => s.split("#")
+        }
+
 
     def getPanelArgLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("panelArgs", throw new Exception("input wrong")).split("#")
@@ -32,6 +49,14 @@ trait CheckTrait { this: MarketTable =>
 
     def getDeliveryArgLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("deliveryArgs", throw new Exception("input wrong")).split("#")
+
+    def getDataCleanArgs(company: String, market: String): Map[String, String] = {
+        val table = getTable(company, market)
+        getDataCleanArgLst(company, market) match {
+            case lst if lst.isEmpty => Map.empty
+            case lst if lst.nonEmpty => lst.map(x => x -> table(x)).toMap
+        }
+    }
 
     def getPanelArgs(company: String, market: String): Map[String, String] = {
         val table = getTable(company, market)
