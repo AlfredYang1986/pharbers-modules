@@ -1,7 +1,0 @@
-<pharbers-modules>
-    <company_235f39e3da85c2dee2a2b20d004a8b77>
-        <hospital_match_file value="/mnt/config/FileBase/235f39e3da85c2dee2a2b20d004a8b77/ANS_各类mapping_0402.xlsx" />
-        <medicine_match_file value="/mnt/config/FileBase/235f39e3da85c2dee2a2b20d004a8b77/20171018药品最小单位IMS packid匹配表.xlsx" />
-        <history_file value="/mnt/config/FileBase/235f39e3da85c2dee2a2b20d004a8b77/HistoryDeliveryFiles/Max_14-1711.txt" />
-    </company_235f39e3da85c2dee2a2b20d004a8b77>
-</pharbers-modules>

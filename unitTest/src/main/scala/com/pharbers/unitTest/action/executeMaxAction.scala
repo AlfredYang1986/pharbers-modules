@@ -1,11 +1,12 @@
 package com.pharbers.unitTest.action
 
 import akka.actor.Actor
-import com.pharbers.builder.Builderimpl
 import com.pharbers.pactions.actionbase._
+import com.pharbers.unitTest.common.readJsonTrait
+import com.pharbers.builder.phMarketTable.Builderimpl
 
 case class executeMaxAction(override val defaultArgs : pActionArgs)
-                      (implicit _actor: Actor) extends pActionTrait {
+                      (implicit _actor: Actor) extends pActionTrait with readJsonTrait {
     override val name: String = "max_result"
 
     val company: String = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
@@ -17,7 +18,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
     val gycx: String = defaultArgs.asInstanceOf[MapArgs].get("gycx").asInstanceOf[StringArgs].get
     val ym: String = defaultArgs.asInstanceOf[MapArgs].get("ym").asInstanceOf[StringArgs].get
 
-    val builderimpl = Builderimpl()
+    val builderimpl = Builderimpl(company)
     import builderimpl._
 
     override def perform(args : pActionArgs): pActionArgs = {
@@ -35,21 +36,23 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
         )
 
         // 执行Panel
-        val panel = doPanel(mapping ++ getPanelArgs(company, mkt))
+        val panel = doPanel(mapping)
         
         // 执行Max
-        val maxResult = doMax(mapping ++ getMaxArgs(company, mkt) ++ Map("panel_name" -> panel))
+        val maxResult = doMax(mapping, panel)
         StringArgs(maxResult)
     }
 
     def doPanel(mapping: Map[String, String]): String = {
-        val ckArgLst = getPanelArgLst(company, mkt) ++ getSourceLst(company, mkt)
+        val panelInstMap = getPanelInst(mkt)
+        val ckArgLst = panelInstMap("source") :: panelInstMap("args").split("#").toList ::: Nil
+        val args = mapping ++ panelInstMap ++ testData.find(x => company == x("company") && mkt == x("market")).get
 
-        if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
+        if(!parametCheck(ckArgLst, args)(m => ck_base(m) && ck_panel(m)))
             throw new Exception("input wrong")
 
-        val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
-        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+        val clazz: String = panelInstMap("instance")
+        val result = impl(clazz, args).perform(MapArgs(Map().empty))
                 .asInstanceOf[MapArgs]
                 .get("phSavePanelJob")
                 .asInstanceOf[StringArgs].get
@@ -57,14 +60,16 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
         result
     }
 
-    def doMax(mapping: Map[String, String]): String = {
-        val ckArgLst = getMaxArgLst(company, mkt)
+    def doMax(mapping: Map[String, String], panel: String): String = {
+        val maxInstMap = getMaxInst(mkt)
+        val ckArgLst = maxInstMap("args").split("#").toList ::: Nil
+        val args = mapping ++ maxInstMap ++ Map("panel_name" -> panel) ++ testData.find(x => company == x("company") && mkt == x("market")).get
 
-        if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
+        if(!parametCheck(ckArgLst, args)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
             throw new Exception("input wrong")
 
-        val clazz: String = getClazz(mapping("company_id"), mkt)(maxInst)
-        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+        val clazz: String = maxInstMap("instance")
+        val result = impl(clazz, args).perform(MapArgs(Map().empty))
                 .asInstanceOf[MapArgs]
                 .get("max_persistent_action")
                 .asInstanceOf[StringArgs].get
