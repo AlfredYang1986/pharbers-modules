@@ -3,6 +3,7 @@ package com.pharbers.builder
 import akka.actor.Actor
 import com.pharbers.builder.phMarketTable.phMarketTrait
 import com.pharbers.pactions.actionbase.pActionTrait
+import com.pharbers.pactions.jobs.sequenceJobWithMap
 
 case class Builderimpl() extends phMarketTrait with CheckTrait {
 
@@ -25,9 +26,9 @@ case class Builderimpl() extends phMarketTrait with CheckTrait {
         constructor.newInstance(initArgs, _actor).asInstanceOf[pActionTrait]
     }
 
-    def implWithoutActor(clazz: String, initArgs: Map[String, String]): pActionTrait = {
+    def implWithoutActor(clazz: String, initArgs: Map[String, String]): sequenceJobWithMap = {
         val constructor = Class.forName(clazz).getConstructors()(0)
-        constructor.newInstance(initArgs).asInstanceOf[pActionTrait]
+        constructor.newInstance(initArgs).asInstanceOf[sequenceJobWithMap]
     }
 }
 
