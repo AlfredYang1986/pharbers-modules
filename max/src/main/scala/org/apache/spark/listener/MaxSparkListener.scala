@@ -2,7 +2,7 @@ package org.apache.spark.listener
 
 import org.apache.spark.scheduler._
 import akka.actor.{Actor, ActorRef}
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import org.apache.spark.listener.listenerActor._
 
 /**

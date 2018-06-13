@@ -1,7 +1,7 @@
 package org.apache.spark.listener.progress
 
+import com.pharbers.channel.util.sendEmTrait
 import play.api.libs.json.Json.toJson
-import com.pharbers.channel.sendEmTrait
 import com.pharbers.common.algorithm.alTempLog
 
 sealed trait sendProgress{

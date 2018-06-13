@@ -14,9 +14,9 @@ class phMaxScheduleJob extends pActionTrait with phMaxScheduleTrait {
 
     override def perform(pr: pActionArgs): pActionArgs = {
         val hodiernalRddCount = rdd2mongo
-        alTempLog(s"Today's RDD count = ${hodiernalRddCount}")
+        alTempLog(s"Today's RDD count = $hodiernalRddCount")
         val historyRddCount = mongo2rdd
-        alTempLog(s"history RDD count = ${historyRddCount}")
+        alTempLog(s"history RDD count = $historyRddCount")
         phSparkDriver().ss.stop()
         defaultArgs
     }

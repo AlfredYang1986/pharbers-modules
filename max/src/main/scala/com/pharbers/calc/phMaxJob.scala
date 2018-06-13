@@ -1,10 +1,11 @@
 package com.pharbers.calc
 
 import java.util.UUID
+
 import akka.actor.Actor
 import com.pharbers.calc.actions._
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.pactions.jobs._
-import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.generalactions._
 import com.pharbers.common.algorithm.max_path_obj
 import org.apache.spark.listener.progress.sendMultiProgress

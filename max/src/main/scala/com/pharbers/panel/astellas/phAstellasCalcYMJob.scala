@@ -1,9 +1,10 @@
 package com.pharbers.panel.astellas
 
 import java.util.UUID
+
 import akka.actor.Actor
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.panel.common._
-import com.pharbers.channel.sendEmTrait
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.common.algorithm.max_path_obj

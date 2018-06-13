@@ -4,7 +4,7 @@ import java.util.UUID
 
 import akka.actor.Actor
 import com.pharbers.calc.actions.{phMaxCalcActionForDVP, phMaxInfo2RedisAction, phMaxPersistentAction}
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}

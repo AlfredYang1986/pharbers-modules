@@ -1,10 +1,11 @@
 package com.pharbers.panel.astellas
 
 import java.util.UUID
+
 import akka.actor.Actor
+import com.pharbers.channel.util.sendEmTrait
 import org.apache.spark.listener
 import com.pharbers.pactions.jobs._
-import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._

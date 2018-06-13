@@ -34,16 +34,17 @@ trait phDeliverySearchDataJob  extends sequenceJobWithMap {
         )
     )
 
-    val builderimpl = Builderimpl("")
+    val builderimpl = Builderimpl(company)
     import builderimpl._
+    val deliveryInstMap: Map[String, String] = getDeliveryInst(mkt)
 
-//    val deliveryAction = implWithoutActor(getClazz(company, mkt)(deliveryInst),
-//        Map("company" -> company, "ym_condition" -> ym_condition, "mkt" -> mkt) ++ getDeliveryArgs(company, mkt))
+    val deliveryAction: pActionTrait = implWithoutActor(deliveryInstMap("instance"),
+        Map("company" -> company, "ym_condition" -> ym_condition, "mkt" -> mkt) ++ deliveryInstMap)
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
         setLogLevelAction("ERROR") ::
         phHistoryConditionSearchAction(searchArgs) ::
         phReadHistoryResultAction(searchArgs) ::
-//        deliveryAction ::
+        deliveryAction ::
         Nil
 }

@@ -31,8 +31,8 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         val historyKeySet = db.getOneDBAllCollectionNames
 
         val totalSingleJobKeySet = redisDriver.getSetAllValue(maxSingleDayJobsKey) match {
-            case s if(s.isEmpty) => historyKeySet.toSet
-            case s => s.foreach(historyKeySet.add(_)); historyKeySet.toSet
+            case s if s.isEmpty => historyKeySet.toSet
+            case s => s.foreach(historyKeySet.add); historyKeySet.toSet
         }
 
         val allSingleJobKeyLst = totalSingleJobKeySet
