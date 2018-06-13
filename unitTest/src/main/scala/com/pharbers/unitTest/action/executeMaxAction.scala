@@ -1,11 +1,12 @@
 package com.pharbers.unitTest.action
 
 import akka.actor.Actor
-import com.pharbers.builder.phMarketTable.Builderimpl
 import com.pharbers.pactions.actionbase._
+import com.pharbers.unitTest.common.readJsonTrait
+import com.pharbers.builder.phMarketTable.Builderimpl
 
 case class executeMaxAction(override val defaultArgs : pActionArgs)
-                      (implicit _actor: Actor) extends pActionTrait {
+                      (implicit _actor: Actor) extends pActionTrait with readJsonTrait {
     override val name: String = "max_result"
 
     val company: String = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
@@ -45,7 +46,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
     def doPanel(mapping: Map[String, String]): String = {
         val panelInstMap = getPanelInst(mkt)
         val ckArgLst = panelInstMap("source") :: panelInstMap("args").split("#").toList ::: Nil
-        val args = mapping ++ panelInstMap
+        val args = mapping ++ panelInstMap ++ testData.find(x => company == x("company") && mkt == x("market")).get
 
         if(!parametCheck(ckArgLst, args)(m => ck_base(m) && ck_panel(m)))
             throw new Exception("input wrong")
@@ -62,7 +63,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
     def doMax(mapping: Map[String, String], panel: String): String = {
         val maxInstMap = getMaxInst(mkt)
         val ckArgLst = maxInstMap("args").split("#").toList ::: Nil
-        val args = mapping ++ maxInstMap ++ Map("panel_name" -> panel)
+        val args = mapping ++ maxInstMap ++ Map("panel_name" -> panel) ++ testData.find(x => company == x("company") && mkt == x("market")).get
 
         if(!parametCheck(ckArgLst, args)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
             throw new Exception("input wrong")

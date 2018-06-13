@@ -1,7 +1,7 @@
 [
   {
-    "company": "5b028f95ed925c2c705b85ba",
-    "market": "PAIN_C",
+    "company": "5afa53bded925c05c6f69c54",
+    "market": "麻醉市场",
     "universe_file": "pfizer/universe_PAIN_C_online.xlsx",
     "product_match_file": "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
     "fill_hos_data_file": "pfizer/补充医院utf8_2018.txt",
