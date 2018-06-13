@@ -8,9 +8,9 @@ import com.pharbers.builder.phMarketTable.phMarketManager
   * Created by jeorch on 18-6-6.
   */
 trait MaintenanceSearchTrait extends phMarketManager {
-    override def getAllCompanies: (Option[Map[String, JsValue]], Option[JsValue]) = {
+    def getAllCompaniesL: (Option[Map[String, JsValue]], Option[JsValue]) = {
         val a = super.getAllCompanies
-        (Some(Map("companies" -> toJson(getMktTableAllCompanies))), None)
+        (Some(Map("companies" -> toJson("getMktTableAllCompanies"))), None)
     }
 
     def getDataCleanModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = ???
