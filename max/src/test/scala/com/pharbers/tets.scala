@@ -8,13 +8,14 @@ import com.pharbers.builder.phMarketTable._
 
 class tets extends FunSuite {
     test("aaa") {
-        val marketTable = new phMarketDB with phMarketTrait {}
+        val marketTable = new phMarketManager with phMarketDBTrait with phMarketReflectTrait{}
 
         val condition: DBObject = {
             DBObject("company" -> "5afa53bded925c05c6f69c54")
         }
 
-        val a = marketTable.getAllCompanies
+//        val a = marketTable.getAllMarkets("5afa53bded925c05c6f69c54")
+        val a = marketTable.getMatchFileDes("5afa53bded925c05c6f69c54")(marketTable.onlyCleanDes)
 
         println(a)
 

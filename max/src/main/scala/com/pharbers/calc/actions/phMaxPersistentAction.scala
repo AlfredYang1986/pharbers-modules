@@ -2,7 +2,7 @@ package com.pharbers.calc.actions
 
 import java.util.UUID
 
-import com.pharbers.builder.Builderimpl
+import com.pharbers.builder.phMarketTable.Builderimpl
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.actionbase._
 import org.apache.spark.sql.functions.{col, _}
@@ -17,7 +17,7 @@ class phMaxPersistentAction[T](override val defaultArgs: pActionArgs) extends pA
     override def perform(prMap: pActionArgs): pActionArgs = {
 
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
-        val condition = Builderimpl().getSubsidiary(company).get.map(x => col("Product") like s"%$x%").reduce((a, b) => a or b) //获得所有子公司
+        val condition = Builderimpl("").getSubsidiary(company).get.map(x => col("Product") like s"%$x%").reduce((a, b) => a or b) //获得所有子公司
         val maxDF = prMap.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val max_result = maxDF.withColumn("belong2company", when(condition, 1).otherwise(0))
         val panelName = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get

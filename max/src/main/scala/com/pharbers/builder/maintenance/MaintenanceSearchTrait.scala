@@ -1,15 +1,14 @@
 package com.pharbers.builder.maintenance
 
-import com.pharbers.builder.CheckTrait
-import com.pharbers.builder.phMarketTable.phMarketTrait
+import com.pharbers.builder.phMarketTable.{phMarketManager, phMarketDBTrait, phReflectCheck}
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
 /**
   * Created by jeorch on 18-6-6.
   */
-trait MaintenanceSearchTrait extends CheckTrait with phMarketTrait {
-    def getAllCompanies: (Option[Map[String, JsValue]], Option[JsValue]) = {
+trait MaintenanceSearchTrait extends phReflectCheck with phMarketDBTrait with phMarketManager {
+    def getAllCompanies1: (Option[Map[String, JsValue]], Option[JsValue]) = {
 
         (Some(Map("companies" -> toJson("getMktTableAllCompanies"))), None)
     }

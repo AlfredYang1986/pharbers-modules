@@ -4,8 +4,7 @@ import java.io.File
 import java.util.Date
 
 import com.mongodb.casbah.Imports._
-import com.pharbers.builder.CheckTrait
-import com.pharbers.builder.phMarketTable.phMarketTrait
+import com.pharbers.builder.phMarketTable.{phMarketManager, phMarketDBTrait, phReflectCheck}
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.dbManagerTrait.dbInstanceManager
 import org.apache.commons.io.FileUtils
@@ -16,7 +15,7 @@ import play.api.libs.json.Json.toJson
 /**
   * Created by jeorch on 18-6-6.
   */
-trait MaintenanceUpdateTrait  extends CheckTrait with phMarketTrait {
+trait MaintenanceUpdateTrait  extends phReflectCheck with phMarketDBTrait with phMarketManager {
 
     def replaceMatchFile(data: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
 

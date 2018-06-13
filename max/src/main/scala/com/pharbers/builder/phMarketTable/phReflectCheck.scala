@@ -1,8 +1,6 @@
-package com.pharbers.builder
+package com.pharbers.builder.phMarketTable
 
-import com.pharbers.builder.phMarketTable.phMarketTrait
-
-trait CheckTrait { this: phMarketTrait =>
+trait phReflectCheck { this: phMarketDBTrait with phMarketManager  =>
 
     val ck_user_id: Map[String, String] => Boolean = m => m.contains("user_id") && m("user_id").nonEmpty
     val ck_company_id: Map[String, String] => Boolean = m => m.contains("company_id") && m("company_id").nonEmpty
@@ -16,18 +14,18 @@ trait CheckTrait { this: phMarketTrait =>
 
     val ck_max: Map[String, String] => Boolean = m => m.contains("panel_name") && m("panel_name").nonEmpty
 
-    def getAllMkt(company: String): List[String] = marketTable.filter(company == _("company")).map(_("market"))
+    def getAllMkt(company: String): List[String] = ???
 
-    def getSubsidiary(company: String): Option[Array[String]] = marketTable.find(company == _("company")).head.get("subsidiary").map(_.split("#"))
+    def getSubsidiary(company: String): Option[Array[String]] = ??? //marketTable.find(company == _("company")).head.get("subsidiary").map(_.split("#"))
 
-    def getCompanyTables(company: String): List[Map[String, String]] =
-        marketTable.filter(x => company == x("company"))
+    def getCompanyTables(company: String): List[Map[String, String]] = ???
+//        marketTable.filter(x => company == x("company"))
 
-    def getNotCompanyTables(company: String): List[Map[String, String]] =
-        marketTable.filter(x => company != x("company"))
+    def getNotCompanyTables(company: String): List[Map[String, String]] = ???
+//        marketTable.filter(x => company != x("company"))
 
-    def getTable(company: String, market: String): Map[String, String] =
-        marketTable.find(x => company == x("company") && market == x("market")).getOrElse(throw new Exception("input wrong"))
+    def getTable(company: String, market: String): Map[String, String] = ???
+//        marketTable.find(x => company == x("company") && market == x("market")).getOrElse(throw new Exception("input wrong"))
 
     def getSourceLst(company: String, market: String): Array[String] =
         getTable(company, market).getOrElse("source", throw new Exception("input wrong")).split("#")

@@ -6,10 +6,8 @@ import com.pharbers.cliTraits.DBTrait
 import play.api.libs.json.Json.toJson
 import com.pharbers.dbManagerTrait.dbInstanceManager
 
-trait phMarketTrait {
-    val marketTable: List[Map[String, String]] = Nil
-
-    val version: String = "3.0.1"
+trait phMarketDBTrait {
+    val version: String = "3.0.1" // 暂未使用
     val coll_name = "market_table"
     val db: DBTrait = new dbInstanceManager{}.queryDBInstance("market").get
 

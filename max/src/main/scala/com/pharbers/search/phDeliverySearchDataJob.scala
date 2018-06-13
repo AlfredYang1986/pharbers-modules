@@ -1,6 +1,6 @@
 package com.pharbers.search
 
-import com.pharbers.builder.Builderimpl
+import com.pharbers.builder.phMarketTable.Builderimpl
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 import com.pharbers.pactions.jobs.sequenceJobWithMap
@@ -34,16 +34,16 @@ trait phDeliverySearchDataJob  extends sequenceJobWithMap {
         )
     )
 
-    val builderimpl = Builderimpl()
+    val builderimpl = Builderimpl("")
     import builderimpl._
 
-    val deliveryAction = implWithoutActor(getClazz(company, mkt)(deliveryInst),
-        Map("company" -> company, "ym_condition" -> ym_condition, "mkt" -> mkt) ++ getDeliveryArgs(company, mkt))
+//    val deliveryAction = implWithoutActor(getClazz(company, mkt)(deliveryInst),
+//        Map("company" -> company, "ym_condition" -> ym_condition, "mkt" -> mkt) ++ getDeliveryArgs(company, mkt))
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
         setLogLevelAction("ERROR") ::
         phHistoryConditionSearchAction(searchArgs) ::
         phReadHistoryResultAction(searchArgs) ::
-        deliveryAction ::
+//        deliveryAction ::
         Nil
 }

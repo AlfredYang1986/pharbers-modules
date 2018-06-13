@@ -2,7 +2,7 @@ package com.pharbers.panel.common
 
 import java.util.Base64
 
-import com.pharbers.builder.Builderimpl
+import com.pharbers.builder.phMarketTable.Builderimpl
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
@@ -30,7 +30,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
         val job_id = defaultArgs.asInstanceOf[MapArgs].get("job_id").asInstanceOf[StringArgs].get
 
-        val condition = Builderimpl().getSubsidiary(company).get.map(x => s"Prod_Name like '%$x%'").mkString(" OR ") //获得所有子公司
+        val condition = Builderimpl("").getSubsidiary(company).get.map(x => s"Prod_Name like '%$x%'").mkString(" OR ") //获得所有子公司
         val panelDF_filter_company = panelDF.filter(condition) // 包含子公司关键字的数据
         val panel_hosp_distinct = panelDF.withColumnRenamed("HOSP_ID", "p_HOSP_ID").select("p_HOSP_ID").distinct()
         val panel_prod_count = panelDF.select("Prod_Name").distinct().count()
