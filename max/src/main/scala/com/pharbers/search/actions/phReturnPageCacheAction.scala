@@ -1,11 +1,8 @@
 package com.pharbers.search.actions
 
-import com.pharbers.driver.PhRedisDriver
-import com.pharbers.driver.redis.phRedisDriver
-import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
-import edu.berkeley.cs.amplab.spark.indexedrdd.IndexedRDD
-import edu.berkeley.cs.amplab.spark.indexedrdd.IndexedRDD._
+import com.pharbers.driver.PhRedisDriver
+import com.pharbers.pactions.actionbase._
 
 /**
   * Created by jeorch on 18-5-9.

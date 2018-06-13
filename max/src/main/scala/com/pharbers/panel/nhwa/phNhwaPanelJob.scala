@@ -3,7 +3,7 @@ package com.pharbers.panel.nhwa
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.pactions.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.pactions.actionbase._

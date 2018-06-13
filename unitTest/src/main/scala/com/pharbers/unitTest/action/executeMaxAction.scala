@@ -1,9 +1,8 @@
 package com.pharbers.unitTest.action
 
 import akka.actor.Actor
-import com.pharbers.builder.{Builderimpl, phBuilder}
+import com.pharbers.builder.Builderimpl
 import com.pharbers.pactions.actionbase._
-import com.pharbers.spark.phSparkDriver
 
 case class executeMaxAction(override val defaultArgs : pActionArgs)
                       (implicit _actor: Actor) extends pActionTrait {
@@ -37,10 +36,9 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
 
         // 执行Panel
         val panel = doPanel(mapping ++ getPanelArgs(company, mkt))
-
+        
         // 执行Max
         val maxResult = doMax(mapping ++ getMaxArgs(company, mkt) ++ Map("panel_name" -> panel))
-
         StringArgs(maxResult)
     }
 
@@ -55,7 +53,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
                 .asInstanceOf[MapArgs]
                 .get("phSavePanelJob")
                 .asInstanceOf[StringArgs].get
-        phSparkDriver().sc.stop()
+//        phSparkDriver().sc.stop()
         result
     }
 
@@ -70,7 +68,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
                 .asInstanceOf[MapArgs]
                 .get("max_persistent_action")
                 .asInstanceOf[StringArgs].get
-        phSparkDriver().sc.stop()
+//        phSparkDriver().sc.stop()
         result
     }
 }

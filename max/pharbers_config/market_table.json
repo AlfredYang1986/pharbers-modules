@@ -1,31 +1,5 @@
 [
   {
-    "company": "5afa53bded925c05c6f69c54",
-    "company_name": "恩华",
-    "subsidiary": "恩华",
-    "market": "麻醉市场",
-    "ymInstance": "com.pharbers.panel.nhwa.phNhwaCalcYMJob",
-    "panelInstance": "com.pharbers.panel.nhwa.phNhwaPanelJob",
-    "maxInstance": "com.pharbers.calc.phMaxJob",
-    "deliveryInstance": "com.pharbers.delivery.nhwa.phNhwaDeliveryJob",
-    "source": "cpa",
-    "panelArgs": "not_published_hosp_file#universe_file#product_match_file#fill_hos_data_file#markets_match_file",
-    "not_published_hosp_file": "nhwa/2017年未出版医院名单.xlsx",
-    "universe_file": "nhwa/universe_麻醉市场_online.xlsx",
-    "product_match_file": "nhwa/nhwa匹配表.xlsx",
-    "fill_hos_data_file": "nhwa/补充医院.xlsx",
-    "markets_match_file": "nhwa/通用名市场定义.xlsx",
-    "maxArgs": "universe_file",
-    "deliveryArgs": "nhwa_match_file#hospital_match_file#acc_match_file#area_match_file#market_match_file",
-    "nhwa_match_file": "nhwa/nhwa匹配表.csv",
-    "hospital_match_file": "nhwa/交付格式医院匹配表.csv",
-    "acc_match_file": "nhwa/match_acc.csv",
-    "area_match_file": "nhwa/match_area.csv",
-    "market_match_file": "nhwa/match_market.csv",
-    "dataCleanArgs": ""
-  },
-
-  {
     "company": "5b023787810c6e0268fe6ff6",
     "company_name": "安斯泰来",
     "subsidiary": "安斯泰来",

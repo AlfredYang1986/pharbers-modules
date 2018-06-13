@@ -1,7 +1,7 @@
 package org.apache.spark.listener
 
-import com.pharbers.channel.sendEmTrait
 import akka.actor.{Actor, ActorLogging, Props}
+import com.pharbers.channel.util.sendEmTrait
 import org.apache.spark.listener.listenerActor._
 import org.apache.spark.scheduler.SparkListener
 import com.pharbers.pactions.actionbase.NULLArgs

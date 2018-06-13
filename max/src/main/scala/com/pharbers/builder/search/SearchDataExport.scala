@@ -1,13 +1,14 @@
 package com.pharbers.builder.search
 
-import com.pharbers.builder.MarketTable
-import com.pharbers.pactions.actionbase.{MapArgs, StringArgs}
-import com.pharbers.search.{phDeliverySearchDataJob, phExportSearchDataJob}
-import com.pharbers.spark.phSparkDriver
+import com.mongodb.casbah.Imports.DBObject
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
+import com.pharbers.spark.phSparkDriver
+import com.pharbers.pactions.actionbase.{MapArgs, StringArgs}
+import com.pharbers.search.{phDeliverySearchDataJob, phExportSearchDataJob}
+import com.pharbers.builder.phMarketTable.{phMarketManager, phMarketReflectTrait}
 
-trait SearchDataExport extends MarketTable {
+trait SearchDataExport extends phMarketReflectTrait with phMarketManager {
     def exportData(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val company = (jv \ "user" \ "company" \ "company_id").asOpt[String].getOrElse(throw new Exception("Illegal company"))
         val market = (jv \ "condition" \ "market").asOpt[String].getOrElse("")
@@ -46,8 +47,9 @@ trait SearchDataExport extends MarketTable {
 
     def getCurrentCompanyExportType(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
         val company = (jv \ "user" \ "company" \ "company_id").asOpt[String].getOrElse(throw new Exception("Illegal company"))
-        val company_name = marketTable.find(company == _("company")).getOrElse(throw new Exception("You account has no calc lincense!"))("company_name")
-        val exportTypeLst: List[String] = marketTable.filter(company == _("company")).map(_("deliveryInstance")).distinct.filter(_ != "") match {
+        val company_name = getAllCompanies.find(company == _("company")).getOrElse(throw new Exception("You account has no calc lincense!"))("company_name")
+        val exportTypeLst: List[String] = queryMultipMarketTable(DBObject("company" -> company))
+                .map(onlyDeliveryInst).map(_("instance")).distinct.filter(_ != "") match {
             case Nil => "Max格式" :: Nil
             case _ => "Max格式" :: s"${company_name}交付格式" :: Nil
         }

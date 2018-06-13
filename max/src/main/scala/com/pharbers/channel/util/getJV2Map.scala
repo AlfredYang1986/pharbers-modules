@@ -1,4 +1,4 @@
-package com.pharbers.channel
+package com.pharbers.channel.util
 
 import play.api.libs.json.JsValue
 

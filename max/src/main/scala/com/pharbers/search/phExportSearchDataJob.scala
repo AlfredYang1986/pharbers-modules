@@ -1,9 +1,9 @@
 package com.pharbers.search
 
+import com.pharbers.search.actions._
+import com.pharbers.pactions.jobs.sequenceJobWithMap
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
-import com.pharbers.pactions.jobs.sequenceJobWithMap
-import com.pharbers.search.actions._
 
 /**
   * Created by jeorch on 18-6-4.
