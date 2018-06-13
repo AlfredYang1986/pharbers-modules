@@ -31,7 +31,7 @@ trait MaintenanceUpdateTrait  extends CheckTrait with MarketTable {
             obj.map{ x =>
                 if(x._1 == "_id") x._1 -> toJson(obj.getAs[ObjectId](x._1).getOrElse(ObjectId.get()).toString)
                 else x._1 -> toJson(obj.getAs[String](x._1).getOrElse(""))
-            }
+            }.toMap
 
         def updateFunc(map: Map[String, JsValue]): DBObject = {
             val builder = MongoDBObject.newBuilder
