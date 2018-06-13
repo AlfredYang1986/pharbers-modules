@@ -3,7 +3,7 @@ package com.pharbers.builder.phMarketTable
 import com.mongodb.casbah.Imports._
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
-trait phMarketManager { this: phMarketDBTrait =>
+trait phMarketManager extends phMarketDBTrait {
 
     def getAllCompanies: List[Map[String, String]] =
         db.queryMultipleObject(DBObject(), "company_table")(dbOutput).map{x =>
@@ -14,6 +14,11 @@ trait phMarketManager { this: phMarketDBTrait =>
         queryMultipMarketTable(DBObject("company" -> company)).map { x =>
             x("market").asInstanceOf[JsString].value
         }.distinct
+
+    def getAllSubsidiary(company: String): List[String] =
+        db.queryObject(DBObject("company" -> company), "company_table")(dbOutput).map{x =>
+            x("subsidiary").asInstanceOf[JsString].value.split("#")
+        }.get.toList
 
     val onlyCleanDes: Map[String, JsValue] => Map[String, String] = mjv => {
         val cleanObj = mjv("clean").as[JsObject].value.toMap

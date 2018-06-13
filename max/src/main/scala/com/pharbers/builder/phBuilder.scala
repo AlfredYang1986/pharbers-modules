@@ -46,93 +46,78 @@ trait phBuilder {
     import builderimpl._
 
     def doCalcYM(): JsValue = {
-//        val ymInstMap = getYmInst
-//        val ckArgLst = ymInstMap("source").split("#")
-//
-//        if(!parametCheck(ckArgLst, mapping)(ck_base))
-//            throw new Exception("input wrong")
-//
-//        val clazz: String = ymInstMap("instance")
-//        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
-//                .asInstanceOf[MapArgs].get("result").asInstanceOf[JVArgs].get
-//        phSparkDriver().sc.stop()
-//
-//        result
-        ???
+        val ymInstMap = getYmInst
+        val ckArgLst = ymInstMap("source").split("#").toList
+
+        if(!parametCheck(ckArgLst, mapping)(ck_base))
+            throw new Exception("input wrong")
+
+        val clazz: String = ymInstMap("instance")
+        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+                .asInstanceOf[MapArgs].get("result").asInstanceOf[JVArgs].get
+        phSparkDriver().sc.stop()
+
+        result
     }
 
     def doPanel(): JsValue = {
-//        val ymLst = mapping("yms").split("#")
-//        val jobSum = ymLst.length * mktLst.length
-//        mapping += "p_total" -> jobSum.toString
-//
-//        for (ym <- ymLst; mkt <- mktLst) {
-//            mapping += "ym" -> ym
-//            mapping += "mkt" -> mkt
-//            val ckArgLst = getPanelArgLst(mapping("company_id"), mkt) ++ getSourceLst(mapping("company_id"), mkt)
-//            mapping ++= getPanelArgs(mapping("company_id"), mkt)
-//            mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
-//
-//            if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
-//                throw new Exception("input wrong")
-//
-//            val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
-//            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
-//                    .asInstanceOf[MapArgs]
-//                    .get("phSavePanelJob")
-//                    .asInstanceOf[StringArgs].get
-//            phSparkDriver().sc.stop()
-//            result
-//        }
-//
-//        toJson(mapping("job_id"))
-        ???
+        val ymLst = mapping("yms").split("#")
+        val jobSum = ymLst.length * mktLst.length
+        mapping += "p_total" -> jobSum.toString
+
+        for (ym <- ymLst; mkt <- mktLst) {
+            mapping += "ym" -> ym
+            mapping += "mkt" -> mkt
+            val panelInstMap = getPanelInst(mkt)
+            val ckArgLst = panelInstMap("source") :: panelInstMap("args").split("#").toList ::: Nil
+            mapping ++= panelInstMap
+            mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
+
+            if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
+                throw new Exception("input wrong")
+
+            val clazz: String = panelInstMap("instance")
+            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+                    .asInstanceOf[MapArgs]
+                    .get("phSavePanelJob")
+                    .asInstanceOf[StringArgs].get
+            phSparkDriver().sc.stop()
+            result
+        }
+
+        toJson(mapping("job_id"))
     }
 
-
-//    def panel(mapping: Map[String, String]): String = {
-//        val ckArgLst = getPanelArgLst(company, mkt) ++ getSourceLst(company, mkt)
-//
-//        if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
-//            throw new Exception("input wrong")
-//
-//        val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
-//        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
-//                .asInstanceOf[MapArgs]
-//                .get("phSavePanelJob")
-//                .asInstanceOf[StringArgs].get
-//        //        phSparkDriver().sc.stop()
-//        result
-//    }
-
     def doMax(): JsValue = {
-//        val rd = new PhRedisDriver()
-//        val panelLst = rd.getSetAllValue(mapping("job_id"))
-//        mapping += "p_total" -> panelLst.size.toString
-//
-//        val maxResult = panelLst.map { panel =>
-//            val mkt = rd.getMapValue(panel, "mkt")
-//            mapping += "mkt" -> mkt
-//            mapping += "panel_name" -> panel
-//            mapping += "ym" -> rd.getMapValue(panel, "ym")
-//            mapping += "universe_file" -> getPanelArgs(mapping("company_id"), mkt)("universe_file")
-//            mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
-//            mapping ++= getMaxArgs(mapping("company_id"), mkt)
-//
-//            if(!parametCheck(getMaxArgLst(mapping("company_id"), mkt), mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
-//                throw new Exception("input wrong")
-//
-//            val clazz: String = getClazz(mapping("company_id"), mkt)(maxInst)
-//            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
-//                    .asInstanceOf[MapArgs]
-//                    .get("max_persistent_action")
-//                    .asInstanceOf[StringArgs].get
-//            phSparkDriver().sc.stop()
-//            result
-//        }
-//
-//        toJson(maxResult)
-        ???
+        val rd = new PhRedisDriver()
+        val panelLst = rd.getSetAllValue(mapping("job_id"))
+        mapping += "p_total" -> panelLst.size.toString
+
+        val maxResult = panelLst.map { panel =>
+            val mkt = rd.getMapValue(panel, "mkt")
+            val ym = rd.getMapValue(panel, "ym")
+            val maxInstMap = getMaxInst(mkt)
+            mapping += "ym" -> ym
+            mapping += "mkt" -> mkt
+            mapping += "panel_name" -> panel
+            mapping += "universe_file" -> maxInstMap("universe_file")
+            mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
+
+            val ckArgLst = maxInstMap("args").split("#").toList ::: Nil
+
+            if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
+                throw new Exception("input wrong")
+
+            val clazz: String = maxInstMap("instance")
+            val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+                    .asInstanceOf[MapArgs]
+                    .get("max_persistent_action")
+                    .asInstanceOf[StringArgs].get
+            phSparkDriver().sc.stop()
+            result
+        }
+
+        toJson(maxResult)
     }
 
 }

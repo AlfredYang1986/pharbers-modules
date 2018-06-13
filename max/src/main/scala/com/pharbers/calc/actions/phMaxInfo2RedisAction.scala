@@ -2,7 +2,7 @@ package com.pharbers.calc.actions
 
 import java.util.{Base64, UUID}
 
-import com.pharbers.builder.phMarketTable.Builderimpl
+import com.pharbers.builder.phMarketTable.{Builderimpl, phMarketManager}
 import com.pharbers.common.algorithm.max_path_obj
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
@@ -12,7 +12,7 @@ object phMaxInfo2RedisAction {
     def apply(args: pActionArgs = NULLArgs): pActionTrait = new phMaxInfo2RedisAction(args)
 }
 
-class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActionTrait {
+class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActionTrait with phMarketManager{
     override val name: String = "phMaxInfo2RedisAction"
     override def perform(pr: pActionArgs): pActionArgs = {
         val rd = new PhRedisDriver()
@@ -23,7 +23,7 @@ class phMaxInfo2RedisAction(override val defaultArgs: pActionArgs) extends pActi
         val maxNameForSearch = UUID.randomUUID().toString
         val maxDF = pr.asInstanceOf[MapArgs].get("max_calc_action").asInstanceOf[DFArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get
-        val condition = Builderimpl("").getSubsidiary(company).get.map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
+        val condition = getAllSubsidiary(company).map(x => s"Product like '%$x%'").mkString(" OR ") //获得所有子公司
         val maxDF_filter_company = maxDF.filter(condition)
 
         val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())

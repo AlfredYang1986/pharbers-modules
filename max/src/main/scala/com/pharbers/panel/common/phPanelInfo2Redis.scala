@@ -1,17 +1,16 @@
 package com.pharbers.panel.common
 
 import java.util.Base64
-
-import com.pharbers.builder.phMarketTable.Builderimpl
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
 import com.pharbers.sercuity.Sercurity
+import com.pharbers.builder.phMarketTable.phMarketManager
 
 object phPanelInfo2Redis {
     def apply(args: MapArgs): pActionTrait = new phPanelInfo2Redis(args)
 }
 
-class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTrait {
+class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTrait with phMarketManager {
     override val name: String = "phPanelInfo2Redis"
     override def perform(pr: pActionArgs): pActionArgs = {
         val panelDF = pr.asInstanceOf[MapArgs].get("panel").asInstanceOf[DFArgs].get
@@ -30,7 +29,7 @@ class phPanelInfo2Redis(override val defaultArgs: pActionArgs) extends pActionTr
         val panel_name = defaultArgs.asInstanceOf[MapArgs].get("name").asInstanceOf[StringArgs].get
         val job_id = defaultArgs.asInstanceOf[MapArgs].get("job_id").asInstanceOf[StringArgs].get
 
-        val condition = Builderimpl("").getSubsidiary(company).get.map(x => s"Prod_Name like '%$x%'").mkString(" OR ") //获得所有子公司
+        val condition = getAllSubsidiary(company).map(x => s"Prod_Name like '%$x%'").mkString(" OR ") //获得所有子公司
         val panelDF_filter_company = panelDF.filter(condition) // 包含子公司关键字的数据
         val panel_hosp_distinct = panelDF.withColumnRenamed("HOSP_ID", "p_HOSP_ID").select("p_HOSP_ID").distinct()
         val panel_prod_count = panelDF.select("Prod_Name").distinct().count()

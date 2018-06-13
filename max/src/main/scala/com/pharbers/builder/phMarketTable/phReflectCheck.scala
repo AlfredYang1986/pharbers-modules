@@ -14,62 +14,7 @@ trait phReflectCheck { this: phMarketDBTrait with phMarketManager  =>
 
     val ck_max: Map[String, String] => Boolean = m => m.contains("panel_name") && m("panel_name").nonEmpty
 
-    def getAllMkt(company: String): List[String] = ???
-
-    def getSubsidiary(company: String): Option[Array[String]] = ??? //marketTable.find(company == _("company")).head.get("subsidiary").map(_.split("#"))
-
-    def getCompanyTables(company: String): List[Map[String, String]] = ???
-//        marketTable.filter(x => company == x("company"))
-
-    def getNotCompanyTables(company: String): List[Map[String, String]] = ???
-//        marketTable.filter(x => company != x("company"))
-
-    def getTable(company: String, market: String): Map[String, String] = ???
-//        marketTable.find(x => company == x("company") && market == x("market")).getOrElse(throw new Exception("input wrong"))
-
-    def getSourceLst(company: String, market: String): Array[String] =
-        getTable(company, market).getOrElse("source", throw new Exception("input wrong")).split("#")
-
-    def getDataCleanArgLst(company: String, market: String): Array[String] =
-        getTable(company, market).getOrElse("dataCleanArgs", throw new Exception("input wrong")) match {
-            case "" => Array.empty[String]
-            case s => s.split("#")
-        }
-
-
-    def getPanelArgLst(company: String, market: String): Array[String] =
-        getTable(company, market).getOrElse("panelArgs", throw new Exception("input wrong")).split("#")
-
-    def getMaxArgLst(company: String, market: String): Array[String] =
-        getTable(company, market).getOrElse("maxArgs", throw new Exception("input wrong")).split("#")
-
-    def getDeliveryArgLst(company: String, market: String): Array[String] =
-        getTable(company, market).getOrElse("deliveryArgs", throw new Exception("input wrong")).split("#")
-
-    def getDataCleanArgs(company: String, market: String): Map[String, String] = {
-        val table = getTable(company, market)
-        getDataCleanArgLst(company, market) match {
-            case lst if lst.isEmpty => Map.empty
-            case lst if lst.nonEmpty => lst.map(x => x -> table(x)).toMap
-        }
-    }
-
-    def getPanelArgs(company: String, market: String): Map[String, String] = {
-        val table = getTable(company, market)
-        getPanelArgLst(company, market).map(x => x -> table(x)).toMap
-    }
-
-    def getMaxArgs(company: String, market: String): Map[String, String] = {
-        val table = getTable(company, market)
-        getMaxArgLst(company, market).map(x => x -> table(x)).toMap
-    }
-
-    def getDeliveryArgs(company: String, market: String): Map[String, String] = {
-        val table = getTable(company, market)
-        getDeliveryArgLst(company, market).map(x => x -> table(x)).toMap
-    }
-
-    def parametCheck(argLst: Array[String], args: Map[String, String])
+    def parametCheck(argLst: List[String], args: Map[String, String])
                     (ckFunc: Map[String, String] => Boolean): Boolean = {
         val ckResult = argLst.map(x => args.contains(x) && args(x).nonEmpty).find(_ == false) match {
             case None => true
@@ -77,4 +22,61 @@ trait phReflectCheck { this: phMarketDBTrait with phMarketManager  =>
         }
         ckResult && ckFunc(args)
     }
+
+
+
+
+
+
+//    def getCompanyTables(company: String): List[Map[String, String]] = ???
+////        marketTable.filter(x => company == x("company"))
+//
+//    def getNotCompanyTables(company: String): List[Map[String, String]] = ???
+////        marketTable.filter(x => company != x("company"))
+//
+//    def getTable(company: String, market: String): Map[String, String] = ???
+////        marketTable.find(x => company == x("company") && market == x("market")).getOrElse(throw new Exception("input wrong"))
+//
+//    def getSourceLst(company: String, market: String): Array[String] =
+//        getTable(company, market).getOrElse("source", throw new Exception("input wrong")).split("#")
+//
+//    def getDataCleanArgLst(company: String, market: String): Array[String] =
+//        getTable(company, market).getOrElse("dataCleanArgs", throw new Exception("input wrong")) match {
+//            case "" => Array.empty[String]
+//            case s => s.split("#")
+//        }
+//
+//
+//    def getPanelArgLst(company: String, market: String): Array[String] =
+//        getTable(company, market).getOrElse("panelArgs", throw new Exception("input wrong")).split("#")
+//
+//    def getMaxArgLst(company: String, market: String): Array[String] =
+//        getTable(company, market).getOrElse("maxArgs", throw new Exception("input wrong")).split("#")
+//
+//    def getDeliveryArgLst(company: String, market: String): Array[String] =
+//        getTable(company, market).getOrElse("deliveryArgs", throw new Exception("input wrong")).split("#")
+//
+//    def getDataCleanArgs(company: String, market: String): Map[String, String] = {
+//        val table = getTable(company, market)
+//        getDataCleanArgLst(company, market) match {
+//            case lst if lst.isEmpty => Map.empty
+//            case lst if lst.nonEmpty => lst.map(x => x -> table(x)).toMap
+//        }
+//    }
+//
+//    def getPanelArgs(company: String, market: String): Map[String, String] = {
+//        val table = getTable(company, market)
+//        getPanelArgLst(company, market).map(x => x -> table(x)).toMap
+//    }
+//
+//    def getMaxArgs(company: String, market: String): Map[String, String] = {
+//        val table = getTable(company, market)
+//        getMaxArgLst(company, market).map(x => x -> table(x)).toMap
+//    }
+//
+//    def getDeliveryArgs(company: String, market: String): Map[String, String] = {
+//        val table = getTable(company, market)
+//        getDeliveryArgLst(company, market).map(x => x -> table(x)).toMap
+//    }
+
 }

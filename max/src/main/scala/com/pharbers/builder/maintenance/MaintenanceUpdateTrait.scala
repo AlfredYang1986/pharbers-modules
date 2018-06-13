@@ -48,15 +48,15 @@ trait MaintenanceUpdateTrait  extends phReflectCheck with phMarketDBTrait with p
         }
 
         //replace match_file and backup
-        val origin_file_path = getCompanyTables(company_id).find(x => x(origin_file_key).contains(origin_file_name))
-            .getOrElse(throw new Exception(s"Error! Replace {origin_file_key:$origin_file_key, origin_file_name:$origin_file_name}"))(origin_file_key)
-        val origin_file = new File(max_path_obj.p_matchFilePath + origin_file_path)
-        val origin_file_bk = new File(max_path_obj.p_matchFilePath + s"bk/${new Date().getTime}_$origin_file_name")
-        FileUtils.copyFile(origin_file, origin_file_bk)
-        origin_file.delete()
-        val upload_file = new File(max_path_obj.p_clientPath + current_file_uuid)
-        val current_file = new File(max_path_obj.p_matchFilePath + origin_file_path.replaceAll(origin_file_name, current_file_name))
-        FileUtils.copyFile(upload_file, current_file)
+//        val origin_file_path = getCompanyTables(company_id).find(x => x(origin_file_key).contains(origin_file_name))
+//            .getOrElse(throw new Exception(s"Error! Replace {origin_file_key:$origin_file_key, origin_file_name:$origin_file_name}"))(origin_file_key)
+//        val origin_file = new File(max_path_obj.p_matchFilePath + origin_file_path)
+//        val origin_file_bk = new File(max_path_obj.p_matchFilePath + s"bk/${new Date().getTime}_$origin_file_name")
+//        FileUtils.copyFile(origin_file, origin_file_bk)
+//        origin_file.delete()
+//        val upload_file = new File(max_path_obj.p_clientPath + current_file_uuid)
+//        val current_file = new File(max_path_obj.p_matchFilePath + origin_file_path.replaceAll(origin_file_name, current_file_name))
+//        FileUtils.copyFile(upload_file, current_file)
 
         (Some(Map("file_key" -> toJson(origin_file_key), "file_name" -> toJson(current_file_name))), None)
     }

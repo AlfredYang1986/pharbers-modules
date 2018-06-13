@@ -1,4 +1,4 @@
-package com.pharbers.max
+package com.pharbers.processSuit
 
 import java.util.Date
 
@@ -18,7 +18,7 @@ class MaxProcess_NhwaSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5afa53bded925c05c6f69c54"
     val user: String = "5afaa333ed925c30f8c066d1"
-    val jobId: String = "20180612nhwa001"
+    val jobId: String = "20180613nhwa002"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -33,9 +33,9 @@ class MaxProcess_NhwaSuit extends FunSuite {
 
         implicit val t: Timeout = 20 minutes
 
-        val r = testActor ? calcYm(cpa, gycx)
-        val result = Await.result(r.mapTo[JsValue], t.duration)
-        println("calcYm result = " + result)
+//        val r = testActor ? calcYm(cpa, gycx)
+//        val result = Await.result(r.mapTo[JsValue], t.duration)
+//        println("calcYm result = " + result)
 
         val r2 = testActor ? panel(cpa, gycx, yms)
         val result2 = Await.result(r2.mapTo[JsValue], t.duration)

@@ -15,7 +15,7 @@ class tets extends FunSuite {
         }
 
 //        val a = marketTable.getAllMarkets("5afa53bded925c05c6f69c54")
-        val a = marketTable.getMatchFileDes("5afa53bded925c05c6f69c54")(marketTable.onlyCleanDes)
+        val a = marketTable.getMatchFileDes("5afa53bded925c05c6f69c54")(marketTable.onlyPanelDes)
 
         println(a)
 
