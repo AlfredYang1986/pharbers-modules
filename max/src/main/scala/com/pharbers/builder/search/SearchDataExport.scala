@@ -37,7 +37,7 @@ trait SearchDataExport {
             "mkt" -> market
         )
 
-        val exportResult =  phDeliverySearchDataJob(args).perform().asInstanceOf[MapArgs].get("export_delivery_data_action").asInstanceOf[StringArgs].get
+        val exportResult =  phDeliverySearchDataJob(args).perform().asInstanceOf[MapArgs].get("export_delivery_data_action").asInstanceOf[MapArgs].get("delivery_data_action").asInstanceOf[StringArgs].get
         phSparkDriver().sc.stop
 
         (Some(Map("delivery_file_name" -> toJson(exportResult))), None)
