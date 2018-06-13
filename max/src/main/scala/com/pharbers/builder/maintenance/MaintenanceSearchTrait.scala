@@ -1,16 +1,17 @@
 package com.pharbers.builder.maintenance
 
-import com.pharbers.builder.{CheckTrait, MarketTable}
+import com.pharbers.builder.CheckTrait
+import com.pharbers.builder.phMarketTable.phMarketTrait
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
 /**
   * Created by jeorch on 18-6-6.
   */
-trait MaintenanceSearchTrait extends CheckTrait with MarketTable {
+trait MaintenanceSearchTrait extends CheckTrait with phMarketTrait {
     def getAllCompanies: (Option[Map[String, JsValue]], Option[JsValue]) = {
 
-        (Some(Map("companies" -> toJson(getMktTableAllCompanies))), None)
+        (Some(Map("companies" -> toJson("getMktTableAllCompanies"))), None)
     }
 
     def getDataCleanModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =

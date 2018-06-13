@@ -87,6 +87,22 @@ trait phBuilder {
         toJson(mapping("job_id"))
     }
 
+
+//    def panel(mapping: Map[String, String]): String = {
+//        val ckArgLst = getPanelArgLst(company, mkt) ++ getSourceLst(company, mkt)
+//
+//        if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
+//            throw new Exception("input wrong")
+//
+//        val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
+//        val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
+//                .asInstanceOf[MapArgs]
+//                .get("phSavePanelJob")
+//                .asInstanceOf[StringArgs].get
+//        //        phSparkDriver().sc.stop()
+//        result
+//    }
+
     def doMax(): JsValue = {
         val rd = new PhRedisDriver()
         val panelLst = rd.getSetAllValue(mapping("job_id"))

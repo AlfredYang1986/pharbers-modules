@@ -1,9 +1,10 @@
 package com.pharbers.builder
 
 import akka.actor.Actor
+import com.pharbers.builder.phMarketTable.phMarketTrait
 import com.pharbers.pactions.actionbase.pActionTrait
 
-case class Builderimpl() extends MarketTable with CheckTrait {
+case class Builderimpl() extends phMarketTrait with CheckTrait {
 
     // GET INSTANCE
     val ymInst: (String, String, List[Map[String, String]]) => String = (c, m, l) =>
@@ -17,7 +18,7 @@ case class Builderimpl() extends MarketTable with CheckTrait {
 
     def getClazz(company: String, market: String)
                 (instanceFunc: (String, String, List[Map[String, String]]) => String): String =
-        instanceFunc(company, market, marketTable)
+        instanceFunc(company, market, Nil)
 
     def impl(clazz: String, initArgs: Map[String, String])(implicit _actor: Actor): pActionTrait = {
         val constructor = Class.forName(clazz).getConstructors()(0)

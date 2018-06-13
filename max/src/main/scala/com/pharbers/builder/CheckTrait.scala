@@ -1,6 +1,8 @@
 package com.pharbers.builder
 
-trait CheckTrait { this: MarketTable =>
+import com.pharbers.builder.phMarketTable.phMarketTrait
+
+trait CheckTrait { this: phMarketTrait =>
 
     val ck_user_id: Map[String, String] => Boolean = m => m.contains("user_id") && m("user_id").nonEmpty
     val ck_company_id: Map[String, String] => Boolean = m => m.contains("company_id") && m("company_id").nonEmpty
@@ -13,10 +15,6 @@ trait CheckTrait { this: MarketTable =>
     val ck_panel: Map[String, String] => Boolean = m => ck_ym(m) && ck_mkt(m) && ck_progress(m)
 
     val ck_max: Map[String, String] => Boolean = m => m.contains("panel_name") && m("panel_name").nonEmpty
-
-    def getMktTableAllCompanies: List[Map[String, String]] = marketTable.map(x =>
-        Map("company_id" -> x("company"), "company_name" -> x("company_name"))
-    ).distinct
 
     def getAllMkt(company: String): List[String] = marketTable.filter(company == _("company")).map(_("market"))
 

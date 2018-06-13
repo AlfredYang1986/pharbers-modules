@@ -5,6 +5,6 @@
         <server_port value="27017" />
         <connect_name value="Pharbers" />
         <connect_pwd value="Pharbers2017." />
-        <conn_name value="Max_Cores" />
+        <conn_name value="pharbers-max-aggregation" />
     </mongodb-connect>
 </pharbers-modules>
