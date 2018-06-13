@@ -58,4 +58,9 @@
 //    test("Maintenance Center replaceMatchFile"){
 //        maintenance.replaceMatchFile(replaceCondition)
 //    }
+//
+//    test("read market table"){
+//        marketTable.foreach(println)
+//    }
+//
 //}
