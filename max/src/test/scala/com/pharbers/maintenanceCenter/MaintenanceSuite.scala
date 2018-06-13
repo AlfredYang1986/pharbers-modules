@@ -1,17 +1,17 @@
 //package com.pharbers.maintenanceCenter
 //
-//import com.pharbers.builder.{CheckTrait, MaintenanceCenter, MarketTable}
+//import com.pharbers.builder.MaintenanceCenter
 //import org.scalatest.FunSuite
 //import play.api.libs.json.Json.toJson
 //
 ///**
 //  * Created by jeorch on 18-6-6.
 //  */
-//class MaintenanceSuite extends FunSuite with CheckTrait with MarketTable {
+//class MaintenanceSuite extends FunSuite {
 //
 //    val maintenance = new MaintenanceCenter
 //
-//    val company: String = "5b023787810c6e0268fe6ff6"
+//    val company: String = "5afa53bded925c05c6f69c54"
 //    val condition = toJson {
 //        Map(
 //            "condition" -> toJson(Map("maintenance" -> toJson(Map("company_id" -> toJson(company)))))
@@ -36,7 +36,7 @@
 //    }
 //
 //    test("Maintenance Center get all companies"){
-//        maintenance.getAllCompanies._1.get.get("companies").get.as[List[Map[String, String]]].foreach(println)
+//        maintenance.getAllCompaniesLst._1.get.get("companies").get.as[List[Map[String, String]]].foreach(println)
 //    }
 //
 //    test("Maintenance Center get all dataCleanModuleArgs"){
@@ -57,10 +57,6 @@
 //
 //    test("Maintenance Center replaceMatchFile"){
 //        maintenance.replaceMatchFile(replaceCondition)
-//    }
-//
-//    test("read market table"){
-//        marketTable.foreach(println)
 //    }
 //
 //}

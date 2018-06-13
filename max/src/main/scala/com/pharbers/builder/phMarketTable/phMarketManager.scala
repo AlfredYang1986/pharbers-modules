@@ -1,9 +1,15 @@
 package com.pharbers.builder.phMarketTable
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import com.mongodb.casbah.Imports._
 import play.api.libs.json.{JsObject, JsString, JsValue}
+import play.api.libs.json.Json.toJson
 
 trait phMarketManager extends phMarketDBTrait {
+
+    val dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
     def getAllCompanies: List[Map[String, String]] =
         db.queryMultipleObject(DBObject(), "company_table")(dbOutput).map{x =>
@@ -20,48 +26,34 @@ trait phMarketManager extends phMarketDBTrait {
             x("subsidiary").asInstanceOf[JsString].value.split("#")
         }.get.toList
 
-    val onlyCleanDes: Map[String, JsValue] => Map[String, String] = mjv => {
-        val cleanObj = mjv("clean").as[JsObject].value.toMap
-        val cleanFileMap = cleanObj("files").as[JsObject].value.toList.map{x =>
-            val tmp = x._2.as[JsObject].value.toMap
-            tmp("name").as[JsString].value -> tmp("des")
-        }.toMap
-
-        (cleanObj - "files" ++ cleanFileMap).map(x => x._1 -> x._2.as[JsString].value)
+    def getModuleTitleByTag(tag: String): Map[String, JsValue] => Map[String, String] = mjv => {
+        val cleanObj = mjv(tag).as[JsObject].value.toMap
+        Map("module_title" -> cleanObj("des").as[JsString].value)
     }
 
-    val onlyPanelDes: Map[String, JsValue] => Map[String, String] = mjv => {
-        val panelObj = mjv("panel").as[JsObject].value.toMap
-        val panelFileMap = panelObj("files").as[JsObject].value.toList.map{x =>
+    def getModuleMatchFilesByTag(tag: String): Map[String, JsValue] => List[Map[String, String]] = mjv => {
+        val cleanObj = mjv(tag).as[JsObject].value.toMap
+        cleanObj("files").as[JsObject].value.toList.map{x =>
             val tmp = x._2.as[JsObject].value.toMap
-            tmp("name").as[JsString].value -> tmp("des")
-        }.toMap
-
-        (panelObj - "files" ++ panelFileMap).map(x => x._1 -> x._2.as[JsString].value)
+            val date = new Date(tmp("update_date").as[JsString].value.toLong)
+            Map(
+                "file_key" -> tmp("name").as[JsString].value,
+                "file_des" -> tmp("des").as[JsString].value,
+                "update_date" -> dateformat.format(date)
+            )
+        }
     }
 
-    val onlyMaxDes: Map[String, JsValue] => Map[String, String] = mjv => {
-        val maxObj = mjv("max").as[JsObject].value.toMap
-        val maxFileMap = maxObj("files").as[JsObject].value.toList.map{x =>
-            val tmp = x._2.as[JsObject].value.toMap
-            tmp("name").as[JsString].value -> tmp("des")
-        }.toMap
-
-        (maxObj - "files" ++ maxFileMap).map(x => x._1 -> x._2.as[JsString].value)
+    def getModuleArgs(jv: JsValue)
+                     (moduleTitleFunc: Map[String, JsValue] => Map[String, String])
+                     (matchFileLstFunc: Map[String, JsValue] => List[Map[String, String]]): (Option[Map[String, JsValue]], Option[JsValue]) = {
+        val company = (jv \ "condition" \ "maintenance" \ "company_id").asOpt[String].get
+        val companyTableLst = queryMultipMarketTable(DBObject("company" -> company))
+        (Some(Map(
+            "module_title" -> toJson(companyTableLst.flatMap(moduleTitleFunc).toMap),
+            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc))
+        )), None)
     }
 
-    val onlyDeliveryDes: Map[String, JsValue] => Map[String, String] = mjv => {
-        val deliveryObj = mjv("delivery").as[JsObject].value.toMap
-        val deliveryFileMap = deliveryObj("files").as[JsObject].value.toList.map{x =>
-            val tmp = x._2.as[JsObject].value.toMap
-            tmp("name").as[JsString].value -> tmp("des")
-        }.toMap
-
-        (deliveryObj - "files" ++ deliveryFileMap).map(x => x._1 -> x._2.as[JsString].value)
-    }
-
-    def getMatchFileDes(company: String)
-                       (func: Map[String, JsValue] => Map[String, String]): Map[String, String] =
-        queryMultipMarketTable(DBObject("company" -> company)).flatMap(func).toMap
 
 }
