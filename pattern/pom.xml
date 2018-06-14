@@ -75,12 +75,32 @@
               <version>2.4.16</version>
           </dependency>
           <dependency>
-              <groupId>com.pharbers</groupId>
-              <artifactId>scala-jsonapi</artifactId>
-              <version>0.1</version>
-              <scope>system</scope>
-              <systemPath>${project.basedir}/lib/scala-jsonapi_2.11-Alfred-Edit-Version-0.1.jar</systemPath>
+              <groupId>org.scala-lang</groupId>
+              <artifactId>scala-reflect</artifactId>
+              <version>2.11.8</version>
           </dependency>
+          <dependency>
+              <groupId>org.scala-lang.modules</groupId>
+              <artifactId>scala-parser-combinators_2.11</artifactId>
+              <version>1.0.4</version>
+          </dependency>
+          <dependency>
+              <groupId>org.typelevel</groupId>
+              <artifactId>macro-compat_2.11</artifactId>
+              <version>1.1.1</version>
+          </dependency>
+          <dependency>
+              <groupId>org.scala-lang</groupId>
+              <artifactId>scala-compiler</artifactId>
+              <version>2.11.8</version>
+          </dependency>
+          <!--<dependency>-->
+              <!--<groupId>com.pharbers</groupId>-->
+              <!--<artifactId>scala-jsonapi</artifactId>-->
+              <!--<version>0.1</version>-->
+              <!--<scope>system</scope>-->
+              <!--<systemPath>${project.basedir}/lib/scala-jsonapi_2.11-Alfred-Edit-Version-0.1.jar</systemPath>-->
+          <!--</dependency>-->
           <dependency>
               <groupId>io.spray</groupId>
               <artifactId>spray-httpx_2.11</artifactId>
