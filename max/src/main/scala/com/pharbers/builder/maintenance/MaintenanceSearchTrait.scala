@@ -13,16 +13,10 @@ trait MaintenanceSearchTrait extends phMarketManager {
         (Some(Map("companies" -> toJson(result))), None)
     }
 
-    def getDataCleanModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =
-        getModuleArgs(jv)(getModuleTitleByTag("clean"))(getModuleMatchFilesByTag("clean"))
-
-    def getSimpleModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =
-        getModuleArgs(jv)(getModuleTitleByTag("panel"))(getModuleMatchFilesByTag("panel"))
-
-    def getMaxModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =
-        getModuleArgs(jv)(getModuleTitleByTag("max"))(getModuleMatchFilesByTag("max"))
-
-    def getDeliveryModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) =
-        getModuleArgs(jv)(getModuleTitleByTag("delivery"))(getModuleMatchFilesByTag("delivery"))
+    def getSingleModuleArgs(jv: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
+        val company = (jv \ "condition" \ "maintenance" \ "company_id").asOpt[String].get
+        val module_tag = (jv \ "condition" \ "maintenance" \ "module_tag").asOpt[String].get
+        getModuleArgs(company)(getModuleTitleByTag(module_tag))(getModuleMatchFilesByTag(module_tag))
+    }
 
 }
