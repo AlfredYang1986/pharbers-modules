@@ -50,7 +50,7 @@ trait phMarketManager extends phMarketDBTrait {
         val companyTableLst = queryMultipMarketTable(DBObject("company" -> company))
         (Some(Map(
             "module_title" -> toJson(companyTableLst.map(moduleTitleFunc).reduce((a, b) => if(a == b) a else a + " and " + b)),
-            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc).reduce((a, b) => a ::: b).distinct)
+            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc).reduce((a, b) => a ::: b).sortBy(_("file_key")).distinct)
         )), None)
     }
 
