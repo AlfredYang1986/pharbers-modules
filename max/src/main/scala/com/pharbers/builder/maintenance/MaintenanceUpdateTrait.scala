@@ -1,21 +1,16 @@
 package com.pharbers.builder.maintenance
 
-import java.io.File
-import java.util.Date
-
-import com.mongodb.casbah.Imports._
-import com.pharbers.builder.phMarketTable.{phMarketManager, phMarketDBTrait, phReflectCheck}
-import com.pharbers.common.algorithm.max_path_obj
-import com.pharbers.dbManagerTrait.dbInstanceManager
-import org.apache.commons.io.FileUtils
 import org.bson.types.ObjectId
 import play.api.libs.json.JsValue
+import com.mongodb.casbah.Imports._
 import play.api.libs.json.Json.toJson
+import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.builder.phMarketTable.phMarketManager
 
 /**
   * Created by jeorch on 18-6-6.
   */
-trait MaintenanceUpdateTrait  extends phReflectCheck with phMarketDBTrait with phMarketManager {
+trait MaintenanceUpdateTrait extends phMarketManager {
 
     def replaceMatchFile(data: JsValue): (Option[Map[String, JsValue]], Option[JsValue]) = {
 
@@ -59,6 +54,47 @@ trait MaintenanceUpdateTrait  extends phReflectCheck with phMarketDBTrait with p
 //        FileUtils.copyFile(upload_file, current_file)
 
         (Some(Map("file_key" -> toJson(origin_file_key), "file_name" -> toJson(current_file_name))), None)
+    }
+
+
+    def jv2md(mjv: Map[String, JsValue]): DBObject = {
+        val builder = MongoDBObject.newBuilder
+
+        mjv.foreach { cell =>
+
+        }
+
+        builder.result()
+
+
+        DBObject(
+            mjv.map{ cell =>
+                cell._2 match {
+                    case id: ObjectId => cell._1 -> toJson(id.toString)
+                    case str: String => cell._1 -> toJson(str)
+                    case obj: DBObject => cell._1 -> toJson(dbOutput(obj))
+                    case lst: List[DBObject] => cell._1 -> toJson(lst.map(dbOutput))
+                }
+            }
+        )
+
+
+        map.foreach(x =>
+            if(x._1 == "_id") builder += x._1 -> new ObjectId(x._2.asOpt[String].get)
+            else if(x._1 == origin_file_key) builder += x._1 -> x._2.asOpt[String].get.replaceAll(origin_file_name, current_file_name)
+            else builder += x._1 -> x._2.asOpt[String].get
+        )
+
+
+
+        obj.map { cell =>
+            cell._2 match {
+                case id: ObjectId => cell._1 -> toJson(id.toString)
+                case str: String => cell._1 -> toJson(str)
+                case obj: DBObject => cell._1 -> toJson(dbOutput(obj))
+                case lst: List[DBObject] => cell._1 -> toJson(lst.map(dbOutput))
+            }
+        }.toMap
     }
 
 }
