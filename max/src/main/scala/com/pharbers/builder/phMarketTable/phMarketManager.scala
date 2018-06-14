@@ -23,15 +23,14 @@ trait phMarketManager extends phMarketDBTrait {
             x("subsidiary").asInstanceOf[JsString].value.split("#")
         }.get.toList
 
-    def getModuleTitleByTag(tag: String): Map[String, JsValue] => Map[String, String] = mjv => {
-        val cleanObj = mjv(tag).as[JsObject].value.toMap
-        Map("module_title" -> cleanObj("des").as[JsString].value)
+    def getModuleTitleByTag(tag: String): Map[String, JsValue] => String = mjv => {
+        val moduleObj = mjv(tag).as[JsObject].value.toMap
+        moduleObj("des").as[JsString].value
     }
 
     def getModuleMatchFilesByTag(tag: String): Map[String, JsValue] => List[Map[String, String]] = mjv => {
-        val dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val cleanObj = mjv(tag).as[JsObject].value.toMap
-        cleanObj("files").as[JsObject].value.toList.map{x =>
+        val moduleObj = mjv(tag).as[JsObject].value.toMap
+        moduleObj("files").as[JsObject].value.toList.map{x =>
             val tmp = x._2.as[JsObject].value.toMap
             val date = new Date(tmp("update_date").as[JsString].value.toLong)
             Map(
@@ -42,14 +41,13 @@ trait phMarketManager extends phMarketDBTrait {
         }
     }
 
-    def getModuleArgs(jv: JsValue)
-                     (moduleTitleFunc: Map[String, JsValue] => Map[String, String])
+    def getModuleArgs(company: String)
+                     (moduleTitleFunc: Map[String, JsValue] => String)
                      (matchFileLstFunc: Map[String, JsValue] => List[Map[String, String]]): (Option[Map[String, JsValue]], Option[JsValue]) = {
-        val company = (jv \ "condition" \ "maintenance" \ "company_id").asOpt[String].get
         val companyTableLst = queryMultipMarketTable(DBObject("company" -> company))
         (Some(Map(
-            "module_title" -> toJson(companyTableLst.flatMap(moduleTitleFunc).toMap),
-            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc))
+            "module_title" -> toJson(companyTableLst.map(moduleTitleFunc).reduce((a, b) => if(a == b) a else a + " and " + b)),
+            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc).reduce((a, b) => a ::: b).distinct)
         )), None)
     }
 
