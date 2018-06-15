@@ -37,7 +37,6 @@ trait phMarketManager extends phMarketDBTrait {
             val tmp = x._2.as[JsObject].value.toMap
             val date = new Date(tmp("update_date").as[JsString].value.toLong)
             Map(
-                "file_key" -> tmp("name").as[JsString].value,
                 "file_des" -> tmp("des").as[JsString].value,
                 "update_date" -> dateformat.format(date)
             )
@@ -50,7 +49,7 @@ trait phMarketManager extends phMarketDBTrait {
         val companyTableLst = queryMultipMarketTable(DBObject("company" -> company))
         (Some(Map(
             "module_title" -> toJson(companyTableLst.map(moduleTitleFunc).reduce((a, b) => if(a == b) a else a + " and " + b)),
-            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc).reduce((a, b) => a ::: b).sortBy(_("file_key")).distinct)
+            "match_files" -> toJson(companyTableLst.map(matchFileLstFunc).reduce((a, b) => a ::: b).sortBy(_("file_des")).distinct)
         )), None)
     }
 

@@ -33,6 +33,6 @@ trait phMarketDBTrait {
         db.queryObject(condition, coll_name)(dbOutput)
 
     def queryMultipMarketTable(condition: DBObject): List[Map[String, JsValue]] =
-        db.queryMultipleObject(condition, coll_name, "company")(dbOutput)
+        db.queryMultipleObject(condition, coll_name, "company", 0, 0)(dbOutput)
 
 }
