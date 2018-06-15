@@ -29,6 +29,7 @@ trait phMarketManager extends phMarketDBTrait {
     }
 
     def getModuleMatchFilesByTag(tag: String): Map[String, JsValue] => List[Map[String, String]] = mjv => {
+        val dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val moduleObj = mjv(tag).as[JsObject].value.toMap
         moduleObj("files").as[JsObject].value.toList.map{x =>
             val tmp = x._2.as[JsObject].value.toMap

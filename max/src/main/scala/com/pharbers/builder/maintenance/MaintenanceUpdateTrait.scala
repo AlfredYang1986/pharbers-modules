@@ -55,9 +55,7 @@ trait MaintenanceUpdateTrait  extends phMarketManager {
             DBObject.apply(toJson(newJsMap).toString()) += "_id" -> new ObjectId(map("_id").as[JsString].value)
         }
 
-        queryMultipMarketTable(query) foreach  {x =>
-            db.updateObject(updateFunc(x),"market_table","_id")
-        }
+        queryMultipMarketTable(query) foreach ( x => updateMarketTable(updateFunc(x)) )
 
         //replace match_file to match_path
         val upload_file = new File(max_path_obj.p_clientPath + current_file_uuid)
@@ -66,46 +64,4 @@ trait MaintenanceUpdateTrait  extends phMarketManager {
 
         (Some(Map("file_key" -> toJson(origin_file_key), "file_name" -> toJson(current_file_uuid))), None)
     }
-
-
-    def jv2md(mjv: Map[String, JsValue]): DBObject = {
-        val builder = MongoDBObject.newBuilder
-
-        mjv.foreach { cell =>
-
-        }
-
-        builder.result()
-
-
-        DBObject(
-            mjv.map{ cell =>
-                cell._2 match {
-                    case id: ObjectId => cell._1 -> toJson(id.toString)
-                    case str: String => cell._1 -> toJson(str)
-                    case obj: DBObject => cell._1 -> toJson(dbOutput(obj))
-                    case lst: List[DBObject] => cell._1 -> toJson(lst.map(dbOutput))
-                }
-            }
-        )
-
-
-        map.foreach(x =>
-            if(x._1 == "_id") builder += x._1 -> new ObjectId(x._2.asOpt[String].get)
-            else if(x._1 == origin_file_key) builder += x._1 -> x._2.asOpt[String].get.replaceAll(origin_file_name, current_file_name)
-            else builder += x._1 -> x._2.asOpt[String].get
-        )
-
-
-
-        obj.map { cell =>
-            cell._2 match {
-                case id: ObjectId => cell._1 -> toJson(id.toString)
-                case str: String => cell._1 -> toJson(str)
-                case obj: DBObject => cell._1 -> toJson(dbOutput(obj))
-                case lst: List[DBObject] => cell._1 -> toJson(lst.map(dbOutput))
-            }
-        }.toMap
-    }
-
 }
