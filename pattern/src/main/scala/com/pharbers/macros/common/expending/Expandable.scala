@@ -20,28 +20,28 @@ object Expandable {
 
         val t_name = ttag.tpe match { case TypeRef(_, str, _) => str }
         val weak_type_name = t_name.asClass.name.toString
-        println(weak_type_name)
+//        println(weak_type_name)
         val fresh_class_name = TypeName(c.freshName("eval$"))
 
         val import_def =
             Import(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("model")), TermName("detail")),
-                List(ImportSelector(termNames.WILDCARD, 609, null, -1))) ::
+                List(ImportSelector(termNames.WILDCARD, -1, null, -1))) ::
             Import(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")),
-                List(ImportSelector(TermName("Attribute"), 650, TermName("Attribute"), 650), ImportSelector(TermName("Attributes"), 661, TermName("Attributes"), 661))) ::
+                List(ImportSelector(TermName("Attribute"), -1, TermName("Attribute"), -1), ImportSelector(TermName("Attributes"), -1, TermName("Attributes"), -1))) ::
             Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("RootObject")),
-                List(ImportSelector(TermName("ResourceObject"), 722, TermName("ResourceObject"), 722))) ::
+                List(ImportSelector(TermName("ResourceObject"), -1, TermName("ResourceObject"), -1))) ::
             Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
-                List(ImportSelector(TermName("StringValue"), 789, TermName("StringValue"), 789))) ::
+                List(ImportSelector(TermName("StringValue"), -1, TermName("StringValue"), -1))) ::
             Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
-                List(ImportSelector(TermName("NumberValue"), 853, TermName("NumberValue"), 853))) ::
+                List(ImportSelector(TermName("NumberValue"), -1, TermName("NumberValue"), -1))) ::
             Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
-                List(ImportSelector(TermName("NullValue"), 917, TermName("NullValue"), 917))) ::
+                List(ImportSelector(TermName("NullValue"), -1, TermName("NullValue"), -1))) ::
             Import(Select(Ident(TermName("scala")), TermName("reflect")),
-                List(ImportSelector(TermName("ClassTag"), 952, TermName("ClassTag"), 952))) ::
+                List(ImportSelector(TermName("ClassTag"), -1, TermName("ClassTag"), -1))) ::
             Import(Select(Select(Select(Ident(TermName("scala")), TermName("reflect")), TermName("runtime")), TermName("universe")),
-                List(ImportSelector(termNames.WILDCARD, 1004, null, -1))) ::
+                List(ImportSelector(termNames.WILDCARD, -1, null, -1))) ::
             Import(Select(Select(Ident(TermName("scala")), TermName("reflect")), TermName("runtime")),
-                List(ImportSelector(TermName("universe"), 1040, TermName("ru"), 1052))) :: Nil
+                  List(ImportSelector(TermName("universe"), -1, TermName("ru"), -1))) :: Nil
 
         val tmp =
             ClassDef(Modifiers(), fresh_class_name, List(),
@@ -79,8 +79,9 @@ object Expandable {
                             List(), List(List(ValDef(Modifiers(PARAM), TermName("obj"), Ident(TypeName("ResourceObject")), EmptyTree))),
                             Ident(TypeName(weak_type_name)), Ident(TermName("$qmark$qmark$qmark"))))))
 
-       val ttt = c.Expr[Expandable[T]](Block(import_def ::: (tmp :: Nil), Apply(Select(New(Ident(fresh_class_name)), termNames.CONSTRUCTOR), List())))
-       println(ttt)
-       ttt
+//        val ttt = c.Expr[Expandable[T]](Block(import_def ::: (tmp :: Nil), Apply(Select(New(Ident(fresh_class_name)), termNames.CONSTRUCTOR), List())))
+//        println(ttt)
+//        ttt
+        c.Expr[Expandable[T]](Block(import_def ::: (tmp :: Nil), Apply(Select(New(Ident(fresh_class_name)), termNames.CONSTRUCTOR), List())))
     }
 }

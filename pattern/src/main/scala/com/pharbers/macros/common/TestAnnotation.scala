@@ -1,4 +1,4 @@
-package com.pharbers.macros.common.expending
+package com.pharbers.macros.common
 
 import scala.annotation.{StaticAnnotation, compileTimeOnly}
 import scala.reflect.macros.whitebox

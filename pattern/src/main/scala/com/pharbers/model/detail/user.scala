@@ -8,5 +8,5 @@ import io.circe.generic.JsonCodec
                            another_test : java.lang.Double,
                            screen_name : String,
                            final_test : java.lang.Integer,
-                           auth : List[String])
+                           auth : List[String]) extends commonresult
 
