@@ -5,6 +5,8 @@ import com.pharbers.jsonapi.model.{Attributes, RootObject}
 
 import scala.reflect.macros.whitebox.Context
 import scala.language.experimental.macros
+import scala.reflect.runtime.universe._
+import scala.reflect.runtime.{universe => ru}
 
 trait Expandable[T] extends JsonapiResourceObjectFormat[T] {
     override def toJsonapi(a : T) : Attributes
@@ -16,45 +18,103 @@ object Expandable {
 
     def impl[T](c: Context)(ttag: c.WeakTypeTag[T]) : c.Expr[Expandable[T]] = {
         import c.universe._
-
-        ttag.tpe.baseClasses.foreach(println(_))
         val t_name = ttag.tpe match { case TypeRef(_, str, _) => str }
-        println(s"type of ttag has type arguments $t_name")
+        val weak_type_name = t_name.asClass.name.toString
+        println(weak_type_name)
+        val fresh_class_name = TypeName(c.freshName("eval$"))
+//        val fresh_class_name = TypeName("userJsonApiOpt")
 
+        import c.universe.Flag._
         val tmp =
-        ClassDef(Modifiers(), TypeName("userJsonApiOpt"), List(),
-            Template(List(AppliedTypeTree(Ident(TypeName("Expandable")), List(Ident(TypeName("user"))))), noSelfType,
+            ClassDef(Modifiers(), fresh_class_name, List(), Template(List(AppliedTypeTree(Ident(TypeName("Expandable")),
+                List(Select(Select(Ident(TermName("model")), TermName("user")), TypeName("user"))))), noSelfType,
                 List(DefDef(Modifiers(), termNames.CONSTRUCTOR, List(), List(List()), TypeTree(),
                     Block(List(pendingSuperCall), Literal(Constant(())))),
-                    Import(Select(Select(Select(Select(Ident(TermName("com")),
-                        TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
-                        List(ImportSelector(TermName("StringValue"), 499, TermName("StringValue"), 499))),
+                    Import(Select(Ident(TermName("model")), TermName("user")),
+                        List(ImportSelector(TermName("user"), 530, TermName("user"), 530))),
                     Import(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")),
-                        List(ImportSelector(TermName("Attribute"), 550, TermName("Attribute"), 550),
-                            ImportSelector(TermName("Attributes"), 561, TermName("Attributes"), 561))),
-                    Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")),
-                        TermName("model")), TermName("RootObject")),
-                        List(ImportSelector(TermName("ResourceObject"), 622, TermName("ResourceObject"), 622))),
-                    Import(Select(Select(Ident(TermName("org")), TermName("bson")), TermName("types")),
-                        List(ImportSelector(TermName("ObjectId"), 663, TermName("ObjectId"), 663))),
-                    DefDef(Modifiers(Flag.OVERRIDE), TermName("toJsonapi"), List(),
-                        List(List(ValDef(Modifiers(Flag.PARAM), TermName("p"), Ident(TypeName("user")), EmptyTree))), TypeTree(),
-                        TypeApply(Select(Block(List(ValDef(Modifiers(Flag.SYNTHETIC | Flag.ARTIFACT), TermName("x$2"), TypeTree(),
-                            Apply(Ident(TermName("Attribute")), List(Literal(Constant("name")), Apply(Ident(TermName("StringValue")),
-                                List(Select(Ident(TermName("p")), TermName("name")))))))),
-                            Apply(Select(Block(List(ValDef(Modifiers(Flag.SYNTHETIC | Flag.ARTIFACT), TermName("x$1"), TypeTree(),
-                                Apply(Ident(TermName("Attribute")), List(Literal(Constant("photo")),
-                                    Apply(Ident(TermName("StringValue")), List(Select(Ident(TermName("p")), TermName("photo")))))))),
-                                Apply(Select(Ident(TermName("Nil")), TermName("$colon$colon")), List(Ident(TermName("x$1"))))),
-                                TermName("$colon$colon")), List(Ident(TermName("x$2"))))), TermName("asInstanceOf")),
-                            List(Ident(TypeName("Attributes"))))),
-                    DefDef(Modifiers(Flag.OVERRIDE), TermName("fromJsonapi"), List(), List(List(
-                        ValDef(Modifiers(Flag.PARAM), TermName("obj"), Ident(TypeName("ResourceObject")), EmptyTree))),
-                        Ident(TypeName("user")), Apply(Ident(TermName("user")), List(Select(Select(Ident(TermName("ObjectId")),
-                            TermName("get")), TermName("toString")), Literal(Constant("alfred yang")), Literal(Constant("photo")),
-                            Ident(TermName("Nil"))))))))
+                        List(
+                            ImportSelector(TermName("Attribute"), 574, TermName("Attribute"), 574),
+                            ImportSelector(TermName("Attributes"), 585, TermName("Attributes"), 585)
+                        )),
+                    Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("RootObject")),
+                        List(
+                            ImportSelector(TermName("ResourceObject"), 646, TermName("ResourceObject"), 646)
+                        )),
+                    Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
+                        List(
+                            ImportSelector(TermName("StringValue"), 713, TermName("StringValue"), 713)
+                        )),
+                    Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
+                        List(
+                            ImportSelector(TermName("NumberValue"), 777, TermName("NumberValue"), 777)
+                        )),
+                    Import(Select(Select(Select(Select(Ident(TermName("com")), TermName("pharbers")), TermName("jsonapi")), TermName("model")), TermName("JsonApiObject")),
+                        List(
+                            ImportSelector(TermName("NullValue"), 841, TermName("NullValue"), 841)
+                        )),
+                    Import(Select(Ident(TermName("scala")), TermName("reflect")),
+                        List(
+                            ImportSelector(TermName("ClassTag"), 876, TermName("ClassTag"), 876)
+                        )),
+                    Import(Select(Select(Select(Ident(TermName("scala")), TermName("reflect")), TermName("runtime")), TermName("universe")),
+                        List(
+                            ImportSelector(termNames.WILDCARD, 928, null, -1)
+                        )),
+                    Import(Select(Select(Ident(TermName("scala")), TermName("reflect")), TermName("runtime")),
+                        List(
+                            ImportSelector(TermName("universe"), 964, TermName("ru"), 976)
+                        )),
+                    DefDef(Modifiers(OVERRIDE), TermName("toJsonapi"), List(),
+                        List(List(
+                            ValDef(Modifiers(PARAM), TermName("p"),
+                                Select(Select(Ident(TermName("model")), TermName("user")), TypeName("user")), EmptyTree)
+                        )), TypeTree(),
+                        Block(List(
+                            ValDef(Modifiers(), TermName("mirror"), TypeTree(),
+                                Apply(Select(Ident(TermName("ru")), TermName("runtimeMirror")),
+                                    List(Select(Ident(TermName("getClass")), TermName("getClassLoader"))))
+                            ),
+                            ValDef(Modifiers(), TermName("inst_mirror"), TypeTree(),
+                                Apply(Select(Ident(TermName("mirror")), TermName("reflect")),
+                                    List(Ident(TermName("p"))))
+                            ),
+                            ValDef(Modifiers(), TermName("class_symbol"), TypeTree(),
+                                Select(Ident(TermName("inst_mirror")), TermName("symbol"))
+                            ),
+                            ValDef(Modifiers(), TermName("class_field"), TypeTree(),
+                                Select(Apply(Select(Select(Select(Ident(TermName("class_symbol")), TermName("typeSignature")),
+                                    TermName("members")), TermName("filter")),
+                                    List(Function(List(ValDef(Modifiers(PARAM), TermName("p"), TypeTree(), EmptyTree)),
+                                        Apply(Select(Select(Ident(TermName("p")), TermName("isTerm")), TermName("$amp$amp")),
+                                            List(Select(Select(Ident(TermName("p")), TermName("isMethod")), TermName("unary_$bang")))))
+                                    )), TermName("toList")))),
+                            TypeApply(Select(Apply(Select(Apply(Select(Ident(TermName("class_field")), TermName("map")),
+                                List(Function(List(ValDef(Modifiers(PARAM), TermName("f"), TypeTree(), EmptyTree)),
+                                    Block(List(ValDef(Modifiers(), TermName("attr_mirror"), TypeTree(),
+                                        Apply(Select(Ident(TermName("inst_mirror")), TermName("reflectField")),
+                                            List(Select(Ident(TermName("f")), TermName("asTerm"))))),
+                                        ValDef(Modifiers(), TermName("attr_val"), TypeTree(), Select(Ident(TermName("attr_mirror")), TermName("get")))),
+                                        Apply(Ident(TermName("Attribute")), List(Select(Select(Ident(TermName("f")), TermName("name")), TermName("toString")),
+                                            If(Apply(Select(Select(Ident(TermName("f")), TermName("info")), TermName("$eq$colon$eq")),
+                                                List(TypeApply(Ident(TermName("typeOf")), List(Ident(TypeName("String")))))),
+                                                Apply(Ident(TermName("StringValue")), List(Select(Ident(TermName("attr_val")),
+                                                    TermName("toString")))), If(Apply(Select(Select(Ident(TermName("f")),
+                                                    TermName("info")), TermName("$less$colon$less")),
+                                                    List(TypeApply(Ident(TermName("typeOf")), List(Ident(TypeName("Number")))))),
+                                                    Apply(Ident(TermName("NumberValue")), List(Apply(Ident(TermName("BigDecimal")),
+                                                        List(Select(TypeApply(Select(Ident(TermName("attr_val")),
+                                                            TermName("asInstanceOf")), List(Ident(TypeName("Number")))),
+                                                            TermName("doubleValue")))))), Ident(TermName("NullValue")))))))))),
+                                TermName("filterNot")), List(Function(List(ValDef(Modifiers(PARAM), TermName("it"), TypeTree(),
+                                EmptyTree)), Apply(Select(Ident(TermName("NullValue")), TermName("$eq$eq")),
+                                List(Select(Ident(TermName("it")), TermName("value"))))))), TermName("asInstanceOf")),
+                                List(Ident(TypeName("Attributes")))))), DefDef(Modifiers(OVERRIDE), TermName("fromJsonapi"), List(),
+                        List(List(ValDef(Modifiers(PARAM), TermName("obj"), Ident(TypeName("ResourceObject")), EmptyTree))),
+                        Select(Select(Ident(TermName("model")), TermName("user")), TypeName("user")),
+                        Ident(TermName("$qmark$qmark$qmark"))))))
 
-       val ttt = c.Expr[Expandable[T]](Block(tmp :: Nil, Apply(Select(New(Ident(TypeName("userJsonApiOpt"))), termNames.CONSTRUCTOR), List())))
+       val ttt = c.Expr[Expandable[T]](Block(tmp :: Nil, Apply(Select(New(Ident(fresh_class_name)), termNames.CONSTRUCTOR), List())))
        println(ttt)
        ttt
     }
