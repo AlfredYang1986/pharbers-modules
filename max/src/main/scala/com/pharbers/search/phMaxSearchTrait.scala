@@ -30,7 +30,7 @@ trait phMaxSearchTrait {
     def getFormatShare(originValue: Double): Double = f"$originValue%.4f".toDouble
 
     def getHistorySalesByRange(range: String, tempSingleJobKey: String) : Double = {
-        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val db = new dbInstanceManager{}.queryDBInstance("aggregation").get
 
         val query: DBObject = DBObject()
 
@@ -48,7 +48,7 @@ trait phMaxSearchTrait {
     }
 
     def getAreaSalesByRange(range: String, tempSingleJobKey: String) : List[Map[String, String]] = {
-        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val db = new dbInstanceManager{}.queryDBInstance("aggregation").get
 
         val query: DBObject = DBObject()
 

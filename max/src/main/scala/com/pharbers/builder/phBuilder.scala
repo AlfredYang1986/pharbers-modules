@@ -55,7 +55,7 @@ trait phBuilder {
         val clazz: String = ymInstMap("instance")
         val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                 .asInstanceOf[MapArgs].get("result").asInstanceOf[JVArgs].get
-        phSparkDriver().sc.stop()
+//        phSparkDriver().sc.stop()
 
         result
     }
