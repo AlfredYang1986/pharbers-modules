@@ -3,9 +3,8 @@ package com.pharbers.calc
 import java.io.File
 import java.util.UUID
 
-import com.pharbers.common.algorithm.max_path_obj
+import com.pharbers.common.algorithm.{max_data_sync_mongo_obj, max_path_obj}
 import com.pharbers.dbManagerTrait.dbInstanceManager
-import com.pharbers.delivery.util.mongo_config_obj
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.spark.phSparkDriver
@@ -24,8 +23,8 @@ trait phMaxScheduleTrait {
             val resultLocation = max_path_obj.p_maxPath + maxName
             val singleJobDF = sd.csv2RDD(resultLocation, delimiter)
             singleJobDF.write.format("com.mongodb.spark.sql.DefaultSource").mode("overwrite")
-                .option("uri", s"mongodb://${mongo_config_obj.mongodbHost}:${mongo_config_obj.mongodbPort}/")
-                .option("database", mongo_config_obj.databaseName)
+                .option("uri", s"mongodb://${max_data_sync_mongo_obj.mongodbHost}:${max_data_sync_mongo_obj.mongodbPort}/")
+                .option("database", max_data_sync_mongo_obj.databaseName)
                 .option("collection", singleJobKey)
                 .save()
             rdd2mongoJobsCount += 1
@@ -43,7 +42,7 @@ trait phMaxScheduleTrait {
             val maxNameForSearch = UUID.randomUUID().toString
             val resultLocation = max_path_obj.p_maxPath + maxNameForSearch
             delTempFile(new File(resultLocation))
-            val singleJobDF = sd.mongo2RDD(mongo_config_obj.mongodbHost, mongo_config_obj.mongodbPort, mongo_config_obj.databaseName, singleJobKey).toDF()
+            val singleJobDF = sd.mongo2RDD(max_data_sync_mongo_obj.mongodbHost, max_data_sync_mongo_obj.mongodbPort, max_data_sync_mongo_obj.databaseName, singleJobKey).toDF()
             singleJobDF.groupBy("Date", "Province", "City", "MARKET", "Product")
                 .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))
                 .write
