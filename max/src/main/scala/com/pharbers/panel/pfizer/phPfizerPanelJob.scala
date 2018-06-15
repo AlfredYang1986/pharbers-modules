@@ -49,7 +49,7 @@ case class phPfizerPanelJob(args: Map[String, String])(implicit _actor: Actor) e
     lazy val p_current: Double = args("p_current").toDouble
 
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
 
 
     //1. read universe_file
