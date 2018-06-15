@@ -15,7 +15,7 @@ class phBaseLine2MongoJob(override val defaultArgs: pActionArgs) extends pAction
 
     override val name: String = "result"
     override def perform(pr : pActionArgs): pActionArgs = {
-        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val db = new dbInstanceManager{}.queryDBInstance("market").get
         val coll_name = "BaseLine"
         val file = defaultArgs.asInstanceOf[MapArgs].get("file").asInstanceOf[StringArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get

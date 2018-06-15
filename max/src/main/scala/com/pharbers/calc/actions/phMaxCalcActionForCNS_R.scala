@@ -99,7 +99,7 @@ class phMaxCalcActionForCNS_R(override val defaultArgs: pActionArgs) extends pAc
                             .otherwise($"Factor" * $"avg_Units" * $"westMedicineIncome")
                     ))
                 .drop("s_sumSales", "s_sumUnits", "s_westMedicineIncome")
-                .filter(col("f_units") =!= 0 && col("f_sales") =!= 0)
+                .filter(col("f_units") =!= 0 || col("f_sales") =!= 0)
                 .withColumnRenamed("PHA_ID", "Panel_ID")
                 .withColumnRenamed("YM", "Date")
                 .withColumnRenamed("Prefecture", "City")

@@ -11,6 +11,8 @@ import org.apache.commons.io.FileUtils
 import org.bson.types.ObjectId
 import play.api.libs.json._
 import play.api.libs.json.Json.toJson
+import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.builder.phMarketTable.phMarketManager
 
 /**
   * Created by jeorch on 18-6-6.
@@ -53,9 +55,7 @@ trait MaintenanceUpdateTrait  extends phMarketManager {
             DBObject.apply(toJson(newJsMap).toString()) += "_id" -> new ObjectId(map("_id").as[JsString].value)
         }
 
-        queryMultipMarketTable(query) foreach  {x =>
-            db.updateObject(updateFunc(x),"market_table","_id")
-        }
+        queryMultipMarketTable(query) foreach ( x => updateMarketTable(updateFunc(x)) )
 
         //replace match_file to match_path
         val upload_file = new File(max_path_obj.p_clientPath + current_file_uuid)
@@ -64,5 +64,4 @@ trait MaintenanceUpdateTrait  extends phMarketManager {
 
         (Some(Map("file_des" -> toJson(origin_file_key), "file_name" -> toJson(current_file_uuid))), None)
     }
-
 }

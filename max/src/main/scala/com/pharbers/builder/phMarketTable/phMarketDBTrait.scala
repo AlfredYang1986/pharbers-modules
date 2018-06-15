@@ -25,6 +25,7 @@ trait phMarketDBTrait {
     def insertMarketTable(obj: DBObject): Unit = db.insertObject(obj, coll_name, "_id")
 
     def removeMarketTable(obj: DBObject): Unit = db.deleteObject(obj, coll_name, "_id")
+
     def removeMultiMarketTable(obj: DBObject): Unit = db.deleteMultiObject(obj, coll_name)
 
     def updateMarketTable(obj: DBObject): Unit = db.updateObject(obj, coll_name, "_id")
