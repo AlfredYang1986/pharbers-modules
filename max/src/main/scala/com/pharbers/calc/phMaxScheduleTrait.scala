@@ -6,6 +6,8 @@ import java.util.UUID
 import com.pharbers.common.algorithm.{max_data_sync_mongo_obj, max_path_obj}
 import com.pharbers.dbManagerTrait.dbInstanceManager
 import com.pharbers.driver.PhRedisDriver
+import com.pharbers.pactions.actionbase.NULLArgs
+import com.pharbers.pactions.generalactions.jarPreloadAction
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.spark.phSparkDriver
 
@@ -42,6 +44,7 @@ trait phMaxScheduleTrait {
             val maxNameForSearch = UUID.randomUUID().toString
             val resultLocation = max_path_obj.p_maxPath + maxNameForSearch
             delTempFile(new File(resultLocation))
+            jarPreloadAction().perform(NULLArgs)
             val singleJobDF = sd.mongo2RDD(max_data_sync_mongo_obj.mongodbHost, max_data_sync_mongo_obj.mongodbPort, max_data_sync_mongo_obj.databaseName, singleJobKey).toDF()
             singleJobDF.groupBy("Date", "Province", "City", "MARKET", "Product")
                 .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))
