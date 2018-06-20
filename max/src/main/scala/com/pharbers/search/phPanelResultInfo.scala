@@ -2,13 +2,13 @@ package com.pharbers.search
 
 import java.util.Base64
 
-import com.mongodb.casbah.Imports.DBObject
+import com.mongodb.casbah.Imports._
+import play.api.libs.json.Json.toJson
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.driver.PhRedisDriver
-import com.pharbers.dbManagerTrait.dbInstanceManager
-import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.Imports.DBObject
 import play.api.libs.json.{JsString, JsValue}
-import play.api.libs.json.Json.toJson
+import com.pharbers.builder.phMarketTable.MongoDBPool._
 
 /**
   * Created by jeorch on 18-5-14.
@@ -27,7 +27,7 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
     def getPanelSales: Double = rd.getMapValue(singleJobKey, "panel_sales").toDouble
 
     val baseLine: Map[String, List[String]] = {
-        val db = new dbInstanceManager{}.queryDBInstance("market").get
+        val db = MongoPool.queryDBInstance("market").get
 
         val query: DBObject = {
             DBObject("Company" -> company)

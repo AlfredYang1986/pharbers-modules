@@ -4,12 +4,12 @@ import play.api.libs.json.JsValue
 import com.mongodb.casbah.Imports._
 import com.pharbers.cliTraits.DBTrait
 import play.api.libs.json.Json.toJson
-import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.builder.phMarketTable.MongoDBPool._
 
 trait phMarketDBTrait {
     val version: String = "3.0.1" // 暂未使用
     val coll_name = "market_table"
-    val db: DBTrait = new dbInstanceManager{}.queryDBInstance("market").get
+    val db: DBTrait = MongoPool.queryDBInstance("market").get
 
     def dbOutput(obj: DBObject): Map[String, JsValue] = {
         obj.map { cell =>

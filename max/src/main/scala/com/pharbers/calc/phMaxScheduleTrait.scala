@@ -20,6 +20,7 @@ trait phMaxScheduleTrait {
         val rd = new PhRedisDriver()
         val sd = phSparkDriver()
         var rdd2mongoJobsCount = 0
+        jarPreloadAction().perform(NULLArgs)
         rd.getSetAllValue(maxSingleDayJobsKey).foreach(singleJobKey => {
             val maxName = rd.getMapValue(singleJobKey, "max_result_name")
             val resultLocation = max_path_obj.p_maxPath + maxName
@@ -40,11 +41,11 @@ trait phMaxScheduleTrait {
         val sd = phSparkDriver()
         var mongo2rddJobsCount = 0
         val db = new dbInstanceManager {}.queryDBInstance("data").get
+        jarPreloadAction().perform(NULLArgs)
         db.getOneDBAllCollectionNames.foreach(singleJobKey => {
             val maxNameForSearch = UUID.randomUUID().toString
             val resultLocation = max_path_obj.p_maxPath + maxNameForSearch
             delTempFile(new File(resultLocation))
-            jarPreloadAction().perform(NULLArgs)
             val singleJobDF = sd.mongo2RDD(max_data_sync_mongo_obj.mongodbHost, max_data_sync_mongo_obj.mongodbPort, max_data_sync_mongo_obj.databaseName, singleJobKey).toDF()
             singleJobDF.groupBy("Date", "Province", "City", "MARKET", "Product")
                 .agg(Map("f_sales"->"sum", "f_units"->"sum", "Panel_ID"->"first"))

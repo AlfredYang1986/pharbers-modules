@@ -100,8 +100,8 @@ trait phBuilder {
             mapping += "ym" -> ym
             mapping += "mkt" -> mkt
             mapping += "panel_name" -> panel
-            mapping += "universe_file" -> maxInstMap("universe_file")
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
+            mapping ++= maxInstMap
 
             val ckArgLst = maxInstMap("args").split("#").toList ::: Nil
 

@@ -13,13 +13,14 @@ import play.api.libs.json.JsValue
 
 import scala.concurrent.duration._
 import akka.actor.{ActorRef, ActorSystem}
-import com.pharbers.processSuit.MaxTestHeader
+
+import scala.language.postfixOps
 
 class MaxProcess_AstellasSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5b023787810c6e0268fe6ff6"
     val user: String = "5b0237b7810c6e0268fe6ff7"
-    val jobId: String = "20180615astellas001"
+    val jobId: String = "20180620astellas002"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
