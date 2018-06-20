@@ -1,4 +1,4 @@
-package com.pharbers.max
+package com.pharbers.processSuit
 
 import java.util.Date
 
@@ -19,7 +19,7 @@ class MaxProcess_AstellasSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5b023787810c6e0268fe6ff6"
     val user: String = "5b0237b7810c6e0268fe6ff7"
-    val jobId: String = "20180522astellas008"
+    val jobId: String = "20180615astellas001"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -38,13 +38,13 @@ class MaxProcess_AstellasSuit extends FunSuite {
         val result = Await.result(r.mapTo[JsValue], t.duration)
         println("calcYm result = " + result)
 
-//        val r2 = testActor ? panel(cpa, gycx, yms)
-//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-//        println("panel result2 = " + result2)
-//
-//        val r3 = testActor ? max()
-//        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-//        println("max result3 = " + result3)
+        val r2 = testActor ? panel(cpa, gycx, yms)
+        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+        println("panel result2 = " + result2)
+
+        val r3 = testActor ? max()
+        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
+        println("max result3 = " + result3)
 
 
         println()

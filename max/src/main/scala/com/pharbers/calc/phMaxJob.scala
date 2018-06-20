@@ -30,7 +30,7 @@ case class phMaxJob(args: Map[String, String])(implicit _actor: Actor) extends s
     lazy val p_total: Double = args("p_total").toDouble
     lazy val p_current: Double = args("p_current").toDouble
 
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
 
     // 1. load panel data
     val loadPanelData: sequenceJob = new sequenceJob {

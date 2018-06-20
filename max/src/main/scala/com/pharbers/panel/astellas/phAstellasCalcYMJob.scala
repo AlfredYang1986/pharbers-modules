@@ -21,18 +21,18 @@ case class phAstellasCalcYMJob(args: Map[String, String])(implicit _actor: Actor
 
     lazy val user_id: String = args("user_id")
     lazy val company_id: String = args("company_id")
-    implicit val sp: (sendEmTrait, Double) => Unit = sendSingleProgress(company_id, user_id).singleProgress
+    implicit val sp: (sendEmTrait, Double, String) => Unit = sendSingleProgress(company_id, user_id).singleProgress
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             setLogLevelAction("ERROR") ::
             xlsxReadingAction[phAstellasCpaFormat](cpa_file, "cpa") ::
             xlsxReadingAction[phAstellasGycxFormat](gyc_file, "gycx") ::
-            addListenerAction(MaxSparkListener(0, 50)) ::
+            addListenerAction(MaxSparkListener(0, 50, "phAstellasCalcYMCpaConcretJob")) ::
             phAstellasCalcYMCpaConcretJob() ::
             phAstellasCalcYMGycxConcretJob() ::
             saveMapResultAction("calcYMWithCpa", cache_location + "cpa") ::
             saveMapResultAction("calcYMWithGycx", cache_location + "gycx") ::
-            addListenerAction(MaxSparkListener(51, 99)) ::
+            addListenerAction(MaxSparkListener(51, 99, "phCalcYM2JVJobWithCpaAndGyc")) ::
             phCalcYM2JVJobWithCpaAndGyc() ::
             Nil
 } 

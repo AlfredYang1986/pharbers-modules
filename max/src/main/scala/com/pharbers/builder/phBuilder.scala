@@ -69,7 +69,7 @@ trait phBuilder {
             mapping += "ym" -> ym
             mapping += "mkt" -> mkt
             val panelInstMap = getPanelInst(mkt)
-            val ckArgLst = panelInstMap("source") :: panelInstMap("args").split("#").toList ::: Nil
+            val ckArgLst = panelInstMap("source").split("#").toList ::: panelInstMap("args").split("#").toList ::: Nil
             mapping ++= panelInstMap
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
 

@@ -18,7 +18,7 @@ class MaxProcess_NhwaSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5afa53bded925c05c6f69c54"
     val user: String = "5afaa333ed925c30f8c066d1"
-    val jobId: String = "20180613nhwa002"
+    val jobId: String = "20180615nhwa002"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -37,13 +37,13 @@ class MaxProcess_NhwaSuit extends FunSuite {
         val result = Await.result(r.mapTo[JsValue], t.duration)
         println("calcYm result = " + result)
 
-//        val r2 = testActor ? panel(cpa, gycx, yms)
-//        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
-//        println("panel result2 = " + result2)
-//
-//        val r3 = testActor ? max()
-//        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
-//        println("max result3 = " + result3)
+        val r2 = testActor ? panel(cpa, gycx, yms)
+        val result2 = Await.result(r2.mapTo[JsValue], t.duration)
+        println("panel result2 = " + result2)
+
+        val r3 = testActor ? max()
+        val result3 = Await.result(r3.mapTo[JsValue], t.duration)
+        println("max result3 = " + result3)
 
         println()
         println(s"结束时间" + dateformat.format(new Date()))

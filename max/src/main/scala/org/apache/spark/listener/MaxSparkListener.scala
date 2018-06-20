@@ -18,13 +18,13 @@ import org.apache.spark.listener.listenerActor._
   * @param start_progress   开始进度。
   * @param end_progress     任务完成时进度。
   */
-case class MaxSparkListener(start_progress: Int, end_progress: Int)
-                           (implicit send: ((sendEmTrait, Double) => Unit), acc: Actor) extends SparkListener {
+case class MaxSparkListener(start_progress: Int, end_progress: Int, tag: String = "")
+                           (implicit send: ((sendEmTrait, Double, String) => Unit), acc: Actor) extends SparkListener {
 
     require(0 <= start_progress && start_progress <= end_progress, "progress factor is error")
     require(end_progress <= 100, "progress factor is error")
 
-    val lactor: ActorRef = acc.context.actorOf(listenerActor.props(start_progress, end_progress))
+    val lactor: ActorRef = acc.context.actorOf(listenerActor.props(start_progress, end_progress, tag))
 
     override def onJobStart(job: SparkListenerJobStart): Unit =
         lactor ! jobStart(job.stageInfos.map(stageInfo => stageInfo.numTasks).sum)

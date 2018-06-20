@@ -24,7 +24,7 @@ case class phPfizerCalcYMJob(args: Map[String, String])(implicit _actor: Actor) 
 
     lazy val user_id: String = args("user_id")
     lazy val company_id: String = args("company_id")
-    implicit val sp: (sendEmTrait, Double) => Unit = sendSingleProgress(company_id, user_id).singleProgress
+    implicit val sp: (sendEmTrait, Double, String) => Unit = sendSingleProgress(company_id, user_id).singleProgress
 
     override val actions: List[pActionTrait] = { jarPreloadAction() ::
             setLogLevelAction("ERROR") ::

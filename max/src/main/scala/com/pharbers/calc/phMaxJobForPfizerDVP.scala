@@ -33,7 +33,7 @@ case class phMaxJobForPfizerDVP(args: Map[String, String])(implicit _actor: Acto
     lazy val company: String = args("company_id")
     lazy val p_total: Double = args("p_total").toDouble
     lazy val p_current: Double = args("p_current").toDouble
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
 
 
     val temp_universe_name: String = UUID.randomUUID().toString

@@ -4,6 +4,7 @@ target=$host:$dir
 tmp=target/maxDriver
 name=pharbers-max-0.1
 
+mvn clean install -DskipTests
 rm -rf $tmp
 mkdir $tmp
 cp -r pharbers_config $tmp
