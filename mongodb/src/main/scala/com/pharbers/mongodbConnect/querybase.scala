@@ -152,6 +152,16 @@ class AMongoDBLINQ(val dc : connection_instance) extends IDatabaseContext {
 		}
 		nc
 	}
+
+	def selectSkipTopWithoutSort[U](skip : Int)(take : Int)(cr : (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
+		val mongoColl = openConnection
+		val ct = mongoColl.find(w).skip(skip).limit(take)
+		var nc = new Linq_List[U]
+		for (i <- ct) {
+			nc = (nc :+ cr(i)).asInstanceOf[Linq_List[U]]
+		}
+		nc
+	}
 	
 	def selectSkipTop[U](skip : Int)(take : Int)(o : String)(cr : (MongoDBObject) => U)(implicit dc : connection_instance) : IQueryable[U] = {
 		val mongoColl = openConnection
