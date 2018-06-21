@@ -20,7 +20,7 @@
         <module>security</module>
         <module>max</module>
         <module>client-pattern</module>
-        <module>pattern</module>
+        <!--<module>api-modules</module>-->
     </modules>
 
 </project>
