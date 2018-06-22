@@ -41,7 +41,6 @@ public class phNhwaCommonWritable extends phExcelWritable {
         for (String iter : lst) {
             String tmp = titleMap.get(iter);
             result.add(tmp == null ? iter : tmp);
-            System.out.println(tmp);
         }
         for (String iter : result) {
             reVal.append(iter).append(delimiter);

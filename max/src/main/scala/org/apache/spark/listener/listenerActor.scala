@@ -2,6 +2,7 @@ package org.apache.spark.listener
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.pharbers.channel.util.sendEmTrait
+import com.pharbers.common.algorithm.alTempLog
 import org.apache.spark.listener.listenerActor._
 import org.apache.spark.scheduler.SparkListener
 import com.pharbers.pactions.actionbase.NULLArgs
@@ -50,7 +51,7 @@ class listenerActor(start_progress: Int, end_progress: Int, tag: String)
 
         case jobEnd(listener) =>
             if(remainTask < 1)
-                println("remainTask = " + remainTask)
+                alTempLog("remainTask = " + remainTask)
                 removeListenerAction(listener).perform(NULLArgs)
 //            alTempLog("Job Over")
 
