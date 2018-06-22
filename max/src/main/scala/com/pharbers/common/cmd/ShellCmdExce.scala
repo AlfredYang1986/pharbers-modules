@@ -1,7 +1,9 @@
 package com.pharbers.common.cmd
 
 import java.io.{InputStreamReader, LineNumberReader}
+
 import com.pharbers.ErrorCode._
+import com.pharbers.common.algorithm.alTempLog
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.json.Json.toJson
 
@@ -18,7 +20,7 @@ trait alShellCmdExce {
 class alShellOtherCmdExce() extends alShellCmdExce {
   override def excute: JsValue = {
     try {
-      println(s"cmd=$cmd")
+      alTempLog(s"cmd=$cmd")
       new ProcessBuilder("/bin/bash", "-c", cmd).start().waitFor()
       toJson(successToJson(toJson("shell success")).get)
     } catch {
@@ -30,7 +32,7 @@ class alShellOtherCmdExce() extends alShellCmdExce {
 class alShellPythonCmdExce() extends alShellCmdExce {
   override def excute: JsValue = {
     try {
-      println(s"cmd=$cmd")
+      alTempLog(s"cmd=$cmd")
       val process = new ProcessBuilder("/bin/bash", "-c", cmd).start()
       val input = new LineNumberReader(new InputStreamReader(process.getInputStream()))
       var line,result: String = ""
