@@ -1,5 +1,7 @@
 package com.pharbers.processSuit
 
+import com.pharbers.pactions.actionbase.{MapArgs, NULLArgs, StringArgs}
+import com.pharbers.panel.common.phBaseLine2MongoJob
 import org.scalatest.FunSuite
 
 class BaseLine2Mongo extends FunSuite {
@@ -12,17 +14,16 @@ class BaseLine2Mongo extends FunSuite {
 
 
     test("base line form Excel to Mongo") {
-//        val df = MapArgs(
-//            Map(
-//                "company" -> StringArgs(nhwa),
-//                "file" -> StringArgs(nhwa_file)
-////                "company" -> StringArgs(acn),
-////                "file" -> StringArgs(acn_file)
-////                "company" -> StringArgs(pfz),
-////                "file" -> StringArgs(pfz_file)
-//        ))
-//
-//        phBaseLine2MongoJob(df).perform(NULLArgs)
-        println("aaa")
+        val df = MapArgs(
+            Map(
+                "company" -> StringArgs(nhwa),
+                "file" -> StringArgs(nhwa_file)
+//                "company" -> StringArgs(acn),
+//                "file" -> StringArgs(acn_file)
+//                "company" -> StringArgs(pfz),
+//                "file" -> StringArgs(pfz_file)
+        ))
+
+        phBaseLine2MongoJob(df).perform(NULLArgs)
     }
 }
