@@ -3,7 +3,7 @@ package com.pharbers.panel.nhwa
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.pactions.generalactions._
 import com.pharbers.panel.common.phCalcYM2JVJob
 import com.pharbers.common.algorithm.max_path_obj
@@ -20,7 +20,7 @@ case class phNhwaCalcYMJob(args: Map[String, String])(implicit _actor: Actor) ex
 
     lazy val user_id: String = args("user_id")
     lazy val company_id: String = args("company_id")
-    implicit val sp: (sendEmTrait, Double) => Unit = sendSingleProgress(company_id, user_id).singleProgress
+    implicit val sp: (sendEmTrait, Double, String) => Unit = sendSingleProgress(company_id, user_id).singleProgress
 
     override val actions: List[pActionTrait] = { jarPreloadAction() ::
                 setLogLevelAction("ERROR") ::

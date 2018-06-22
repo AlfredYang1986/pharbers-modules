@@ -1,12 +1,11 @@
 package com.pharbers.search.actions
 
 import java.util.Base64
-
-import com.pharbers.common.algorithm.phSparkCommonFuncTrait
-import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.sercuity.Sercurity
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.pactions.actionbase._
-import com.pharbers.sercuity.Sercurity
+import com.pharbers.builder.phMarketTable.MongoDBPool._
+import com.pharbers.common.algorithm.phSparkCommonFuncTrait
 
 /**
   * Created by jeorch on 18-5-14.
@@ -27,12 +26,12 @@ class phHistoryConditionSearchAction(override val defaultArgs: pActionArgs) exte
         val redisDriver = new PhRedisDriver()
 
         val maxSingleDayJobsKey = Sercurity.md5Hash("Pharbers")
-        val db = new dbInstanceManager{}.queryDBInstance("data").get
+        val db = MongoPool.queryDBInstance("data").get
         val historyKeySet = db.getOneDBAllCollectionNames
 
         val totalSingleJobKeySet = redisDriver.getSetAllValue(maxSingleDayJobsKey) match {
-            case s if(s.isEmpty) => historyKeySet.toSet
-            case s => s.foreach(historyKeySet.add(_)); historyKeySet.toSet
+            case s if s.isEmpty => historyKeySet.toSet
+            case s => s.foreach(historyKeySet.add); historyKeySet.toSet
         }
 
         val allSingleJobKeyLst = totalSingleJobKeySet

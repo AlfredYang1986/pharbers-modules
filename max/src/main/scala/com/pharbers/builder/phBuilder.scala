@@ -1,6 +1,7 @@
 package com.pharbers.builder
 
 import akka.actor.Actor
+import com.pharbers.builder.phMarketTable.Builderimpl
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.driver.PhRedisDriver
@@ -41,41 +42,41 @@ trait phBuilder {
         this
     }
 
-    val builderimpl = Builderimpl()
+    val builderimpl = Builderimpl(mapping("company_id"))
     import builderimpl._
 
     def doCalcYM(): JsValue = {
-        val defaultMkt = getAllMkt(mapping("company_id")).head
-        val ckArgLst = getSourceLst(mapping("company_id"), defaultMkt)
+        val ymInstMap = getYmInst
+        val ckArgLst = ymInstMap("source").split("#").toList
 
         if(!parametCheck(ckArgLst, mapping)(ck_base))
             throw new Exception("input wrong")
 
-        val clazz: String = getClazz(mapping("company_id"), defaultMkt)(ymInst)
+        val clazz: String = ymInstMap("instance")
         val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                 .asInstanceOf[MapArgs].get("result").asInstanceOf[JVArgs].get
-
         phSparkDriver().sc.stop()
+
         result
     }
 
     def doPanel(): JsValue = {
         val ymLst = mapping("yms").split("#")
-        val mktLst = getAllMkt(mapping("company_id"))
         val jobSum = ymLst.length * mktLst.length
         mapping += "p_total" -> jobSum.toString
 
         for (ym <- ymLst; mkt <- mktLst) {
             mapping += "ym" -> ym
             mapping += "mkt" -> mkt
-            val ckArgLst = getPanelArgLst(mapping("company_id"), mkt) ++ getSourceLst(mapping("company_id"), mkt)
-            mapping ++= getPanelArgs(mapping("company_id"), mkt)
+            val panelInstMap = getPanelInst(mkt)
+            val ckArgLst = panelInstMap("source").split("#").toList ::: panelInstMap("args").split("#").toList ::: Nil
+            mapping ++= panelInstMap
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
 
             if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m)))
                 throw new Exception("input wrong")
 
-            val clazz: String = getClazz(mapping("company_id"), mkt)(panelInst)
+            val clazz: String = panelInstMap("instance")
             val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                     .asInstanceOf[MapArgs]
                     .get("phSavePanelJob")
@@ -94,17 +95,20 @@ trait phBuilder {
 
         val maxResult = panelLst.map { panel =>
             val mkt = rd.getMapValue(panel, "mkt")
+            val ym = rd.getMapValue(panel, "ym")
+            val maxInstMap = getMaxInst(mkt)
+            mapping += "ym" -> ym
             mapping += "mkt" -> mkt
             mapping += "panel_name" -> panel
-            mapping += "ym" -> rd.getMapValue(panel, "ym")
-            mapping += "universe_file" -> getPanelArgs(mapping("company_id"), mkt)("universe_file")
             mapping += "p_current" -> (mapping.getOrElse("p_current", "0").toInt + 1).toString
-            mapping ++= getMaxArgs(mapping("company_id"), mkt)
+            mapping ++= maxInstMap
 
-            if(!parametCheck(getMaxArgLst(mapping("company_id"), mkt), mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
+            val ckArgLst = maxInstMap("args").split("#").toList ::: Nil
+
+            if(!parametCheck(ckArgLst, mapping)(m => ck_base(m) && ck_panel(m) && ck_max(m)))
                 throw new Exception("input wrong")
 
-            val clazz: String = getClazz(mapping("company_id"), mkt)(maxInst)
+            val clazz: String = maxInstMap("instance")
             val result = impl(clazz, mapping).perform(MapArgs(Map().empty))
                     .asInstanceOf[MapArgs]
                     .get("max_persistent_action")

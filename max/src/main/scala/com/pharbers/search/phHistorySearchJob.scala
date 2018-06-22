@@ -11,12 +11,12 @@ import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction
 object phHistorySearchJob {
     def apply(args: Map[String, String]) : phHistorySearchJob = {
         new phHistorySearchJob {
-            override lazy val user: String = args.get("user").getOrElse(throw new Exception("Illegal user"))
-            override lazy val company: String = args.get("company").getOrElse(throw new Exception("Illegal company"))
-            override lazy val pageIndex: String = args.get("pageIndex").getOrElse("0")
-            override lazy val singlePageSize: String = args.get("singlePageSize").getOrElse("20")
-            override lazy val ym_condition: String = args.get("ym_condition").getOrElse("-")
-            override lazy val mkt: String = args.get("mkt").getOrElse("")
+            override lazy val user: String = args.getOrElse("user", throw new Exception("Illegal user"))
+            override lazy val company: String = args.getOrElse("company", throw new Exception("Illegal company"))
+            override lazy val pageIndex: String = args.getOrElse("pageIndex", "0")
+            override lazy val singlePageSize: String = args.getOrElse("singlePageSize", "20")
+            override lazy val ym_condition: String = args.getOrElse("ym_condition", "-")
+            override lazy val mkt: String = args.getOrElse("mkt", "")
         }
     }
 }

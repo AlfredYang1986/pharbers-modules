@@ -1,10 +1,11 @@
 package com.pharbers.panel.astellas
 
 import java.util.UUID
+
 import akka.actor.Actor
+import com.pharbers.channel.util.sendEmTrait
 import org.apache.spark.listener
 import com.pharbers.pactions.jobs._
-import com.pharbers.channel.sendEmTrait
 import com.pharbers.pactions.actionbase._
 import com.pharbers.panel.astellas.format._
 import com.pharbers.pactions.generalactions._
@@ -39,7 +40,7 @@ case class phAstellasPanelJob(args: Map[String, String])(implicit _actor: Actor)
     lazy val p_current: Double = args("p_current").toDouble
 
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
 
 
     //1. read 产品匹配表
@@ -143,19 +144,19 @@ case class phAstellasPanelJob(args: Map[String, String])(implicit _actor: Actor)
 
     override val actions: List[pActionTrait] = { jarPreloadAction() ::
             setLogLevelAction("ERROR") ::
-            addListenerAction(listener.MaxSparkListener(0, 10)) ::
+            addListenerAction(listener.MaxSparkListener(0, 10, "load_product_match_file")) ::
             load_product_match_file ::
-            addListenerAction(listener.MaxSparkListener(11, 20)) ::
+            addListenerAction(listener.MaxSparkListener(11, 20, "load_markets_match_file")) ::
             load_markets_match_file ::
-            addListenerAction(listener.MaxSparkListener(21, 30)) ::
+            addListenerAction(listener.MaxSparkListener(21, 30, "load_universe_file")) ::
             load_universe_file ::
-            addListenerAction(listener.MaxSparkListener(31, 40)) ::
+            addListenerAction(listener.MaxSparkListener(31, 40, "load_hospital_file")) ::
             load_hospital_file ::
-            addListenerAction(listener.MaxSparkListener(41, 50)) ::
+            addListenerAction(listener.MaxSparkListener(41, 50, "load_cpa")) ::
             load_cpa ::
-            addListenerAction(listener.MaxSparkListener(51, 60)) ::
+            addListenerAction(listener.MaxSparkListener(51, 60, "load_gycx")) ::
             load_gycx ::
-            addListenerAction(listener.MaxSparkListener(61, 90)) ::
+            addListenerAction(listener.MaxSparkListener(61, 90, "phAstellasPanelConcretJob")) ::
             phAstellasPanelConcretJob(df) ::
             phSavePanelJob(df) ::
             addListenerAction(listener.MaxSparkListener(91, 99)) ::

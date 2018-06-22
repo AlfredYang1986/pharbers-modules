@@ -21,6 +21,8 @@
         <module>paction</module>
         <module>timer</module>
         <module>max</module>
+        <module>unitTest</module>
+        <module>gatling</module>
         <module>client-pattern</module>
     </modules>
 

@@ -13,27 +13,27 @@ import play.api.libs.json.Json.toJson
 case class phMaxResultInfo(company: String, ym:String, mkt: String) extends phMaxSearchTrait {
 
     val rd = new PhRedisDriver()
-    val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
-    val max_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
-    val max_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "max_sales_prov_lst_key")
-    val company_sales_city_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_city_lst_key")
-    val company_sales_prov_lst_key = Sercurity.md5Hash(company + ym + mkt + "company_sales_prov_lst_key")
+    val singleJobKey: String = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
+    val max_sales_city_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
+    val max_sales_prov_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "max_sales_prov_lst_key")
+    val company_sales_city_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "company_sales_city_lst_key")
+    val company_sales_prov_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "company_sales_prov_lst_key")
 
-    val lastYearYM = getLastYearYM(ym)
-    val lastYearSingleJobKey = Base64.getEncoder.encodeToString((company +"#"+ lastYearYM +"#"+ mkt).getBytes())
+    val lastYearYM: String = getLastYearYM(ym)
+    val lastYearSingleJobKey: String = Base64.getEncoder.encodeToString((company +"#"+ lastYearYM +"#"+ mkt).getBytes())
 
-    def getMaxResultSales = rd.getMapValue(singleJobKey, "max_sales").toDouble
-    def getCurrCompanySales = rd.getMapValue(singleJobKey, "max_company_sales").toDouble
+    def getMaxResultSales: Double = rd.getMapValue(singleJobKey, "max_sales").toDouble
+    def getCurrCompanySales: Double = rd.getMapValue(singleJobKey, "max_company_sales").toDouble
 
     val getLastYearResultSales : Double = getHistorySalesByRange("NATION_SALES", lastYearSingleJobKey)
     val getLastYearCurrCompanySales : Double = getHistorySalesByRange("NATION_COMPANY_SALES", lastYearSingleJobKey)
 
-    def getLastYearResultSalesPercentage = getLastYearResultSales match {
+    def getLastYearResultSalesPercentage: Double = getLastYearResultSales match {
             case 0.0 => 0.0
             case _ => (getMaxResultSales - getLastYearResultSales)/getLastYearResultSales
         }
 
-    def getLastYearCurrCompanySalesPercentage = getLastYearCurrCompanySales match {
+    def getLastYearCurrCompanySalesPercentage: Double = getLastYearCurrCompanySales match {
             case 0.0 => 0.0
             case _ => (getCurrCompanySales - getLastYearCurrCompanySales)/getLastYearCurrCompanySales
         }
