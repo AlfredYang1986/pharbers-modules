@@ -11,7 +11,6 @@ import scala.concurrent.duration._
 import java.text.SimpleDateFormat
 
 import play.api.libs.json.JsValue
-import com.pharbers.processSuit.MaxTestHeader
 import akka.actor.{ActorRef, ActorSystem}
 
 class MaxProcess_NhwaSuit extends FunSuite {

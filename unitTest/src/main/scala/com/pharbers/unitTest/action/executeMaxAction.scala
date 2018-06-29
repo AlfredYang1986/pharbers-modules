@@ -45,7 +45,7 @@ case class executeMaxAction(override val defaultArgs : pActionArgs)
 
     def doPanel(mapping: Map[String, String]): String = {
         val panelInstMap = getPanelInst(mkt)
-        val ckArgLst = panelInstMap("source") :: panelInstMap("args").split("#").toList ::: Nil
+        val ckArgLst = panelInstMap("source").split("#").toList ::: panelInstMap("args").split("#").toList ::: Nil
         val args = mapping ++ panelInstMap ++ testData.find(x => company == x("company") && mkt == x("market")).get
 
         if(!parametCheck(ckArgLst, args)(m => ck_base(m) && ck_panel(m)))

@@ -1,21 +1,24 @@
 package com.pharbers.processSuit
 
 import java.util.Date
+
 import akka.pattern.ask
 import akka.util.Timeout
 import org.scalatest.FunSuite
 import java.text.SimpleDateFormat
+
 import play.api.libs.json.JsValue
 import akka.actor.{ActorRef, ActorSystem}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class MaxProcess_PfizerSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5b028f95ed925c2c705b85ba"
     val user: String = "5b028feced925c2c705b85bb"
-    val jobId: String = "20180615pfizer001"
+    val jobId: String = "20180620pfizer001"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 

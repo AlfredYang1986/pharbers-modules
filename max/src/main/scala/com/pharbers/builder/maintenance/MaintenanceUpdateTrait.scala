@@ -4,15 +4,13 @@ import java.io.File
 import java.util.Date
 
 import com.mongodb.casbah.Imports._
-import com.pharbers.builder.phMarketTable.{phMarketDBTrait, phMarketManager, phReflectCheck}
+import com.pharbers.builder.phMarketTable.MongoDBPool._
+import com.pharbers.builder.phMarketTable.phMarketManager
 import com.pharbers.common.algorithm.max_path_obj
-import com.pharbers.dbManagerTrait.dbInstanceManager
 import org.apache.commons.io.FileUtils
 import org.bson.types.ObjectId
 import play.api.libs.json._
 import play.api.libs.json.Json.toJson
-import com.pharbers.dbManagerTrait.dbInstanceManager
-import com.pharbers.builder.phMarketTable.phMarketManager
 
 /**
   * Created by jeorch on 18-6-6.
@@ -26,7 +24,7 @@ trait MaintenanceUpdateTrait  extends phMarketManager {
         val origin_file_key = (data \ "condition" \ "origin_file" \ "file_des").asOpt[String].get
         val current_file_uuid = (data \ "condition" \ "current_file" \ "file_uuid").asOpt[String].get                         //上传后服务器上新匹配文件的名字
 
-        val db = new dbInstanceManager{}.queryDBInstance("market").get
+        val db = MongoPool.queryDBInstance("market").get
         val query: DBObject = DBObject("company" -> company_id)
 
         var origin_file_path = ""
