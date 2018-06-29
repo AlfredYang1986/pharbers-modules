@@ -101,7 +101,7 @@ class phMaxCalcAction(override val defaultArgs: pActionArgs) extends pActionTrai
                 .withColumn("Date", 'YM.cast(IntegerType))
                 .withColumnRenamed("Prefecture", "City")
                 .withColumnRenamed("min1", "Product")
-                .selectExpr("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
+                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
         }
 
         DFArgs(resultDF)

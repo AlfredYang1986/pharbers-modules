@@ -104,7 +104,7 @@ class phMaxCalcActionForCNS_R(override val defaultArgs: pActionArgs) extends pAc
                 .withColumnRenamed("YM", "Date")
                 .withColumnRenamed("Prefecture", "City")
                 .withColumnRenamed("min1", "Product")
-                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units")
+                .select("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
         }
 
         DFArgs(resultDF)
