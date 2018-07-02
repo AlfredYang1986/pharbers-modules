@@ -1,12 +1,14 @@
 package com.pharbers.search
 
-import com.mongodb.casbah.Imports.DBObject
+import java.util.Base64
+
+import com.mongodb.casbah.Imports._
+import play.api.libs.json.Json.toJson
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.driver.PhRedisDriver
-import com.pharbers.dbManagerTrait.dbInstanceManager
-import com.mongodb.casbah.Imports._
+import com.mongodb.casbah.Imports.DBObject
 import play.api.libs.json.{JsString, JsValue}
-import play.api.libs.json.Json.toJson
+import com.pharbers.builder.phMarketTable.MongoDBPool._
 
 /**
   * Created by jeorch on 18-5-14.
@@ -14,18 +16,18 @@ import play.api.libs.json.Json.toJson
 case class phPanelResultInfo(user: String, company: String, ym:String, mkt: String) extends phMaxSearchTrait {
 
     private val rd = new PhRedisDriver()
-    private val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
+    private val singleJobKey = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
     private val not_panel_hosp_key = Sercurity.md5Hash(user + company + ym + mkt + "not_panel_hosp_lst")
 
-    val lastYearYM = getLastYearYM(ym)
-    val lastYearSingleJobKey = Sercurity.md5Hash(user + company + lastYearYM + mkt)
+    val lastYearYM: String = getLastYearYM(ym)
+    val lastYearSingleJobKey: String = Sercurity.md5Hash(user + company + lastYearYM + mkt)
 
     def getHospCount: Int = rd.getMapValue(singleJobKey, "panel_hosp_count").toInt
     def getProdCount: Int = rd.getMapValue(singleJobKey, "panel_prod_count").toInt
     def getPanelSales: Double = rd.getMapValue(singleJobKey, "panel_sales").toDouble
 
     val baseLine: Map[String, List[String]] = {
-        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val db = MongoPool.queryDBInstance("market").get
 
         val query: DBObject = {
             DBObject("Company" -> company)
@@ -63,14 +65,14 @@ case class phPanelResultInfo(user: String, company: String, ym:String, mkt: Stri
         )
     }
 
-    def getLastYearHospCount(month: Int) = baseLine("HOSP_ID")(month - 1)
-    def getLastYearProdCount(month: Int) = baseLine("Prod_Name")(month - 1)
-    def getLastYearPanelSales(month: Int) = baseLine("Sales")(month - 1)
+    def getLastYearHospCount(month: Int): String = baseLine("HOSP_ID")(month - 1)
+    def getLastYearProdCount(month: Int): String = baseLine("Prod_Name")(month - 1)
+    def getLastYearPanelSales(month: Int): String = baseLine("Sales")(month - 1)
 
-    def getNotPanelHospLst = rd.getSetAllValue(not_panel_hosp_key).toList
+    def getNotPanelHospLst: List[String] = rd.getSetAllValue(not_panel_hosp_key).toList
 
-    def getCurrCompanySales = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
-    def getCurrCompanyShare = getCurrCompanySales/getPanelSales
+    def getCurrCompanySales: Double = rd.getMapValue(singleJobKey, "panel_company_sales").toDouble
+    def getCurrCompanyShare: Double = getCurrCompanySales/getPanelSales
 
     def setValue2Array(index: Int, value: String): Array[String] = {
         val a = Array.fill(12)("0")

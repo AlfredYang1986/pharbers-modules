@@ -1,12 +1,12 @@
 package com.pharbers.panel.format.input.writable.astellas;
 
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
+import com.pharbers.excel.format.input.writable.phExcelWritable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class phAstellasCommonWritable extends PhExcelWritable {
+public class phAstellasCommonWritable extends phExcelWritable {
     protected static Map<String, String> titleMap = null;
 
     @Override

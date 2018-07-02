@@ -1,0 +1,15 @@
+[
+  {
+    "company": "5afa53bded925c05c6f69c54",
+    "market": "麻醉市场",
+    "universe_file": "pfizer/universe_PAIN_C_online.xlsx",
+    "product_match_file": "pfizer/产品标准化+vs+IMS_Pfizer_6市场others_0329.xlsx",
+    "fill_hos_data_file": "pfizer/补充医院utf8_2018.txt",
+    "markets_match_file": "pfizer/通用名市场定义_0502.xlsx",
+    "pfc_match_file": "pfizer/PACKID生成panel.xlsx",
+    "cpa_file": "Source/pfizer/1802 CPA.xlsx",
+    "gycx_file": "Source/pfizer/1802 GYC.xlsx",
+    "ym": "201802",
+    "offlineResult": "PAIN_C_MAX_Result.xlsx"
+  }
+]

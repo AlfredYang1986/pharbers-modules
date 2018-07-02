@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<configuration>
+
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://127.0.0.1s:54188</value>
+    </property>
+
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>

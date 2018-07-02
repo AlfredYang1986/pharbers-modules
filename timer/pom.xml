@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.pharbers</groupId>
+    <artifactId>pharbers-timer</artifactId>
+    <version>0.1</version>
+    <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
+      the right dependencies for modules specified for each version separately -->
+    <profiles>
+        <profile>
+            <id>scala-2.11</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <hadooop.version>2.5.1</hadooop.version>
+                <scalaVersion>2.11.8</scalaVersion>
+                <scalaBinaryVersion>2.11</scalaBinaryVersion>
+            </properties>
+            <dependencies>
+                <!-- scala lib -->
+                <dependency>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                    <version>${scalaVersion}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-xml_${scalaBinaryVersion}</artifactId>
+                    <version>1.0.6</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-parser-combinators_${scalaBinaryVersion}</artifactId>
+                    <version>1.0.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>scala-xml_2.11</artifactId>
+                    <version>1.0.6</version>
+                </dependency>
+
+                <!-- poi -->
+                <dependency>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi</artifactId>
+                    <version>3.8</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.poi</groupId>
+                    <artifactId>poi-ooxml</artifactId>
+                    <version>3.8</version>
+                </dependency>
+                <dependency>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                    <version>2.11.0</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-paction</artifactId>
+                    <version>0.1</version>
+                </dependency>
+
+                <!-- specs test -->
+                <dependency>
+                    <groupId>org.specs2</groupId>
+                    <artifactId>specs2_2.11</artifactId>
+                    <version>3.7</version>
+                    <type>pom</type>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.scalatest</groupId>
+                    <artifactId>scalatest_2.11</artifactId>
+                    <version>3.0.1</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-third</artifactId>
+                    <version>0.1</version>
+                </dependency>
+
+            </dependencies>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
+                        <arg>-nobootcp</arg>
+                    </args>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>WDF TestSuite.txt</filereports>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -18,7 +18,11 @@
         <module>message</module>
         <module>redis</module>
         <module>security</module>
+        <module>paction</module>
+        <module>timer</module>
         <module>max</module>
+        <module>unitTest</module>
+        <module>gatling</module>
         <module>client-pattern</module>
     </modules>
 

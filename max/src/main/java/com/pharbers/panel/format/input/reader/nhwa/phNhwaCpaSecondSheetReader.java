@@ -1,14 +1,13 @@
 package com.pharbers.panel.format.input.reader.nhwa;
 
-import com.pharbers.panel.format.input.reader.common.PhExcelXLSXCommonReader;
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
-import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaSecondSheetWritable;
-import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaWritable;
 import org.apache.hadoop.io.NullWritable;
+import com.pharbers.excel.format.input.writable.phExcelWritable;
+import com.pharbers.excel.format.input.reader.common.PhExcelXLSXCommonReader;
+import com.pharbers.panel.format.input.writable.nhwa.phNhwaCpaSecondSheetWritable;
 
 import java.io.IOException;
 
-public class phNhwaCpaSecondSheetReader extends PhExcelXLSXCommonReader<NullWritable, PhExcelWritable> {
+public class phNhwaCpaSecondSheetReader extends PhExcelXLSXCommonReader<NullWritable, phExcelWritable> {
 
     @Override
     public NullWritable getCurrentKey() throws IOException, InterruptedException {
@@ -16,7 +15,7 @@ public class phNhwaCpaSecondSheetReader extends PhExcelXLSXCommonReader<NullWrit
     }
 
     @Override
-    public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
+    public phExcelWritable getCurrentValue() throws IOException, InterruptedException {
         phNhwaCpaSecondSheetWritable reVal = new phNhwaCpaSecondSheetWritable();
         String s = reVal.richWithInputRow(parser.currentIndex(), value);
         reVal.setValues(s);

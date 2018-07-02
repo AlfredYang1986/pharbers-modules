@@ -3,9 +3,9 @@ package com.pharbers.panel.nhwa
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
+import com.pharbers.pactions.excel.input.{PhExcelXLSXCommonFormat, PhXlsxThirdSheetFormat}
 import com.pharbers.pactions.actionbase._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
@@ -49,7 +49,7 @@ case class phNhwaPanelJob(args: Map[String, String])(implicit _actor: Actor) ext
     lazy val p_current: Double = args("p_current").toDouble
 
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
 
     /**
       * 1. read 未出版医院文件

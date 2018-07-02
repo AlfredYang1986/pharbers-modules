@@ -1,5 +1,7 @@
 package com.pharbers.search
 
+import java.util.Base64
+
 import com.pharbers.driver.PhRedisDriver
 import com.pharbers.sercuity.Sercurity
 import play.api.libs.json.JsValue
@@ -8,82 +10,63 @@ import play.api.libs.json.Json.toJson
 /**
   * Created by jeorch on 18-5-14.
   */
-case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String) extends phMaxSearchTrait {
+case class phMaxResultInfo(company: String, ym:String, mkt: String) extends phMaxSearchTrait {
 
-    private val rd = new PhRedisDriver()
-    private val singleJobKey = Sercurity.md5Hash(user + company + ym + mkt)
-    private val max_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_city_lst_key")
-    private val max_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "max_sales_prov_lst_key")
-    private val company_sales_city_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_city_lst_key")
-    private val company_sales_prov_lst_key = Sercurity.md5Hash(user + company + ym + mkt + "company_sales_prov_lst_key")
+    val rd = new PhRedisDriver()
+    val singleJobKey: String = Base64.getEncoder.encodeToString((company +"#"+ ym +"#"+ mkt).getBytes())
+    val max_sales_city_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "max_sales_city_lst_key")
+    val max_sales_prov_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "max_sales_prov_lst_key")
+    val company_sales_city_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "company_sales_city_lst_key")
+    val company_sales_prov_lst_key: String = Sercurity.md5Hash(company + ym + mkt + "company_sales_prov_lst_key")
 
-    val lastYearYM = getLastYearYM(ym)
-    val lastYearSingleJobKey = Sercurity.md5Hash(user + company + lastYearYM + mkt)
-    val last_year_max_sales_city_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "max_sales_city_lst_key")
-    val last_year_max_sales_prov_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "max_sales_prov_lst_key")
-    val last_year_company_sales_city_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "company_sales_city_lst_key")
-    val last_year_company_sales_prov_lst_key = Sercurity.md5Hash(user + company + lastYearYM + mkt + "company_sales_prov_lst_key")
+    val lastYearYM: String = getLastYearYM(ym)
+    val lastYearSingleJobKey: String = Base64.getEncoder.encodeToString((company +"#"+ lastYearYM +"#"+ mkt).getBytes())
 
-    def getMaxResultSales = rd.getMapValue(singleJobKey, "max_sales").toDouble
-    def getLastYearResultSales = rd.getMapValue(lastYearSingleJobKey, "max_sales") match {
-        case null => 0.toDouble
-        case sale => sale.toDouble
-    }
-    def getLastYearResultSalesPercentage = {
-        val lastYearResultSales = getLastYearResultSales
-        lastYearResultSales match {
+    def getMaxResultSales: Double = rd.getMapValue(singleJobKey, "max_sales").toDouble
+    def getCurrCompanySales: Double = rd.getMapValue(singleJobKey, "max_company_sales").toDouble
+
+    val getLastYearResultSales : Double = getHistorySalesByRange("NATION_SALES", lastYearSingleJobKey)
+    val getLastYearCurrCompanySales : Double = getHistorySalesByRange("NATION_COMPANY_SALES", lastYearSingleJobKey)
+
+    def getLastYearResultSalesPercentage: Double = getLastYearResultSales match {
             case 0.0 => 0.0
-            case _ => (getMaxResultSales - lastYearResultSales)/lastYearResultSales
+            case _ => (getMaxResultSales - getLastYearResultSales)/getLastYearResultSales
         }
-    }
 
-    def getCurrCompanySales = rd.getMapValue(singleJobKey, "max_company_sales").toDouble
-    def getLastYearCurrCompanySales = rd.getMapValue(lastYearSingleJobKey, "max_company_sales") match {
-        case null => 0.toDouble
-        case sale => sale.toDouble
-    }
-    def getLastYearCurrCompanySalesPercentage = {
-        val lastYearCompanySales = getLastYearCurrCompanySales
-        lastYearCompanySales match {
+    def getLastYearCurrCompanySalesPercentage: Double = getLastYearCurrCompanySales match {
             case 0.0 => 0.0
-            case _ => (getCurrCompanySales - lastYearCompanySales)/lastYearCompanySales
+            case _ => (getCurrCompanySales - getLastYearCurrCompanySales)/getLastYearCurrCompanySales
         }
-    }
 
-    def getLastSeveralMonthResultSalesLst(severalCount: Int): List[Map[String, JsValue]] = getLastSeveralMonthYM(severalCount, ym).reverse.map(singleYM => {
-        val tempSingleJobKey = Sercurity.md5Hash(user + company + singleYM + mkt)
-        val tempMaxSales = rd.getMapValue(tempSingleJobKey, "max_sales") match {
-            case null => 0.toDouble
-            case sale => sale.toDouble
-        }
-        val tempCompanySales = rd.getMapValue(tempSingleJobKey, "max_company_sales") match {
-            case null => 0.toDouble
-            case sale => sale.toDouble
-        }
-        val tempPercentage = tempMaxSales match {
-            case 0.0 => 0.0
-            case _ => tempCompanySales/tempMaxSales
-        }
-        Map("date" -> toJson(singleYM), "percentage" -> toJson(getFormatShare(tempPercentage)), "marketSales" -> toJson(getFormatSales(tempMaxSales)))
-    })
+    def getLastSeveralMonthResultSalesLst(severalCount: Int): List[Map[String, JsValue]] = {
+        val tmpLst = getLastSeveralMonthYM(severalCount, ym).map(singleYM => {
+            val tempSingleJobKey = Base64.getEncoder.encodeToString((company + "#" + singleYM + "#" + mkt).getBytes())
+            val tempMaxSales = getHistorySalesByRange("NATION_SALES", tempSingleJobKey)
+            val tempCompanySales = getHistorySalesByRange("NATION_COMPANY_SALES", tempSingleJobKey)
+            val tempPercentage = tempMaxSales match {
+                case 0.0 => 0.0
+                case _ => tempCompanySales / tempMaxSales
+            }
+            Map("date" -> toJson(singleYM), "percentage" -> toJson(getFormatShare(tempPercentage)), "marketSales" -> toJson(getFormatSales(tempMaxSales)))
+        })
+        Map("date" -> toJson(ym), "percentage" -> toJson(getFormatShare(getCurrCompanySales/getMaxResultSales)), "marketSales" -> toJson(getFormatSales(getMaxResultSales)))::tmpLst
+    }.reverse
 
     def getCityLstMap: List[Map[String, JsValue]] = {
         val currCompanyCityLst = rd.getListAllValue(company_sales_city_lst_key).map({x =>
             val temp = x.replace("[","").replace("]","").split(",")
             Map("City" -> temp(0), "Sales" -> temp(1))
         })
-        val lastYearCompanyCityLst = rd.getListAllValue(last_year_company_sales_prov_lst_key) match {
+        val lastYearCompanyCityLst = getAreaSalesByRange("CITY_COMPANY_SALES", lastYearSingleJobKey) match {
             case Nil => Nil
             case lst => lst.map({x =>
-                val temp = x.replace("[","").replace("]","").split(",")
-                Map("City" -> temp(0), "Sales" -> temp(1))
+                Map("City" -> x("Area"), "Sales" -> x("Sales"))
             })
         }
-        val lastYearMaxCityLst = rd.getListAllValue(last_year_max_sales_city_lst_key) match {
+        val lastYearMaxCityLst = getAreaSalesByRange("CITY_SALES", lastYearSingleJobKey) match {
             case Nil => Nil
             case lst => lst.map({x =>
-                val temp = x.replace("[","").replace("]","").split(",")
-                Map("City" -> temp(0), "Sales" -> temp(1))
+                Map("City" -> x("Area"), "Sales" -> x("Sales"))
             })
         }
         rd.getListAllValue(max_sales_city_lst_key).map({x =>
@@ -110,18 +93,16 @@ case class phMaxResultInfo(user: String, company: String, ym:String, mkt: String
             val temp = x.replace("[","").replace("]","").split(",")
             Map("Province" -> temp(0), "Sales" -> temp(1))
         })
-        val lastYearCompanyProvLst = rd.getListAllValue(last_year_company_sales_prov_lst_key) match {
+        val lastYearCompanyProvLst = getAreaSalesByRange("PROVINCE_COMPANY_SALES", lastYearSingleJobKey) match {
             case Nil => Nil
             case lst => lst.map({x =>
-                val temp = x.replace("[","").replace("]","").split(",")
-                Map("Province" -> temp(0), "Sales" -> temp(1))
+                Map("Province" -> x("Area"), "Sales" -> x("Sales"))
             })
         }
-        val lastYearMaxProvLst = rd.getListAllValue(last_year_max_sales_prov_lst_key) match {
+        val lastYearMaxProvLst = getAreaSalesByRange("PROVINCE_SALES", lastYearSingleJobKey) match {
             case Nil => Nil
             case lst => lst.map({x =>
-                val temp = x.replace("[","").replace("]","").split(",")
-                Map("Province" -> temp(0), "Sales" -> temp(1))
+                Map("Province" -> x("Area"), "Sales" -> x("Sales"))
             })
         }
 
