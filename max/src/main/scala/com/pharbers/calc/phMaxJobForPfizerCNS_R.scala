@@ -3,10 +3,10 @@ package com.pharbers.calc
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction, phMaxResult2MongoAction}
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.calc.actions.{phMaxCalcActionForCNS_R, phMaxInfo2RedisAction, phMaxPersistentAction}
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.common.algorithm.max_path_obj
-import com.pharbers.common.excel.input.PhExcelXLSXCommonFormat
+import com.pharbers.pactions.excel.input.PhExcelXLSXCommonFormat
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions._
 import com.pharbers.pactions.jobs.{sequenceJob, sequenceJobWithMap}
@@ -34,7 +34,7 @@ case class phMaxJobForPfizerCNS_R(args: Map[String, String])(implicit _actor: Ac
     lazy val p_total: Double = args("p_total").toDouble
     lazy val p_current: Double = args("p_current").toDouble
 
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "calc")(p_current, p_total).multiProgress
 
     val temp_universe_name: String = UUID.randomUUID().toString
     val temp_panel_name: String = UUID.randomUUID().toString
@@ -87,6 +87,5 @@ case class phMaxJobForPfizerCNS_R(args: Map[String, String])(implicit _actor: Ac
         phMaxPersistentAction(df) ::
         addListenerAction(MaxSparkListener(41, 90)) ::
         phMaxInfo2RedisAction(df) ::
-//        phMaxResult2MongoAction() ::
         Nil
 }

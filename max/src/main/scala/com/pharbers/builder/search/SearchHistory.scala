@@ -4,7 +4,7 @@ import com.pharbers.driver.PhRedisDriver
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import com.pharbers.search.phHistorySearchJob
-import com.pharbers.pactions.actionbase.{DFArgs, ListArgs, MapArgs, StringArgs}
+import com.pharbers.pactions.actionbase.{ListArgs, MapArgs, StringArgs}
 import com.pharbers.sercuity.Sercurity
 import com.pharbers.spark.phSparkDriver
 
@@ -52,9 +52,9 @@ trait SearchHistory {
                             "date" -> toJson(item(0)),
                             "province" -> toJson(item(1)),
                             "city" -> toJson(item(2)),
-                            "market" -> toJson(item(8)),
+                            "market" -> toJson(item(3)),
                             "product" -> toJson(item(4)),
-                            "sales" -> toJson(item(7)),
+                            "sales" -> toJson(item(5)),
                             "units" -> toJson(item(6))
                         )
                     )

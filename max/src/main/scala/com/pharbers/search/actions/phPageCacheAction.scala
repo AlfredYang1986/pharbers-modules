@@ -31,58 +31,43 @@ class phPageCacheAction(override val defaultArgs: pActionArgs) extends pActionTr
 
         val totalCount = redisDriver.getMapValue(pageCacheInfo, "count") match {
             case null =>
-                val totalCountTemp = result_df.count().toDouble
+                val totalCountTemp = result_df.count()
                 redisDriver.addMap(pageCacheInfo, "count", totalCountTemp)
                 redisDriver.expire(pageCacheInfo, 5 * 60)
                 totalCountTemp
-            case count => count.toDouble
+            case count => count.toLong
         }
         val totalPage = redisDriver.getMapValue(pageCacheInfo, "page") match {
             case null =>
-                val totalPageTemp = Math.ceil(totalCount / pageSize).toInt
+                val totalPageTemp = Math.ceil(totalCount.toDouble / pageSize).toInt
                 redisDriver.addMap(pageCacheInfo, "page", totalPageTemp)
                 redisDriver.expire(pageCacheInfo, 5 * 60)
                 totalPageTemp
             case page => page.toInt
         }
 
-        val limitCount = if(pageIndex == totalPage - 1) result_df.count().toDouble else totalCount
-
         if (totalCount != 0){
-            val cacheIndex = pageIndex match {
+            val cachePageIndex = pageIndex match {
                 case i: Int if i < 2 => 0 to (i + 4)
-                //TODO:临时解决大数据量最后一页的方案
-                case i: Int if i > (totalPage - 2) => (limitCount.toInt/pageSize - 4) to limitCount.toInt/pageSize
+                case i: Int if i > (totalPage - 2) => (totalCount.toInt/pageSize - 4) to totalCount.toInt/pageSize
                 case i: Int => (i - 2) to (i + 2)
                 case _ => ???
             }
 
-            val result_rdd_limited = result_df.limit((cacheIndex.max + 1) * pageSize).rdd
-
-            var phIndex = -1
-            val initIndexRdd = result_rdd_limited.map { x =>
-                phIndex += 1
-                (phIndex, x)
-            }
-
+            val result_rdd_limited = result_df.limit((cachePageIndex.max + 1) * pageSize).rdd
+            val initIndexRdd = result_rdd_limited.zipWithIndex().map { case(row, index) => (index.toInt, row)}
             val phIndexRdd = IndexedRDD(initIndexRdd)
 
-            cacheIndex foreach { i =>
-                //TODO:临时解决大数据量最后一页的方案
-                val pageCacheTempKey = if (pageIndex == totalPage - 1)
-                    Sercurity.md5Hash(user + company + ym_condition + mkt + (totalPage - 5 + cacheIndex.indexOf(i)) + pageSize)
-                else Sercurity.md5Hash(user + company + ym_condition + mkt + i + pageSize)
-
+            cachePageIndex foreach { i =>
+                val pageCacheTempKey = Sercurity.md5Hash(user + company + ym_condition + mkt + i + pageSize)
                 val resultLst = ((i * pageSize) until (i * pageSize + pageSize)).map { x =>
-                    if(x >= limitCount) null else phIndexRdd.get(x).get.toString()
+                    if(x >= totalCount) null else phIndexRdd.get(x).get.toString()
                 }.toList.filter(_ != null)
                 if(!redisDriver.exsits(pageCacheTempKey)){
                     redisDriver.addListRight(pageCacheTempKey, resultLst: _*)
                     redisDriver.expire(pageCacheTempKey, 5 * 60)
                 }
-
             }
-
             NULLArgs
         } else {
             ListArgs(List.empty)

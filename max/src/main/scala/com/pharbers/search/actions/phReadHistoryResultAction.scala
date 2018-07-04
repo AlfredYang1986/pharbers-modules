@@ -24,7 +24,7 @@ class phReadHistoryResultAction (override val defaultArgs: pActionArgs) extends 
         val redisDriver = new PhRedisDriver()
 
         val history_df_lst = maxLst.map(singleJobKey =>
-            sparkDriver.csv2RDD(max_path_obj.p_maxPath + redisDriver.getMapValue(singleJobKey, "max_result_name"), 31.toChar.toString)
+            sparkDriver.csv2RDD(max_path_obj.p_maxPath + redisDriver.getMapValue(singleJobKey, "max_result_name_for_search"), 31.toChar.toString)
         )
 
         DFArgs(unionDataFrameList(history_df_lst))

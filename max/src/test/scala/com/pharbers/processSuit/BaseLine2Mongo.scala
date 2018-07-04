@@ -1,8 +1,8 @@
 package com.pharbers.processSuit
 
-import org.scalatest.FunSuite
 import com.pharbers.pactions.actionbase.{MapArgs, NULLArgs, StringArgs}
 import com.pharbers.panel.common.phBaseLine2MongoJob
+import org.scalatest.FunSuite
 
 class BaseLine2Mongo extends FunSuite {
     val nhwa = "5afa53bded925c05c6f69c54"

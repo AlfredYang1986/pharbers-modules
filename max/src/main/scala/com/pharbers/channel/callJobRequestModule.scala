@@ -6,8 +6,8 @@ import com.pharbers.bmpattern.ModuleTrait
 import com.pharbers.channel.callJobRequestMessage._
 import com.pharbers.channel.chanelImpl.responsePusher
 import com.pharbers.channel.doJobActor._
+import com.pharbers.channel.util.getJV2Map
 import play.api.libs.json.JsValue
-import play.api.libs.json.Json.toJson
 
 object callJobRequestModule extends ModuleTrait with callJobRequestTrait {
 

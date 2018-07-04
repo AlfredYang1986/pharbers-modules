@@ -3,18 +3,18 @@ package com.pharbers.panel.pfizer
 import java.util.UUID
 
 import akka.actor.Actor
-import com.pharbers.channel.sendEmTrait
+import com.pharbers.channel.util.sendEmTrait
 import com.pharbers.panel.pfizer.actions._
 import com.pharbers.pactions.generalactions._
 import com.pharbers.common.algorithm.max_path_obj
 import org.apache.spark.listener.progress.sendMultiProgress
 import com.pharbers.pactions.generalactions.memory.phMemoryArgs
 import com.pharbers.panel.common.{phPanelInfo2Redis, phSavePanelJob}
+import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.jobs.{choiceJob, sequenceJob, sequenceJobWithMap}
 import com.pharbers.panel.pfizer.format.{phPfizerCpaFormat, phPfizerGycxFormat}
-import com.pharbers.common.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat}
-import org.apache.spark.listener.{MaxSparkListener, addListenerAction}
+import com.pharbers.pactions.excel.input.{PhExcelXLSXCommonFormat, PhXlsxSecondSheetFormat}
 
 /**
   * Created by jeorch on 18-4-18.
@@ -49,7 +49,7 @@ case class phPfizerPanelJob(args: Map[String, String])(implicit _actor: Actor) e
     lazy val p_current: Double = args("p_current").toDouble
 
     implicit val companyArgs: phMemoryArgs = phMemoryArgs(company)
-    implicit val mp: (sendEmTrait, Double) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
+    implicit val mp: (sendEmTrait, Double, String) => Unit = sendMultiProgress(company, user, "panel")(p_current, p_total).multiProgress
 
 
     //1. read universe_file

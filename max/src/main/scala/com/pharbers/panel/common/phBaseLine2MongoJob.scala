@@ -3,7 +3,7 @@ package com.pharbers.panel.common
 import org.bson.types.ObjectId
 import scala.collection.immutable.Map
 import com.pharbers.pactions.actionbase._
-import com.pharbers.dbManagerTrait.dbInstanceManager
+import com.pharbers.builder.phMarketTable.MongoDBPool._
 import com.mongodb.casbah.Imports.{DBObject, MongoDBObject}
 import com.pharbers.common.excel.{phExcelFileInfo, phHandleExcel}
 
@@ -15,7 +15,7 @@ class phBaseLine2MongoJob(override val defaultArgs: pActionArgs) extends pAction
 
     override val name: String = "result"
     override def perform(pr : pActionArgs): pActionArgs = {
-        val db = new dbInstanceManager{}.queryDBInstance("calc").get
+        val db = MongoPool.queryDBInstance("market").get
         val coll_name = "BaseLine"
         val file = defaultArgs.asInstanceOf[MapArgs].get("file").asInstanceOf[StringArgs].get
         val company = defaultArgs.asInstanceOf[MapArgs].get("company").asInstanceOf[StringArgs].get

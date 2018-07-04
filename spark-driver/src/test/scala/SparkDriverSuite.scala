@@ -19,12 +19,12 @@
 //
 //    test("Test read csv"){
 //        val driver =  phSparkDriver()
-//        val file_path = "file:///home/jeorch/jeorch/test/file_test/text.csv"
+//        val file_path = "/home/jeorch/work/max_file/Max/a95e32b2-9945-4bd2-8b42-32271b19259a60b738de-0125-4959-a883-63c3e8c3d5d4"
 //
 //        val rdd = driver.csv2RDD(file_path, delimiter = 31.toChar.toString)
 ////        rdd.foreach(x => println(x))
-////        rdd.printSchema()
-//        rdd.show(false)
+//        rdd.printSchema()
+////        rdd.show(false)
 ////        println(rdd.count())
 //    }
 //
@@ -35,21 +35,6 @@
 //        mongoDF.show(10)
 //    }
 //
-//    test("spark read mongo all collections"){
-//        /**
-//          * Wrong function!To be corrected!
-//          */
-//        val databaseName = "Max_Test"
-//        val sd = phSparkDriver()
-//        val sc = sd.sc
-//        val readConfig = ReadConfig(Map(
-//            "spark.mongodb.input.uri" -> s"mongodb://$mongodbHost:$mongodbPort/$databaseName.*",
-//            "readPreference.name" -> "secondaryPreferred")
-//        )
-//        val test = MongoSpark.load(sc, readConfig = readConfig)
-//        println(test.count())
-//    }
-//
 //    test("spark write mongo"){
 //        val databaseName = "Max_Test"
 //        val sd = phSparkDriver()
@@ -57,7 +42,7 @@
 //        val mongoRDD = sd.mongo2RDD("127.0.0.1","27017","Max_Test","Allelock_Factorized_Units&Sales_WITH_OT1712")
 //        val mongoDF = mongoRDD.toDF()
 //
-//        sd.dataFrame2Mongo(mongoDF,mongodbHost,mongodbPort,databaseName,"testColl","append")
+//        sd.dataFrame2Mongo(mongoDF, mongodbHost, mongodbPort, databaseName, "testColl", "append")
 //    }
 //
 //}

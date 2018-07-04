@@ -34,39 +34,6 @@
                     <artifactId>scala-parser-combinators_${scalaBinaryVersion}</artifactId>
                     <version>1.0.5</version>
                 </dependency>
-                <dependency>
-                    <groupId>org.scala-lang.modules</groupId>
-                    <artifactId>scala-xml_2.11</artifactId>
-                    <version>1.0.6</version>
-                </dependency>
-
-                <!-- poi -->
-                <dependency>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi</artifactId>
-                    <version>3.13</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi-ooxml</artifactId>
-                    <version>3.13</version>
-                </dependency>
-                <dependency>
-                    <groupId>xerces</groupId>
-                    <artifactId>xercesImpl</artifactId>
-                    <version>2.11.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                    <version>1.9</version>
-                </dependency>
-                <!-- poi stream reader -->
-                <dependency>
-                    <groupId>com.monitorjbl</groupId>
-                    <artifactId>xlsx-streamer</artifactId>
-                    <version>1.0.2</version>
-                </dependency>
 
                 <dependency>
                     <groupId>com.typesafe.play</groupId>
@@ -93,6 +60,11 @@
                 <dependency>
                     <groupId>com.pharbers</groupId>
                     <artifactId>pharbers-spark</artifactId>
+                    <version>0.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-paction</artifactId>
                     <version>0.1</version>
                 </dependency>
                 <dependency>
@@ -130,6 +102,11 @@
                     <artifactId>pharbers-pattern</artifactId>
                     <version>0.1</version>
                 </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-timer</artifactId>
+                    <version>0.1</version>
+                </dependency>
 
                 <!-- spark lib -->
                 <dependency>
@@ -150,7 +127,6 @@
                     <scope>test</scope>
                 </dependency>
 
-
                 <!-- mongodb lib -->
                 <dependency>
                     <groupId>org.mongodb</groupId>
@@ -164,67 +140,6 @@
                     <groupId>com.typesafe.akka</groupId>
                     <artifactId>akka-actor_2.11</artifactId>
                     <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-agent_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-camel_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-cluster_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-cluster-metrics_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-cluster-sharding_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-cluster-tools_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-contrib_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-distributed-data-experimental_2.11</artifactId>
-                    <version>2.4.16</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-http-core_2.11</artifactId>
-                    <version>10.0.1</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-http_2.11</artifactId>
-                    <version>10.0.1</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-http-testkit_2.11</artifactId>
-                    <version>10.0.1</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>com.typesafe.akka</groupId>
-                    <artifactId>akka-http-xml_2.11</artifactId>
-                    <version>10.0.1</version>
                 </dependency>
 
                 <!-- kafka client -->
@@ -252,20 +167,6 @@
                     <artifactId>spark-indexedrdd</artifactId>
                     <version>0.4.0</version>
                 </dependency>
-
-                <!-- test lib -->
-                <!--<dependency>
-                    <groupId>com.mmakowski</groupId>
-                    <artifactId>maven-specs2-plugin</artifactId>
-                    <version>0.4.2</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.specs2</groupId>
-                    <artifactId>specs2-core_2.11</artifactId>
-                    <version>3.7</version>
-                    <scope>test</scope>
-                </dependency>-->
             </dependencies>
         </profile>
     </profiles>
@@ -319,7 +220,6 @@
                 </executions>
                 <configuration>
                     <args>
-                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
                         <arg>-nobootcp</arg>
                     </args>
                 </configuration>
@@ -338,6 +238,36 @@
                         <id>test</id>
                         <goals>
                             <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.pharbers.main</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <customClasspathLayout>lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}
+                            </customClasspathLayout>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
                         </goals>
                     </execution>
                 </executions>

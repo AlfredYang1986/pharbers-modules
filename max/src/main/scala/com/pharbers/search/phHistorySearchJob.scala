@@ -1,7 +1,7 @@
 package com.pharbers.search
 
 import com.pharbers.search.actions._
-import com.pharbers.pactions.jobs.{NULLJob, choiceCacheJob, sequenceJobWithMap}
+import com.pharbers.pactions.jobs.{NULLJob, choice3pJob, sequenceJobWithMap}
 import com.pharbers.pactions.actionbase.{MapArgs, StringArgs, pActionTrait}
 import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction}
 
@@ -11,12 +11,12 @@ import com.pharbers.pactions.generalactions.{jarPreloadAction, setLogLevelAction
 object phHistorySearchJob {
     def apply(args: Map[String, String]) : phHistorySearchJob = {
         new phHistorySearchJob {
-            override lazy val user: String = args.get("user").getOrElse(throw new Exception("Illegal user"))
-            override lazy val company: String = args.get("company").getOrElse(throw new Exception("Illegal company"))
-            override lazy val pageIndex: String = args.get("pageIndex").getOrElse("0")
-            override lazy val singlePageSize: String = args.get("singlePageSize").getOrElse("20")
-            override lazy val ym_condition: String = args.get("ym_condition").getOrElse("-")
-            override lazy val mkt: String = args.get("mkt").getOrElse("")
+            override lazy val user: String = args.getOrElse("user", throw new Exception("Illegal user"))
+            override lazy val company: String = args.getOrElse("company", throw new Exception("Illegal company"))
+            override lazy val pageIndex: String = args.getOrElse("pageIndex", "0")
+            override lazy val singlePageSize: String = args.getOrElse("singlePageSize", "20")
+            override lazy val ym_condition: String = args.getOrElse("ym_condition", "-")
+            override lazy val mkt: String = args.getOrElse("mkt", "")
         }
     }
 }
@@ -42,7 +42,7 @@ trait phHistorySearchJob extends sequenceJobWithMap {
         )
     )
 
-    val ckeckPageCache: choiceCacheJob = new choiceCacheJob {
+    val checkPageCache: choice3pJob = new choice3pJob {
         override val name = "checkPageCache"
         val actions: List[pActionTrait] = phCheckPageCacheAction(searchArgs) ::
             NULLJob ::
@@ -59,7 +59,7 @@ trait phHistorySearchJob extends sequenceJobWithMap {
 
     override val actions: List[pActionTrait] = jarPreloadAction() ::
             setLogLevelAction("ERROR") ::
-            ckeckPageCache ::
+            checkPageCache ::
             phReturnPageCacheAction(searchArgs) ::
             Nil
 }

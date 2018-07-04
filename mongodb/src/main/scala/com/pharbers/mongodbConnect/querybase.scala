@@ -33,6 +33,8 @@ trait connection_instance extends PharbersInjectModule {
         _conntion.get(coll_name).get
     }
 
+	def getAllCollectionNames: scala.collection.mutable.Set[String] = _conn(conn_name).getCollectionNames()
+
     def resetCollection(coll_name : String) : Unit = getCollection(coll_name).drop
 
     def isExisted(coll_name : String) : Boolean = !(getCollection(coll_name).isEmpty)

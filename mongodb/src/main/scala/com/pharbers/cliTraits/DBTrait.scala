@@ -27,6 +27,7 @@ trait DBTrait {
 
     def deleteObject(obj : DBObject, db_name : String, primary_key : String) : Unit
     def deleteMultiObject(obj : DBObject, db_name : String) : Unit
+    def getOneDBAllCollectionNames : scala.collection.mutable.Set[String]
 
     def restoreDatabase() = ???
     def dumpDatabase() = ???

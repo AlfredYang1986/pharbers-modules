@@ -5,7 +5,8 @@ import com.pharbers.ErrorCode._
 import com.pharbers.builder.phBuilder
 import com.pharbers.channel.chanelImpl.responsePusher
 import com.pharbers.channel.doJobActor._
-import com.pharbers.common.algorithm.{alTempLog, max_path_obj}
+import com.pharbers.channel.util.{getJV2Map, sendEmTrait}
+import com.pharbers.common.algorithm.alTempLog
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 
@@ -14,7 +15,7 @@ import play.api.libs.json.Json.toJson
   */
 object doJobActor {
     def name = "doJob"
-    def props = Props[doJobActor]
+    def props: Props = Props[doJobActor]
 
     case class msg_doYmCalc(js: JsValue)
     case class msg_doPanel(js: JsValue)
@@ -25,7 +26,7 @@ object doJobActor {
 class doJobActor extends Actor with ActorLogging with sendEmTrait with getJV2Map {
     implicit val acc: Actor = this
 
-    override def receive = {
+    override def receive: PartialFunction[Any, Unit] = {
         case msg_doYmCalc(jv) => doYmCalc(jv)
         case msg_doPanel(jv) => doPanel(jv)
         case msg_doCalc(jv) => doCalc(jv)
@@ -42,7 +43,7 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait with getJV2Map
             alTempLog(s"doYmCalc, company is = $company, user is = $user")
             sendMessage(company, user, "ymCalc", "start", toJson(Map("progress" -> toJson("0"))))
 
-            val ymLst = phBuilder(company, user, args("job_id")).set(args).doCalcYM
+            val ymLst = phBuilder(company, user, args("job_id")).set(args).doCalcYM()
 
             alTempLog("计算月份完成, result = " + ymLst)
             sendMessage(company, user, "ymCalc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("ymList" -> ymLst)))))
@@ -61,7 +62,7 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait with getJV2Map
             alTempLog(s"doPanel, company is = $company, user is = $user")
             sendMessage(company, user, "panel", "start", toJson(Map("progress" -> toJson("0"))))
 
-            phBuilder(company, user, args("job_id")).set(args).doPanel
+            phBuilder(company, user, args("job_id")).set(args).doPanel()
 
             alTempLog("生成panel完成")
             sendMessage(company, user, "panel", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("panel" -> toJson(args("job_id")))))))
@@ -80,7 +81,7 @@ class doJobActor extends Actor with ActorLogging with sendEmTrait with getJV2Map
             alTempLog(s"doCalc, company is = $company, user is = $user")
             sendMessage(company, user, "calc", "start", toJson(Map("progress" -> toJson("0"))))
 
-            phBuilder(company, user, job_id).doMax
+            phBuilder(company, user, job_id).doMax()
 
             alTempLog("计算完成")
             sendMessage(company, user, "calc", "done", toJson(Map("progress" -> toJson("100"), "content" -> toJson(Map("calc" -> toJson(job_id))))))

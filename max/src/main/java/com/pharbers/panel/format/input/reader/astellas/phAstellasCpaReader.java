@@ -1,13 +1,12 @@
 package com.pharbers.panel.format.input.reader.astellas;
 
+import java.io.IOException;
 import org.apache.hadoop.io.NullWritable;
-import com.pharbers.panel.format.input.writable.PhExcelWritable;
-import com.pharbers.panel.format.input.reader.common.PhExcelXLSXCommonReader;
+import com.pharbers.excel.format.input.writable.phExcelWritable;
+import com.pharbers.excel.format.input.reader.common.PhExcelXLSXCommonReader;
 import com.pharbers.panel.format.input.writable.astellas.phAstellasCpaWritable;
 
-import java.io.IOException;
-
-public class phAstellasCpaReader extends PhExcelXLSXCommonReader<NullWritable, PhExcelWritable> {
+public class phAstellasCpaReader extends PhExcelXLSXCommonReader<NullWritable, phExcelWritable> {
 
     @Override
     public NullWritable getCurrentKey() throws IOException, InterruptedException {
@@ -15,7 +14,7 @@ public class phAstellasCpaReader extends PhExcelXLSXCommonReader<NullWritable, P
     }
 
     @Override
-    public PhExcelWritable getCurrentValue() throws IOException, InterruptedException {
+    public phExcelWritable getCurrentValue() throws IOException, InterruptedException {
         phAstellasCpaWritable reVal = new phAstellasCpaWritable();
         String s = reVal.richWithInputRow(parser.currentIndex(), value);
         reVal.setValues(s);
