@@ -17,7 +17,7 @@ class MaxProcess_NhwaSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5afa53bded925c05c6f69c54"
     val user: String = "5afaa333ed925c30f8c066d1"
-    val jobId: String = "20180615nhwa002"
+    val jobId: String = "20180620nhwa001"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -27,7 +27,7 @@ class MaxProcess_NhwaSuit extends FunSuite {
         println()
         val cpa = "Source/180211恩华17年1-12月检索.xlsx"
         val gycx = ""
-        val yms = "201710"
+        val yms = "201702"
 
 
         implicit val t: Timeout = 20 minutes

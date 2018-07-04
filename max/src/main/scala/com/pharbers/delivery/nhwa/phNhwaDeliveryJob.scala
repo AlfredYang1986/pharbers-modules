@@ -12,7 +12,7 @@ import com.pharbers.pactions.jobs.{choiceJob, sequenceJob, sequenceJobWithMap}
 /**
   * Created by jeorch on 18-6-5.
   */
-class phNhwaDeliveryJob(args: Map[String, String]) extends sequenceJobWithMap with phSparkCommonFuncTrait {
+class phNhwaDeliveryJob(args: Map[String, String]) extends sequenceJobWithMap {
     override val name: String = "export_delivery_data_action"
     override val defaultArgs: pActionArgs = NULLArgs
 

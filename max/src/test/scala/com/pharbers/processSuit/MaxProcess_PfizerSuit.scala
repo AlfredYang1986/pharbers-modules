@@ -18,7 +18,7 @@ class MaxProcess_PfizerSuit extends FunSuite {
     val system = ActorSystem("maxActor")
     val company: String = "5b028f95ed925c2c705b85ba"
     val user: String = "5b028feced925c2c705b85bb"
-    val jobId: String = "20180620pfizer001"
+    val jobId: String = "20180628pfizer001"
     val testActor: ActorRef = system.actorOf(MaxTestHeader.props(company, user, jobId))
     import com.pharbers.processSuit.MaxTestHeader._
 
@@ -26,9 +26,9 @@ class MaxProcess_PfizerSuit extends FunSuite {
         val dateformat = new SimpleDateFormat("MM-dd HH:mm:ss")
         println(s"开始时间" + dateformat.format(new Date()))
         println()
-        val cpa = "Source/pfizer/1802 CPA.xlsx"
-        val gycx = "Source/pfizer/1802 GYC.xlsx"
-        val yms = "201802"
+        val cpa = "Source/pfizer/1804 CPA.xlsx"
+        val gycx = "Source/pfizer/1804 GYC.xlsx"
+        val yms = "201804"
 
 
         implicit val t: Timeout = 600 minutes
@@ -47,7 +47,6 @@ class MaxProcess_PfizerSuit extends FunSuite {
         val result3 = Await.result(r3.mapTo[JsValue], t.duration)
         println("max result3 = " + result3)
         println(s"max 结束时间" + dateformat.format(new Date()))
-
 
         println()
         println(s"结束时间" + dateformat.format(new Date()))
