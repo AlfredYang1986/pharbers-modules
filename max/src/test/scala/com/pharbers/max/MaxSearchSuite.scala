@@ -1,7 +1,6 @@
 package com.pharbers.max
 
 import com.pharbers.builder.SearchFacade
-import com.pharbers.builder.search.SearchSimpleCheck
 import com.pharbers.pactions.actionbase._
 import com.pharbers.search.{phHistorySearchJob, phMaxResultInfo, phPanelResultInfo}
 import org.scalatest.FunSuite
@@ -13,34 +12,31 @@ import play.api.libs.json.Json.toJson
   */
 class MaxSearchSuite extends FunSuite {
 
-    val company: String = "5afa53bded925c05c6f69c54"
-    val user: String = "5afa57a1ed925c05c6f69c68"
-    val jobId: String = "20180523test001"
-    val ym = "201810"
-    val mkt = "麻醉市场"
+    val company: String = "5b028f95ed925c2c705b85ba"
+    val user: String = "5b028feced925c2c705b85bb"
+    val jobId: String = "20180623test001"
+    val ym = "201804"
+    val mkt = "INF"
 
     test("history search"){
 
         val args: Map[String, String] = Map(
             "company" -> company,
             "user" -> user,
-            "ym_condition" -> "201704-201712",
-//            "ym_condition" -> "201801-201802",
+            "ym_condition" -> "201804-201804",
             "mkt" -> mkt,
             "pageIndex" -> "1",
             "singlePageSize" -> "10"
         )
 
         val searchResult =  phHistorySearchJob(args).perform().asInstanceOf[MapArgs]
-//        val itemsCount = searchResult.get("phHistoryConditionSearchAction").asInstanceOf[DFArgs].get.count()
-//        println(s"### => ${itemsCount}")
         val searchResult1 =  searchResult.get("return_page_cache_action").asInstanceOf[ListArgs].get
         println(searchResult1.length)
         searchResult1.foreach(x => println(s"### => ${x}"))
     }
 
     test("get panel info"){
-        val panelInfo = phPanelResultInfo("5b0237b7810c6e0268fe6ff7", "5b023787810c6e0268fe6ff6", "201712", "痛风市场")
+        val panelInfo = phPanelResultInfo(user, company, ym, mkt)
         println(panelInfo.getHospCount)
         println(panelInfo.getProdCount)
         println(panelInfo.getPanelSales)
@@ -88,27 +84,6 @@ class MaxSearchSuite extends FunSuite {
         println(search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].length)
         println(search.searchHistory(condition)._1.get.get("page").get)
         search.searchHistory(condition)._1.get.get("data").get.as[List[JsValue]].foreach(println)
-    }
-
-    test("SimpleCheck search of Facade") {
-        val condition = toJson {
-            Map(
-                "condition" -> toJson(Map(
-                    "years" -> toJson("201712"),
-                    "market" -> toJson("痛风市场")
-                )),
-                "user" -> toJson(
-                    Map(
-                        "user_id" -> toJson("5b0237b7810c6e0268fe6ff7"),
-                        "company" -> toJson(Map("company_id" -> toJson("5b023787810c6e0268fe6ff6")))
-                    )
-                )
-            )
-        }
-
-        val search = new SearchFacade
-        val result = search.searchSimpleCheck(condition)
-        println(result._1.get.get("data").get.as[List[JsValue]].length)
     }
 
     test("export data of Facade") {

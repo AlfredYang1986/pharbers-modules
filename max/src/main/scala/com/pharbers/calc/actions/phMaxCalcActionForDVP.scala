@@ -21,7 +21,8 @@ class phMaxCalcActionForDVP(override val defaultArgs: pActionArgs) extends pActi
 
         val panelDF = {
             pr.asInstanceOf[MapArgs].get("panel_data").asInstanceOf[DFArgs].get
-                .selectExpr("Date", "Prod_Name", "HOSP_ID", "Sales", "Units")
+                .withColumnRenamed("DOI", "MARKET")
+                .selectExpr("Date", "Prod_Name", "HOSP_ID", "Sales", "Units", "MARKET")
         }
 
         val universeDF = {
@@ -55,13 +56,13 @@ class phMaxCalcActionForDVP(override val defaultArgs: pActionArgs) extends pActi
 
         val max_result = {
             panelMergeUniverseMergeCoef.groupBy("Province", "City","Date","Prod_Name","coef")
-                .agg(Map("Sales" -> "sum", "Units" -> "sum", "f_sales" -> "sum", "f_units" -> "sum"))
-                .withColumnRenamed("sum(Sales)", "Sales")
-                .withColumnRenamed("sum(Units)", "Units")
+                .agg(Map("HOSP_ID" -> "first", "Units" -> "sum", "f_sales" -> "sum", "f_units" -> "sum"))
+                .withColumnRenamed("first(HOSP_ID)", "Panel_ID")
                 .withColumnRenamed("sum(f_sales)", "f_sales")
                 .withColumnRenamed("sum(f_units)", "f_units")
                 .withColumnRenamed("Prod_Name", "Product")
-                .select("Province", "City", "Date", "Product", "coef", "Sales", "Units", "f_sales", "f_units")
+                .withColumnRenamed("coef", "Factor")
+                .selectExpr("Date", "Province", "City", "Panel_ID", "Product", "Factor", "f_sales", "f_units", "MARKET")
         }
 
         DFArgs(max_result)
